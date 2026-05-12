@@ -15,19 +15,19 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf import settings
-from django.contrib import admin,include
+from django.contrib import admin
 from django.conf.urls.static import static
-from django.urls import path
+from django.urls import path,include
 
 urlpatterns = [
     path('django-admin/', admin.site.urls),
-    path('', include('apps.base.urls')),
-    # path('auth/', include('apps.accounts.urls')),
-    path('stakeholder/', include('apps.stakeholder.urls')),
-    path('adminpanel/', include('apps.adminpanel.urls')),
+    # path('', include('base.urls')),
+    path('auth/', include('accounts.urls')),
+    path('stakeholder/', include('stakeholder.urls')),
+    # path('adminpanel/', include('adminpanel.urls')),
 ]
 # to open files in browsers like images and pdf
-urlpatterns += static(
-    settings.MEDIA_URL,
-    document_root=settings.MEDIA_ROOT
-)
+# urlpatterns += static(
+#     settings.MEDIA_URL,
+#     document_root=settings.MEDIA_ROOT
+# )

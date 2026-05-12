@@ -1,0 +1,82 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/dist/css/all.min.css">
+
+<div class="login-split-page">
+    
+    <div class="auth-bg-layer">
+        <img src="{% static 'images/fullscreen.jpg' %}" class="kabba-img">
+        <div class="dynamic-overlay"></div>
+    </div>
+
+    <div class="form-side-container">
+        <div class="glass-login-box">
+            <div class="auth-brand">
+                <a href="/">
+                    <img src="{% static 'images/logo.jpg' %}" class="login-brand-logo">
+                </a>
+                <h2 lang="ar" dir="rtl" class="arabic-heading">سفر الحرم</h2>
+                <p class="welcome-msg">Welcome Back</p>
+            </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="auth-alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" id="loginform" autocomplete="off" class="auth-form-body">
+                {% csrf_token %}
+                
+                <div class="input-set">
+                    <label>Email Address</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-envelope"></i>
+                        <input type="text" name="username" placeholder="Enter your email" required>
+                    </div>
+                </div>
+
+                <div class="input-set">
+                    <label>Password</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" name="password" id="login-pass" placeholder="••••••••" required>
+                        <i class="fas fa-eye-slash toggle-eye-btn" onclick="toggleAuthPass(this)"></i>
+                    </div>
+                </div>
+
+                <div class="forgot-area">
+                    <a href="{% url 'forget_password' %}">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="emerald-action-btn">
+                    Sign In <i class="fas fa-sign-in-alt"></i>
+                </button>
+
+                <div class="auth-footer-link">
+                    <span>Don't have an account?</span>
+                    <a href="{% url 'register' %}">Register Now</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+function toggleAuthPass(icon) {
+    // Password field ko dhondne ke liye id use ki gayi hai
+    const input = document.getElementById('login-pass');
+    if (input.type === "password") {
+        input.type = "text";
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+    } else {
+        input.type = "password";
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+    }
+}
+</script>
+
+{% endblock content %}

@@ -1,0 +1,300 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<style>
+:root{
+    --primary-green:#0b7a47;
+    --hajj-blue: #1a5276;
+    --ziyarat-purple: #712cf9;
+    --border-color: #d1d9e0;
+    --bg-light: #f8faf9;
+}
+
+.profile-card {
+    background: #fff;
+    max-width: 1000px;
+    margin: 30px auto;
+    border-radius: 15px;
+    box-shadow: 0 12px 45px rgba(0,0,0,0.1);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.form-header {
+    background: var(--primary-green);
+    padding: 30px;
+    color: white;
+    text-align: center;
+}
+
+.form-body { padding: 40px; }
+
+.section-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: #333;
+    text-transform: uppercase;
+    margin: 35px 0 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 2px solid var(--bg-light);
+    padding-bottom: 8px;
+}
+
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: #555; }
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border: 1.5px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 14px;
+    transition: 0.3s;
+}
+.form-control:focus { border-color: var(--primary-green); outline: none; background: #fff; }
+
+/* Scan Upload Cards */
+.scan-card {
+    border: 2px dashed #ccd3d9;
+    padding: 15px;
+    border-radius: 10px;
+    background: #fcfdfe;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.scan-card:hover { border-color: var(--primary-green); background: #f0f9f4; }
+.scan-card input[type="file"] { position: absolute; width: 100%; height: 100%; top: 0; left: 0; opacity: 0; cursor: pointer; }
+
+/* Financial Boxes */
+.finance-box { background: #f9f9f9; padding: 15px; border-radius: 10px; border: 1px solid #eee; }
+
+/* Radio Options */
+.radio-group { display: flex; gap: 20px; background: #f4f6f8; padding: 12px; border-radius: 8px; border: 1px solid #e1e5e8; }
+.radio-group label { margin: 0; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 13px; color: #333; }
+
+.btn-submit {
+    background: var(--primary-green);
+    color: white;
+    padding: 18px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 800;
+    cursor: pointer;
+    width: 100%;
+    font-size: 17px;
+    margin-top: 40px;
+    box-shadow: 0 5px 15px rgba(11,122,71,0.2);
+}
+</style>
+
+<div class="profile-card">
+    <div class="form-header">
+        <h2 style="margin:0;">Agent Verification Portal</h2>
+        <p style="margin:5px 0 0; opacity:0.9;">Provide your legal & financial credentials for official onboarding</p>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" class="form-body">
+        {% csrf_token %}
+
+        <!-- 1. AGENCY BASIC INFO -->
+        <div class="section-title">1. Agency & Contact Information</div>
+        <div class="grid-2">
+            <div class="form-group">
+                <label>Agency Name</label>
+                <input type="text" name="agency_name" class="form-control" placeholder="Agency Name as per License" required>
+            </div>
+            <div class="form-group">
+                <label>Owner Name</label>
+                <input type="text" name="owner_name" class="form-control" placeholder="Full Name as per CNIC" required>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label>Official Phone Number</label>
+                <input type="tel" name="phone_no" class="form-control" placeholder="03xxxxxxxxx" required>
+            </div>
+            <div class="form-group">
+                <label>WhatsApp Number</label>
+                <input type="tel" name="whatsapp_no" class="form-control" placeholder="03xxxxxxxxx">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Office Address</label>
+            <textarea name="office_address" class="form-control" rows="2" placeholder="Full Physical Address" required></textarea>
+        </div>
+
+        <!-- 2. SERVICE SCOPE -->
+        <div class="section-title">2. Business Services</div>
+        <div style="display: flex; gap: 40px; background: #eef2f0; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+            <label style="cursor:pointer; font-weight: 600;"><input type="checkbox" id="chkHajj" name="is_hajj"> Hajj & Umrah</label>
+            <label style="cursor:pointer; font-weight: 600;"><input type="checkbox" id="chkZiyarat" name="is_ziyarat"> Iran & Iraq Ziyarat</label>
+        </div>
+
+        <!-- 3. LEGAL DOCUMENTS -->
+        <div class="section-title">3. Legal Identification (Numbers & Scans)</div>
+        <div class="grid-3">
+            <div class="form-group">
+                <label>NTN Number</label>
+                <input type="text" name="ntn_no" class="form-control" placeholder="1234567-8" required>
+                <div class="scan-card" style="margin-top:10px;">
+                    <span id="l-ntn">Scan NTN Certificate</span>
+                    <input type="file" name="ntn_doc" required onchange="updateUI(this, 'l-ntn')">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>DTS License No.</label>
+                <input type="text" name="dts_no" class="form-control" placeholder="DTS-XXXX" required>
+                <div class="scan-card" style="margin-top:10px;">
+                    <span id="l-dts">Scan DTS License</span>
+                    <input type="file" name="dts_doc" required onchange="updateUI(this, 'l-dts')">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>CNIC Number</label>
+                <input type="text" name="cnic_no" class="form-control" placeholder="42xxx-xxxxxxx-x" required>
+                <div style="display:flex; gap:5px; margin-top:10px;">
+                    <div class="scan-card" style="flex:1;">
+                        <span id="l-cf">Front</span>
+                        <input type="file" name="cnic_f" required onchange="updateUI(this, 'l-cf')">
+                    </div>
+                    <div class="scan-card" style="flex:1;">
+                        <span id="l-cb">Back</span>
+                        <input type="file" name="cnic_b" required onchange="updateUI(this, 'l-cb')">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. CONDITIONAL SECTIONS -->
+        <div id="hajj_sec" style="display:none;">
+            <div class="section-title" style="color:var(--hajj-blue); border-color:var(--hajj-blue);">Hajj & Umrah Credentials</div>
+            
+            <!-- Munazzam Section -->
+            <div class="grid-2" style="margin-bottom: 20px;">
+                <div class="form-group">
+                    <label>Munazzam Card Number</label>
+                    <input type="text" name="munazzam_no" class="form-control hajj-in" placeholder="Saudi License Number">
+                </div>
+                <div class="scan-card">
+                    <span id="l-mun">Scan Munazzam Card</span>
+                    <input type="file" name="munazzam_doc" class="hajj-in" onchange="updateUI(this, 'l-mun')">
+                </div>
+            </div>
+
+            <!-- IATA Logic Section -->
+            <div class="form-group" style="padding: 15px; border: 1px solid var(--border-color); border-radius: 8px; background: #fff;">
+                <label style="color: var(--hajj-blue); font-size: 14px;">IATA Ticketing Status</label>
+                <div class="radio-group" style="margin-bottom: 15px;">
+                    <label><input type="radio" name="iata_type" value="own" onchange="toggleIATA('own')" checked> I have my own IATA Certificate</label>
+                    <label><input type="radio" name="iata_type" value="reference" onchange="toggleIATA('ref')"> I use a Third-Party/Reference Agent</label>
+                </div>
+
+                <!-- Own IATA Fields -->
+                <div id="iata_own_fields" class="grid-2">
+                    <div class="form-group" style="margin:0;">
+                        <input type="text" name="iata_no" class="form-control" placeholder="Enter your IATA Number">
+                    </div>
+                    <div class="scan-card" style="padding: 10px;">
+                        <span id="l-iata-own">Scan IATA Certificate</span>
+                        <input type="file" name="iata_doc" onchange="updateUI(this, 'l-iata-own')">
+                    </div>
+                </div>
+
+                <!-- Reference IATA Fields -->
+                <div id="iata_ref_fields" class="grid-2" style="display:none;">
+                    <div class="form-group" style="margin:0;">
+                        <input type="text" name="ref_agency_name" class="form-control" placeholder="Reference Agency Name & IATA No.">
+                    </div>
+                    <div class="scan-card" style="padding: 10px;">
+                        <span id="l-iata-ref">Scan Reference Agreement / Proof</span>
+                        <input type="file" name="iata_ref_doc" onchange="updateUI(this, 'l-iata-ref')">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="ziy_sec" style="display:none;">
+            <div class="section-title" style="color:var(--ziyarat-purple); border-color:var(--ziyarat-purple);">Ziyarat (Iran/Iraq) Credentials</div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Ziyarat Permit/License No.</label>
+                    <input type="text" name="ziy_no" class="form-control ziy-in" placeholder="Group Organizer No.">
+                </div>
+                <div class="scan-card">
+                    <span id="l-ziy">Scan Ziyarat Permit/License</span>
+                    <input type="file" name="ziy_doc" class="ziy-in" onchange="updateUI(this, 'l-ziy')">
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. FINANCIAL DETAILS -->
+        <div class="section-title">4. Financial Accounts (For Payouts)</div>
+        <div class="grid-3">
+            <div class="finance-box">
+                <label>Bank IBAN</label>
+                <input type="text" name="bank_iban" class="form-control" placeholder="PK00 BANK 0000...">
+                <input type="text" name="bank_name" class="form-control" style="margin-top:5px;" placeholder="Bank Name">
+            </div>
+            <div class="finance-box">
+                <label>EasyPaisa Account</label>
+                <input type="text" name="easypaisa_no" class="form-control" placeholder="03xxxxxxxxx">
+                <input type="text" name="easypaisa_name" class="form-control" style="margin-top:5px;" placeholder="Account Title">
+            </div>
+            <div class="finance-box">
+                <label>JazzCash Account</label>
+                <input type="text" name="jazzcash_no" class="form-control" placeholder="03xxxxxxxxx">
+                <input type="text" name="jazzcash_name" class="form-control" style="margin-top:5px;" placeholder="Account Title">
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit">Submit Documentation for Review</button>
+    </form>
+</div>
+
+<script>
+// Toggle Hajj and Ziyarat Sections
+document.addEventListener('change', function(e) {
+    if (e.target.id === 'chkHajj' || e.target.id === 'chkZiyarat') {
+        const isHajj = document.getElementById('chkHajj').checked;
+        const isZiyarat = document.getElementById('chkZiyarat').checked;
+
+        document.getElementById('hajj_sec').style.display = isHajj ? 'block' : 'none';
+        document.getElementById('ziy_sec').style.display = isZiyarat ? 'block' : 'none';
+
+        document.querySelectorAll('.hajj-in').forEach(el => el.required = isHajj);
+        document.querySelectorAll('.ziy-in').forEach(el => el.required = isZiyarat);
+    }
+});
+
+// Toggle IATA Status
+function toggleIATA(status) {
+    if (status === 'own') {
+        document.getElementById('iata_own_fields').style.display = 'grid';
+        document.getElementById('iata_ref_fields').style.display = 'none';
+    } else {
+        document.getElementById('iata_own_fields').style.display = 'none';
+        document.getElementById('iata_ref_fields').style.display = 'grid';
+    }
+}
+
+// Update File Upload Text and Color
+function updateUI(input, target) {
+    if (input.files && input.files[0]) {
+        let label = document.getElementById(target);
+        label.innerText = "✓ Selected";
+        label.style.color = "var(--primary-green)";
+        label.parentElement.style.borderColor = "var(--primary-green)";
+        label.parentElement.style.background = "#f0fdf4";
+    }
+}
+</script>
+{% endblock %}

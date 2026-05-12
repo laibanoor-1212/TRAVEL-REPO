@@ -14,6 +14,9 @@ class CustomUser(AbstractUser):
 
     # Stakeholder approval
     is_approved = models.BooleanField(default=False)
+    class Meta:
+        app_label='accounts'
 
     def __str__(self):
         return self.username
+    
