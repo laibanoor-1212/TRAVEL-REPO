@@ -1,0 +1,137 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/register.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/dist/css/all.min.css">
+
+<section class="register-page">
+    <div class="register-card">
+        
+        <div class="register-left">
+            <div class="green-overlay"></div>
+            <img src="{% static 'images/fullscreen.jpg' %}" class="side-img">
+            
+            <div class="left-content-wrapper">
+                <img src="{% static 'images/logo.jpg' %}" class="brand-logo-circle">
+                <h1 class="arabic-font">سفر الحرم</h1>
+                <p>Start your sacred journey with comfort, trust and divine guidance.</p>
+                
+                <div class="feature-pills">
+                    <div class="f-pill"><i class="fas fa-check-circle"></i> Verified Agents</div>
+                    <div class="f-pill"><i class="fas fa-clock"></i> 24/7 Assistance</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="register-right">
+            <div class="form-header">
+                <h2>Create Account</h2>
+                <p>Register yourself to explore Hajj & Umrah packages</p>
+            </div>
+
+            <form method="POST" class="register-form-main">
+                {% csrf_token %}
+
+                <div class="role-selector">
+                    <div class="role-btn active" data-role="user">
+                        <i class="fas fa-user"></i> Traveler
+                    </div>
+                    <div class="role-btn" data-role="stakeholder">
+                        <i class="fas fa-mosque"></i> Agent
+                    </div>
+                </div>
+                <input type="hidden" name="role" id="selectedRole" value="user">
+
+                <div class="form-grid">
+                    
+                    <div class="input-group full">
+                        <label>Username</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-at"></i>
+                            {{ form.username }}
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>First Name</label>
+                        <div class="input-wrapper no-icon">
+                            {{ form.first_name }}
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Last Name</label>
+                        <div class="input-wrapper no-icon">
+                            {{ form.last_name }}
+                        </div>
+                    </div>
+
+                    <div class="input-group full">
+                        <label>Email Address</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-envelope"></i>
+                            {{ form.email }}
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Password</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock"></i>
+                            {{ form.password1 }}
+                            <i class="fas fa-eye-slash toggle-pass" onclick="togglePass('id_password1', this)"></i>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Confirm Password</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock"></i>
+                            {{ form.password2 }}
+                            <i class="fas fa-eye-slash toggle-pass" onclick="togglePass('id_password2', this)"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-green-btn">
+                    Register Account <i class="fas fa-arrow-right"></i>
+                </button>
+
+                <p class="bottom-redirect">
+                    Already have an account? <a href="{% url 'login' %}">Sign In</a>
+                </p>
+            </form>
+        </div>
+    </div>
+</section>
+
+
+<script>
+// Show/Hide Password
+function togglePass(inputId, icon) {
+    const input = document.getElementById(inputId);
+    if (input.type === "password") {
+        input.type = "text";
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    } else {
+        input.type = "password";
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    }
+}
+
+// Role Switcher
+const rBtns = document.querySelectorAll('.role-btn');
+const rInput = document.getElementById('selectedRole');
+
+rBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        rBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        rInput.value = btn.dataset.role;
+    });
+});
+</script>
+
+{% endblock content %}

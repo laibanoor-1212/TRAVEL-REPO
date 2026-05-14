@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-
+sys.path.insert(0, os.path.join(BASE_DIR, "apps"))
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -39,10 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps.accounts',
-    'apps.stakeholder',
-    'apps.adminpanel',
-    'apps.base',
+    'accounts',
+    'stakeholder',
+    'adminpanel',
+    'base',
 ]
 
 MIDDLEWARE = [
@@ -81,9 +81,9 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': '',
+        'NAME': 'practise_db',
         'USER': 'postgres',
-        'PASSWORD': 'your_password',
+        'PASSWORD': 'root',
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -133,3 +133,6 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static'
 ]
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

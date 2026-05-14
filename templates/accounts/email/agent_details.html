@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Details Portal</title>
+    <link rel="stylesheet" href="{% static 'css/agent_details.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <div class="header-icon-container">
+                    <i class="fas fa-user-gear"></i>
+                </div>
+                <h2>Agent Details</h2>
+            </div>
+
+            <div class="main-layout">
+                <div class="details-section">
+                    <div class="input-group">
+                        <label><i class="fas fa-user"></i> Full Name</label>
+                        <input type="text" class="input-field" placeholder="Enter Agent's Name">
+                    </div>
+                    <div class="input-group">
+                        <label><i class="fas fa-building"></i> Agency Name</label>
+                        <input type="text" class="input-field" placeholder="Enter Agency Name">
+                    </div>
+                    <div class="input-group">
+                        <label><i class="fas fa-envelope"></i> Email Address</label>
+                        <input type="email" class="input-field" placeholder="Enter Email Address">
+                    </div>
+                    <div class="input-group">
+                        <label><i class="fas fa-phone"></i> Phone Number</label>
+                        <input type="tel" class="input-field" placeholder="Enter Phone Number">
+                    </div>
+                    <div class="input-group">
+                        <label><i class="fas fa-id-card"></i> License Number</label>
+                        <input type="text" class="input-field" placeholder="Enter License ID">
+                    </div>
+                </div>
+
+                <div class="status-sidebar">
+                    <div class="alert-box">
+                        <i class="fas fa-triangle-exclamation"></i>
+                        <p><strong>Passport / ID</strong> is incorrect. Please re-upload a valid document to proceed.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="upload-section">
+                <div class="file-drop-zone">
+                    <i class="fas fa-cloud-arrow-up upload-icon"></i>
+                    <p>Click to re-upload valid document</p>
+                    <input type="file" id="fileUpload" hidden>
+                    <button class="btn-secondary" onclick="document.getElementById('fileUpload').click()">Choose File</button>
+                </div>
+                <div class="action-footer">
+                    <button class="btn-primary">Submit Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
