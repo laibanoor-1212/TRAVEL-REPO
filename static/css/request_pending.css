@@ -1,0 +1,82 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: 'poppins', sans-serif;
+    background-color: #f3f4f6;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.card {
+    background: white;
+    padding: 50px 40px;
+    width: 100%;
+    max-width: 450px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    border-top: 6px solid #0f5132;
+}
+.status-icon-container {
+    font-size: 60px;
+    color: #0f5132;
+    margin-bottom: 25px;
+}
+h2 {
+    color: #0f5132;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+p {
+    color: #6b7280;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 35px;
+}
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.btn-contact {
+    background: #0f5132;
+    color: white;
+    border: none;
+    padding: 8px 20px; 
+    border-radius: 6px;
+    font-size: 13px; 
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: 0.3s;
+    width: fit-content; 
+    margin: 0 auto;
+}
+.btn-contact:hover {
+    background: #0a3a24;
+    transform: translateY(-2px);
+}
+.btn-back {
+    background: transparent;
+    color: #0f5132;
+    border: 1px solid #0f5132;
+    padding: 6px 15px; 
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s;
+    width: fit-content;
+    margin: 0 auto;
+}
+.btn-back:hover {
+    background: #f0fdf4;
+}

@@ -1,0 +1,98 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'poppins', sans-serif;
+    background-color: #f3f4f6;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card {
+    background: white;
+    padding: 50px 40px;
+    width: 100%;
+    max-width: 450px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    border-top: 6px solid #0f5132;
+}
+
+.success-icon-container {
+    font-size: 70px;
+    color: #0f5132;
+    margin-bottom: 20px;
+}
+
+h2 {
+    color: #0f5132;
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+p {
+    color: #6b7280;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+strong {
+    color: #0f5132;
+    font-weight: 600;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #f0fdf4;
+    color: #0f5132;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid #0f5132;
+    margin-bottom: 30px;
+}
+
+.dot {
+    height: 8px;
+    width: 8px;
+    background-color: #0f5132;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+}
+
+.btn-dashboard {
+    background: #0f5132;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: 0.3s;
+}
+
+.btn-dashboard:hover {
+    background: #0a3a24;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(15, 81, 50, 0.2);
+}
