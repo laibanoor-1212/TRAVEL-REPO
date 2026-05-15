@@ -24,7 +24,7 @@ urlpatterns = [
     # path('', include('base.urls')),
     path('auth/', include('accounts.urls')),
     path('stakeholder/', include('stakeholder.urls')),
-    # path('adminpanel/', include('adminpanel.urls')),
+    path('adminpanel/', include('adminpanel.urls')),
 ]
 # to open files in browsers like images and pdf
 # urlpatterns += static(

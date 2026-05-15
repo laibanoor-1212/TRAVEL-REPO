@@ -1,5 +1,6 @@
 {% extends "base/base.html" %}
 {% load static %}
+
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/register.css' %}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/dist/css/all.min.css">
@@ -13,7 +14,7 @@
             
             <div class="left-content-wrapper">
                 <img src="{% static 'images/logo.jpg' %}" class="brand-logo-circle">
-                <h1 class="arabic-font">سفر الحرم</h1>
+                <h1 class="arabic-font" style="font-family: '_PDMS_Saleem_Saleem_Lughat', serif;">سفر الحرم</h1>
                 <p>Start your sacred journey with comfort, trust and divine guidance.</p>
                 
                 <div class="feature-pills">
@@ -44,14 +45,6 @@
 
                 <div class="form-grid">
                     
-                    <div class="input-group full">
-                        <label>Username</label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-at"></i>
-                            {{ form.username }}
-                        </div>
-                    </div>
-
                     <div class="input-group">
                         <label>First Name</label>
                         <div class="input-wrapper no-icon">
@@ -74,6 +67,25 @@
                         </div>
                     </div>
 
+                    <div id="agent-fields" class="full" style="display: none;">
+                        <div class="form-grid" style="padding: 0; gap: 20px;">
+                            <div class="input-group">
+                                <label>Agency Name</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-building"></i>
+                                    {{ form.agency_name }}
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label>Official Phone</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-phone"></i>
+                                    {{ form.phone_number }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="input-group">
                         <label>Password</label>
                         <div class="input-wrapper">
@@ -93,6 +105,18 @@
                     </div>
                 </div>
 
+                {% if form.errors %}
+                <div class="form-errors">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <p style="color: #ff4d4d; font-size: 0.9rem; margin-bottom: 5px;">
+                                <i class="fas fa-exclamation-circle"></i> {{ error }}
+                            </p>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+
                 <button type="submit" class="submit-green-btn">
                     Register Account <i class="fas fa-arrow-right"></i>
                 </button>
@@ -105,33 +129,52 @@
     </div>
 </section>
 
-
 <script>
-// Show/Hide Password
+// Password toggle functionality
 function togglePass(inputId, icon) {
     const input = document.getElementById(inputId);
     if (input.type === "password") {
         input.type = "text";
-        icon.classList.remove('fa-eye-slash');
-        icon.classList.add('fa-eye');
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
     } else {
         input.type = "password";
-        icon.classList.remove('fa-eye');
-        icon.classList.add('fa-eye-slash');
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
     }
 }
 
-// Role Switcher
-const rBtns = document.querySelectorAll('.role-btn');
-const rInput = document.getElementById('selectedRole');
+// Role Switching Logic
+const roleButtons = document.querySelectorAll('.role-btn');
+const roleInput = document.getElementById('selectedRole');
+const agentFieldsDiv = document.getElementById('agent-fields');
 
-rBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        rBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        rInput.value = btn.dataset.role;
+roleButtons.forEach(btn => {
+    btn.addEventListener('click', function() {
+        // Remove active class from all and add to clicked
+        roleButtons.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+
+        // Update hidden input
+        const role = this.getAttribute('data-role');
+        roleInput.value = role;
+
+        // Show/Hide Agent fields
+        if (role === 'stakeholder') {
+            agentFieldsDiv.style.display = 'block';
+        } else {
+            agentFieldsDiv.style.display = 'none';
+        }
     });
 });
 </script>
+
+<style>
+/* Kuch extra styling jo layouts ko handle kare */
+.full { grid-column: 1 / -1; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.register-form-main { padding-top: 20px; }
+.form-errors { margin-top: 15px; padding: 10px; border-radius: 5px; background: #fff5f5; }
+.input-wrapper input { border: none; outline: none; width: 100%; padding: 10px; background: transparent; }
+/* Make sure your CSS handles .role-btn.active for the green color transition */
+</style>
 
 {% endblock content %}

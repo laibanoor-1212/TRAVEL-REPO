@@ -15,9 +15,7 @@ from .forms import CustomUserRegistrationForm
 
 def register_view(request): 
     if request.method == 'POST':
-
         form = CustomUserRegistrationForm(request.POST)
-
         if form.is_valid():
 
             user = form.save(commit=False)
@@ -26,7 +24,7 @@ def register_view(request):
             # stakeholder  go to login
             if user.role == 'stakeholder':
                 messages.success(request, "Stakeholder account created successfully. Please submit your docs.")
-                return redirect('create_profile')
+                return redirect('stakeholder:create_profile')
 
             # user  auto login 
             else:
@@ -123,10 +121,8 @@ def reset_password_confirm(request, uidb64, token):
 
                 user.set_password(new_password)
                 user.save()
-
                 messages.success(request, "Password reset successfully!")
                 return redirect("login")
-
             else:
                 messages.error(request, "New password and confirm password do not match!")
 
@@ -134,5 +130,4 @@ def reset_password_confirm(request, uidb64, token):
 
     else:
         return render(request, "accounts/forget_password_invalid.html")
-def create_profile(request):
-    return render(request, 'accounts/create_profile.html')
+
