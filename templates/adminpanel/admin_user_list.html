@@ -1,0 +1,80 @@
+{% extends 'adminpanel/admin_layout.html' %}
+
+{% block content %}
+
+<div style="padding:20px;">
+
+<h2>👥 Users & Profiles</h2>
+
+<table style="width:100%; border-collapse: collapse; background:white;">
+
+    <thead style="background:#0f172a; color:white;">
+        <tr>
+            <th>Email</th>
+            <th>Role</th>
+
+            <th>Full Name</th>
+            <th>Phone</th>
+            <th>City</th>
+
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        {% for user in users %}
+        <tr style="border-bottom:1px solid #eee;">
+
+            <td>{{ user.email }}</td>
+            <td>{{ user.role }}</td>
+
+            <td>{{ user.profile.full_name|default:"-" }}</td>
+            <td>{{ user.profile.phone|default:"-" }}</td>
+            <td>{{ user.profile.city|default:"-" }}</td>
+
+            <td>
+                {% if user.is_active %}
+                    <span style="color:green; font-weight:bold;">Active</span>
+                {% else %}
+                    <span style="color:red; font-weight:bold;">Blocked</span>
+                {% endif %}
+            </td>
+
+            <td>
+
+                <a href="{% url 'adminpanel:admin_user_detail' user.id %}" style="color:blue;">
+                    👁 View
+                </a>
+
+                |
+
+                <a href="{% url 'adminpanel:toggle_user_status' user.id %}" style="color:orange;">
+                    {% if user.is_active %}
+                        🚫 Block
+                    {% else %}
+                        ✅ Unblock
+                    {% endif %}
+                </a>
+
+                |
+
+                <a href="{% url 'adminpanel:delete_user' user.id %}"
+                   style="color:red;"
+                   onclick="return confirm('Are you sure you want to delete this user?');">
+                    🗑 Delete
+                </a>
+
+            </td>
+
+        </tr>
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+</div>
+
+{% endblock %}

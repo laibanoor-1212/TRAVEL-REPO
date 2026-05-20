@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <title>Account Approved</title>
+    <link rel="stylesheet" href="{% static 'css/approve_agent.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<div class="card">
+
+    <!-- MESSAGES -->
+    {% if messages %}
+        <div style="margin-bottom:15px;">
+            {% for message in messages %}
+                <div style="
+                    padding:10px 15px;
+                    border-radius:8px;
+                    margin-bottom:10px;
+                    font-weight:600;
+                    background:#ecfdf3;
+                    color:#166534;
+                    border:1px solid #86efac;
+                ">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="success-icon-container">
+        <i class="fas fa-circle-check"></i>
+    </div>
+    
+    <h2>Congratulations!</h2>
+    <p>Your agent profile and documents have been <strong>successfully approved</strong>. You can now access all features of the portal.</p>
+
+    <!-- 🔥 ADMIN COMMENT SECTION ADDED -->
+    {% if agentkyc.admin_comment %}
+        <div style="
+            margin-top:20px;
+            padding:15px;
+            border-radius:10px;
+            background:#f0f9ff;
+            border:1px solid #bae6fd;
+            color:#0c4a6e;
+            font-weight:600;
+        ">
+            <strong>Admin Message:</strong>
+            <p style="margin-top:5px;">
+                {{ agentkyc.admin_comment }}
+            </p>
+        </div>
+    {% endif %}
+
+    <div class="status-badge">
+        <span class="dot"></span> Account Status: Active
+    </div>
+
+    <div class="action-buttons">
+        <button class="btn-dashboard">
+          <li><a href="{% url 'logout' %}" style="color: #d9534f !important;">Logout</a></li>
+        </button>
+    </div>
+
+</div>
+
+</body>
+</html>

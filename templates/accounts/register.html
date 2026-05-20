@@ -1,5 +1,6 @@
 {% extends "base/base.html" %}
 {% load static %}
+
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/register.css' %}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/dist/css/all.min.css">
@@ -7,13 +8,14 @@
 <section class="register-page">
     <div class="register-card">
         
+        <!-- Left Side (Branding) -->
         <div class="register-left">
             <div class="green-overlay"></div>
             <img src="{% static 'images/fullscreen.jpg' %}" class="side-img">
             
             <div class="left-content-wrapper">
                 <img src="{% static 'images/logo.jpg' %}" class="brand-logo-circle">
-                <h1 class="arabic-font">سفر الحرم</h1>
+                <h1 class="arabic-font" style="font-family: '_PDMS_Saleem_Saleem_Lughat', serif;">سفر الحرم</h1>
                 <p>Start your sacred journey with comfort, trust and divine guidance.</p>
                 
                 <div class="feature-pills">
@@ -23,6 +25,7 @@
             </div>
         </div>
 
+        <!-- Right Side (Form) -->
         <div class="register-right">
             <div class="form-header">
                 <h2>Create Account</h2>
@@ -32,6 +35,7 @@
             <form method="POST" class="register-form-main">
                 {% csrf_token %}
 
+                <!-- Role Selector -->
                 <div class="role-selector">
                     <div class="role-btn active" data-role="user">
                         <i class="fas fa-user"></i> Traveler
@@ -44,54 +48,106 @@
 
                 <div class="form-grid">
                     
-                    <div class="input-group full">
-                        <label>Username</label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-at"></i>
-                            {{ form.username }}
-                        </div>
-                    </div>
-
+                    <!-- First Name -->
                     <div class="input-group">
                         <label>First Name</label>
                         <div class="input-wrapper no-icon">
                             {{ form.first_name }}
                         </div>
+                        {% if form.first_name.errors %}
+                            <span class="field-error">{{ form.first_name.errors.0 }}</span>
+                        {% endif %}
                     </div>
 
+                    <!-- Last Name -->
                     <div class="input-group">
                         <label>Last Name</label>
                         <div class="input-wrapper no-icon">
                             {{ form.last_name }}
                         </div>
+                        {% if form.last_name.errors %}
+                            <span class="field-error">{{ form.last_name.errors.0 }}</span>
+                        {% endif %}
                     </div>
 
+                    <!-- Email Address -->
                     <div class="input-group full">
                         <label>Email Address</label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-envelope"></i>
+                        <div class="input-wrapper has-icon">
+                            <i class="fas fa-envelope input-icon"></i>
                             {{ form.email }}
+                        </div>
+                        {% if form.email.errors %}
+                            <span class="field-error"><i class="fas fa-exclamation-circle"></i> {{ form.email.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Agent Fields -->
+                    <div id="agent-fields" class="full" style="display: none;">
+                        <div class="form-grid" style="padding: 0; gap: 20px;">
+                            <div class="input-group">
+                                <label>Agency Name</label>
+                                <div class="input-wrapper has-icon">
+                                    <i class="fas fa-building input-icon"></i>
+                                    {{ form.agency_name }}
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label>Official Phone</label>
+                                <div class="input-wrapper has-icon">
+                                    <i class="fas fa-phone input-icon"></i>
+                                    {{ form.phone_number }}
+                                </div>
+                            </div>
                         </div>
                     </div>
 
+                    <!-- Password Box with Strength Indicator -->
                     <div class="input-group">
                         <label>Password</label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-lock"></i>
+                        <div class="input-wrapper has-icon">
+                            <i class="fas fa-lock input-icon"></i>
                             {{ form.password1 }}
                             <i class="fas fa-eye-slash toggle-pass" onclick="togglePass('id_password1', this)"></i>
                         </div>
+                        
+                        <!-- Password Strength Meter -->
+                        <div class="password-strength-wrapper">
+                            <div class="strength-meter">
+                                <div id="strength-bar" class="strength-bar"></div>
+                            </div>
+                            <span id="strength-text" class="strength-text"></span>
+                        </div>
+
+                        {% if form.password1.errors %}
+                            <span class="field-error">{{ form.password1.errors.0 }}</span>
+                        {% endif %}
                     </div>
 
+                    <!-- Confirm Password -->
                     <div class="input-group">
                         <label>Confirm Password</label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-lock"></i>
+                        <div class="input-wrapper has-icon">
+                            <i class="fas fa-lock input-icon"></i>
                             {{ form.password2 }}
                             <i class="fas fa-eye-slash toggle-pass" onclick="togglePass('id_password2', this)"></i>
                         </div>
+                        {% if form.password2.errors %}
+                            <span class="field-error">{{ form.password2.errors.0 }}</span>
+                        {% endif %}
                     </div>
                 </div>
+
+                <!-- Non-field errors -->
+                {% if form.non_field_errors %}
+                <div class="form-errors">
+                    {% for error in form.non_field_errors %}
+                        <p style="color: #ff4d4d; font-size: 0.9rem; margin-bottom: 5px;">
+                            <i class="fas fa-exclamation-circle"></i> {{ error }}
+                        </p>
+                    {% endfor %}
+                </div>
+                {% endif %}
 
                 <button type="submit" class="submit-green-btn">
                     Register Account <i class="fas fa-arrow-right"></i>
@@ -105,33 +161,184 @@
     </div>
 </section>
 
-
 <script>
-// Show/Hide Password
 function togglePass(inputId, icon) {
     const input = document.getElementById(inputId);
     if (input.type === "password") {
         input.type = "text";
-        icon.classList.remove('fa-eye-slash');
-        icon.classList.add('fa-eye');
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
     } else {
         input.type = "password";
-        icon.classList.remove('fa-eye');
-        icon.classList.add('fa-eye-slash');
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
     }
 }
 
-// Role Switcher
-const rBtns = document.querySelectorAll('.role-btn');
-const rInput = document.getElementById('selectedRole');
+// Role Switching Logic
+const roleButtons = document.querySelectorAll('.role-btn');
+const roleInput = document.getElementById('selectedRole');
+const agentFieldsDiv = document.getElementById('agent-fields');
 
-rBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        rBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        rInput.value = btn.dataset.role;
+roleButtons.forEach(btn => {
+    btn.addEventListener('click', function() {
+        roleButtons.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+
+        const role = this.getAttribute('data-role');
+        roleInput.value = role;
+
+        if (role === 'stakeholder') {
+            agentFieldsDiv.style.display = 'block';
+        } else {
+            agentFieldsDiv.style.display = 'none';
+        }
     });
 });
+
+// Real-time Password Strength Checker
+const passwordInput = document.getElementById('id_password1');
+const strengthBar = document.getElementById('strength-bar');
+const strengthText = document.getElementById('strength-text');
+
+if(passwordInput) {
+    passwordInput.addEventListener('input', function() {
+        const val = passwordInput.value;
+        let score = 0;
+
+        if (!val) {
+            strengthBar.style.width = '0%';
+            strengthText.innerText = '';
+            return;
+        }
+
+        // Logic check karne ke liye
+        if (val.length >= 6) score++; // Length check
+        if (val.match(/[a-z]/) && val.match(/[0-9]/)) score++; // Alphanumeric check
+        if (val.length >= 8 && val.match(/[A-Z]/) && val.match(/[^a-zA-Z0-9]/)) score++; // Complex check
+
+        // UI Update state ke mutabik
+        if (score === 1) {
+            strengthBar.style.width = '33%';
+            strengthBar.className = 'strength-bar weak';
+            strengthText.innerText = 'Weak Password';
+            strengthText.className = 'strength-text text-weak';
+        } else if (score === 2) {
+            strengthBar.style.width = '66%';
+            strengthBar.className = 'strength-bar medium';
+            strengthText.innerText = 'Medium Password';
+            strengthText.className = 'strength-text text-medium';
+        } else if (score === 3) {
+            strengthBar.style.width = '100%';
+            strengthBar.className = 'strength-bar strong';
+            strengthText.innerText = 'Strong Password';
+            strengthText.className = 'strength-text text-strong';
+        }
+    });
+}
 </script>
 
+<style>
+/* Base Layouts */
+.full { grid-column: 1 / -1; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.register-form-main { padding-top: 20px; }
+.form-errors { margin-top: 15px; padding: 10px; border-radius: 5px; background: #fff5f5; }
+
+/* Input Wrappers & Layout Fixed */
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: #fdfdfd; 
+    border: 1px solid #dcdcdc;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.input-wrapper:focus-within {
+    border-color: #2e7d32;
+    box-shadow: 0 0 5px rgba(46, 125, 50, 0.2);
+}
+
+.input-wrapper.has-icon .input-icon {
+    position: absolute;
+    left: 14px;
+    color: #888888;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.input-wrapper input {
+    border: none !important;
+    outline: none !important;
+    width: 100%;
+    padding: 12px 14px !important;
+    background: transparent !important;
+    font-size: 0.95rem;
+    color: #333;
+    box-sizing: border-box;
+}
+
+.input-wrapper.has-icon input {
+    padding-left: 42px !important;
+}
+
+.input-wrapper .toggle-pass {
+    position: absolute;
+    right: 14px;
+    cursor: pointer;
+    z-index: 2;
+    color: #777;
+}
+
+.input-wrapper.has-icon input[type="password"],
+.input-wrapper.has-icon input[type="text"] {
+    padding-right: 42px !important;
+}
+
+.field-error {
+    color: #ff4d4d;
+    font-size: 0.82rem;
+    margin-top: 4px;
+    display: block;
+    font-weight: 500;
+}
+
+/* --- Password Strength Styling --- */
+.password-strength-wrapper {
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.strength-meter {
+    flex-grow: 1;
+    height: 4px;
+    background-color: #e0e0e0;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.strength-bar {
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+/* Dynamic Colors for Bar */
+.strength-bar.weak { background-color: #ff4d4d; }
+.strength-bar.medium { background-color: #ffa500; }
+.strength-bar.strong { background-color: #2e7d32; }
+
+/* Dynamic Colors for Text */
+.strength-text {
+    font-size: 0.78rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.text-weak { color: #ff4d4d; }
+.text-medium { color: #ffa500; }
+.text-strong { color: #2e7d32; }
+</style>
 {% endblock content %}
