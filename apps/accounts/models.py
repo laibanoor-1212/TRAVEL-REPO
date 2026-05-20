@@ -21,6 +21,10 @@ class CustomUser(AbstractUser):
    
     class Meta:
         app_label='accounts'
+    def save(self,*args,**kwargs):
+        if self.is_superuser:
+            self.role = 'ADMIN'
+        super().save(*args,**kwargs)
 
     def __str__(self):
         return self.username

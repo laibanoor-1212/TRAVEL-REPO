@@ -13,6 +13,32 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import PasswordResetForm,SetPasswordForm
 from .forms import CustomUserRegistrationForm
 
+from django.contrib.auth import authenticate, login as auth_login
+from django.contrib import messages
+# Apne custom form ko import karein (agar forms.py mein banaya hai)
+# from .forms import YourCustomLoginForm 
+
+def login_view(request):
+    # Agar banda pehle se login hai, to use dobara login page mat dikhao, seedha bhejo
+    if request.user.is_authenticated:
+        return redirect('stakeholder:KYC')
+
+    if request.method == "POST":
+       
+        email_or_username = request.POST.get('username') 
+        password = request.POST.get('password')
+        user = authenticate(request, username=email_or_username, password=password)
+
+        if user is not None:
+            auth_login(request, user)
+            
+            messages.success(request, "Login Successful!")
+            return redirect('stakeholder:KYC')
+        else:
+            messages.error(request, "Invalid Username/Email or Password.")
+            
+    return render(request, 'accounts/login.html') 
+
 def register_view(request): 
     if request.method == 'POST':
         form = CustomUserRegistrationForm(request.POST)
@@ -20,15 +46,14 @@ def register_view(request):
 
             user = form.save(commit=False)
             user.save()
-
             # stakeholder  go to login
             if user.role == 'stakeholder':
+                request.session['stakeholder_id'] = user.id
                 messages.success(request, "Stakeholder account created successfully. Please submit your docs.")
-                return redirect('stakeholder:create_profile')
-
-            # user  auto login 
+                return redirect('stakeholder:KYC')
+ 
             else:
-                login(request, user)
+                login(request, user,backend='django.contrib.auth.backends.ModelBackend')
                 messages.success(request, "User account created successfully")
                 return redirect('user_dashboard')
 
@@ -37,36 +62,6 @@ def register_view(request):
 
     return render(request, 'accounts/register.html', {'form': form})
 
-def login_view(request):
-    
-    if request.method == 'POST':
-
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
-        user = authenticate(request, username=username, password=password)
-
-        if user is not None:
-
-            login(request, user)
-
-            if user.role == 'stakeholder':
-
-                if not user.is_approved:
-                    logout(request)
-                    messages.error(request, "Your stakeholder account is pending approval")
-                    return redirect('login')
-
-                else:
-                    return redirect('stakeholder_dashboard')
-
-            else:
-                return redirect('user_dashboard')
-
-        else:
-            messages.error(request, "Invalid credentials!")
-
-    return render(request, 'accounts/login.html')
 
 def logout_view(request):
     logout(request)

@@ -6,11 +6,8 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
-from .decorators import admin_required 
-from accounts.models import CustomUser
+from stakeholder.models import AgentKYC
 from django.conf import settings
-from urllib.parse import quote, unquote
-
 User = get_user_model()
 
 def admin_login_view(request):
@@ -19,7 +16,7 @@ def admin_login_view(request):
     if request.user.is_authenticated and (
         request.user.is_superuser or request.user.role == 'admin'
     ):
-        return redirect('admin_dashboard')
+        return redirect('adminpanel:admin_dashboard')
 
     if request.method == 'POST':
 
@@ -27,10 +24,10 @@ def admin_login_view(request):
         password = request.POST.get('password')
 
         try:
-            # Email se user nikaalo
+         
             user_obj = User.objects.get(email=email)
 
-            # Username se authenticate karo
+          
             user = authenticate(
                 request,
                 username=user_obj.username,
@@ -41,13 +38,11 @@ def admin_login_view(request):
             user = None
 
         if user is not None:
-
-            # Admin ya superuser check
             if user.is_superuser or user.role == 'admin':
 
                 login(request, user)
                 messages.success(request, "Welcome to Safar-e-Haram Admin Panel!")
-                return redirect('admin_dashboard')
+                return redirect('adminpanel:admin_dashboard')
 
             else:
                 messages.error(request, "Access denied.")
@@ -90,10 +85,6 @@ def admin_forget_password(request):
             return redirect("adminpanel:admin_login")
 
     return render(request, "adminpanel/admin_forget_password.html")
-
-
-
-
 def admin_reset_password_confirm(request, uidb64, token):
     
     try:
@@ -119,37 +110,69 @@ def admin_reset_password_confirm(request, uidb64, token):
 
     return render(request, "adminpanel/forget_password_invalid.html")
 
-@admin_required
-def admin_dashboard_view(request):
-    pending_agents = User.objects.filter(role='agent', is_verified=False)
-    total_users = User.objects.count()
-    total_agents = User.objects.filter(role='agent').count()
-    verified_agents = User.objects.filter(role='agent', is_verified=True).count()
+def admin_dashboard(request):
+    return render(request,'adminpanel/admin_dashboard.html')
+def agent_requests(request):
+    pending_count = AgentKYC.objects.filter(
+        kyc_status='pending'
+    ).count()
 
-    context = {
-        'pending_agents': pending_agents,
-        'total_users': total_users,
-        'total_agents': total_agents,
-        'verified_agents': verified_agents,
-    }
-    return render(request, 'adminpanel/dashboard.html', context)
+    rollback_count = AgentKYC.objects.filter(
+        kyc_status='rollback'
+    ).count()
 
+    rejected_count = AgentKYC.objects.filter(
+        kyc_status='rejected'
+    ).count()
 
-@admin_required
-def approve_agent_view(request, user_id):
-    agent = get_object_or_404(User, id=user_id, role='agent')
-    agent.is_verified = True
-    agent.save()
-    messages.success(request, f"Agent {agent.username} has been approved.")
-    return redirect('admin_dashboard')
+    approved_count = AgentKYC.objects.filter(
+        kyc_status='approved'
+    ).count()
 
-@admin_required
-def reject_agent_view(request, user_id):
-    agent = get_object_or_404(User, id=user_id, role='agent')
-    agent.delete() 
-    messages.warning(request, f"Agent {agent.username} has been rejected.")
-    return redirect('admin_dashboard')
+    requests = AgentKYC.objects.all().order_by(
+        '-submitted_at'
+    )
+    return render(
+        request,
+        'adminpanel/agent_requests.html',
+        {
+            'pending_count': pending_count,
+            'rollback_count': rollback_count,
+            'rejected_count': rejected_count,
+            'approved_count': approved_count,
+            'requests': requests,
+        }
+    )
+def review_agent(request, profile_id):
+    profile = get_object_or_404(AgentKYC, id=profile_id)
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        comment = request.POST.get('comment')
+
+        # Comment ko pehle hi assign kar diya
+        profile.admin_comment = comment
+
+        if action == 'approve':
+            profile.kyc_status = 'approved'
+            messages.success(request, f"Agent application approved successfully!")
+
+        elif action == 'rollback':
+            profile.kyc_status = 'rollback'
+            messages.warning(request, f"Application sent back for correction (Rollback).")
+            
+        elif action == 'reject':
+            profile.kyc_status = 'rejected'
+            messages.error(request, f"Agent application has been rejected.")
+
+        # Data ko database mein save kiya
+        profile.save()
+        return redirect('adminpanel:agent_requests')
+
+    return render(request, 'adminpanel/review_agent.html', {
+        'profile': profile
+    })
 def admin_logout_view(request):
     logout(request)
-    messages.success(request, "You have been logged out.")
-    return redirect('admin_login')
+    messages.success(request, "You have been logged out successfully.")
+    return redirect('adminpanel:admin_login')

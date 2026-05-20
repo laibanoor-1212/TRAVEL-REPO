@@ -1,0 +1,250 @@
+{% extends "adminpanel/admin_layout.html" %}
+{% block title %}Agency Management{% endblock %}
+
+{% block content %}
+
+<style>
+:root{
+    --green:#0b7a47;
+    --red:#d63031;
+    --gray:#636e72;
+}
+
+.tab-menu{
+    display:flex;
+    gap:10px;
+    border-bottom:2px solid #eee;
+    margin-bottom:20px;
+}
+
+.tab-link{
+    padding:10px 18px;
+    border:none;
+    background:none;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.tab-link.active{
+    color:var(--green);
+    border-bottom:3px solid var(--green);
+}
+
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:#fff;
+}
+
+th{
+    background:var(--green);
+    color:#fff;
+    padding:12px;
+}
+
+td{
+    padding:12px;
+    border-bottom:1px solid #eee;
+}
+
+.btn{
+    padding:6px 10px;
+    color:#fff;
+    text-decoration:none;
+    border-radius:5px;
+    font-size:12px;
+    display:inline-block;
+}
+
+.btn-green{background:var(--green);}
+.btn-red{background:var(--red);}
+.btn-gray{background:var(--gray);}
+
+.badge{
+    padding:4px 10px;
+    border-radius:20px;
+    font-size:11px;
+}
+
+.pending{background:#fff3cd;}
+.approved{background:#d4edda;}
+.rejected{background:#f8d7da;}
+
+.docs-box{
+    margin-top:8px;
+    padding:8px;
+    background:#f9f9f9;
+    border-radius:6px;
+    font-size:12px;
+}
+</style>
+
+<div class="container">
+
+<h2>Agency Management</h2>
+
+<!-- TABS -->
+<div class="tab-menu">
+    <button class="tab-link active" onclick="openTab(event,'pending')">Pending</button>
+    <button class="tab-link" onclick="openTab(event,'approved')">Approved</button>
+    <button class="tab-link" onclick="openTab(event,'rejected')">Rejected</button>
+</div>
+
+<!-- ================= PENDING ================= -->
+<div id="pending" class="tab-content active">
+
+<table>
+<thead>
+<tr>
+    <th>ID</th>
+    <th>Agency</th>
+    <th>Contact</th>
+    <th>Status</th>
+    <th>Documents</th>
+    <th>Actions</th>
+</tr>
+</thead>
+
+<tbody>
+{% for agent in pending_agents %}
+<tr>
+
+<td>#{{ agent.id }}</td>
+
+<td>
+    <b>{{ agent.agency_name }}</b><br>
+    {{ agent.email }}
+</td>
+
+<td>
+    {{ agent.phone }}<br>
+    {{ agent.dts_number }}
+</td>
+
+<td>
+    <span class="badge pending">Pending</span>
+</td>
+
+<td>
+
+<button class="btn btn-gray" onclick="toggleDocs({{ agent.id }})">
+    View Documents
+</button>
+
+<div id="docs-{{ agent.id }}" class="docs-box" style="display:none;">
+
+    {% if agent.cnic_document %}
+        <a href="{{ agent.cnic_document.url }}" target="_blank">📄 CNIC</a><br>
+    {% else %}
+        ❌ CNIC Missing<br>
+    {% endif %}
+
+    {% if agent.license_document %}
+        <a href="{{ agent.license_document.url }}" target="_blank">📄 License</a><br>
+    {% else %}
+        ❌ License Missing<br>
+    {% endif %}
+
+    {% if agent.ntn_document %}
+        <a href="{{ agent.ntn_document.url }}" target="_blank">📄 NTN</a>
+    {% else %}
+        ❌ NTN Missing
+    {% endif %}
+
+</div>
+
+</td>
+
+<td>
+    <a href="{% url 'adminpanel:toggle_agent_verify' agent.id %}" class="btn btn-green">Approve</a>
+    <a href="{% url 'adminpanel:agent_delete' agent.id %}" class="btn btn-red">Reject</a>
+</td>
+
+</tr>
+{% empty %}
+<tr><td colspan="6">No pending agents</td></tr>
+{% endfor %}
+</tbody>
+</table>
+
+</div>
+
+<!-- ================= APPROVED ================= -->
+<div id="approved" class="tab-content">
+
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Agency</th>
+<th>Email</th>
+<th>Status</th>
+</tr>
+</thead>
+
+<tbody>
+{% for agent in approved_agents %}
+<tr>
+<td>#{{ agent.id }}</td>
+<td>{{ agent.agency_name }}</td>
+<td>{{ agent.email }}</td>
+<td><span class="badge approved">Approved</span></td>
+</tr>
+{% empty %}
+<tr><td colspan="4">No approved agents</td></tr>
+{% endfor %}
+</tbody>
+</table>
+
+</div>
+
+<!-- ================= REJECTED ================= -->
+<div id="rejected" class="tab-content">
+
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Agency</th>
+<th>Reason</th>
+<th>Status</th>
+</tr>
+</thead>
+
+<tbody>
+{% for agent in rejected_agents %}
+<tr>
+<td>#{{ agent.id }}</td>
+<td>{{ agent.agency_name }}</td>
+<td>{{ agent.rejection_note }}</td>
+<td><span class="badge rejected">Rejected</span></td>
+</tr>
+{% empty %}
+<tr><td colspan="4">No rejected agents</td></tr>
+{% endfor %}
+</tbody>
+</table>
+
+</div>
+
+</div>
+
+<script>
+function openTab(evt, tab){
+    document.querySelectorAll(".tab-content").forEach(t=>t.classList.remove("active"));
+    document.querySelectorAll(".tab-link").forEach(b=>b.classList.remove("active"));
+
+    document.getElementById(tab).classList.add("active");
+    evt.currentTarget.classList.add("active");
+}
+
+function toggleDocs(id){
+    let el = document.getElementById("docs-"+id);
+    el.style.display = (el.style.display==="none") ? "block" : "none";
+}
+</script>
+
+{% endblock %}

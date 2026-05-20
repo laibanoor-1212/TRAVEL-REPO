@@ -1,0 +1,51 @@
+{% extends 'adminpanel/admin_layout.html' %}
+
+{% block content %}
+
+<div style="padding:20px;">
+
+<h2>👤 User Detail</h2>
+
+<div style="background:white; padding:20px; border-radius:10px; width:60%;">
+
+    <h3>Basic Info</h3>
+
+    <p><b>Email:</b> {{ user.email }}</p>
+    <p><b>Role:</b> {{ user.role }}</p>
+    <p><b>Status:</b>
+        {% if user.is_active %}
+            <span style="color:green;">Active</span>
+        {% else %}
+            <span style="color:red;">Blocked</span>
+        {% endif %}
+    </p>
+
+    <hr>
+
+    <h3>Profile Info</h3>
+
+    <p><b>Full Name:</b> {{ user.profile.full_name|default:"-" }}</p>
+    <p><b>CNIC:</b> {{ user.profile.cnic|default:"-" }}</p>
+    <p><b>Phone:</b> {{ user.profile.phone|default:"-" }}</p>
+    <p><b>City:</b> {{ user.profile.city|default:"-" }}</p>
+
+    <hr>
+
+    <h3>Bank / Payment Info</h3>
+
+    <p><b>Payment Type:</b> {{ user.profile.payout_type|default:"-" }}</p>
+    <p><b>Account Holder:</b> {{ user.profile.acc_holder|default:"-" }}</p>
+    <p><b>Bank Name:</b> {{ user.profile.bank_name|default:"-" }}</p>
+    <p><b>Account No:</b> {{ user.profile.account_no|default:"-" }}</p>
+
+    <br>
+
+    <a href="{% url 'adminpanel:admin_user_list' %}" style="color:blue;">
+        ← Back to Users
+    </a>
+
+</div>
+
+</div>
+
+{% endblock %}

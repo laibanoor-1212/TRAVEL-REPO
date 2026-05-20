@@ -1,0 +1,314 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<title>Safar-e-Haram | Admin Panel</title>
+
+<!-- Bootstrap CSS -->
+<link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+<!-- Bootstrap Icons CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<link rel="stylesheet" href="{% static 'css/commision.css' %}">
+<style>
+:root{
+  --green:#0b7a47;
+  --soft:#eaf6ef;
+  --radius:12px;
+  --muted:#6b7b6b;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar{
+  position:fixed;
+  top:0; left:0;
+  width:250px;
+  height:100vh;
+  background:var(--green);
+  color:#fff;
+  padding:20px 14px;
+  transition:width .3s ease;
+  z-index:1000;
+}
+.sidebar.collapsed{width:78px;}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:30px;
+}
+.logo{
+  width:44px;
+  height:44px;
+  background:#fff;
+  color:var(--green);
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+  font-weight:700;
+}
+.brand h2{
+  font-size:18px;
+  margin:0;
+  color:#c8a34b;
+}
+.brand p{
+  margin:0;
+  font-size:12px;
+  color:#d5eadf;
+}
+
+.sidebar.collapsed .brand div:last-child,
+.sidebar.collapsed .nav-text{
+  display:none;
+}
+
+.nav-link{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:10px 14px;
+  color:#fff;
+  border-radius:10px;
+  margin-bottom:6px;
+  text-decoration:none;
+  transition:.2s;
+}
+.nav-link i{font-size:18px;}
+.nav-link:hover,
+.nav-link.active{
+  background:rgba(255,255,255,.12);
+}
+
+.logout{
+  position:absolute;
+  left:14px;
+  right:14px;
+ 
+  display:flex;
+  gap:12px;
+  align-items:center;
+  padding:10px 14px;
+  background:rgba(255,255,255,.12);
+  color:#fff;
+  border-radius:10px;
+  text-decoration:none;
+}
+
+/* ===== TOPBAR ===== */
+.topbar{
+  position: fixed;
+  top: 0;
+  left: 270px;
+  right: 0;
+  height: 70px;
+  background: #fff;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 14px rgba(0,0,0,.08);
+  transition: left .3s ease;
+  z-index: 900;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.topbar.collapsed{
+  left: 95px;
+}
+
+.menu-btn{
+  background:var(--green);
+  color:#fff;
+  border:0;
+  padding:8px 10px;
+  border-radius:10px;
+  font-size:18px;
+  cursor:pointer;
+}
+
+.topbar-left{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+.topbar-left h5{
+  margin:0;
+  font-weight:600;
+}
+
+/* Fix: Icons visibility */
+.topbar-right i {
+    display: inline-block !important;
+    visibility: visible !important;
+}
+
+/* Dropdown visibility logic */
+.notif-dropdown {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    width: 280px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    display: none; /* JS control karega */
+    z-index: 2000;
+    border: 1px solid #eee;
+}
+
+.notif-item {
+    display: flex;
+    padding: 12px;
+    border-bottom: 1px solid #f5f5f5;
+    transition: 0.3s;
+}
+
+.notif-item:hover { background: #f9fbf9; }
+
+/* Show class for JS */
+.show-notif {
+    display: block !important;
+}
+
+.main{
+  margin-left:250px;
+  /* width:calc(100% - 250px); */
+  padding:25px;
+  padding-top:95px;
+  transition:margin-left .3s ease,width .3s ease;
+}
+
+.main.collapsed{
+  margin-left:78px;
+  /* width:calc(100% - 78px); */
+}
+</style>
+</head>
+
+<body>
+
+<!-- ===== SIDEBAR ===== -->
+<aside id="sidebar" class="sidebar">
+  <div class="brand">
+    <div class="logo">SH</div>
+    <div>
+      <h2>Safar-e-Haram</h2>
+      <p>Admin Panel</p>
+    </div>
+  </div>
+
+  <nav>
+    <a href="{% url 'adminpanel:admin_dashboard' %}" class="nav-link active">
+      <i class="bi bi-speedometer2"></i>
+      <span class="nav-text">Dashboard</span>
+    </a>
+  <a href="" class="nav-link">
+      <i class="bi bi-people"></i>
+      <span class="nav-text">Users</span>
+    </a>
+    <a href="{% url 'adminpanel:agent_requests' %}" class="nav-link">
+      <i class="bi bi-people"></i>
+      <span class="nav-text">Travel Agents</span>
+    </a>
+     <a href="" class="nav-link">
+      <i class="bi bi-briefcase"></i>
+      <span class="nav-text">Packages</span>
+    </a>
+    <a href="" class="nav-link">
+      <i class="bi bi-receipt"></i>
+      <span class="nav-text">Bookings</span>
+    </a>
+    <a href="" class="nav-link">
+    <i class="bi bi-shield-check"></i>
+    <span class="nav-text">Escrow Release</span>
+</a>
+    <a href="" class="nav-link">
+      <i class="bi bi-cash-stack"></i>
+      <span class="nav-text">Earnings and manage_commision</span>
+    </a>
+    <a href="" class="nav-link">
+      <i class="bi bi-exclamation-triangle"></i>
+      <span class="nav-text">Complaints</span>
+    </a>
+     <a href="" class="nav-link">
+      <i class="bi bi-exclamation-triangle"></i>
+      <span class="nav-text">settings</span>
+    </a>
+    <a href="#" class="nav-link">
+    
+      <i class="bi bi-book"></i>
+      <span class="nav-text">Guides</span>
+    </a>
+  </nav>
+
+  <a href="{% url 'logout' %}" class="logout">
+    <i class="bi bi-box-arrow-right"></i>
+    <span class="nav-text">Logout</span>
+  </a>
+</aside>
+
+<!-- ===== TOPBAR ===== -->
+<header id="topbar" class="topbar">
+  <div class="topbar-left">
+    <button id="toggleBtn" class="menu-btn">
+      <i class="bi bi-list"></i>
+    </button>
+    <div>
+      <div class="text-muted small">Welcome back</div>
+      <h5>Admin Dashboard</h5>
+    </div>
+  </div>
+
+  <div class="topbar=right">
+   
+    <div style="display: flex; align-items: center; gap: 25px;">
+                 <a href="" class="home-icon" title="Home"><i class="fas fa-home"></i></a>
+                <div class="notification-wrapper" onclick="toggleNotif()">
+                    <i class="fa-solid fa-bell" style="font-size: 20px; color: #888;"></i>
+                    
+                    <span class="notif-badge">1</span>
+                    
+                    <div class="notif-dropdown" id="notifDropdown">
+                        <div style="padding: 12px; background: #f8faf9; font-weight: bold; border-bottom: 1px solid #eee;">Notifications</div>
+                        <div class="notif-item">
+                            <i class="fa-solid fa-ticket" style="color: var(--primary);"></i>
+                            <div>
+                                <b>New agent added</b><br>
+                                <small>Agent has sent details verify now.</small>
+                            </div>
+                        </div>
+                        <a href="/notif-all/" style="display:block; text-align:center; padding: 10px; font-size: 12px; color: var(--primary); text-decoration:none;">View All</a>
+                    </div>
+                </div>
+  </div>
+</header>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main id="main" class="main">
+  {% block content %}
+  <!-- Page content here -->
+  {% endblock %}
+</main>
+
+<!-- ===== JS ===== -->
+<script>
+const sidebar = document.getElementById("sidebar");
+const topbar  = document.getElementById("topbar");
+const main    = document.getElementById("main");
+const toggle  = document.getElementById("toggleBtn");
+
+toggle.addEventListener("click", () => {
+  sidebar.classList.toggle("collapsed");
+  topbar.classList.toggle("collapsed");
+  main.classList.toggle("collapsed");
+});
+</script>
+
+</body>
+</html>

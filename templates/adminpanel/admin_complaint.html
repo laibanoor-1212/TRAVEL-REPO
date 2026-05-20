@@ -1,0 +1,167 @@
+{% extends 'adminpanel/admin_layout.html' %}
+
+{% block content %}
+<style>
+    
+    .complaint-container {
+        padding: 25px;
+        background-color: #f4f7f6;
+        min-height: 100vh;
+        font-family: sans-serif;
+    }
+
+    .header-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .status-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+
+    .s-card {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .complaint-table-card {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    th {
+        text-align: left;
+        background-color: #f8f9fa;
+        padding: 12px;
+        color: #555;
+        border-bottom: 2px solid #eee;
+    }
+
+    td {
+        padding: 15px 12px;
+        border-bottom: 1px solid #eee;
+        color: #333;
+    }
+
+    /* Badges */
+    .badge {
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+    .bg-pending { background: #fff3cd; color: #c00c15; }
+    .bg-resolved { background: #d4edda; color: #155724; }
+    .bg-escrow { background: #cce5ff; color: #000d85; }
+
+    .action-btn {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 13px;
+        margin-right: 5px;
+    }
+    .view-btn { background: #007bff; color: white; }
+    .refund-btn { background: #dc3545; color: white; }
+</style>
+
+<div class="complaint-container">
+    <div class="header-flex">
+        <h1 style="margin:0; color: #333;">Complaints & Disputes</h1>
+        <div class="filters">
+            <select style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+                <option>All Complaints</option>
+                <option>Pending</option>
+                <option>Refund Disputed</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="status-cards">
+        <div class="s-card" style="border-color: #ffc107;">
+            <small>Active Complaints</small>
+            <div style="font-size: 24px; font-weight: bold;">12</div>
+        </div>
+        <div class="s-card" style="border-color: #dc3545;">
+            <small>Escrow On Hold</small>
+            <div style="font-size: 24px; font-weight: bold;">₹45,000</div>
+        </div>
+        <div class="s-card" style="border-color: #28a745;">
+            <small>Resolved This Month</small>
+            <div style="font-size: 24px; font-weight: bold;">84</div>
+        </div>
+    </div>
+
+    <div class="complaint-table-card">
+        <table>
+            <thead>
+                <tr>
+                    <th>Complaint ID</th>
+                    <th>User (Customer)</th>
+                    <th>Travel Agent</th>
+                    <th>Subject</th>
+                    <th>Status</th>
+                    <th>Escrow Action</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="complaintTableBody">
+                <tr>
+                    <td>#CMP-1021</td>
+                    <td><strong>Ali Khan</strong></td>
+                    <td>Mecca Travels Ltd</td>
+                    <td>Hotel not as described</td>
+                    <td><span class="badge bg-pending">Under Review</span></td>
+                    <td><span class="badge bg-escrow">Funds Locked</span></td>
+                    <td>
+                        <button class="action-btn view-btn" onclick="viewComplaint('1021')">Details</button>
+                        <button class="action-btn refund-btn" onclick="triggerRefund('1021')">Refund</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>#CMP-1022</td>
+                    <td><strong>Sara Ahmed</strong></td>
+                    <td>Umrah Group Pro</td>
+                    <td>Visa processing delay</td>
+                    <td><span class="badge bg-resolved">Resolved</span></td>
+                    <td><small>Paid to Agent</small></td>
+                    <td>
+                        <button class="action-btn view-btn">View</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function viewComplaint(id) {
+        alert("Opening full chat log and evidence for Complaint #" + id);
+        // Here you would typically open a Django URL or a Modal
+    }
+
+    function triggerRefund(id) {
+        if(confirm("Are you sure you want to release Escrow funds back to the User?")) {
+            alert("Processing refund for Complaint #" + id + "... Agent will be notified.");
+            // Logic to call Django Backend to reverse the transaction
+        }
+    }
+</script>
+{% endblock %}
