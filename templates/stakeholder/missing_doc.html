@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <title>Agent Details Portal</title>
+
+    <link rel="stylesheet" href="{% static 'css/agent_details.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+</head>
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <div class="header">
+            <div class="header-icon-container">
+                <i class="fas fa-user-gear"></i>
+            </div>
+            <h2>Agent Details</h2>
+        </div>
+         <div class="alert-box">
+                        <i class="fas fa-triangle-exclamation"></i>
+
+                      
+                        {% if agentkyc.admin_comment %}
+                            <p>
+                                <strong>Admin Message:</strong><br>
+                                <span style="color: #dc2626; display: inline-block; margin-top: 5px;">
+                                    {{ agentkyc.admin_comment }}
+                                </span>
+                            </p>
+                        {% else %}
+                            <p>
+                                <strong>Missing Documents:</strong><br>
+                                Please re-upload correct files to proceed.
+                            </p>
+                        {% endif %}
+
+                    </div>
+
+        <!-- 🔥 MESSAGES -->
+        {% if messages %}
+            <div style="margin-bottom:15px;">
+                {% for message in messages %}
+                    <div style="
+                        padding:12px 15px;
+                        border-radius:8px;
+                        margin-bottom:10px;
+                        font-weight:600;
+                        background:#fef3c7;
+                        color:#92400e;
+                        border:1px solid #fcd34d;
+                    ">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Pura layout ek form ke andar wrap kiya hai taaki files aur data sahi re-submit ho sake -->
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="main-layout">
+
+                <div class="details-section">
+
+                    <div class="input-group">
+                        <label><i class="fas fa-user"></i> Full Name</label>
+                        <input type="text" class="input-field" value="{{ agentkyc.full_name }}" placeholder="Agent's Name" readonly>
+                    </div>
+
+                    <div class="input-group">
+                        <label><i class="fas fa-building"></i> Agency Name</label>
+                        <input type="text" class="input-field" value="{{ agentkyc.agency_name }}" placeholder="Agency Name" readonly>
+                    </div>
+
+                    <div class="input-group">
+                        <label><i class="fas fa-envelope"></i> Email Address</label>
+                        <input type="email" class="input-field" value="{{ agentkyc.email }}" placeholder="Email Address" readonly>
+                    </div>
+
+                    <div class="input-group">
+                        <label><i class="fas fa-phone"></i> Phone Number</label>
+                        <input type="tel" class="input-field" value="{{ agentkyc.phone_number }}" placeholder="Phone Number" readonly>
+                    </div>
+
+                    <div class="input-group">
+                        <label><i class="fas fa-id-card"></i> License Number</label>
+                        <input type="text" class="input-field" value="{{ agentkyc.license_number }}" placeholder="License ID" readonly>
+                    </div>
+
+                </div>
+
+                <div class="status-sidebar">
+
+                   
+
+                </div>
+
+            </div>
+
+            <div class="upload-section">
+
+                <div class="file-drop-zone">
+                    <i class="fas fa-cloud-arrow-up upload-icon"></i>
+                    <p id="file-chosen">Click to re-upload valid document</p>
+
+             
+                    <input type="file" id="fileUpload" name="kyc_document" onchange="updateFileName()" hidden required>
+
+                    <button type="button" class="btn-secondary"
+                            onclick="document.getElementById('fileUpload').click()">
+                        Choose File
+                    </button>
+
+                </div>
+
+                <div class="action-footer">
+                    <button type="submit" class="btn-primary">Submit Now</button>
+                </div>
+ <a href="{% url 'logout' %}" style="color:#d9534f; display:block; margin-top:10px;">
+            Logout
+        </a>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+function updateFileName() {
+    const fileInput = document.getElementById('fileUpload');
+    const fileChosen = document.getElementById('fileChosen');
+    if (fileInput.files.length > 0) {
+        fileChosen.textContent = "Selected: " + fileInput.files[0].name;
+    } else {
+        fileChosen.textContent = "Click to re-upload valid document";
+    }
+}
+</script>
+
+</body>
+</html>

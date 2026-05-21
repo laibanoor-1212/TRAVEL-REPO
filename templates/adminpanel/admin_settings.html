@@ -1,0 +1,162 @@
+{% extends 'adminpanel/admin_layout.html' %}
+
+{% block content %}
+<style>
+    /* Scoped styles to match your UI image precisely */
+    .settings-container {
+        padding: 2rem;
+        background-color: #f9fafb;
+    }
+    .settings-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 1.5rem;
+    }
+    .card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 1.25rem;
+        color: #111827;
+    }
+    .menu-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    .menu-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        background-color: #f3f4f6;
+        border-radius: 6px;
+        text-decoration: none;
+        color: #374151;
+        font-size: 0.95rem;
+        transition: background 0.2s;
+    }
+    .menu-item:hover {
+        background-color:rgb(25, 85, 25);
+        color:white;
+    }
+    .icon-blue { color: #3b82f6; }
+    .icon-red { color: #ef4444; }
+    .badge {
+        background: #fee2e2;
+        color: #b91c1c;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        margin-left: 8px;
+    }
+</style>
+
+<div class="settings-container">
+    <div class="settings-grid">
+
+        <div class="card">
+            <h2 class="card-title">User Management</h2>
+            <div class="menu-list">
+                <a href="" class="menu-item">
+                    <span>Change admin email</span>
+                    <i class="fas fa-envelope icon-blue"></i>
+                </a>
+                <a href="" class="menu-item">
+                    <span>Change password</span>
+                    <i class="fas fa-lock icon-blue"></i>
+                </a>
+                <a href="" class="menu-item">
+                    <span>Approve Travel Agents 
+                        <!-- {% if pending_agents_count > 0 %} -->
+                            <span class="badge"> Pending</span>
+                        <!-- {% endif %} -->
+                    </span>
+                    <i class="fas fa-user-check icon-blue"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Backup & Data</h2>
+            <div class="menu-list">
+                <a href="" class="menu-item">
+                    <span>Download data backup</span>
+                    <i class="fas fa-download icon-blue"></i>
+                </a>
+                <a href="#" class="menu-item">
+                    <span>Export reports</span>
+                    <i class="fas fa-file-alt icon-blue"></i>
+                </a>
+                <a href="#" class="menu-item">
+                    <span>Import customer data</span>
+                    <i class="fas fa-database icon-blue"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Service Management</h2>
+            <div class="menu-list">
+                <a href="#" class="menu-item">
+                    <span>Edit Pricing (Escrow Fee %)</span>
+                    <i class="fas fa-dollar-sign icon-blue"></i>
+                </a>
+                <a href="#" class="menu-item">
+                    <span>Update Hajj/Umrah Guides</span>
+                    <i class="fas fa-bars icon-blue"></i>
+                </a>
+                <a href="#" class="menu-item">
+                    <span>Package Visibility</span>
+                    <i class="fas fa-eye icon-blue"></i>
+                </a>
+                <a href="" class="menu-item">
+                    <span>Add/remove services</span>
+                    <i class="fas fa-edit icon-blue"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Language & Regional</h2>
+            <div class="menu-list">
+                <a href="#" class="menu-item"><span>Language selection</span><i class="fas fa-language icon-blue"></i></a>
+                <a href="#" class="menu-item"><span>Time zone setting</span><i class="fas fa-clock icon-blue"></i></a>
+                <a href="#" class="menu-item"><span>Date & time format</span><i class="fas fa-calendar icon-blue"></i></a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Admin Privacy Controls</h2>
+            <div class="menu-list">
+                <a href="#" class="menu-item"><span>Two-step authentication</span><i class="fas fa-key icon-blue"></i></a>
+                <a href="" class="menu-item">
+                    <span>Escrow Activity Logs</span>
+                    <i class="fas fa-shield-alt icon-blue"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Account Deactivation</h2>
+            <div class="menu-list">
+                <a href="#" class="menu-item"><span>Deactivate account</span><i class="fas fa-user-slash"></i></a>
+                <form action="" method="POST" onsubmit="return confirm('Are you sure?')">
+                    {% csrf_token %}
+                    <button type="submit" class="menu-item w-full" style="width: 100%; border: none; cursor: pointer;">
+                        <span class="text-red-600 font-bold">Permanently delete account</span>
+                        <i class="fas fa-trash icon-red"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

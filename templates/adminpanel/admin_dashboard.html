@@ -1,0 +1,256 @@
+{% extends "adminpanel/admin_layout.html" %}
+{% load static %}
+
+{% block content %}
+
+<style>
+:root{
+  --green:#0b7a47;
+  --green-light:#eaf7f0;
+}
+
+/* ===== STATS ===== */
+.grid-3{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+@media(max-width:992px){
+  .grid-3{grid-template-columns:repeat(2,1fr);}
+}
+
+.grid-2{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
+@media(max-width:992px){
+  .grid-2{grid-template-columns:1fr;}
+}
+
+.stat-card{
+  background:linear-gradient(135deg,var(--green-light),#fff);
+  /* border-left:4px solid var(--green); */
+  border-radius:10px;
+  padding:16px;
+  display:flex;
+  margin-bottom: 10px;
+  gap:12px;
+  margin-top: 20px;
+  align-items:center;
+  box-shadow:0 6px 16px rgba(0,0,0,.05);
+}
+
+.stat-icon{
+  width:44px;
+  height:44px;
+  border-radius:8px;
+  background:#fff;
+  display:grid;
+  place-items:center;
+  color:var(--green);
+  font-size:18px;
+  border:1px solid rgba(11,122,71,.15);
+}
+
+.stat-title{
+  font-size:13px;
+  color:#56725f;
+}
+.stat-value{
+  font-weight:700;
+  font-size:20px;
+}
+
+/* ===== COMMON CARD ===== */
+.card{
+  background:#fff;
+  border-radius:12px;
+  padding:18px;
+  box-shadow:0 8px 22px rgba(0,0,0,.06);
+}
+
+.section-title{
+  font-weight:600;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:14px;
+}
+
+/* ===== ADMIN ACTIONS ===== */
+.admin-actions{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
+@media(max-width:576px){
+  .admin-actions{grid-template-columns:1fr;}
+}
+
+.admin-actions a{
+  text-decoration:none !important;
+  color:inherit !important;
+}
+
+.action-card{
+  border:1px solid rgba(11,122,71,.15);
+  border-radius:10px;
+  padding:14px;
+  display:flex;
+  gap:12px;
+  align-items:center;
+  transition:.25s ease;
+  cursor:pointer;
+  color:#1a1a1a;
+}
+
+.action-card:hover{
+  background:var(--green-light);
+  transform:translateY(-2px);
+}
+
+.action-card:hover .action-title{
+  color:var(--green);
+}
+
+.action-icon{
+  width:42px;
+  height:42px;
+  border-radius:8px;
+  background:var(--green);
+  color:#fff;
+  display:grid;
+  place-items:center;
+  font-size:18px;
+}
+
+.action-title{
+  font-weight:600;
+  font-size:15px;
+}
+.action-desc{
+  font-size:13px;
+  color:#6b7b6b;
+}
+
+/* ===== RECENT ===== */
+.recent-list li{
+  padding:8px 0;
+  border-bottom:1px solid rgba(0,0,0,.06);
+  font-size:14px;
+}
+</style>
+
+<!-- ===== TOP STATS (3 + 2 layout) ===== -->
+<section class="grid-3 mb-3">
+  <div class="stat-card">
+    <div class="stat-icon"><i class="bi bi-patch-check"></i></div>
+    <div>
+      <div class="stat-value">{{ verified_agents|default:"12" }}</div>
+      <div class="stat-title">Verified Agents</div>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon"><i class="bi bi-person-exclamation"></i></div>
+    <div>
+      <div class="stat-value">{{ pending_agents|default:"3" }}</div>
+      <div class="stat-title">Pending Verifications</div>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon"><i class="bi bi-briefcase"></i></div>
+    <div>
+      <div class="stat-value">{{ active_packages|default:"28" }}</div>
+      <div class="stat-title">Active Packages</div>
+    </div>
+  </div>
+</section>
+
+<section class="grid-2 mb-4">
+  <div class="stat-card">
+    <div class="stat-icon"><i class="bi bi-receipt"></i></div>
+    <div>
+      <div class="stat-value">{{ pending_bookings|default:"9" }}</div>
+      <div class="stat-title">Pending Bookings</div>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon"><i class="bi bi-safe"></i></div>
+    <div>
+      <div class="stat-value">Rs {{ escrow_balance|default:"250,000" }}</div>
+      <div class="stat-title">Escrow Balance</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ACTIONS + ACTIVITY ===== -->
+<section class="row g-3">
+
+  <!-- ADMIN ACTIONS -->
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="section-title">
+        <i class="bi bi-shield-check"></i> Admin Actions
+      </div>
+
+      <div class="admin-actions">
+
+        <a href="{% url 'adminpanel:agent_requests' %}" class="action-card">
+          <div class="action-icon"><i class="bi bi-person-check"></i></div>
+          <div>
+            <div class="action-title">Verify Travel Agents</div>
+            <div class="action-desc">Approve or block agent accounts</div>
+          </div>
+        </a>
+
+        <a href="" class="action-card">
+          <div class="action-icon"><i class="bi bi-list-check"></i></div>
+          <div>
+            <div class="action-title">Manage Bookings</div>
+            <div class="action-desc">Confirm or cancel bookings</div>
+          </div>
+        </a>
+
+        <a href="" class="action-card">
+          <div class="action-icon"><i class="bi bi-cash-stack"></i></div>
+          <div>
+            <div class="action-title">Release Payments</div>
+            <div class="action-desc">Control escrow payments</div>
+          </div>
+        </a>
+
+        <a href="" class="action-card">
+          <div class="action-icon"><i class="bi bi-book"></i></div>
+          <div>
+            <div class="action-title">Manage Guides</div>
+            <div class="action-desc">Edit Hajj, Umrah & Ziyarat guides</div>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- RECENT ACTIVITY -->
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="section-title">
+        <i class="bi bi-clock-history"></i> Recent Activity
+      </div>
+
+      <ul class="list-unstyled recent-list mb-0">
+        <li>Agent <strong>Al-Haram Travels</strong> submitted documents</li>
+        <li>Booking <strong>#1021</strong> marked completed</li>
+        <li>Payment released to <strong>Al-Haram Travels</strong></li>
+        <li>Package removed due to incorrect info</li>
+      </ul>
+    </div>
+  </div>
+
+</section>
+
+{% endblock %}

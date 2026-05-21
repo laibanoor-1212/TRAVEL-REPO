@@ -1,0 +1,15 @@
+{% extends "adminpanel/admin_layout.html" %}
+
+{% block content %}
+
+<h2>{{ agent.agency_name }}</h2>
+
+<p>Email: {{ agent.email }}</p>
+<p>Phone: {{ agent.phone }}</p>
+<p>License #: {{ agent.license_number }}</p>
+<p>NTN #: {{ agent.ntn_number }}</p>
+<p>Account #: {{ agent.account_number }}</p>
+
+<a href="{% url 'adminpanel:travel_agent_list' %}">Back</a>
+
+{% endblock %}

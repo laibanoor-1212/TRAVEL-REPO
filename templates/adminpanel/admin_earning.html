@@ -1,0 +1,94 @@
+{% extends 'adminpanel/admin_layout.html' %}
+{% load static %}
+
+{% block title %}Earnings & Commission | Safar-e-Haram{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/commission.css' %}">
+
+<div class="dashboard-wrapper">
+
+    <div class="card">
+        <h3>Set Global Commission (%)</h3>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Commission Percentage</label>
+                <input type="number" name="commission" value="10">
+            </div>
+            <button class="btn-save">Save Commission</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3>Total Earnings</h3>
+        <h2>₹ 125,000</h2>
+    </div>
+
+    <div class="card">
+        <h3>Bookings & Status</h3>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Customer</th>
+                        <th>Package</th>
+                        <th>Amount</th>
+                        <th>Commission</th>
+                        <th>Admin Earnings</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>TRV-001</td>
+                        <td>Ahmed Khan</td>
+                        <td>VIP Hajj Package</td>
+                        <td>450000</td>
+                        <td>10%</td>
+                        <td>45000</td>
+                        <td><span class="status-confirmed">Confirmed</span></td>
+                    </tr>
+
+                    <tr>
+                        <td>TRV-002</td>
+                        <td>Sara Ali</td>
+                        <td>Economy Umrah</td>
+                        <td>120000</td>
+                        <td>10%</td>
+                        <td>12000</td>
+                        <td><span class="status-pending">Pending</span></td>
+                    </tr>
+
+                    <tr>
+                        <td>TRV-003</td>
+                        <td>Khalid Raza</td>
+                        <td>Deluxe Umrah</td>
+                        <td>185000</td>
+                        <td>10%</td>
+                        <td>18500</td>
+                        <td><span class="status-cancelled">Cancelled</span></td>
+                    </tr>
+
+                    <tr>
+                        <td>TRV-004</td>
+                        <td>Usman Ali</td>
+                        <td>VIP Umrah</td>
+                        <td>250000</td>
+                        <td>10%</td>
+                        <td>25000</td>
+                        <td><span class="status-confirmed">Confirmed</span></td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

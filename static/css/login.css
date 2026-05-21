@@ -195,3 +195,186 @@ nav, .navbar, footer {
     .glass-login-box { margin: 20px; }
     .dynamic-overlay { background: rgba(0,0,0,0.6); }
 }
+
+/* ==========================================
+   Spacious Box & Remember Me Additions
+   ========================================== */
+
+/* Glass Box ki width thodi barha di hai aur standard constraints lagaye hain */
+.glass-login-box {
+    width: 100%;
+    max-width: 460px; /* Pehle agar 380px-400px tha, toh ab thoda khula (460px) kar diya hai */
+    padding: 40px;    /* Inner padding ko set kiya taake layout me saans lene ki jagah ho */
+    box-sizing: border-box;
+}
+
+/* Flex row jo Remember me aur Forgot password ko ek hi line me manage karegi */
+.auth-options-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: -8px 0 24px 0; /* Aligning properly between password field and Sign In button */
+    width: 100%;
+}
+
+/* Custom Styled Checkbox Container */
+.remember-me-label {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    font-size: 0.9rem;
+    color: #cbd5e1; /* Smooth text color for glassmorphism */
+}
+
+/* Original Checkbox ko hide kiya custom look dene ke liye */
+.remember-me-label input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+/* Custom Checkbox Design */
+.custom-checkbox {
+    position: relative;
+    height: 18px;
+    width: 18px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    margin-right: 8px;
+    transition: all 0.2s ease;
+}
+
+/* Hover effect on Checkbox */
+.remember-me-label:hover input ~ .custom-checkbox {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Checked state color (Emerald theme ke mutabiq) */
+.remember-me-label input:checked ~ .custom-checkbox {
+    background-color: #10b981; /* Premium Emerald/Green color */
+    border-color: #10b981;
+}
+
+/* Checkmark Tick inside box */
+.custom-checkbox::after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 5px;
+    top: 2px;
+    width: 4px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.remember-me-label input:checked ~ .custom-checkbox::after {
+    display: block;
+}
+
+.checkbox-text {
+    font-weight: 500;
+}
+
+/* Reset forgot-area padding/margin to prevent styling clash */
+.forgot-area {
+    margin: 0;
+}
+
+.forgot-area a {
+    color: #cbd5e1;
+    font-size: 0.9rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.forgot-area a:hover {
+    color: #10b981; /* Emerald color hover */
+    text-decoration: underline;
+}
+
+/* ==========================================
+   Premium Google & Divider Styling 
+   ========================================== */
+.auth-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 24px 0;
+    position: relative;
+    width: 100%;
+}
+
+.auth-divider::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.25), transparent);
+}
+
+.divider-text {
+    background: rgba(255, 255, 255, 0.05); 
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 0 16px;
+    color: #cbd5e1;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    z-index: 1;
+    border-radius: 20px;
+}
+
+.google-auth-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 50px;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    margin-bottom: 24px;
+    box-sizing: border-box;
+}
+
+.google-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+}
+
+.google-button-text {
+    color: #1e293b;
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: 'Inter', -apple-system, sans-serif;
+    letter-spacing: 0.2px;
+}
+
+.google-auth-button:hover {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
+    transform: translateY(-1.5px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.google-auth-button:active {
+    transform: translateY(0.5px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    background-color: #f1f5f9;
+}

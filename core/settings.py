@@ -43,18 +43,41 @@ INSTALLED_APPS = [
     'stakeholder',
     'adminpanel',
     'base',
+
+    'django.contrib.sites',
+    #allauth libraries
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+AUTHENTICATION_BACKENDS =[
+    'django.contrib.auth.backends.ModelBackend',# standard login
+    'allauth.account.auth_backends.AuthenticationBackend' #google login
+]
 
+ACCOUNT_LOGIN_METHODS = {'email'}
+
+ACCOUNT_SIGNUP_FIELDS = [
+    'email*',
+    'password1*',
+    'password2*',
+]
+
+
+LOGIN_REDIRECT_URL = 'stakeholder_dashboard'
+SITE_ID = 1
 ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [
@@ -81,7 +104,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'practise_db',
+        'NAME': 'travel_db',
         'USER': 'postgres',
         'PASSWORD': 'root',
         'HOST': 'localhost',
@@ -90,6 +113,8 @@ DATABASES = {
 }
 
 AUTH_USER_MODEL='accounts.CustomUser'
+
+
 
 
 # Password validation
@@ -136,3 +161,9 @@ STATICFILES_DIRS = [
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+SOCIALACCOUNT_ADAPTER = 'accounts.adapters.CustomSocialAccountAdapter'
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

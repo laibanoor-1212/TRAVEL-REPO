@@ -1,0 +1,199 @@
+{% extends "adminpanel/admin_layout.html" %}
+{% block title %}Bookings Management | Safar-e-Haram{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --primary-green: #0b7a47; 
+        --pure-white: #ffffff;
+        --danger-red: #d63031;
+        --info-blue: #0984e3;
+        --warning-orange: #f39c12;
+    }
+
+    /* Tabs Styling */
+    .tab-menu { display: flex; gap: 5px; margin-bottom: 25px; border-bottom: 2px solid #eee; }
+    .tab-link {
+        padding: 14px 24px; cursor: pointer; background: none; border: none;
+        font-weight: 600; color: #777; transition: 0.3s; position: relative;
+    }
+    .tab-link.active { color: var(--primary-green); }
+    .tab-link.active::after {
+        content: ''; position: absolute; bottom: -2px; left: 0; width: 100%;
+        height: 3px; background: var(--primary-green);
+    }
+
+    /* Table Container */
+    .table-wrapper { background: var(--pure-white); border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); overflow-x: auto; margin-bottom: 30px; }
+    .data-table { width: 100%; border-collapse: collapse; text-align: left; min-width: 1100px; }
+    .data-table th { background: var(--primary-green); color: white; padding: 15px; font-size: 11px; text-transform: uppercase; }
+    .data-table td { padding: 15px; border-bottom: 1px solid #f1f1f1; font-size: 13px; vertical-align: middle; }
+
+    /* Status Badges */
+    .badge { padding: 5px 10px; border-radius: 50px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+    .bg-progress { background: #fff3cd; color: #856404; }
+    .bg-completed { background: #d4edda; color: #155724; }
+    .bg-cancelled { background: #f8d7da; color: #721c24; }
+
+    /* Action Buttons */
+    .btn-action {
+        padding: 7px 12px; border-radius: 6px; font-size: 11px; font-weight: 700;
+        text-decoration: none; border: none; cursor: pointer; color: white; transition: 0.2s;
+        display: inline-block;
+    }
+    .btn-blue { background: var(--info-blue); }
+    .btn-red { background: var(--danger-red); }
+    .btn-orange { background: var(--warning-orange); }
+
+    .small-id { font-size: 11px; color: #666; display: block; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+</style>
+
+<div class="container" style="padding: 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+        <h2 style="color: var(--primary-green); font-weight: 700;">Booking Control Center</h2>
+        <input type="text" id="bookingSearch" placeholder="Search ID or User..." onkeyup="searchBookings()" 
+               style="padding: 10px 18px; border-radius: 25px; border: 1px solid #ddd; width: 280px; outline: none;">
+    </div>
+
+    <div class="tab-menu">
+        <button class="tab-link active" onclick="openTab(event, 'inProgress')">In Progress</button>
+        <button class="tab-link" onclick="openTab(event, 'completed')">Completed</button>
+        <button class="tab-link" onclick="openTab(event, 'cancelled')">Cancelled</button>
+    </div>
+
+    <div id="inProgress" class="tab-content active">
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>User & Agent</th>
+                        <th>Amount</th>
+                        <th>Confirmation</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>#BK-501</b><br><span class="small-id">User ID: #U-12</span></td>
+                        <td><strong>Ali Ahmed</strong><br><small>Agent: Karwan Travels</small></td>
+                        <td><b>Rs. 120,000</b></td>
+                        <td><small>User: ✓ | Agent: !</small></td>
+                        <td><span class="badge bg-progress">In Progress</span></td>
+                        <td>
+                            <div style="display: flex; gap: 5px;">
+                                <button class="btn-action btn-blue">View</button>
+                                <button class="btn-action btn-red" onclick="return confirm('Cancel this booking?')">Cancel</button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% for booking in in_progress_bookings %}
+                    <tr>
+                        <td><b>#{{ booking.id }}</b><br><span class="small-id">User: #{{ booking.user.id }}</span></td>
+                        <td><strong>{{ booking.user.first_name }}</strong><br><small>Agent: {{ booking.package.agency.agency_name }}</small></td>
+                        <td><b>Rs. {{ booking.total_amount }}</b></td>
+                        <td><small>User: {% if booking.user_confirmed %}✓{% else %}!{% endif %} | Agent: {% if booking.agent_confirmed %}✓{% else %}!{% endif %}</small></td>
+                        <td><span class="badge bg-progress">In Progress</span></td>
+                        <td>
+                            <div style="display: flex; gap: 5px;">
+                                <a href="{% url 'adminpanel:booking_view' booking.id %}" class="btn-action btn-blue">View</a>
+                                <a href="{% url 'adminpanel:cancel_booking' booking.id %}" class="btn-action btn-red" onclick="return confirm('Are you sure?')">Cancel</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="completed" class="tab-content">
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>User & Agent</th>
+                        <th>Amount Released</th>
+                        <th>Completion Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>#BK-402</b></td>
+                        <td><strong>Sara Khan</strong><br><small>Agent: Al-Makkah</small></td>
+                        <td><b>Rs. 250,000</b></td>
+                        <td>12 Mar 2026</td>
+                        <td><span class="badge bg-completed">Completed</span></td>
+                        <td><button class="btn-action btn-blue">View History</button></td>
+                    </tr>
+                    {% for booking in completed_bookings %}
+                    <tr>
+                        <td><b>#{{ booking.id }}</b></td>
+                        <td><strong>{{ booking.user.first_name }}</strong></td>
+                        <td><b>Rs. {{ booking.total_amount }}</b></td>
+                        <td>{{ booking.updated_at|date:"d M Y" }}</td>
+                        <td><span class="badge bg-completed">Completed</span></td>
+                        <td><button class="btn-action btn-blue">View</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="cancelled" class="tab-content">
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>User</th>
+                        <th>Package</th>
+                        <th>Cancellation Date</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>#BK-105</b></td>
+                        <td>Kamran Zafar</td>
+                        <td>VIP Umrah</td>
+                        <td>05 Apr 2026</td>
+                        <td><small>Payment Timeout</small></td>
+                        <td><span class="badge bg-cancelled">Cancelled</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) { tabcontent[i].style.display = "none"; }
+        tablinks = document.getElementsByClassName("tab-link");
+        for (i = 0; i < tablinks.length; i++) { tablinks[i].className = tablinks[i].className.replace(" active", ""); }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+    function searchBookings() {
+        var filter = document.getElementById("bookingSearch").value.toUpperCase();
+        var tr = document.querySelectorAll(".data-table tr");
+        for (var i = 1; i < tr.length; i++) {
+            var text = tr[i].textContent || tr[i].innerText;
+            tr[i].style.display = text.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Under Review</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/request_pending.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<div class="card">
+
+    <!-- 🔥 MESSAGES BLOCK ADDED -->
+    {% if messages %}
+        <div style="margin-bottom:15px;">
+            {% for message in messages %}
+                <div style="
+                    padding:10px 15px;
+                    border-radius:8px;
+                    margin-bottom:10px;
+                    font-weight:600;
+                    background:#fff8e1;
+                    color:#8a6d3b;
+                    border:1px solid #ffe08a;
+                ">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="status-icon-container">
+        <i class="fas fa-hourglass-half"></i>
+    </div>
+    
+    <h2>Request Under Review</h2>
+    <p>Please wait while we review your submission. This process usually takes a few days.</p>
+
+    <div class="action-buttons">
+        <button class="btn-contact">
+            <i class="fas fa-headset"></i> Contact Us for Details
+        </button>
+
+        <a href="{% url 'logout' %}" style="color:#d9534f; display:block; margin-top:10px;">
+            Logout
+        </a>
+    </div>
+
+</div>
+
+</body>
+</html>

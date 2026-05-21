@@ -1,0 +1,213 @@
+{% extends "adminpanel/admin_layout.html" %}
+{% block title %}Package Monitoring | Safar-e-Haram{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --primary-green: #0b7a47; 
+        --pure-white: #ffffff;
+        --danger-red: #d63031;
+        --warning-orange: #f39c12;
+        --muted-gray: #636e72;
+        --info-blue: #0984e3;
+    }
+
+    /* Tabs Styling */
+    .tab-menu { display: flex; gap: 5px; margin-bottom: 25px; border-bottom: 2px solid #eee; }
+    .tab-link {
+        padding: 14px 24px; cursor: pointer; background: none; border: none;
+        font-weight: 600; color: #777; transition: 0.3s; position: relative;
+    }
+    .tab-link.active { color: var(--primary-green); }
+    .tab-link.active::after {
+        content: ''; position: absolute; bottom: -2px; left: 0; width: 100%;
+        height: 3px; background: var(--primary-green);
+    }
+
+    /* Table Styling */
+    .table-wrapper { background: var(--pure-white); border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); overflow: hidden; }
+    .data-table { width: 100%; border-collapse: collapse; text-align: left; }
+    .data-table th { background: var(--primary-green); color: white; padding: 15px; font-size: 12px; text-transform: uppercase; }
+    .data-table td { padding: 15px; border-bottom: 1px solid #f1f1f1; font-size: 13px; color: #333; vertical-align: middle; }
+
+    /* Badges */
+    .badge { padding: 4px 10px; border-radius: 50px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+    .badge-vip { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+    .badge-economy { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+    .badge-active { background: #d4edda; color: #155724; }
+    .badge-blocked { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+    /* Action Buttons */
+    .btn-action {
+        padding: 8px 12px; border-radius: 6px; font-size: 11px; font-weight: 600;
+        text-decoration: none; border: none; cursor: pointer; color: white; transition: 0.2s; display: inline-block;
+        text-align: center;
+    }
+    .btn-blue { background: var(--info-blue); }
+    .btn-red { background: var(--danger-red); }
+    .btn-orange { background: var(--warning-orange); }
+    .btn-green { background: var(--primary-green); }
+
+    .small-info { font-size: 11px; color: #666; display: block; line-height: 1.4; }
+
+    /* Tab Content Visibility */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+</style>
+
+<div class="container" style="padding: 20px;">
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+        <h2 style="color: var(--primary-green); font-weight: 700;">Package Monitoring Portal</h2>
+        <div style="display: flex; gap: 10px;">
+            <select id="typeFilter" onchange="filterByType()" style="padding: 10px; border-radius: 20px; border: 1px solid #ddd; outline: none;">
+                <option value="all">All Types</option>
+                <option value="VIP">VIP</option>
+                <option value="Economy">Economy</option>
+            </select>
+            <input type="text" id="pkgSearch" placeholder="Search Package, Agency or Email..." onkeyup="searchPackages()" 
+                   style="padding: 10px 18px; border-radius: 25px; border: 1px solid #ddd; width: 280px; outline: none;">
+        </div>
+    </div>
+
+    <div class="tab-menu">
+        <button class="tab-link active" onclick="openTab(event, 'activeTab')">Live Packages</button>
+        <button class="tab-link" onclick="openTab(event, 'blockedTab')">Blocked / Inactive</button>
+    </div>
+
+    <div id="activeTab" class="tab-content active">
+        <div class="table-wrapper">
+            <table class="data-table" id="packageTable">
+                <thead>
+                    <tr>
+                        <th>Package ID</th>
+                        <th>Package & Type</th>
+                        <th>Agency Details</th>
+                        <th>Dates (S - E)</th>
+                        <th>Status</th>
+                        <th>Admin Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-type="VIP">
+                        <td><b>#PKG-990</b></td>
+                        <td><strong>Executive Hajj 2026</strong><br><span class="badge badge-vip">VIP</span></td>
+                        <td><b>Karwan Travels</b><br><span class="small-info">info@karwan.com</span></td>
+                        <td><span class="small-info">S: 15 Jun 26</span><span class="small-info">E: 30 Jun 26</span></td>
+                        <td><span class="badge badge-active">Active</span></td>
+                        <td>
+                            <div style="display: flex; gap: 5px;">
+                                <button class="btn-action btn-blue">View Details</button>
+                                <button class="btn-action btn-orange">Block</button>
+                                <button class="btn-action btn-red">Remove</button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% for pkg in active_packages %}
+                    <tr data-type="{{ pkg.package_type }}">
+                        <td><b>#{{ pkg.id }}</b></td>
+                        <td><strong>{{ pkg.title }}</strong><br><span class="badge {% if pkg.package_type == 'VIP' %}badge-vip{% else %}badge-economy{% endif %}">{{ pkg.package_type }}</span></td>
+                        <td><b>{{ pkg.agency.agency_name }}</b><br><span class="small-info">{{ pkg.agency.email }}</span></td>
+                        <td><span class="small-info">S: {{ pkg.start_date|date:"d M y" }}</span><span class="small-info">E: {{ pkg.end_date|date:"d M y" }}</span></td>
+                        <td><span class="badge badge-active">Active</span></td>
+                        <td>
+                            <div style="display: flex; gap: 5px;">
+                                <a href="{% url 'adminpanel:package_detail' pkg.id %}" class="btn-action btn-blue">View Details</a>
+                                <a href="{% url 'adminpanel:block_package' pkg.id %}" class="btn-action btn-orange">Block</a>
+                                <a href="{% url 'adminpanel:remove_package' pkg.id %}" class="btn-action btn-red" onclick="return confirm('Delete permanently?')">Remove</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="blockedTab" class="tab-content">
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Package ID</th>
+                        <th>Package Name</th>
+                        <th>Agency Details</th>
+                        <th>Reason / Status</th>
+                        <th>Admin Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>#PKG-404</b></td>
+                        <td>Economy Umrah (Old)</td>
+                        <td><b>Fake Travels</b><br><small>spam@travel.com</small></td>
+                        <td><span class="badge badge-blocked">Blocked</span></td>
+                        <td>
+                            <div style="display: flex; gap: 5px;">
+                                <button class="btn-action btn-blue">View</button>
+                                <button class="btn-action btn-green">Unblock</button>
+                                <button class="btn-action btn-red">Remove</button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% for pkg in blocked_packages %}
+                    <tr>
+                        <td><b>#{{ pkg.id }}</b></td>
+                        <td>{{ pkg.title }}</td>
+                        <td><b>{{ pkg.agency.agency_name }}</b><br><small>{{ pkg.agency.email }}</small></td>
+                        <td><span class="badge badge-blocked">Blocked</span></td>
+                        <td>
+                            <div style="display: flex; gap: 5px;">
+                                <a href="{% url 'adminpanel:package_detail' pkg.id %}" class="btn-action btn-blue">View</a>
+                                <a href="{% url 'adminpanel:unblock_package' pkg.id %}" class="btn-action btn-green">Unblock</a>
+                                <a href="{% url 'adminpanel:remove_package' pkg.id %}" class="btn-action btn-red">Remove</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        // Saaray tab content ko chupa do
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+            tabcontent[i].classList.remove("active");
+        }
+        // Saaray buttons se 'active' class hata do
+        tablinks = document.getElementsByClassName("tab-link");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        // Jo tab select hua hai usay dikhao
+        document.getElementById(tabName).style.display = "block";
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.className += " active";
+    }
+
+    function filterByType() {
+        var filter = document.getElementById("typeFilter").value.toUpperCase();
+        var tr = document.getElementById("packageTable").getElementsByTagName("tr");
+        for (var i = 1; i < tr.length; i++) {
+            var type = tr[i].getAttribute("data-type") ? tr[i].getAttribute("data-type").toUpperCase() : "";
+            tr[i].style.display = (filter === "ALL" || type === filter) ? "" : "none";
+        }
+    }
+
+    function searchPackages() {
+        var filter = document.getElementById("pkgSearch").value.toUpperCase();
+        var tr = document.querySelectorAll(".data-table tr");
+        for (var i = 1; i < tr.length; i++) {
+            var text = tr[i].textContent || tr[i].innerText;
+            tr[i].style.display = text.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+        }
+    }
+</script>
+{% endblock %}
