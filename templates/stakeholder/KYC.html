@@ -1,0 +1,768 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+
+<style>
+
+:root{
+    --primary-green:#0b7a47;
+    --danger:#dc3545;
+    --warning:#f59e0b;
+    --success:#16a34a;
+    --hajj-blue:#1a5276;
+    --ziyarat-purple:#712cf9;
+    --border-color:#d1d9e0;
+    --bg-light:#f8faf9;
+}
+
+.profile-card{
+    background:#fff;
+    max-width:1000px;
+    margin:30px auto;
+    border-radius:15px;
+    box-shadow:0 12px 45px rgba(0,0,0,0.1);
+    border:1px solid var(--border-color);
+    overflow:hidden;
+}
+
+.form-header{
+    background:var(--primary-green);
+    padding:30px;
+    color:white;
+    text-align:center;
+}
+
+.form-body{
+    padding:40px;
+}
+
+.section-title{
+    font-size:15px;
+    font-weight:800;
+    color:#333;
+    text-transform:uppercase;
+    margin:35px 0 15px;
+    border-bottom:2px solid var(--bg-light);
+    padding-bottom:8px;
+}
+
+.grid-3{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:20px;
+}
+
+.grid-2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+.form-group{
+    margin-bottom:15px;
+}
+
+.form-group label{
+    display:block;
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:6px;
+}
+
+.form-control{
+    width:100%;
+    padding:12px;
+    border:1px solid var(--border-color);
+    border-radius:8px;
+}
+
+.scan-card{
+    border:2px dashed #ccd3d9;
+    padding:15px;
+    border-radius:10px;
+    background:#fcfdfe;
+    text-align:center;
+    position:relative;
+    margin-top:10px;
+}
+
+.scan-card input[type="file"]{
+    position:absolute;
+    width:100%;
+    height:100%;
+    top:0;
+    left:0;
+    opacity:0;
+    cursor:pointer;
+}
+
+.finance-box{
+    background:#f9f9f9;
+    padding:15px;
+    border-radius:10px;
+    border:1px solid #eee;
+}
+
+.radio-group{
+    display:flex;
+    gap:20px;
+    background:#f4f6f8;
+    padding:12px;
+    border-radius:8px;
+}
+
+.btn-submit{
+    background:var(--primary-green);
+    color:white;
+    padding:18px;
+    border:none;
+    border-radius:10px;
+    font-weight:700;
+    cursor:pointer;
+    width:100%;
+    margin-top:40px;
+}
+
+.status-box{
+    padding:18px;
+    border-radius:12px;
+    margin-bottom:25px;
+}
+
+.status-pending{
+    background:#fff8e6;
+}
+
+.status-approved{
+    background:#ecfdf3;
+}
+
+.status-rejected{
+    background:#fef2f2;
+}
+
+.status-rollback{
+    background:#eef4ff;
+}
+
+</style>
+
+<div class="profile-card">
+
+    <div class="form-header">
+
+        <h2>
+            Agent Verification Portal
+        </h2>
+
+        <p>
+            Provide your legal & financial credentials
+        </p>
+
+    </div>
+
+    <div class="form-body">
+
+        {% if agentkyc %}
+
+            {% if agentkyc.kyc_status == 'pending' %}
+
+                <div class="status-box status-pending">
+
+                    <strong>Pending Review</strong><br>
+
+                    Your KYC request is under review.
+
+                </div>
+
+            {% endif %}
+
+            {% if agentkyc.kyc_status == 'approved' %}
+
+                <div class="status-box status-approved">
+
+                    <strong>Approved</strong><br>
+
+                    Your KYC has been approved.
+
+                </div>
+
+            {% endif %}
+
+            {% if agentkyc.kyc_status == 'rollback' %}
+
+                <div class="status-box status-rollback">
+
+                    <strong>Rollback</strong><br>
+
+                    {{ agentkyc.admin_comment }}
+
+                </div>
+
+            {% endif %}
+
+            {% if agentkyc.kyc_status == 'rejected' %}
+
+                <div class="status-box status-rejected">
+
+                    <strong>Rejected</strong><br>
+
+                    {{ agentkyc.admin_comment }}
+
+                </div>
+
+            {% endif %}
+
+        {% endif %}
+
+        {% if not agentkyc or agentkyc.kyc_status != 'approved' %}
+
+        <form method="POST" enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            <!-- BASIC INFO -->
+
+            <div class="section-title">
+                Agency Information
+            </div>
+
+            <div class="grid-2">
+
+                <div class="form-group">
+
+                    <label>Agency Name</label>
+
+                    <input type="text"
+                           name="agency_name"
+                           class="form-control"
+                           value="{{ agentkyc.agency_name|default:'' }}">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Owner Name</label>
+
+                    <input type="text"
+                           name="owner_name"
+                           class="form-control"
+                           value="{{ agentkyc.owner_name|default:'' }}">
+
+                </div>
+
+            </div>
+
+            <div class="grid-2">
+
+                <div class="form-group">
+
+                    <label>Phone Number</label>
+
+                    <input type="text"
+                           name="phone_no"
+                           class="form-control"
+                           value="{{ agentkyc.phone_no|default:'' }}">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>WhatsApp Number</label>
+
+                    <input type="text"
+                           name="whatsapp_no"
+                           class="form-control"
+                           value="{{ agentkyc.whatsapp_no|default:'' }}">
+
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Office Address</label>
+
+                <textarea name="office_address"
+                          class="form-control"
+                          rows="3">{{ agentkyc.office_address|default:'' }}</textarea>
+
+            </div>
+
+            <!-- SERVICES -->
+
+            <div class="section-title">
+                Services
+            </div>
+
+            <div style="display:flex;gap:30px;">
+
+                <label>
+
+                    <input type="checkbox"
+                           id="chkHajj"
+                           name="is_hajj"
+                           {% if agentkyc.is_hajj %}checked{% endif %}>
+
+                    Hajj & Umrah
+
+                </label>
+
+                <label>
+
+                    <input type="checkbox"
+                           id="chkZiyarat"
+                           name="is_ziyarat"
+                           {% if agentkyc.is_ziyarat %}checked{% endif %}>
+
+                    Ziyarat
+
+                </label>
+
+            </div>
+
+            <!-- LEGAL -->
+
+            <div class="section-title">
+                Legal Documents
+            </div>
+
+            <div class="grid-3">
+
+                <div class="form-group">
+
+                    <label>NTN Number</label>
+
+                    <input type="text"
+                           name="ntn_no"
+                           class="form-control"
+                           value="{{ agentkyc.ntn_no|default:'' }}">
+
+                    <div class="scan-card">
+
+                        <span id="l-ntn">
+
+                            {% if agentkyc.ntn_doc %}
+                                NTN Uploaded
+                            {% else %}
+                                Upload NTN
+                            {% endif %}
+
+                        </span>
+
+                        <input type="file"
+                               name="ntn_doc"
+                               onchange="updateUI(this,'l-ntn')">
+
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>DTS Number</label>
+
+                    <input type="text"
+                           name="dts_no"
+                           class="form-control"
+                           value="{{ agentkyc.dts_no|default:'' }}">
+
+                    <div class="scan-card">
+
+                        <span id="l-dts">
+
+                            {% if agentkyc.dts_doc %}
+                                DTS Uploaded
+                            {% else %}
+                                Upload DTS
+                            {% endif %}
+
+                        </span>
+
+                        <input type="file"
+                               name="dts_doc"
+                               onchange="updateUI(this,'l-dts')">
+
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>CNIC Number</label>
+
+                    <input type="text"
+                           name="cnic_no"
+                           class="form-control"
+                           value="{{ agentkyc.cnic_no|default:'' }}">
+
+                    <div class="scan-card">
+
+                        <span id="l-cnic-f">
+
+                            {% if agentkyc.cnic_f %}
+                                CNIC Front Uploaded
+                            {% else %}
+                                Upload CNIC Front
+                            {% endif %}
+
+                        </span>
+
+                        <input type="file"
+                               name="cnic_f"
+                               onchange="updateUI(this,'l-cnic-f')">
+
+                    </div>
+
+                    <div class="scan-card">
+
+                        <span id="l-cnic-b">
+
+                            {% if agentkyc.cnic_b %}
+                                CNIC Back Uploaded
+                            {% else %}
+                                Upload CNIC Back
+                            {% endif %}
+
+                        </span>
+
+                        <input type="file"
+                               name="cnic_b"
+                               onchange="updateUI(this,'l-cnic-b')">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- HAJJ -->
+
+            <div id="hajj_sec"
+                 style="{% if agentkyc.is_hajj %}display:block;{% else %}display:none;{% endif %}">
+
+                <div class="section-title">
+                    Hajj Details
+                </div>
+
+                <div class="grid-2">
+
+                    <div class="form-group">
+
+                        <label>Munazzam Number</label>
+
+                        <input type="text"
+                               name="munazzam_no"
+                               class="form-control"
+                               value="{{ agentkyc.munazzam_no|default:'' }}">
+
+                        <div class="scan-card">
+
+                            <span id="l-munazzam">
+
+                                {% if agentkyc.munazzam_doc %}
+                                    Munazzam Uploaded
+                                {% else %}
+                                    Upload Munazzam
+                                {% endif %}
+
+                            </span>
+
+                            <input type="file"
+                                   name="munazzam_doc"
+                                   onchange="updateUI(this,'l-munazzam')">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>IATA Type</label>
+
+                    <div class="radio-group">
+
+                        <label>
+
+                            <input type="radio"
+                                   name="iata_type"
+                                   value="own"
+                                   {% if agentkyc.iata_type == 'own' %}checked{% endif %}
+                                   onchange="toggleIATA('own')">
+
+                            Own IATA
+
+                        </label>
+
+                        <label>
+
+                            <input type="radio"
+                                   name="iata_type"
+                                   value="reference"
+                                   {% if agentkyc.iata_type == 'reference' %}checked{% endif %}
+                                   onchange="toggleIATA('ref')">
+
+                            Reference IATA
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <!-- OWN -->
+
+                <div id="iata_own_fields"
+                     style="{% if agentkyc.iata_type == 'own' %}display:block;{% else %}display:none;{% endif %}">
+
+                    <input type="text"
+                           name="iata_no"
+                           class="form-control"
+                           placeholder="IATA Number"
+                           value="{{ agentkyc.iata_no|default:'' }}">
+
+                    <div class="scan-card">
+
+                        <span id="l-iata">
+
+                            {% if agentkyc.iata_doc %}
+                                IATA Uploaded
+                            {% else %}
+                                Upload IATA Certificate
+                            {% endif %}
+
+                        </span>
+
+                        <input type="file"
+                               name="iata_doc"
+                               onchange="updateUI(this,'l-iata')">
+
+                    </div>
+
+                </div>
+
+                <!-- REF -->
+
+                <div id="iata_ref_fields"
+                     style="{% if agentkyc.iata_type == 'reference' %}display:block;{% else %}display:none;{% endif %}">
+
+                    <input type="text"
+                           name="ref_agency_name"
+                           class="form-control"
+                           placeholder="Reference Agency"
+                           value="{{ agentkyc.ref_agency_name|default:'' }}">
+
+                    <div class="scan-card">
+
+                        <span id="l-iata-ref">
+
+                            {% if agentkyc.iata_ref_doc %}
+                                Reference Uploaded
+                            {% else %}
+                                Upload Reference Proof
+                            {% endif %}
+
+                        </span>
+
+                        <input type="file"
+                               name="iata_ref_doc"
+                               onchange="updateUI(this,'l-iata-ref')">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ZIYARAT -->
+
+            <div id="ziy_sec"
+                 style="{% if agentkyc.is_ziyarat %}display:block;{% else %}display:none;{% endif %}">
+
+                <div class="section-title">
+                    Ziyarat Details
+                </div>
+
+                <input type="text"
+                       name="ziy_no"
+                       class="form-control"
+                       placeholder="Ziyarat Number"
+                       value="{{ agentkyc.ziy_no|default:'' }}">
+
+                <div class="scan-card">
+
+                    <span id="l-ziy">
+
+                        {% if agentkyc.ziy_doc %}
+                            Ziyarat Uploaded
+                        {% else %}
+                            Upload Ziyarat Document
+                        {% endif %}
+
+                    </span>
+
+                    <input type="file"
+                           name="ziy_doc"
+                           onchange="updateUI(this,'l-ziy')">
+
+                </div>
+
+            </div>
+
+            <!-- FINANCIAL -->
+
+            <div class="section-title">
+                Financial Information
+            </div>
+
+            <div class="grid-3">
+
+                <div class="finance-box">
+
+                    <label>Bank IBAN</label>
+
+                    <input type="text"
+                           name="bank_iban"
+                           class="form-control"
+                           value="{{ agentkyc.bank_iban|default:'' }}">
+
+                    <input type="text"
+                           name="bank_name"
+                           class="form-control"
+                           style="margin-top:10px;"
+                           placeholder="Bank Name"
+                           value="{{ agentkyc.bank_name|default:'' }}">
+
+                </div>
+
+                <div class="finance-box">
+
+                    <label>EasyPaisa</label>
+
+                    <input type="text"
+                           name="easypaisa_no"
+                           class="form-control"
+                           value="{{ agentkyc.easypaisa_no|default:'' }}">
+
+                    <input type="text"
+                           name="easypaisa_name"
+                           class="form-control"
+                           style="margin-top:10px;"
+                           placeholder="Account Title"
+                           value="{{ agentkyc.easypaisa_name|default:'' }}">
+
+                </div>
+
+                <div class="finance-box">
+
+                    <label>JazzCash</label>
+
+                    <input type="text"
+                           name="jazzcash_no"
+                           class="form-control"
+                           value="{{ agentkyc.jazzcash_no|default:'' }}">
+
+                    <input type="text"
+                           name="jazzcash_name"
+                           class="form-control"
+                           style="margin-top:10px;"
+                           placeholder="Account Title"
+                           value="{{ agentkyc.jazzcash_name|default:'' }}">
+
+                </div>
+
+            </div>
+
+            <button type="submit" class="btn-submit">
+
+                Submit KYC
+
+            </button>
+ <button class="btn-dashboard">
+          <li><a href="{% url 'logout' %}" style="color: #d9534f !important;">Logout</a></li>
+        </button>
+        </form>
+
+        {% else %}
+
+        <div style="text-align:center;padding:50px;">
+
+            <h2 style="color:#16a34a;">
+                ✔ KYC Approved
+            </h2>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+<script>
+
+document.addEventListener('change', function(e){
+
+    if(
+        e.target.id === 'chkHajj' ||
+        e.target.id === 'chkZiyarat'
+    ){
+
+        const hajj =
+            document.getElementById('chkHajj').checked;
+
+        const ziy =
+            document.getElementById('chkZiyarat').checked;
+
+        document.getElementById('hajj_sec').style.display =
+            hajj ? 'block' : 'none';
+
+        document.getElementById('ziy_sec').style.display =
+            ziy ? 'block' : 'none';
+    }
+
+});
+
+function toggleIATA(type){
+
+    if(type === 'own'){
+
+        document.getElementById(
+            'iata_own_fields'
+        ).style.display = 'block';
+
+        document.getElementById(
+            'iata_ref_fields'
+        ).style.display = 'none';
+    }
+
+    else{
+
+        document.getElementById(
+            'iata_own_fields'
+        ).style.display = 'none';
+
+        document.getElementById(
+            'iata_ref_fields'
+        ).style.display = 'block';
+    }
+
+}
+
+function updateUI(input,target){
+
+    if(input.files && input.files[0]){
+
+        let label =
+            document.getElementById(target);
+
+        label.innerText = "✓ Selected";
+    }
+
+}
+
+</script>
+
+{% endblock %}

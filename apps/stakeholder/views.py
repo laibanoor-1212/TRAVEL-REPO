@@ -6,16 +6,11 @@ from .models import AgentKYC
 
 @login_required(login_url='/auth/login/')
 def agent_kyc_view(request):
-
     user = request.user
-
     profile, created = AgentKYC.objects.get_or_create(user=user)
-
     if created:
         profile.kyc_status = 'not_submitted'
         profile.save()
-
-    # 🚫 STATUS ROUTING (only GET flow)
     if request.method == "GET":
 
         if profile.kyc_status == 'pending':
@@ -30,7 +25,6 @@ def agent_kyc_view(request):
         if profile.kyc_status == 'rejected':
             return redirect('stakeholder:account_locked')
 
-    # ✅ FORM SUBMISSION ONLY
     form = KYCAgentForm(request.POST or None, request.FILES or None, instance=profile)
 
     if request.method == "POST":

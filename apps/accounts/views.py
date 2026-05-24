@@ -15,11 +15,9 @@ from .forms import CustomUserRegistrationForm
 
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib import messages
-# Apne custom form ko import karein (agar forms.py mein banaya hai)
-# from .forms import YourCustomLoginForm 
+
 
 def login_view(request):
-    # Agar banda pehle se login hai, to use dobara login page mat dikhao, seedha bhejo
     if request.user.is_authenticated:
         return redirect('stakeholder:KYC')
 

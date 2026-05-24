@@ -1,0 +1,157 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<div style="background: #f8fafc; min-height: 100vh; padding-top: 120px; padding-bottom: 80px; font-family: 'Plus Jakarta Sans', sans-serif;">
+    <div style="max-width: 1000px; margin: 0 auto; padding: 0 20px;">
+        
+        <!-- Premium Header -->
+        <div style="background: white; border-radius: 24px; padding: 30px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.05); border: 1px solid rgba(226, 232, 240, 0.8); margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h1 id="pkg_name" style="font-size: 28px; font-weight: 800; color: #0f172a; margin: 0;">{{ package.name }}</h1>
+                <p style="color: #64748b; margin-top: 5px; font-size: 15px;">
+                    <i class="fa-solid fa-map-location-dot" style="color: #6366f1;"></i> 
+                    <span id="journey_type">Checking Route...</span>
+                </p>
+            </div>
+            <div style="text-align: right;">
+                <label style="font-weight: 700; color: #475569; font-size: 13px; display: block; margin-bottom: 5px;">Total Travelers</label>
+                <select id="person_count" name="person_count" onchange="updateBookingFlow()" style="background: #f1f5f9; border: 2px solid #e2e8f0; padding: 8px 12px; border-radius: 12px; font-size: 18px; font-weight: 800; color: #6366f1; outline: none;">
+                    <option value="1">01</option>
+                    <option value="2">02</option>
+                    <option value="3">03</option>
+                    <option value="4">04</option>
+                    <option value="5">05</option>
+                </select>
+            </div>
+        </div>
+
+        <form action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div id="traveler_forms_container"></div>
+
+            <!-- Pricing Summary -->
+            <div style="background: white; border-radius: 24px; padding: 35px; border: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -10px 15px -3px rgba(0,0,0,0.02);">
+                <div>
+                    <h3 style="margin: 0; color: #1e293b; font-size: 18px; font-weight: 800;">Booking Confirmation</h3>
+                    <p style="margin: 5px 0 0; font-size: 14px; color: #64748b;">Review all details before sending the request.</p>
+                </div>
+                <div style="text-align: right;">
+                    <p style="margin: 0; font-size: 14px; font-weight: 600; color: #64748b;">Total Amount</p>
+                    <h2 style="margin: 5px 0 0; color: #1e293b; font-size: 38px; font-weight: 800;">Rs. <span id="total_price">{{ package.price }}</span></h2>
+                    <input type="hidden" id="base_price" value="{{ package.price }}">
+                </div>
+            </div>
+
+            <button type="submit" style="width: 100%; background: #0f172a; color: white; padding: 22px; border: none; border-radius: 20px; font-size: 18px; font-weight: 800; cursor: pointer; margin-top: 25px; transition: 0.3s; box-shadow: 0 10px 20px rgba(15, 23, 42, 0.2);">
+                Confirm Booking Request <i class="fa-solid fa-chevron-right" style="margin-left: 10px;"></i>
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Dynamic Traveler Template -->
+<template id="traveler_template">
+    <div class="traveler-card" style="background: white; border-radius: 24px; padding: 35px; border: 1px solid #e2e8f0; margin-bottom: 30px; animation: fadeIn 0.4s ease;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="background: #6366f1; color: white; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800;">
+                    <span class="t-num"></span>
+                </div>
+                <h3 style="margin: 0; font-size: 18px; font-weight: 800; color: #1e293b;">Traveler Info</h3>
+            </div>
+            <span class="route-badge" style="background: #f1f5f9; color: #475569; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase;">Required Documents</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <input type="text" name="name_[]" placeholder="Full Name" class="input-style">
+            <input type="text" name="phone_[]" placeholder="Mobile Number" class="input-style">
+            <input type="text" name="cnic_[]" placeholder="CNIC Number (35201-...)" class="input-style" required>
+            <input type="email" name="email_[]" placeholder="Email Address" class="input-style">
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <input type="text" name="address_[]" placeholder="Home Address" class="input-style">
+        </div>
+
+        <!-- This section will hide for Iran/Iraq -->
+        <div class="passport-section" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; padding: 20px; background: #fef2f2; border-radius: 15px; border: 1px solid #fee2e2;">
+            <div>
+                <label style="display: block; font-size: 12px; font-weight: 800; color: #991b1b; margin-bottom: 8px;">Passport Number</label>
+                <input type="text" name="passport_[]" placeholder="AB1234567" class="input-style" style="border-color: #fca5a5;">
+            </div>
+            <div>
+                <label style="display: block; font-size: 12px; font-weight: 800; color: #991b1b; margin-bottom: 8px;">Passport Expiry</label>
+                <input type="date" name="expiry_[]" class="input-style" style="border-color: #fca5a5;">
+            </div>
+        </div>
+
+        <!-- Document Grid -->
+        <div style="background: #f8fafc; border-radius: 20px; padding: 25px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; border: 2px dashed #cbd5e1;">
+            <div class="passport-upload">
+                <label class="upload-label"><i class="fa-solid fa-passport"></i> Passport Scan</label>
+                <input type="file" name="pass_file_[]">
+            </div>
+            <div>
+                <label class="upload-label"><i class="fa-solid fa-camera"></i> Passport Photo</label>
+                <input type="file" name="photo_file_[]">
+            </div>
+            <div>
+                <label class="upload-label"><i class="fa-solid fa-id-card"></i> CNIC Front</label>
+                <input type="file" name="cnic_front_[]">
+            </div>
+            <div>
+                <label class="upload-label"><i class="fa-solid fa-id-card"></i> CNIC Back</label>
+                <input type="file" name="cnic_back_[]">
+            </div>
+        </div>
+    </div>
+</template>
+
+<style>
+    .input-style {
+        width: 100%; padding: 14px 18px; border: 2px solid #e2e8f0; border-radius: 14px; 
+        font-size: 14px; font-weight: 600; color: #1e293b; outline: none; transition: 0.3s;
+    }
+    .input-style:focus { border-color: #6366f1; background: #fff; }
+    .upload-label { font-size: 11px; font-weight: 800; color: #475569; margin-bottom: 8px; display: block; text-transform: uppercase; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+
+<script>
+    function updateBookingFlow() {
+        const pkgName = document.getElementById('pkg_name').innerText.toLowerCase();
+        const count = document.getElementById('person_count').value;
+        const basePrice = parseInt(document.getElementById('base_price').value);
+        const container = document.getElementById('traveler_forms_container');
+        const template = document.getElementById('traveler_template').innerHTML;
+        
+        // Check if it's Iran or Iraq
+        const isZiyarat = pkgName.includes('iran') || pkgName.includes('iraq');
+        document.getElementById('journey_type').innerText = isZiyarat ? "Ziyarat Route (CNIC Based)" : "International Route (Passport Required)";
+
+        container.innerHTML = '';
+        for (let i = 1; i <= count; i++) {
+            let formHtml = template.replace('<span class="t-num"></span>', i);
+            container.innerHTML += formHtml;
+        }
+
+        // Hide Passport options if Ziyarat
+        if (isZiyarat) {
+            const passportSections = document.querySelectorAll('.passport-section');
+            const passportUploads = document.querySelectorAll('.passport-upload');
+            passportSections.forEach(s => s.style.display = 'none');
+            passportUploads.forEach(u => u.style.display = 'none');
+        }
+
+        const total = basePrice * count;
+        document.getElementById('total_price').innerText = total.toLocaleString();
+    }
+
+    document.addEventListener('DOMContentLoaded', updateBookingFlow);
+</script>
+{% endblock %}
