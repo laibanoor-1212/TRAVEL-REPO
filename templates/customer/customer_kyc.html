@@ -1,0 +1,561 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Verification - Premium Travel</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Font (Plus Jakarta Sans) -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-emerald: #053327;   
+            --emerald-light: #0b4a3a;
+            --emerald-soft: rgba(11, 74, 58, 0.12);
+            --pure-white: #ffffff;
+            --text-dark: #090d16;
+            --text-muted: #27374d;
+            /* Card ko highly transparent kiya taake background photo saaf nazar aaye */
+            --glass-bg: rgba(255, 255, 255, 0.45); 
+            --glass-border: rgba(255, 255, 255, 0.6);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            /* Premium Kaaba Background Photo - Slight overlay for typography safety */
+            background: linear-gradient(rgba(11, 74, 58, 0.15), rgba(15, 23, 42, 0.35)), 
+                        url('https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=1920&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .kyc-container {
+            width: 100%;
+            max-width: 950px; /* Spacious & Wide layout */
+            padding: 30px 20px;
+        }
+
+        .kyc-card {
+            background: var(--glass-bg);
+            /* Blur ko kam kiya taake card ke piche se image transparent jhalak sake */
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+            border-radius: 28px; 
+            padding: 50px; 
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2); 
+            border: 2px solid var(--glass-border);
+        }
+
+        /* --- Custom Steps Timeline --- */
+        .timeline-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 45px;
+            position: relative;
+            max-width: 450px; 
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: rgba(11, 74, 58, 0.25);
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+        .timeline-step {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.85);
+            border: 2px solid rgba(11, 74, 58, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-muted);
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-step.active {
+            border-color: var(--primary-emerald);
+            background: var(--primary-emerald);
+            color: var(--pure-white);
+            box-shadow: 0 0 0 6px rgba(11, 74, 58, 0.2);
+        }
+
+        .timeline-step.completed {
+            border-color: var(--emerald-light);
+            background: var(--pure-white);
+            color: var(--emerald-light);
+        }
+
+        /* --- Form Steps Control --- */
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+            animation: fadeInCard 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeInCard {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-header {
+            margin-bottom: 35px;
+            border-bottom: 2px solid rgba(11, 74, 58, 0.2);
+            padding-bottom: 18px;
+        }
+
+        .step-header h2 {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary-emerald);
+            margin-bottom: 6px;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+        }
+
+        .step-header p {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0;
+        }
+
+        /* --- Inputs Styling --- */
+        .form-label {
+            font-size: 14.5px;
+            font-weight: 700;
+            color: var(--primary-emerald);
+            margin-bottom: 8px;
+        }
+
+        .form-control, .form-select {
+            height: 50px; 
+            border-radius: 12px;
+            border: 1.5px solid rgba(11, 74, 58, 0.4);
+            background-color: rgba(255, 255, 255, 0.88); /* Kept solid for high input visibility */
+            padding: 10px 16px;
+            font-size: 15px;
+            color: #000000;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .form-select option {
+            background-color: var(--pure-white);
+            color: #000000;
+        }
+
+        textarea.form-control {
+            height: auto;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background-color: var(--pure-white);
+            border-color: var(--primary-emerald);
+            color: #000000;
+            box-shadow: 0 0 0 5px rgba(11, 74, 58, 0.15);
+            outline: 0;
+        }
+
+        .form-control::placeholder {
+            color: #64748b;
+        }
+
+        /* --- Custom Options & Uploads --- */
+        .premium-upload-card {
+            border: 2px dashed rgba(11, 74, 58, 0.5);
+            border-radius: 12px;
+            padding: 22px;
+            background: rgba(255, 255, 255, 0.7);
+            transition: all 0.2s ease;
+        }
+
+        .premium-upload-card:hover {
+            border-color: var(--primary-emerald);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .package-option {
+            border: 1.5px solid rgba(11, 74, 58, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.85);
+        }
+
+        .package-option:hover {
+            border-color: var(--primary-emerald);
+            background: var(--pure-white);
+        }
+
+        .form-check-input {
+            background-color: var(--pure-white);
+            border: 1.5px solid rgba(11, 74, 58, 0.4);
+        }
+
+        .form-check-input:checked {
+            background-color: var(--primary-emerald);
+            border-color: var(--primary-emerald);
+        }
+
+        .form-check-label {
+            color: var(--primary-emerald);
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        /* --- Actions Tray --- */
+        .action-tray {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 2px solid rgba(11, 74, 58, 0.2);
+        }
+
+        .btn-premium-next, .btn-premium-submit {
+            background: var(--primary-emerald);
+            color: var(--pure-white);
+            border: none;
+            padding: 14px 45px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+
+        .btn-premium-next:hover, .btn-premium-submit:hover {
+            background: var(--emerald-light);
+            box-shadow: 0 6px 20px rgba(11, 74, 58, 0.3);
+        }
+
+        .btn-premium-prev {
+            background: rgba(255, 255, 255, 0.75);
+            color: var(--primary-emerald);
+            border: 1.5px solid var(--primary-emerald);
+            padding: 14px 45px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+
+        .btn-premium-prev:hover {
+            background: var(--pure-white);
+        }
+
+        @media (max-width: 768px) {
+            .kyc-card {
+                padding: 30px 20px;
+            }
+            .timeline-container {
+                margin-bottom: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="kyc-container">
+    <div class="kyc-card">
+
+        <!-- Top Milestone Tracker -->
+        <div class="timeline-container">
+            <div class="timeline-step active" id="stepIndicator-1">1</div>
+            <div class="timeline-step" id="stepIndicator-2">2</div>
+            <div class="timeline-step" id="stepIndicator-3">3</div>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data" id="premiumKycForm">
+            {% csrf_token %}
+
+            <!-- SECTION 1: Personal Profile -->
+            <div class="form-step active" id="stepPanel-1">
+                <div class="step-header">
+                    <h2>Personal Profile</h2>
+                    <p>Enter your full legal credentials as per your official documents.</p>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" name="full_name" class="form-control" required>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label">Father / Husband Name</label>
+                        <input type="text" name="father_name" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label">Date of Birth</label>
+                        <input type="date" name="date_of_birth" class="form-control" required>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label">Gender</label>
+                        <select name="gender" class="form-select" required>
+                            <option value="">Select Gender</option>
+                            <option>Male</option>
+                            <option>Female</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label">Marital Status</label>
+                        <select name="marital_status" class="form-select">
+                            <option value="">Select Status</option>
+                            <option>Single</option>
+                            <option>Married</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label">CNIC Number</label>
+                        <input type="text" name="cnic_number" class="form-control" placeholder="35202-1234567-1" required>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label">Phone Number</label>
+                        <input type="text" name="phone" class="form-control" placeholder="03XX-XXXXXXX" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 2: Address & Documents -->
+            <div class="form-step" id="stepPanel-2">
+                <div class="step-header">
+                    <h2>Documents & Location</h2>
+                    <p>Provide your residential details and upload high-quality verification files.</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label">Country</label>
+                        <input type="text" name="country" class="form-control" value="Pakistan">
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label">Province</label>
+                        <input type="text" name="province" class="form-control">
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label">City</label>
+                        <input type="text" name="city" class="form-control">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 mb-4">
+                        <label class="form-label">Complete Residential Address</label>
+                        <textarea name="address" rows="2" class="form-control"></textarea>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="premium-upload-card">
+                            <label class="form-label d-block text-start">CNIC Front Image</label>
+                            <input type="file" name="cnic_front" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="premium-upload-card">
+                            <label class="form-label d-block text-start">CNIC Back Image</label>
+                            <input type="file" name="cnic_back" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 3: Journey Preferences -->
+            <div class="form-step" id="stepPanel-3">
+                <div class="step-header">
+                    <h2>Journey Preferences</h2>
+                    <p>Select your packages, specialized services, and emergency details.</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 mb-4">
+                        <label class="form-label d-block mb-3">Select Intended Pilgrimage / Tour</label>
+                        <div class="row g-3">
+                            <div class="col-6 col-md-3">
+                                <label class="package-option" for="p_umrah">
+                                    <input class="form-check-input me-2" type="checkbox" name="packages" value="umrah" id="p_umrah">
+                                    <span class="package-label">Umrah Journey</span>
+                                </label>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label class="package-option" for="p_hajj">
+                                    <input class="form-check-input me-2" type="checkbox" name="packages" value="hajj" id="p_hajj">
+                                    <span class="package-label">Hajj Pilgrimage</span>
+                                </label>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label class="package-option" for="p_ziyarat">
+                                    <input class="form-check-input me-2" type="checkbox" name="packages" value="iran_iraq" id="p_ziyarat">
+                                    <span class="package-label">Holy Ziyarat</span>
+                                </label>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label class="package-option" for="p_turkey">
+                                    <input class="form-check-input me-2" type="checkbox" name="packages" value="turkey" id="p_turkey">
+                                    <span class="package-label">Islamic Tour</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label">Package Budget Level</label>
+                        <select name="budget_preference" class="form-select">
+                            <option value="">Select Tier</option>
+                            <option value="budget">Economy / Budget Friendly</option>
+                            <option value="standard">Standard Comfort</option>
+                            <option value="premium">Premium Elite</option>
+                            <option value="luxury">Luxury Full-Service</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label">Accommodation Type</label>
+                        <select name="travel_type" class="form-select">
+                            <option value="">Select Type</option>
+                            <option value="solo">Solo Traveler</option>
+                            <option value="family">Family Group</option>
+                            <option value="group">Shared Tour Group</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label">Emergency Contact Name</label>
+                        <input type="text" name="emergency_contact_name" class="form-control">
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label">Relation</label>
+                        <input type="text" name="relation" class="form-control">
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label">Contact Phone</label>
+                        <input type="text" name="emergency_contact_phone" class="form-control">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label">Medical Concerns (If Any)</label>
+                        <input type="text" name="medical_condition" class="form-control" placeholder="e.g., Diabetes">
+                    </div>
+
+                    <div class="col-md-6 mb-4 d-flex align-items-center">
+                        <div class="form-check mt-3">
+                            <input class="form-check-input" type="checkbox" name="wheelchair_required" id="p_wheelchair">
+                            <label class="form-check-label ms-1" for="p_wheelchair">Special Wheelchair Assistance Required</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-check mt-4">
+                    <input class="form-check-input" type="checkbox" required id="p_terms">
+                    <label class="form-check-label ms-1" for="p_terms">I legally attest that the provided data matches my official passport documents.</label>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-tray">
+                <button type="button" class="btn-premium-prev" id="prevPanelBtn" onclick="navigateStep(-1)" style="display: none;">Back</button>
+                <button type="button" class="btn-premium-next" id="nextPanelBtn" onclick="navigateStep(1)" style="margin-left: auto;">Continue</button>
+                <button type="submit" class="btn-premium-submit" id="submitFormBtn" style="display: none; margin-left: auto;">Finalize & Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    let activeStep = 1;
+    const maxSteps = 3; 
+
+    function navigateStep(forward) {
+        if (forward === 1) {
+            const currentFields = document.getElementById(`stepPanel-${activeStep}`).querySelectorAll('[required]');
+            let keepsValid = true;
+            currentFields.forEach(f => {
+                if (!f.checkValidity()) {
+                    f.reportValidity();
+                    keepsValid = false;
+                }
+            });
+            if (!keepsValid) return;
+        }
+
+        document.getElementById(`stepPanel-${activeStep}`).classList.remove('active');
+        activeStep += forward;
+        document.getElementById(`stepPanel-${activeStep}`).classList.add('active');
+
+        updateTimeline();
+
+        document.getElementById('prevPanelBtn').style.display = activeStep === 1 ? 'none' : 'block';
+        if (activeStep === maxSteps) {
+            document.getElementById('nextPanelBtn').style.display = 'none';
+            document.getElementById('submitFormBtn').style.display = 'block';
+        } else {
+            document.getElementById('nextPanelBtn').style.display = 'block';
+            document.getElementById('submitFormBtn').style.display = 'none';
+        }
+    }
+
+    function updateTimeline() {
+        for (let i = 1; i <= maxSteps; i++) {
+            const indicator = document.getElementById(`stepIndicator-${i}`);
+            if (i < activeStep) {
+                indicator.classList.add('completed');
+                indicator.classList.remove('active');
+                indicator.innerHTML = "✓";
+            } else if (i === activeStep) {
+                indicator.classList.add('active');
+                indicator.classList.remove('completed');
+                indicator.innerHTML = i;
+            } else {
+                indicator.classList.remove('active', 'completed');
+                indicator.innerHTML = i;
+            }
+        }
+    }
+</script>
+
+</body>
+</html>

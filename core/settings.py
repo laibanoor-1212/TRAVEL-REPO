@@ -43,6 +43,10 @@ INSTALLED_APPS = [
     'stakeholder',
     'adminpanel',
     'base',
+    'customers',
+    'bookings',
+    'packages',
+    'notifications',
 
     'django.contrib.sites',
     #allauth libraries
