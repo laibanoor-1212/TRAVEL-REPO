@@ -1,0 +1,215 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8fafc;
+    color: #334155;
+    -webkit-font-smoothing: antialiased;
+}
+.packages-hero-banner {
+    width: 100%;
+    padding: 60px 20px 20px 20px; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.packages-main-heading {
+    text-align: center;
+    max-width: 700px;
+}
+.packages-main-heading h2 {
+    font-size: 32px;
+    font-weight: 800;
+    color: #0f172a; 
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+.packages-main-heading p {
+    font-size: 15px;
+    color: #64748b; 
+    margin-top: 10px;
+    font-weight: 500;
+}
+
+.packages-section-container {
+    max-width: 1220px;
+    margin: 0 auto;
+    padding: 20px 20px 60px 20px;
+}
+
+.packages-dome-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+    align-items: stretch; 
+}
+
+.dome-package-card {
+    background: #ffffff;
+    border-radius: 24px;
+    border: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dome-package-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 35px rgba(15, 81, 50, 0.08);
+}
+
+.dome-image-top {
+    width: 100%;
+    height: 200px;
+    border-radius: 100px 100px 0 0 !important;
+    overflow: hidden;
+    position: relative;
+    background-color: #f1f5f9; 
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+}
+
+.dome-image-top img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.dome-card-body {
+    padding-top: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.dome-icon-badge {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-bottom: 14px;
+}
+
+.pink-theme { background-color: #fdf2f8; color: #db2777; }
+.blue-theme { background-color: #eff6ff; color: #2563eb; }
+.orange-theme { background-color: #fff7ed; color: #ea580c; }
+.purple-theme { background-color: #faf5ff; color: #9333ea; }
+
+.card-sub-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #64748b;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+}
+
+.card-main-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 12px;
+}
+
+.card-description {
+    font-size: 13.5px;
+    color: #64748b;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    flex-grow: 1;
+}
+
+.dome-tiers-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+    width: 100%;
+}
+
+.dome-tiers-row.single-pill-row {
+    margin-bottom: 24px;
+}
+
+.tier-pill {
+    font-size: 11px;
+    font-weight: 600;
+    color: #475569;
+    background-color: #f1f5f9;
+    padding: 4px 10px;
+    border-radius: 6px;
+}
+
+.tier-pill.vip-highlight {
+    background-color: #fef3c7;
+    color: #d97706;
+}
+
+.tier-pill.luxury-green {
+    background-color: #e6f4ea;
+    color: #137333;
+}
+
+.dome-explore-link {
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f5132;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: auto;
+    transition: gap 0.2s ease;
+}
+
+.dome-explore-link:hover {
+    gap: 10px;
+}
+
+.dome-footer-nav {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.back-profile-anchor {
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748b;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s ease;
+}
+
+.back-profile-anchor:hover {
+    color: #0f5132;
+}
+
+@media (max-width: 1100px) {
+    .packages-dome-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+}
+
+@media (max-width: 640px) {
+    .packages-dome-grid {
+        grid-template-columns: 1fr;
+    }
+    .dome-image-top {
+        height: 220px;
+    }
+}

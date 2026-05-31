@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Package</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="create_packages.css">
+</head>
+<body>
+
+<div class="form-focus-viewport">
+    <div class="form-split-layout">
+        
+        <div class="form-side-infobar">
+            <div class="infobar-sticky-content">
+                <div class="infobar-icon-shield">
+                    <i class="fas fa-plus"></i>
+                </div>
+                <h2>Create Package</h2>
+            </div>
+        </div>
+
+        <div class="form-side-sheet">
+            <form action="#" method="POST" class="structured-grid-form">
+                
+                <div class="input-field-block block-span-full">
+                    <label for="id_name">Package Name</label>
+                    <div class="input-element-housing">
+                        <i class="fas fa-suitcase-rolling input-vane-icon"></i>
+                        <input type="text" id="id_name" name="name" placeholder="e.g., Premium 15 Days Umrah Package" required>
+                    </div>
+                </div>
+
+                <div class="input-field-block">
+                    <label for="id_package_type">Package Type</label>
+                    <div class="input-element-housing">
+                        <i class="fas fa-tags input-vane-icon"></i>
+                        <select id="id_package_type" name="package_type" required>
+                            <option value="" disabled selected>Select Package Type</option>
+                            <option value="1">Hajj Packages</option>
+                            <option value="2">Umrah Packages</option>
+                            <option value="3">Ziyarat Tours</option>
+                            <option value="4">Flight Booking</option>
+                            <option value="5">Hotel Booking</option>
+                            <option value="6">Visa Processing</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-field-block">
+                    <label for="id_tier">Tier / Category</label>
+                    <div class="input-element-housing">
+                        <i class="fas fa-sliders input-vane-icon"></i>
+                        <select id="id_tier" name="tier" required>
+                            <option value="" disabled selected>Select Tier</option>
+                            <option value="economy">Economy</option>
+                            <option value="standard">Standard</option>
+                            <option value="vip">VIP</option>
+                            <option value="luxury">Luxury</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-field-block">
+                    <label for="id_country">Country</label>
+                    <div class="input-element-housing">
+                        <i class="fas fa-globe input-vane-icon"></i>
+                        <input type="text" id="id_country" name="country" placeholder="e.g., Saudi Arabia, Iraq, Iran" required>
+                    </div>
+                </div>
+
+                <div class="input-field-block">
+                    <label for="id_city">City</label>
+                    <div class="input-element-housing">
+                        <i class="fas fa-map-marker-alt input-vane-icon"></i>
+                        <input type="text" id="id_city" name="city" placeholder="e.g., Makkah / Madinah" required>
+                    </div>
+                </div>
+
+                <div class="input-field-block block-span-three">
+                    <div class="triple-grid-subrow">
+                        <div>
+                            <label for="id_price">Price (PKR)</label>
+                            <div class="input-element-housing">
+                                <i class="fas fa-wallet input-vane-icon"></i>
+                                <input type="number" step="0.01" id="id_price" name="price" placeholder="e.g., 240000" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="id_duration_days">Duration (Days)</label>
+                            <div class="input-element-housing">
+                                <i class="fas fa-calendar-day input-vane-icon"></i>
+                                <input type="number" id="id_duration_days" name="duration_days" placeholder="e.g., 15" min="1" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="id_total_seats">Total Seats</label>
+                            <div class="input-element-housing">
+                                <i class="fas fa-users input-vane-icon"></i>
+                                <input type="number" id="id_total_seats" name="total_seats" placeholder="e.g., 50" min="1" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-field-block">
+                    <label for="id_application_deadline">Application Deadline</label>
+                    <div class="input-element-housing">
+                        <i class="fas fa-calendar-times input-vane-icon"></i>
+                        <input type="date" id="id_application_deadline" name="application_deadline" required>
+                    </div>
+                </div>
+
+                <div class="input-field-block">
+                    <label for="id_status">Status</label>
+                    <div class="input-element-housing">
+                        <i class="fas fa-circle-info input-vane-icon"></i>
+                        <select id="id_status" name="status" required>
+                            <option value="active" selected>Active</option>
+                            <option value="inactive">Inactive</option>
+                            <option value="draft">Draft</option>
+                            <option value="closed">Closed</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-field-block block-span-full">
+                    <label for="id_description">Package Description</label>
+                    <textarea id="id_description" name="description" rows="5" placeholder="Enter complete package itineraries, hotel distances, flights setup and dynamic guidelines..." required></textarea>
+                </div>
+
+                <div class="form-sheet-actions block-span-full">
+                    <button type="button" class="sheet-back-btn">Cancel</button>
+                    <button type="submit" class="sheet-save-btn"><i class="fas fa-circle-check"></i> Save & Publish</button>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+
+    <footer class="form-focus-footer">
+        <a href="agent_services.html" class="footer-return-link"><i class="fas fa-arrow-left"></i> Back to Allowed & Offered Services</a>
+    </footer>
+</div>
+
+</body>
+</html>
