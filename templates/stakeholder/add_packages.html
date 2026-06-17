@@ -1,0 +1,118 @@
+{% extends 'stakeholder/dashboard_layout2.html' %}
+{% load static %}
+
+{% block content %}
+<div class="page-container">
+    <div class="form-wizard">
+        <div class="wizard-header">
+            <div class="agency-info">
+                <span class="agency-label">ADD PACKAGES</span>
+                <h2 class="agency-name">{{ request.user.stakeholder_profile.agency_name }}</h2>
+            </div>
+           
+        </div>
+
+        <form method="POST" enctype="multipart/form-data" class="stepped-form">
+            {% csrf_token %}
+
+            <div class="form-part">
+                <div class="part-title">
+                    <span class="part-number">1</span>
+                    <h3>Agency Verification</h3>
+                </div>
+                <div class="part-body">
+                    <div class="input-grid-2">
+                        <div class="field-box">
+                            <label>Agency Name</label>
+                            <input type="text" value="{{ request.user.stakeholder_profile.agency_name }}" readonly class="locked-input">
+                        </div>
+                        <div class="field-box">
+                            <label>License Number</label>
+                            <input type="text" value="{{ request.user.stakeholder_profile.license_number }}" readonly class="locked-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-part">
+                <div class="part-title">
+                    <span class="part-number">2</span>
+                    <h3>Package Specifications</h3>
+                </div>
+                <div class="part-body">
+                    <div class="field-box full-width">
+                        <label>Package Title</label>
+                        <input type="text" name="title" placeholder="e.g. Premium 15 Days Umrah Group" required>
+                    </div>
+                    
+                    <div class="input-grid-3">
+                        <div class="field-box">
+                            <label>Price (PKR)</label>
+                            <input type="number" name="price" placeholder="0.00" required>
+                        </div>
+                        <div class="field-box">
+                            <label>Total Nights</label>
+                            <input type="number" name="duration" placeholder="15" required>
+                        </div>
+                        <div class="field-box">
+                            <label>Departure Date</label>
+                            <input type="date" name="departure_date" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-part">
+                <div class="part-title">
+                    <span class="part-number">3</span>
+                    <h3>Accommodation & Inclusions</h3>
+                </div>
+                <div class="part-body">
+                    <div class="input-grid-2">
+                        <div class="field-box">
+                            <label><i class="fas fa-mosque"></i> Makkah Hotel</label>
+                            <input type="text" name="makkah_hotel" placeholder="Hotel Name">
+                        </div>
+                        <div class="field-box">
+                            <label><i class="fas fa-kaaba"></i> Madinah Hotel</label>
+                            <input type="text" name="madinah_hotel" placeholder="Hotel Name">
+                        </div>
+                    </div>
+
+                    <div class="services-selection">
+                        <label>Included Services:</label>
+                        <div class="pill-group">
+                            <label class="pill"><input type="checkbox" name="visa"> Visa</label>
+                            <label class="pill"><input type="checkbox" name="ticket"> Ticket</label>
+                            <label class="pill"><input type="checkbox" name="transport"> Transport</label>
+                            <label class="pill"><input type="checkbox" name="ziyarat"> Ziyarat</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-part">
+                <div class="part-title">
+                    <span class="part-number">4</span>
+                    <h3>Media & Poster</h3>
+                </div>
+                <div class="part-body">
+                    <div class="field-box">
+                        <label>Detailed Itinerary</label>
+                        <textarea name="description" rows="4" placeholder="Describe the package flow..."></textarea>
+                    </div>
+                    <div class="upload-zone">
+                        <input type="file" name="banner" id="banner">
+                        <label for="banner"><i class="fas fa-image"></i> Click to Upload Package Banner</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-footer-actions">
+                <button type="reset" class="btn-clear">Clear All</button>
+                <button type="submit" class="btn-publish">Publish Package Now</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

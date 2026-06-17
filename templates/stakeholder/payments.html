@@ -1,0 +1,60 @@
+{% extends 'stakeholder/dashboard_layout2.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<div id="payments-page">
+    <div style="margin-bottom: 20px;">
+        <h2>Payment Transactions</h2>
+        <p style="color: #666;">Track your earnings and escrow status</p>
+    </div>
+
+    <div class="payment-card">
+        <div style="overflow-x: auto;">
+            <table class="payment-table">
+                <thead>
+                    <tr>
+                        <th style="width: 15%;">Transaction ID</th>
+                        <th style="width: 15%;">User Name</th>
+                        <th style="width: 10%;">Amount</th>
+                        <th style="width: 15%;">Payment (Stripe)</th>
+                        <th style="width: 15%;">Escrow Status</th>
+                        <th style="width: 15%;">Date</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>#TRX-88291</td>
+                        <td><strong>Ali Ahmed</strong></td>
+                        <td class="amount">PKR 4,500</td>
+                        <td><span class="status-badge status-hold">Hold</span></td>
+                        <td><span class="status-badge status-pending">In Escrow</span></td>
+                        <td>12 April 2026</td>
+                        
+                    </tr>
+                    <tr>
+                        <td>#TRX-88295</td>
+                        <td><strong>Sara Khan</strong></td>
+                        <td class="amount">PKR 12,000</td>
+                        <td><span class="status-badge status-released">Received</span></td>
+                        <td><span class="status-badge status-released">Released</span></td>
+                        <td>10 April 2026</td>
+                       
+                    </tr>
+                    <tr>
+                        <td>#TRX-88301</td>
+                        <td><strong>Zain Malik</strong></td>
+                        <td class="amount">PKR 6,200</td>
+                        <td><span class="status-badge status-hold">Hold</span></td>
+                        <td><span class="status-badge status-pending">In Escrow</span></td>
+                        <td>08 April 2026</td>
+                        
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

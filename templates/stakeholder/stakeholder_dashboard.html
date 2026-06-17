@@ -1,0 +1,166 @@
+{% extends 'stakeholder/dashboard_layout2.html' %} {% block content %}
+<style>
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+  .stat-card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border-bottom: 4px solid #155c3b;
+    text-align: center;
+  }
+  .stat-card h3 {
+    font-size: 28px;
+    color: #155c3b;
+  }
+  .stat-card p {
+    font-size: 14px;
+    color: #666;
+    text-transform: uppercase;
+    margin-top: 5px;
+  }
+  .quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.quick-btn {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--text-dark);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    border: 1px solid #eee;
+}
+
+.quick-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    border-color: var(--primary-green);
+}
+
+.quick-btn i {
+    font-size: 1.8rem;
+    margin-right: 15px;
+    color: var(--primary-green);
+    background: #eef5f1;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+}
+
+.quick-btn-text b {
+    display: block;
+    font-size: 1rem;
+    margin-bottom: 2px;
+}
+
+.quick-btn-text small {
+    color: #888;
+    font-size: 0.8rem;
+}
+</style>
+
+<div id="dashboard">
+  <h2 style="margin-bottom: 20px">Dashboard Overview</h2>
+  <div class="stats-grid">
+    <div class="stat-card"><p>Total Packages</p></div>
+    <div class="stat-card"><p>Approved</p></div>
+    <div class="stat-card"><p>Pending</p></div>
+  </div>
+
+  <div
+    class="card"
+    style="
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    "
+  >
+    <h3 style="margin-bottom: 15px; color: #155c3b">Recent Bookings</h3>
+    <table style="width: 100%; border-collapse: collapse">
+      <thead>
+        <tr style="background: #f8faf9; color: #155c3b; text-align: left">
+          <th style="padding: 15px">Booking ID</th>
+          <th style="padding: 15px">Customer</th>
+          <th style="padding: 15px">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for b in recent_bookings %}
+        <tr>
+          <td style="padding: 15px; border-bottom: 1px solid #eee">
+            #{{ b.id }}
+          </td>
+          <td style="padding: 15px; border-bottom: 1px solid #eee">
+            {{ b.customer_name }}
+          </td>
+          <td style="padding: 15px; border-bottom: 1px solid #eee">
+            <span class="status-pill approved">Confirmed</span>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td
+            colspan="3"
+            style="text-align: center; padding: 20px; color: #999"
+          >
+            No recent bookings found.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+</div>
+
+    <div class="quick-actions-grid">
+      <a href="{% url 'stakeholder:add_packages' %}" class="quick-btn">
+        <i class="fas fa-plus-circle"></i>
+        <div class="quick-btn-text">
+          <b>New Package</b>
+          <small>Create travel offer</small>
+        </div>
+      </a>
+
+      <a href="{% url 'stakeholder:manage_booking' %}" class="quick-btn">
+        <i class="fas fa-calendar-alt"></i>
+        <div class="quick-btn-text">
+          <b>Bookings</b>
+          <small>Manage travelers</small>
+        </div>
+      </a>
+
+      <a href="{% url 'stakeholder:payments' %}" class="quick-btn">
+        <i class="fas fa-wallet"></i>
+        <div class="quick-btn-text">
+          <b>Payments</b>
+          <small>Check earnings</small>
+        </div>
+      </a>
+
+      <a href="" class="quick-btn">
+        <i class="fas fa-user-cog"></i>
+        <div class="quick-btn-text">
+          <b>Settings</b>
+          <small>Update agency info</small>
+        </div>
+      </a>
+    </div>
+  
+{% endblock %}

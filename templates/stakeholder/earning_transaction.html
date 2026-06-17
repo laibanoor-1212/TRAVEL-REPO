@@ -1,0 +1,96 @@
+{% extends 'stakeholder/dashboard_layout2.html' %}
+{% load static %}
+
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/agent_earnings.css' %}">
+
+<div class="dashboard-wrapper">
+    <div class="grid">
+        <div class="card">
+            <h3>Total Earnings</h3>
+            <h2>PKR 320,000</h2>
+        </div>
+        <div class="card">
+            <h3>Commission Deducted</h3>
+            <h2>PKR 32,000</h2>
+        </div>
+        <div class="card">
+            <h3>Net Payable</h3>
+            <h2>PKR 288,000</h2>
+        </div>
+    </div>
+    <div class="card full">
+        <h3>Transaction History</h3>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Customer</th>
+                        <th>Package</th>
+                        <th>Total Amount</th>
+                        <th>Commission %</th>
+                        <th>Commission Cut</th>
+                        <th>Agent Earning</th>
+                        <th>Payment Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>TRV-001</td>
+                        <td>Ahmed Khan</td>
+                        <td>VIP Hajj</td>
+                        <td>450000</td>
+                        <td>10%</td>
+                        <td>45000</td>
+                        <td>405000</td>
+                        <td><span class="paid">Paid</span></td>
+                    </tr>
+
+                    <tr>
+                        <td>TRV-002</td>
+                        <td>Sara Ali</td>
+                        <td>Economy Umrah</td>
+                        <td>120000</td>
+                        <td>8%</td>
+                        <td>9600</td>
+                        <td>110400</td>
+                        <td><span class="pending">Pending</span></td>
+                    </tr>
+
+                    <tr>
+                        <td>TRV-003</td>
+                        <td>Khalid Raza</td>
+                        <td>Deluxe Umrah</td>
+                        <td>185000</td>
+                        <td>12%</td>
+                        <td>22200</td>
+                        <td>162800</td>
+                        <td><span class="paid">Paid</span></td>
+                    </tr>
+
+                    <tr>
+                        <td>TRV-004</td>
+                        <td>Usman Ali</td>
+                        <td>VIP Umrah</td>
+                        <td>250000</td>
+                        <td>10%</td>
+                        <td>25000</td>
+                        <td>225000</td>
+                        <td><span class="failed">Failed</span></td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

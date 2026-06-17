@@ -1,0 +1,238 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agent Dashboard | Safar-e-Haram</title>
+    <script src="https://kit.fontawesome.com/ade337f09a.js" crossorigin="anonymous"></script>
+    
+    <link rel="stylesheet" href="{% static 'css/add_packages.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/manage_packages.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/manage_bookings.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/payments.css' %}" />
+
+    <style>
+      :root {
+        --primary-green: #155c3b;
+        --light-green: #1f7a4f;
+        --soft-white: #f4f7f5;
+        --pure-white: #ffffff;
+        --text-dark: #1f2f25;
+        --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        --danger: #dc3545;
+        --warning-orange: #ef6c00;
+        --success-green: #2e7d32;
+        --text-muted: #6c757d;
+      }
+
+      * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", Tahoma, sans-serif; }
+      body { background: var(--soft-white); color: var(--text-dark); overflow-x: hidden; }
+
+      /* Navbar */
+      .navbar {
+        height: 70px;
+        background: var(--pure-white);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 25px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1001;
+      }
+
+      .nav-left { display: flex; align-items: center; gap: 15px; }
+      .menu-btn { cursor: pointer; font-size: 1.2rem; color: var(--primary-green); padding: 5px; }
+      .portal-home-link { color: var(--primary-green); text-decoration: none; font-size: 1.1rem; }
+
+      .user-menu-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        padding: 5px 12px;
+        border-radius: 30px;
+        transition: 0.2s;
+        border: 1px solid #eee;
+      }
+      .user-avatar {
+        width: 35px; height: 35px;
+        background: var(--light-green);
+        color: white;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 260px;
+        height: 100vh;
+        background: var(--primary-green);
+        position: fixed;
+        top: 0;
+        left: 0;
+        padding-top: 85px;
+        transition: 0.3s;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+      }
+      .sidebar.hide { left: -260px; }
+
+      .sidebar a {
+        display: flex;
+        align-items: center;
+        padding: 12px 20px;
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        font-weight: 500;
+        margin: 4px 12px;
+        border-radius: 8px;
+        transition: 0.2s;
+        font-size: 14px;
+      }
+      .sidebar a i { width: 25px; font-size: 1.1rem; margin-right: 10px; }
+      .sidebar a:hover, .sidebar a.active {
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+      }
+
+      .sidebar-footer { margin-top: auto; padding-bottom: 20px; }
+      .logout-link { color: #ffab91 !important; border: 1px solid rgba(255, 171, 145, 0.3); }
+
+      /* Main Content */
+      .main-content {
+        margin-left: 260px;
+        padding: 100px 30px 30px;
+        transition: 0.3s;
+        min-height: 100vh;
+      }
+      .main-content.expanded { margin-left: 0; }
+
+      .alert-box {
+        padding: 15px; margin-bottom: 20px;
+        border-radius: 8px; background: white;
+        box-shadow: var(--shadow); font-weight: 500;
+      }
+      .alert-success { border-left: 5px solid var(--success-green); color: var(--success-green); }
+      .alert-error { border-left: 5px solid var(--danger); color: var(--danger); }
+
+      @media (max-width: 768px) {
+        .sidebar { left: -260px; }
+        .sidebar.show { left: 0; }
+        .main-content { margin-left: 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-left">
+        <a href="/" class="portal-home-link" title="View Website">
+          <i class="fas fa-house"></i>
+        </a>
+        <div class="menu-btn" onclick="toggleSidebar()">
+          <i class="fas fa-bars"></i>
+        </div>
+        <strong style="color: var(--primary-green); font-size: 1.1rem; letter-spacing: 0.5px; text-transform: uppercase;">
+            Agent Portal
+        </strong>
+      </div>
+
+      <div class="nav-right">
+        <div class="user-menu-btn">
+          <div style="text-align: right; line-height: 1.2">
+            {% if request.user.stakeholder_profile %}
+              <span style="display: block; font-weight: 700; font-size: 14px">{{ request.user.stakeholder_profile.agency_name }}</span>
+              <small>{% if request.user.stakeholder_profile.is_verified %}Verified Agent{% else %}Pending Verification{% endif %}</small>
+            {% else %}
+              <span style="display: block; font-weight: 700">{{ request.user.username }}</span>
+              <small style="color: #888; font-size: 11px">Guest User</small>
+            {% endif %}
+          </div>
+          <div class="user-avatar">
+            <i class="fas {% if request.user.stakeholder_profile %}fa-user-tie{% else %}fa-user{% endif %}"></i>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="sidebar" id="sidebar">
+      <a href="{% url 'stakeholder:stakeholder_dashboard' %}" class="{% if request.resolver_match.url_name == 'stakeholder_dashboard' %}active{% endif %}">
+        <i class="fas fa-th-large"></i> Dashboard
+      </a>
+
+      <a href="" class="{% if request.resolver_match.url_name == 'view_profile' %}active{% endif %}">
+        <i class="fas fa-id-card"></i> My Profile
+      </a>
+
+      <a href="{% url 'stakeholder:manage_packages' %}" class="{% if request.resolver_match.url_name == 'manage_packages' %}active{% endif %}">
+        <i class="fas fa-box"></i> Manage Packages
+      </a>
+      <a href="{% url 'stakeholder:manage_booking' %}" class="{% if request.resolver_match.url_name == 'manage_booking' %}active{% endif %}">
+        <i class="fas fa-calendar-check"></i> Manage Bookings
+      </a>
+
+      <a href="{% url 'stakeholder:earning_transaction' %}" class="{% if request.resolver_match.url_name == 'earning_transaction' %}active{% endif %}">
+        <i class="fas fa-wallet"></i> My Earnings
+      </a>
+      <a href="{% url 'stakeholder:payments' %}" class="{% if request.resolver_match.url_name == 'payments' %}active{% endif %}">
+        <i class="fas fa-file-invoice-dollar"></i> Payments
+      </a>
+
+      <a href="{% url 'stakeholder:agent_complains' %}"  class="{% if request.resolver_match.url_name == 'agent_complains' %}active{% endif %}">
+        <i class="fas fa-headset"></i> Complaints & Support
+      </a>
+      <a href="{% url 'stakeholder:cancelled_booking' %}" class="{% if request.resolver_match.url_name == 'cancelled_bookings' %}active{% endif %}">
+    <i class="fas fa-calendar-times"></i> Cancellations
+</a>
+
+      <a href="{% url 'stakeholder:create_profile' %}" class="{% if request.resolver_match.url_name == 'create_profile' %}active{% endif %}" style="border: 1px dashed rgba(255, 255, 255, 0.3); margin-top: 15px;">
+        <i class="fas fa-plus-circle"></i> Setup Profile
+      </a>
+
+      <div class="sidebar-footer">
+        <a href="/logout" class="logout-link">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+      </div>
+    </div>
+
+    <div class="main-content" id="main-content">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert-box {% if message.tags == 'success' %}alert-success{% else %}alert-error{% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      {% block content %}{% endblock %}
+    </div>
+
+    <script>
+      function toggleSidebar() {
+        const sidebar = document.getElementById("sidebar");
+        const mainContent = document.getElementById("main-content");
+        if (window.innerWidth > 768) {
+          sidebar.classList.toggle("hide");
+          mainContent.classList.toggle("expanded");
+        } else {
+          sidebar.classList.toggle("show");
+        }
+      }
+
+      window.onclick = function (event) {
+        if (window.innerWidth <= 768) {
+          const sidebar = document.getElementById("sidebar");
+          const menuBtn = document.querySelector(".menu-btn");
+          if (!sidebar.contains(event.target) && !menuBtn.contains(event.target) && sidebar.classList.contains("show")) {
+            sidebar.classList.remove("show");
+          }
+        }
+      };
+    </script>
+  </body>
+</html>
