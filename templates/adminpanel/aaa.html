@@ -1,0 +1,540 @@
+{% extends 'adminpanel/admin_layout.html' %}
+
+{% block content %}
+
+<style>
+
+.review-container{
+    max-width:1100px;
+    margin:30px auto;
+    background:#fff;
+    border-radius:16px;
+    padding:35px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+.page-title{
+    margin-bottom:30px;
+}
+
+.section-title{
+    font-size:18px;
+    font-weight:700;
+    margin:35px 0 15px;
+    color:#0b7a47;
+    border-bottom:2px solid #f1f1f1;
+    padding-bottom:10px;
+}
+
+.grid-2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+.grid-3{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:20px;
+}
+
+.info-box{
+    background:#f8fafc;
+    padding:15px;
+    border-radius:10px;
+    border:1px solid #edf1f5;
+}
+
+.info-box label{
+    display:block;
+    font-size:12px;
+    font-weight:700;
+    color:#666;
+    margin-bottom:6px;
+}
+
+.info-box p{
+    margin:0;
+    font-size:15px;
+    font-weight:600;
+    color:#222;
+}
+
+.doc-btn{
+    display:inline-block;
+    margin-top:10px;
+    margin-right:10px;
+    background:#0b7a47;
+    color:#fff;
+    text-decoration:none;
+    padding:10px 16px;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:700;
+}
+
+textarea{
+    width:100%;
+    min-height:140px;
+    border:1px solid #d1d9e0;
+    border-radius:12px;
+    padding:15px;
+    margin-top:25px;
+    resize:none;
+    font-size:14px;
+}
+
+.btn-group{
+    display:flex;
+    gap:15px;
+    margin-top:25px;
+}
+
+.action-btn{
+    border:none;
+    padding:14px 25px;
+    border-radius:10px;
+    color:white;
+    cursor:pointer;
+    font-weight:700;
+    font-size:14px;
+}
+
+.approve-btn{
+    background:#16a34a;
+}
+
+.rollback-btn{
+    background:#2563eb;
+}
+
+.reject-btn{
+    background:#dc2626;
+}
+
+.status-badge{
+    display:inline-block;
+    padding:7px 14px;
+    border-radius:30px;
+    font-size:12px;
+    font-weight:700;
+    text-transform:uppercase;
+}
+
+.pending{
+    background:#fff3cd;
+    color:#856404;
+}
+
+.approved{
+    background:#d1e7dd;
+    color:#0f5132;
+}
+
+.rollback{
+    background:#dbeafe;
+    color:#1d4ed8;
+}
+
+.rejected{
+    background:#f8d7da;
+    color:#842029;
+}
+
+</style>
+
+<div class="review-container">
+
+    <h1 class="page-title">
+        Agent KYC Review
+    </h1>
+
+    <!-- STATUS -->
+
+    <div style="margin-bottom:25px;">
+
+        <span class="status-badge {{ profile.kyc_status }}">
+            {{ profile.kyc_status }}
+        </span>
+
+    </div>
+
+    <!-- BASIC INFO -->
+
+    <div class="section-title">
+        Agency & Contact Information
+    </div>
+
+    <div class="grid-2">
+
+        <div class="info-box">
+            <label>Agency Name</label>
+            <p>{{ profile.agency_name|default:"-" }}</p>
+        </div>
+
+        <div class="info-box">
+            <label>Owner Name</label>
+            <p>{{ profile.owner_name|default:"-" }}</p>
+        </div>
+
+        <div class="info-box">
+            <label>Phone Number</label>
+            <p>{{ profile.phone_no|default:"-" }}</p>
+        </div>
+
+        <div class="info-box">
+            <label>WhatsApp Number</label>
+            <p>{{ profile.whatsapp_no|default:"-" }}</p>
+        </div>
+
+    </div>
+
+    <!-- ADDRESS -->
+
+    <div class="section-title">
+        Office Address
+    </div>
+
+    <div class="info-box">
+        <p>{{ profile.office_address|default:"-" }}</p>
+    </div>
+
+    <!-- SERVICES -->
+
+    <div class="section-title">
+        Services
+    </div>
+
+    <div class="grid-2">
+
+        <div class="info-box">
+            <label>Hajj Service</label>
+
+            <p>
+                {% if profile.is_hajj %}
+                    Yes
+                {% else %}
+                    No
+                {% endif %}
+            </p>
+        </div>
+
+        <div class="info-box">
+            <label>Ziyarat Service</label>
+
+            <p>
+                {% if profile.is_ziyarat %}
+                    Yes
+                {% else %}
+                    No
+                {% endif %}
+            </p>
+        </div>
+
+    </div>
+
+    <!-- LEGAL -->
+
+    <div class="section-title">
+        Legal Documents
+    </div>
+
+    <div class="grid-3">
+
+        <div class="info-box">
+
+            <label>NTN Number</label>
+            <p>{{ profile.ntn_no|default:"-" }}</p>
+
+            {% if profile.ntn_doc %}
+            <a href="{{ profile.ntn_doc.url }}"
+               target="_blank"
+               class="doc-btn">
+
+                View NTN
+
+            </a>
+            {% endif %}
+
+        </div>
+
+        <div class="info-box">
+
+            <label>DTS Number</label>
+            <p>{{ profile.dts_no|default:"-" }}</p>
+
+            {% if profile.dts_doc %}
+            <a href="{{ profile.dts_doc.url }}"
+               target="_blank"
+               class="doc-btn">
+
+                View DTS
+
+            </a>
+            {% endif %}
+
+        </div>
+
+        <div class="info-box">
+
+            <label>CNIC Number</label>
+            <p>{{ profile.cnic_no|default:"-" }}</p>
+
+            {% if profile.cnic_f %}
+            <a href="{{ profile.cnic_f.url }}"
+               target="_blank"
+               class="doc-btn">
+
+                CNIC Front
+
+            </a>
+            {% endif %}
+
+            {% if profile.cnic_b %}
+            <a href="{{ profile.cnic_b.url }}"
+               target="_blank"
+               class="doc-btn">
+
+                CNIC Back
+
+            </a>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <!-- HAJJ -->
+
+    {% if profile.is_hajj %}
+
+    <div class="section-title">
+        Hajj Details
+    </div>
+
+    <div class="grid-2">
+
+        <div class="info-box">
+
+            <label>Munazzam Number</label>
+            <p>{{ profile.munazzam_no|default:"-" }}</p>
+
+            {% if profile.munazzam_doc %}
+            <a href="{{ profile.munazzam_doc.url }}"
+               target="_blank"
+               class="doc-btn">
+
+                View Munazzam
+
+            </a>
+            {% endif %}
+
+        </div>
+
+        <div class="info-box">
+
+            <label>IATA Type</label>
+            <p>{{ profile.iata_type|default:"-" }}</p>
+
+        </div>
+
+    </div>
+
+    {% if profile.iata_type == 'own' %}
+
+    <div class="grid-2">
+
+        <div class="info-box">
+
+            <label>IATA Number</label>
+            <p>{{ profile.iata_no|default:"-" }}</p>
+
+        </div>
+
+        <div class="info-box">
+
+            {% if profile.iata_doc %}
+            <a href="{{ profile.iata_doc.url }}"
+               target="_blank"
+               class="doc-btn">
+
+                View IATA Document
+
+            </a>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+    {% if profile.iata_type == 'reference' %}
+
+    <div class="grid-2">
+
+        <div class="info-box">
+
+            <label>Reference Agency</label>
+            <p>{{ profile.ref_agency_name|default:"-" }}</p>
+
+        </div>
+
+        <div class="info-box">
+
+            {% if profile.iata_ref_doc %}
+            <a href="{{ profile.iata_ref_doc.url }}"
+               target="_blank"
+               class="doc-btn">
+
+                View Reference Document
+
+            </a>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+    {% endif %}
+
+    <!-- ZIYARAT -->
+
+    {% if profile.is_ziyarat %}
+
+    <div class="section-title">
+        Ziyarat Details
+    </div>
+
+    <div class="grid-2">
+
+        <div class="info-box">
+
+            <label>Ziyarat Number</label>
+            <p>{{ profile.ziy_no|default:"-" }}</p>
+
+        </div>
+
+        <div class="info-box">
+
+            {% if profile.ziy_doc %}
+            <a href="{{ profile.ziy_doc.url }}"
+               target="_blank"
+               class="doc-btn">
+
+                View Ziyarat Document
+
+            </a>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+    <!-- FINANCIAL -->
+
+    <div class="section-title">
+        Financial Information
+    </div>
+
+    <div class="grid-3">
+
+        <div class="info-box">
+
+            <label>Bank IBAN</label>
+            <p>{{ profile.bank_iban|default:"-" }}</p>
+
+            <label style="margin-top:10px;">
+                Bank Name
+            </label>
+
+            <p>{{ profile.bank_name|default:"-" }}</p>
+
+        </div>
+
+        <div class="info-box">
+
+            <label>EasyPaisa Number</label>
+            <p>{{ profile.easypaisa_no|default:"-" }}</p>
+
+            <label style="margin-top:10px;">
+                Account Title
+            </label>
+
+            <p>{{ profile.easypaisa_name|default:"-" }}</p>
+
+        </div>
+
+        <div class="info-box">
+
+            <label>JazzCash Number</label>
+            <p>{{ profile.jazzcash_no|default:"-" }}</p>
+
+            <label style="margin-top:10px;">
+                Account Title
+            </label>
+
+            <p>{{ profile.jazzcash_name|default:"-" }}</p>
+
+        </div>
+
+    </div>
+
+    <!-- ADMIN ACTION -->
+
+    <div class="section-title">
+        Admin Review Message
+    </div>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <textarea
+            name="comment"
+            placeholder="Write message for agent..."
+        >{{ profile.admin_comment }}</textarea>
+
+        <div class="btn-group">
+
+            <button
+                type="submit"
+                name="action"
+                value="approve"
+                class="action-btn approve-btn">
+
+                Approve
+
+            </button>
+
+            <button
+                type="submit"
+                name="action"
+                value="rollback"
+                class="action-btn rollback-btn">
+
+                Rollback
+
+            </button>
+
+            <button
+                type="submit"
+                name="action"
+                value="reject"
+                class="action-btn reject-btn">
+
+                Reject
+
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

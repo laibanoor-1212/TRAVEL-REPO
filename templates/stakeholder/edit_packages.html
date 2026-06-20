@@ -1,0 +1,168 @@
+{% extends 'stakeholder/dashboard_layout2.html' %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/create_packages.css' %}" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+{% block content %}
+<!-- <h1>Total Types: {{ package_types|length }}</h1> -->
+<div class="page-container">
+    <div class="form-wizard">
+        <div class="wizard-header">
+            <div class="agency-info">
+                <span class="agency-label">EDIT PACKAGE</span>
+                <h2 class="agency-name">{{ package.name }}</h2>
+            </div>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data" class="stepped-form">
+            {% csrf_token %}
+
+            <div class="form-part">
+                <div class="part-title">
+                    <span class="part-number">1</span>
+                    <h3>Agency Verification</h3>
+                </div>
+                <div class="part-body">
+                    <div class="input-grid-2">
+                        <div class="field-box">
+                            <label>Agency Name</label>
+                            <input type="text" value="{{ request.user.stakeholder_profile.agency_name }}" readonly class="locked-input">
+                        </div>
+                        <div class="field-box">
+                            <label>License Number</label>
+                            <input type="text" value="{{ request.user.stakeholder_profile.license_number }}" readonly class="locked-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-part">
+                <div class="part-title">
+                    <span class="part-number">2</span>
+                    <h3>Package Specifications</h3>
+                </div>
+                <div class="part-body">
+                    <div class="field-box full-width">
+                        <label>Package Name</label>
+                        <input type="text" name="name" value="{{ package.name }}" placeholder="e.g. Premium 15 Days Umrah Group" required>
+                    </div>
+                    
+                    <div class="input-grid-3" style="margin-bottom: 15px;">
+                        <div class="field-box">
+                            <label>Package Type</label>
+                            <select name="package_type" required style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc;">
+                                <option value="" disabled>Select Type</option>
+                                {% for type in package_types %}
+                                    <option value="{{ type.id }}" {% if package.package_type.id == type.id %}selected{% endif %}>{{ type.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="field-box">
+                            <label>Package Tier</label>
+                            <select name="tier" required style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc;">
+                                <option value="economy" {% if package.tier == 'economy' %}selected{% endif %}>Economy</option>
+                                <option value="standard" {% if package.tier == 'standard' %}selected{% endif %}>Standard</option>
+                                <option value="vip" {% if package.tier == 'vip' %}selected{% endif %}>VIP</option>
+                                <option value="luxury" {% if package.tier == 'luxury' %}selected{% endif %}>Luxury</option>
+                            </select>
+                        </div>
+                        <div class="field-box">
+                            <label>Country</label>
+                            <input type="text" name="country" value="{{ package.country }}" placeholder="e.g. Saudi Arabia" required>
+                        </div>
+                    </div>
+
+                    <div class="input-grid-3">
+                        <div class="field-box">
+                            <label>City / Region</label>
+                            <input type="text" name="city" value="{{ package.city }}" placeholder="e.g. Makkah / Karbala">
+                        </div>
+                        <div class="field-box">
+                            <label>Price (PKR)</label>
+                            <input type="number" name="price" value="{{ package.price }}" min="100000" max="2500000" placeholder="0.00" required>
+                        </div>
+                        <div class="field-box">
+                            <label>Total Seats / Capacity</label>
+                            <input type="number" name="total_seats" value="{{ package.total_seats }}" placeholder="e.g. 50" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-part">
+                <div class="part-title">
+                    <span class="part-number">3</span>
+                    <h3>Accommodation & Dates</h3>
+                </div>
+                <div class="part-body">
+                    <div class="input-grid-3" style="margin-bottom: 15px;">
+                        <div class="field-box">
+                            <label>Duration days</label>
+                            <input type="number" name="duration_days" value="{{ package.duration_days }}" placeholder="15" required>
+                        </div>
+                        <div class="field-box">
+                            <label>Departure Date</label>
+                            <input type="date" name="departure_date" value="{{ package.departure_date|date:'Y-m-d' }}" required>
+                        </div>
+                        <div class="field-box">
+                            <label>Application Deadline</label>
+                            <input type="date" name="application_deadline" value="{{ package.application_deadline|date:'Y-m-d' }}" required>
+                        </div>
+                    </div>
+
+                    <div class="input-grid-2">
+                        <div class="field-box">
+                            <label><i class="fas fa-mosque"></i> Makkah Hotel</label>
+                            <input type="text" name="makkah_hotel" value="{{ package.makkah_hotel }}" placeholder="Hotel Name">
+                        </div>
+                        <div class="field-box">
+                            <label><i class="fas fa-kaaba"></i> Madinah Hotel</label>
+                            <input type="text" name="madinah_hotel" value="{{ package.madinah_hotel }}" placeholder="Hotel Name">
+                        </div>
+                    </div>
+
+                    <div class="services-selection" style="margin-top: 15px;">
+                        <label>Included Services:</label>
+                        <div class="pill-group">
+                            <label class="pill"><input type="checkbox" name="visa" {% if package.visa %}checked{% endif %}> Visa</label>
+                            <label class="pill"><input type="checkbox" name="ticket" {% if package.ticket %}checked{% endif %}> Ticket</label>
+                            <label class="pill"><input type="checkbox" name="transport" {% if package.transport %}checked{% endif %}> Transport</label>
+                            <label class="pill"><input type="checkbox" name="ziyarat" {% if package.ziyarat %}checked{% endif %}> Ziyarat</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-part">
+                <div class="part-title">
+                    <span class="part-number">4</span>
+                    <h3>Media & Poster</h3>
+                </div>
+                <div class="part-body">
+                    <div class="field-box">
+                        <label>Detailed Itinerary / Description</label>
+                        <textarea name="description" rows="4" placeholder="Describe the package flow..." required>{{ package.description }}</textarea>
+                    </div>
+                    
+                    {% if package.banner %}
+                    <div style="margin-top: 10px; margin-bottom: 10px; font-size: 0.85rem; color: #64748b;">
+                        <p>Current Banner: <a href="{{ package.banner.url }}" target="_blank" style="color: #198754; font-weight: 500;">View Existing Image</a></p>
+                    </div>
+                    {% endif %}
+
+                    <div class="upload-zone">
+                        <input type="file" name="banner" id="banner">
+                        <label for="banner"><i class="fas fa-image"></i> Click to Upload New Package Banner (Leave empty to keep current)</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-footer-actions">
+                <a href="javascript:history.back()" class="btn-clear" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">Cancel</a>
+                <button type="submit" class="btn-publish">Update Package Details</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

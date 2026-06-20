@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'bookings',
     'packages',
     'notifications',
+    
+    
 
     'django.contrib.sites',
     #allauth libraries

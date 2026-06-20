@@ -10,5 +10,5 @@ urlpatterns = [
     path('forget_password/', views.admin_forget_password, name='admin_forget_password'),
     path("reset_confirm/<uidb64>/<token>/",views.admin_reset_password_confirm, name="reset_confirm"),
     path('agent_requests',views.agent_requests,name='agent_requests'),
-   path('review/<int:profile_id>/',views.review_agent, name='review_agent'), 
+  path('review/<int:pk>/', views.review_agent, name='review_agent'),
 ]

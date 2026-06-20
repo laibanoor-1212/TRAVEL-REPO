@@ -1,0 +1,140 @@
+{% extends 'base/base.html' %}
+{% block content %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/hajjpackages.css' %}">
+
+<div class="banner">
+    <div class="banner-text">
+        <h1>Hajj Packages 2026</h1>
+        <p>Compare verified Hajj operators and choose the perfect package for your journey.</p>
+    </div>
+</div>
+
+<div class="filters-section">
+    <div class="filter-box">
+        <h3>Filter by Stakeholder</h3>
+        <label><input type="checkbox" value="Al-Faisal Travels"> Al-Faisal Travels</label>
+        <label><input type="checkbox" value="Haramain Tours"> Haramain Tours</label>
+        <label><input type="checkbox" value="Nusrat Hajj Group"> Nusrat Hajj Group</label>
+    </div>
+
+    <div class="filter-box">
+        <h3>Price Range</h3>
+        <select id="priceSelect">
+            <option selected value="All">All</option>
+            <option value="Under 300000">Under PKR 300,000</option>
+            <option value="300000 - 1000000">PKR 300,000 - PKR 1,000,000</option>
+            <option value="Above 1000000">Above PKR 1,000,000</option>
+        </select>
+    </div>
+
+    <div class="filter-box">
+        <h3>Category</h3>
+        <select id="categorySelect">
+            <option value="All">All</option>
+            <option value="economy">Economy</option>
+            <option value="standard">Standard</option>
+            <option value="vip">VIP</option>
+            <option value="luxury">Luxury</option>
+        </select>
+    </div>
+</div>
+
+<div class="packages-grid">
+    {% for package in packages %}
+        <div class="package-card"
+             data-stakeholder="{% if package.agency.stakeholder_profile %}{{ package.agency.stakeholder_profile.agency_name }}{% else %}{{ package.agency.username }}{% endif %}"
+             data-category="{{ package.tier }}"
+             data-price="{{ package.price }}">
+
+            <div class="stakeholder-header">
+                <img src="{% if package.banner %}{{ package.banner.url }}{% else %}{% static 'img/stakeholders/default.png' %}{% endif %}" 
+                     alt="Agency Logo" class="agency-logo-img">
+                <span class="category {{ package.tier }}">{{ package.get_tier_display }}</span>
+            </div>
+
+            <div class="card-body">
+                <div class="agency-name-tag">
+                    {% if package.agency.stakeholder_profile %}{{ package.agency.stakeholder_profile.agency_name }}{% else %}{{ package.agency.username }}{% endif %}
+                </div>
+
+                <h2>{{ package.name }}</h2>
+                <div class="price">PKR {{ package.price }}</div>
+
+                <ul class="package-features">
+                    <li><strong> Duration:</strong> {{ package.duration_days }} Days</li>
+                    <li><strong> Hotels:</strong> Makkah: {{ package.makkah_hotel }} | Madina: {{ package.madinah_hotel }}</li>
+                    <li><strong> Features:</strong> 
+                        {% if package.visa %}Visa{% endif %}
+                        {% if package.ticket %} | Ticket{% endif %}
+                        {% if package.transport %} | Transport{% endif %}
+                        {% if package.ziyarat %} | Ziyarat{% endif %}
+                    </li>
+                    <li><strong>Available Space:</strong> {{ package.seats_left }} / {{ package.total_seats }} Seats</li>
+                </ul>
+
+                <p class="pkg-desc">
+                    {{ package.description|truncatewords:15 }}
+                </p>
+            </div>
+
+            <div class="buttons">
+                <a href="" class="details-btn">View Details</a>
+               <a href="{% url 'book_package' package.id %}" class="btn-book-now">Book Now</a>
+            </div>
+        </div>
+    {% empty %}
+        <div class="no-packages">
+            <p>No active packages available from operators right now.</p>
+        </div>
+    {% endfor %}
+</div>
+
+<footer class="footer-wrapper">
+  </footer>
+
+<script>
+    // Filtering logic remains unchanged and clean
+    const checkboxes = document.querySelectorAll('.filter-box input[type="checkbox"]');
+    const categorySelect = document.getElementById('categorySelect');
+    const priceSelect = document.getElementById('priceSelect');
+
+    function applyFilters() {
+        const cards = document.querySelectorAll('.package-card');
+        let selectedStakeholders = [];
+        checkboxes.forEach(chk => {
+            if (chk.checked) selectedStakeholders.push(chk.value.toLowerCase().trim());
+        });
+
+        let selectedCategory = categorySelect.value.toLowerCase();
+        let selectedPrice = priceSelect.value;
+
+        cards.forEach(card => {
+            let match = true;
+            let stakeholder = (card.dataset.stakeholder || "").toLowerCase().trim();
+            let category = (card.dataset.category || "").toLowerCase();
+            let price = parseFloat(card.dataset.price) || 0;
+
+            if (selectedStakeholders.length > 0) {
+                let matchesStakeholder = selectedStakeholders.some(s => stakeholder.includes(s));
+                if (!matchesStakeholder) match = false;
+            }
+
+            if (selectedCategory !== "all" && category !== selectedCategory) {
+                match = false;
+            }
+
+            if (selectedPrice === "Under 300000" && price >= 300000) match = false;
+            if (selectedPrice === "300000 - 1000000" && (price < 300000 || price > 1000000)) match = false;
+            if (selectedPrice === "Above 1000000" && price <= 1000000) match = false;
+
+            card.style.display = match ? "block" : "none";
+        });
+    }
+
+    checkboxes.forEach(chk => chk.addEventListener("change", applyFilters));
+    categorySelect.addEventListener("change", applyFilters);
+    priceSelect.addEventListener("change", applyFilters);
+</script>
+{% endblock %}
