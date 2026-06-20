@@ -8,8 +8,42 @@ urlpatterns = [
 #  path('logout/', views.logout_view, name='logout'),
    path("agent_approved/", views.approved_agent, name="approved_agent"),
    path("request_pending/", views.request_pending, name="request_pending"),
-     path("agent_details/", views.agent_details, name="create_profile"),
-      path("missing_doc/", views.missing_doc, name="missing_doc"),
-           path("account_locked/", views.account_locked, name="account_locked"),
+   path("agent_details/", views.agent_details, name="create_profile"),
+   path("missing_doc/", views.missing_doc, name="missing_doc"),
+   path("account_locked/", views.account_locked, name="account_locked"),
+   path("dashboard/", views.stakeholder_dashboard, name="stakeholder_dashboard"),
+   
+   path("manage_booking/", views.manage_booking, name="manage_booking"),
+   path("earning_transaction/", views.earning_transaction, name="earning_transaction"),
+   path("payments/", views.payments, name="payments"),
+    path("agent_complains/", views.agent_complains, name="agent_complains"),
+      path("cancelled_booking/", views.cancelled_booking, name="cancelled_booking"),
+    path(
+        'create-package/',
+        views.create_packages,
+        name='create_packages'
+    ),
+
+    path(
+        'manage-packages/',
+        views.manage_packages,
+        name='manage_packages'
+    ),
+
+    path(
+        'update-package/<int:pk>/',
+        views.update_package,
+        name='update_package'
+    ),
+
+    path(
+        'delete-package/<int:pk>/',
+        views.delete_package,
+        name='delete_package'
+    ),
+
+  
+     
+
    
 ]

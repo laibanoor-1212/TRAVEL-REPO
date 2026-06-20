@@ -48,6 +48,8 @@ class AgentKYC(models.Model):
     submission_count = models.PositiveIntegerField(default=0)
     submitted_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+   
+    rejected_fields = models.TextField(blank=True, help_text="Comma-separated fields that need to be unlocked")
 
     def __str__(self):
 

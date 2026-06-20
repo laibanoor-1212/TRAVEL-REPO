@@ -1,0 +1,158 @@
+{% extends 'stakeholder/dashboard_layout2.html' %}
+{% load static %}
+ <link rel="stylesheet" href="{% static 'css/create_packages.css' %}" />
+{% block content %}
+<div class="page-container">
+    <div class="form-wizard">
+        <div class="wizard-header">
+            <div class="agency-info">
+                <span class="agency-label">ADD PACKAGES</span>
+                <h2 class="agency-name">{{ request.user.stakeholder_profile.agency_name }}</h2>
+            </div>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data" class="stepped-form">
+            {% csrf_token %}
+
+            <div class="form-part">
+                <div class="part-title">
+                    <span class="part-number">1</span>
+                    <h3>Agency Verification</h3>
+                </div>
+                <div class="part-body">
+                    <div class="input-grid-2">
+                        <div class="field-box">
+                            <label>Agency Name</label>
+                            <input type="text" value="{{ request.user.stakeholder_profile.agency_name }}" readonly class="locked-input">
+                        </div>
+                        <div class="field-box">
+                            <label>License Number</label>
+                            <input type="text" value="{{ request.user.stakeholder_profile.license_number }}" readonly class="locked-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-part">
+                <div class="part-title">
+                    <span class="part-number">2</span>
+                    <h3>Package Specifications</h3>
+                </div>
+                <div class="part-body">
+                    <div class="field-box full-width">
+                        <label>Package Name</label>
+                        <input type="text" name="name" placeholder="e.g. Premium 15 Days Umrah Group" required>
+                    </div>
+                    
+                    <div class="input-grid-3" style="margin-bottom: 15px;">
+                        <div class="field-box">
+                            <label>Package Type</label>
+                            <select name="package_type" required style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc;">
+                                <option value="" disabled selected>Select Type</option>
+                                {% for type in package_types %}
+                                    <option value="{{ type.id }}">{{ type.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="field-box">
+                            <label>Package Tier</label>
+                            <select name="tier" required style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc;">
+                                <option value="" disabled selected>Select Tier</option>
+                                <option value="economy">Economy</option>
+                                <option value="standard">Standard</option>
+                                <option value="vip">VIP</option>
+                                <option value="luxury">Luxury</option>
+                            </select>
+                        </div>
+                        <div class="field-box">
+                            <label>Country</label>
+                            <input type="text" name="country" placeholder="e.g. Saudi Arabia" required>
+                        </div>
+                    </div>
+
+                    <div class="input-grid-3">
+                        <div class="field-box">
+                            <label>City / Region</label>
+                            <input type="text" name="city" placeholder="e.g. Makkah / Karbala">
+                        </div>
+                        <div class="field-box">
+                            <label>Price (PKR)</label>
+                            <input type="number" name="price" min="100000" max="2500000" placeholder="0.00" required>
+                        </div>
+                        <div class="field-box">
+                            <label>Total Seats / Capacity</label>
+                            <input type="number" name="total_seats" placeholder="e.g. 50" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-part">
+                <div class="part-title">
+                    <span class="part-number">3</span>
+                    <h3>Accommodation & Dates</h3>
+                </div>
+                <div class="part-body">
+                    <div class="input-grid-3" style="margin-bottom: 15px;">
+                        <div class="field-box">
+                            <label>Duration days</label>
+                            <input type="number" name="duration_days" placeholder="15" required>
+                        </div>
+                        <div class="field-box">
+                            <label>Departure Date</label>
+                            <input type="date" name="departure_date" required>
+                        </div>
+                        <div class="field-box">
+                            <label>Application Deadline</label>
+                            <input type="date" name="application_deadline" required>
+                        </div>
+                    </div>
+
+                    <div class="input-grid-2">
+                        <div class="field-box">
+                            <label><i class="fas fa-mosque"></i> Makkah Hotel</label>
+                            <input type="text" name="makkah_hotel" placeholder="Hotel Name">
+                        </div>
+                        <div class="field-box">
+                            <label><i class="fas fa-kaaba"></i> Madinah Hotel</label>
+                            <input type="text" name="madinah_hotel" placeholder="Hotel Name">
+                        </div>
+                    </div>
+
+                    <div class="services-selection" style="margin-top: 15px;">
+                        <label>Included Services:</label>
+                        <div class="pill-group">
+                            <label class="pill"><input type="checkbox" name="visa"> Visa</label>
+                            <label class="pill"><input type="checkbox" name="ticket"> Ticket</label>
+                            <label class="pill"><input type="checkbox" name="transport"> Transport</label>
+                            <label class="pill"><input type="checkbox" name="ziyarat"> Ziyarat</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-part">
+                <div class="part-title">
+                    <span class="part-number">4</span>
+                    <h3>Media & Poster</h3>
+                </div>
+                <div class="part-body">
+                    <div class="field-box">
+                        <label>Detailed Itinerary / Description</label>
+                        <textarea name="description" rows="4" placeholder="Describe the package flow..." required></textarea>
+                    </div>
+                    <div class="upload-zone">
+                        <input type="file" name="banner" id="banner">
+                        <label for="banner"><i class="fas fa-image"></i> Click to Upload Package Banner</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-footer-actions">
+                <button type="reset" class="btn-clear">Clear All</button>
+                <button type="submit" class="btn-publish">Publish Package Now</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -143,35 +143,36 @@ def agent_requests(request):
             'requests': requests,
         }
     )
-def review_agent(request, profile_id):
-    profile = get_object_or_404(AgentKYC, id=profile_id)
+def review_agent(request, pk):
+    profile = get_object_or_404(AgentKYC, pk=pk)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         action = request.POST.get('action')
         comment = request.POST.get('comment')
 
-        # Comment ko pehle hi assign kar diya
         profile.admin_comment = comment
 
         if action == 'approve':
             profile.kyc_status = 'approved'
-            messages.success(request, f"Agent application approved successfully!")
-
-        elif action == 'rollback':
-            profile.kyc_status = 'rollback'
-            messages.warning(request, f"Application sent back for correction (Rollback).")
-            
+            profile.rejected_fields = ""  # Clear fields on approval
+            messages.success(request, "KYC approved successfully.")
+        
         elif action == 'reject':
             profile.kyc_status = 'rejected'
-            messages.error(request, f"Agent application has been rejected.")
+            messages.error(request, "KYC has been rejected.")
+            
+        elif action == 'rollback':
+            profile.kyc_status = 'rollback'
+            # Checkboxes se selected fields ki list lein
+            selected_fields = request.POST.getlist('reject_fields_list')
+            # Comma-separated string bana kar save karein (e.g., "agency_name,ntn_doc")
+            profile.rejected_fields = ",".join(selected_fields)
+            messages.warning(request, "KYC status set to rollback with selected fields.")
 
-        # Data ko database mein save kiya
         profile.save()
-        return redirect('adminpanel:agent_requests')
+        return redirect('adminpanel:admin_dashboard') # Apne admin dashboard ka route dein
 
-    return render(request, 'adminpanel/review_agent.html', {
-        'profile': profile
-    })
+    return render(request, 'adminpanel/review_agent.html', {'profile': profile})
 def admin_logout_view(request):
     logout(request)
     messages.success(request, "You have been logged out successfully.")

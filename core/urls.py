@@ -27,6 +27,9 @@ urlpatterns = [
     path('adminpanel/', include('adminpanel.urls')),
       path('customers/', include('customers.urls')),
     path('accounts/', include('allauth.urls')),
+    path('packages/', include('packages.urls')),
+     path('base/', include('base.urls')),
+       path('bookings/', include('bookings.urls')),
 
 ]
 # to open files in browsers like images and pdf
