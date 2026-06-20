@@ -1,0 +1,414 @@
+{% extends 'stakeholder/dashboard_layout2.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    /* --- Main Container & Typography --- */
+    #packages-management {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 0 20px;
+        font-family: 'Poppins', 'Segoe UI', sans-serif;
+    }
+
+    .management-header {
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        margin-bottom: 25px;
+    }
+
+    .management-header h2 {
+        font-size: 1.6rem;
+        color: #0f5132; /* Deep Forest Green */
+        margin: 0;
+        font-weight: 600;
+    }
+
+    /* --- Primary Add Button --- */
+    .btn-add {
+        background-color: #198754; /* Theme Green */
+        color: #ffffff !important;
+        text-decoration: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(25, 135, 84, 0.15);
+    }
+
+    .btn-add:hover {
+        background-color: #146c43;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(25, 135, 84, 0.25);
+    }
+
+    /* --- Modern Tabs Layout --- */
+    .tabs-container {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 25px;
+        border-bottom: 2px solid #e9ecef;
+        padding-bottom: 2px;
+    }
+
+    .tab-btn {
+        background: none;
+        border: none;
+        padding: 12px 24px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #6c757d;
+        cursor: pointer;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .tab-btn:hover {
+        color: #198754;
+    }
+
+    .tab-btn.active {
+        color: #198754;
+    }
+
+    .tab-btn.active::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background-color: #198754;
+        border-radius: 3px;
+    }
+
+    /* --- Section Control (Tabs Hide/Show) --- */
+    .package-section {
+        display: none;
+    }
+
+    .package-section.active {
+        display: block;
+        animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* --- Card & Data Table Design --- */
+    .card {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+        border: 1px solid #e6efe9;
+        overflow: hidden;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        font-size: 0.95rem;
+    }
+
+    .custom-table th {
+        background-color: #f8f9fa;
+        padding: 16px 20px;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.78rem;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .custom-table thead tr.active-header th {
+        color: #155c3b;
+    }
+
+    .custom-table thead tr.expired-header th {
+        color: #d9534f;
+    }
+
+    .custom-table td {
+        padding: 16px 20px;
+        border-bottom: 1px solid #f1f3f5;
+        color: #334155;
+        vertical-align: middle;
+    }
+
+    .custom-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .custom-table tbody tr:hover td {
+        background-color: #fdfdfd;
+    }
+
+    .pkg-title {
+        color: #1e293b;
+        font-size: 0.95rem;
+        font-weight: 600;
+    }
+
+    .price-text {
+        font-weight: 600;
+        color: #0f5132;
+    }
+
+    /* --- Status Badge Pills --- */
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 14px;
+        border-radius: 30px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        text-transform: capitalize;
+    }
+
+    .status-pill.active-status {
+        background-color: #d1e7dd;
+        color: #0f5132;
+    }
+
+    .status-pill.expired-status {
+        background-color: #f8d7da;
+        color: #842029;
+    }
+
+    /* --- Action Row Buttons --- */
+    .actions-cell {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .btn-icon {
+        padding: 8px 14px;
+        border-radius: 6px;
+        font-size: 0.88rem;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s ease;
+    }
+
+    .btn-edit {
+        background-color: #f8f9fa;
+        color: #495057 !important;
+        border: 1px solid #ced4da;
+    }
+
+    .btn-edit:hover {
+        background-color: #e9ecef;
+        border-color: #adb5bd;
+    }
+
+    .btn-delete {
+        background-color: #fff5f5;
+        color: #e53e3e !important;
+        border: 1px solid #feb2b2;
+    }
+
+    .btn-delete:hover {
+        background-color: #ffe5e5;
+        border-color: #fc8181;
+    }
+
+    /* Empty Alert Design */
+    .empty-row {
+        text-align: center;
+        padding: 40px !important;
+        color: #8c98a5;
+        font-style: italic;
+    }
+
+    .empty-row i {
+        font-size: 1.8rem;
+        margin-bottom: 8px;
+        display: block;
+        color: #dee2e6;
+    }
+</style>
+
+<div id="packages-management">
+
+    {% if messages %}
+        {% for message in messages %}
+            <div style="padding: 15px; margin-bottom: 20px; border-radius: 8px; background-color: #d1e7dd; color: #0f5132; border: 1px solid #a3cfbb;">
+                <i class="fas fa-check-circle" style="margin-right: 8px;"></i> {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="management-header">
+        <h2>Package Management</h2>
+        <a href="{% url 'stakeholder:create_packages' %}" class="btn-add">
+            <i class="fas fa-plus"></i> Add New Package
+        </a>
+    </div>
+
+    <div class="tabs-container">
+        <button class="tab-btn active" onclick="showTab('active-pkgs', this)">
+            Active Packages
+        </button>
+        <button class="tab-btn" onclick="showTab('expired-pkgs', this)">
+            Expired / Inactive
+        </button>
+    </div>
+
+    <div id="active-pkgs" class="package-section active">
+        <div class="card">
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                        <tr class="active-header">
+                            <th>Package Name</th>
+                            <th>Type</th>
+                            <th>Country</th>
+                            <th>Price</th>
+                            <th>Seats Left</th>
+                            <th>Status</th>
+                            <th style="width: 200px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for package in active_packages %}
+                        <tr>
+                            <td>
+                                <span class="pkg-title">{{ package.name }}</span>
+                            </td>
+                            <td>{{ package.package_type }}</td>
+                            <td>
+                                <i class="fas fa-map-marker-alt" style="color: #6c757d; font-size: 0.85rem; margin-right: 4px;"></i> 
+                                {{ package.country }}
+                            </td>
+                            <td><span class="price-text">PKR {{ package.price }}</span></td>
+                            <td>
+                                <i class="fas fa-user-friends" style="color: #6c757d; font-size: 0.85rem; margin-right: 4px;"></i>
+                                {{ package.seats_left }}
+                            </td>
+                            <td>
+                                <span class="status-pill active-status">
+                                    <i class="fas fa-circle" style="font-size: 0.5rem; margin-right: 6px; vertical-align: middle;"></i>
+                                    {{ package.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="actions-cell">
+                                    <a href="{% url 'packages:update_package' package.pk %}" class="btn-icon btn-edit">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <a href="{% url 'packages:delete_package' package.pk %}" class="btn-icon btn-delete"
+                                       onclick="return confirm('Are you sure you want to deactivate this package? It will move to the Expired/Inactive tab.');">
+                                        <i class="fas fa-eye-slash"></i> Deactivate
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="7" class="empty-row">
+                                <i class="fas fa-box-open"></i>
+                                No Active Packages Found
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="expired-pkgs" class="package-section">
+        <div class="card">
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                        <tr class="expired-header">
+                            <th>Package Name</th>
+                            <th>Type</th>
+                            <th>Country</th>
+                            <th>Price</th>
+                            <th>Seats Left</th>
+                            <th>Status</th>
+                            <th style="width: 180px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for package in inactive_packages %}
+                        <tr>
+                            <td>
+                                <span class="pkg-title" style="color: #6c757d;">{{ package.name }}</span>
+                            </td>
+                            <td>{{ package.package_type }}</td>
+                            <td>
+                                <i class="fas fa-map-marker-alt" style="color: #9ea5ab; font-size: 0.85rem; margin-right: 4px;"></i> 
+                                {{ package.country }}
+                            </td>
+                            <td><span class="price-text" style="color: #6c757d;">PKR {{ package.price }}</span></td>
+                            <td>
+                                <i class="fas fa-user-friends" style="color: #9ea5ab; font-size: 0.85rem; margin-right: 4px;"></i>
+                                {{ package.seats_left }}
+                            </td>
+                            <td>
+                                <span class="status-pill expired-status">
+                                    <i class="fas fa-circle" style="font-size: 0.5rem; margin-right: 6px; vertical-align: middle;"></i>
+                                    {{ package.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="actions-cell">
+                                    <a href="{% url 'packages:update_package' package.pk %}" class="btn-icon btn-edit">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="7" class="empty-row">
+                                <i class="fas fa-box-open"></i>
+                                No Inactive Packages Found
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+function showTab(tabId, btn) {
+    document.querySelectorAll('.package-section').forEach(section => {
+        section.classList.remove('active');
+    });
+
+    document.querySelectorAll('.tab-btn').forEach(button => {
+        button.classList.remove('active');
+    });
+
+    document.getElementById(tabId).classList.add('active');
+    btn.classList.add('active');
+}
+</script>
+{% endblock %}

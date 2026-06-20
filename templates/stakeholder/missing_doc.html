@@ -1,153 +1,394 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% load static %}
-    <title>Agent Details Portal</title>
-
-    <link rel="stylesheet" href="{% static 'css/agent_details.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>Missing Documents / Rollback Request</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 20px;
+        }
 
+        .rollback-container {
+            max-width: 750px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 14px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        .rollback-box {
+            background: #fef2f2;
+            border-left: 5px solid #dc2626;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .rollback-box h4 {
+            margin: 0 0 10px;
+            color: #991b1b;
+            font-size: 16px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .rollback-box p {
+            margin: 0;
+            color: #7f1d1d;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .form-header h2 {
+            color: #1e293b;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .form-header p {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        /* Missing Fields Specific Styling */
+        .field-section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 25px 0 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e2e8f0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            background: #fafafa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .form-control:focus {
+            border-color: #0b7a47;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(11, 122, 71, 0.1);
+        }
+
+        .resubmit-btn {
+            background: #0b7a47;
+            color: #fff;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 30px;
+            transition: background 0.2s ease;
+        }
+
+        .resubmit-btn:hover {
+            background: #096339;
+        }
+
+        .messages {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+        .messages li {
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .messages .success { background: #d1e7dd; color: #0f5132; }
+    </style>
 </head>
 <body>
 
-<div class="container">
+<div class="rollback-container">
 
-    <div class="card">
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li class="{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
-        <div class="header">
-            <div class="header-icon-container">
-                <i class="fas fa-user-gear"></i>
-            </div>
-            <h2>Agent Details</h2>
+    <div class="form-header">
+        <h2>Update Missing Documents</h2>
+        <p>Please fix and re-submit only the fields requested by the administrator below.</p>
+    </div>
+
+    <div class="form-body">
+
+        <div class="rollback-box">
+            <h4>
+                <i class="fas fa-exclamation-triangle"></i>
+                Admin Modification Instructions
+            </h4>
+            <p>
+                {{ agentkyc.admin_comment|default:"No comments provided. Please update the fields below." }}
+            </p>
         </div>
-         <div class="alert-box">
-                        <i class="fas fa-triangle-exclamation"></i>
 
-                      
-                        {% if agentkyc.admin_comment %}
-                            <p>
-                                <strong>Admin Message:</strong><br>
-                                <span style="color: #dc2626; display: inline-block; margin-top: 5px;">
-                                    {{ agentkyc.admin_comment }}
-                                </span>
-                            </p>
-                        {% else %}
-                            <p>
-                                <strong>Missing Documents:</strong><br>
-                                Please re-upload correct files to proceed.
-                            </p>
-                        {% endif %}
-
-                    </div>
-
-        <!-- 🔥 MESSAGES -->
-        {% if messages %}
-            <div style="margin-bottom:15px;">
-                {% for message in messages %}
-                    <div style="
-                        padding:12px 15px;
-                        border-radius:8px;
-                        margin-bottom:10px;
-                        font-weight:600;
-                        background:#fef3c7;
-                        color:#92400e;
-                        border:1px solid #fcd34d;
-                    ">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-
-        <!-- Pura layout ek form ke andar wrap kiya hai taaki files aur data sahi re-submit ho sake -->
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
 
-            <div class="main-layout">
-
-                <div class="details-section">
-
-                    <div class="input-group">
-                        <label><i class="fas fa-user"></i> Full Name</label>
-                        <input type="text" class="input-field" value="{{ agentkyc.full_name }}" placeholder="Agent's Name" readonly>
-                    </div>
-
-                    <div class="input-group">
-                        <label><i class="fas fa-building"></i> Agency Name</label>
-                        <input type="text" class="input-field" value="{{ agentkyc.agency_name }}" placeholder="Agency Name" readonly>
-                    </div>
-
-                    <div class="input-group">
-                        <label><i class="fas fa-envelope"></i> Email Address</label>
-                        <input type="email" class="input-field" value="{{ agentkyc.email }}" placeholder="Email Address" readonly>
-                    </div>
-
-                    <div class="input-group">
-                        <label><i class="fas fa-phone"></i> Phone Number</label>
-                        <input type="tel" class="input-field" value="{{ agentkyc.phone_number }}" placeholder="Phone Number" readonly>
-                    </div>
-
-                    <div class="input-group">
-                        <label><i class="fas fa-id-card"></i> License Number</label>
-                        <input type="text" class="input-field" value="{{ agentkyc.license_number }}" placeholder="License ID" readonly>
-                    </div>
-
+            {% if 'agency_name' in agentkyc.rejected_fields or 'owner_name' in agentkyc.rejected_fields or 'phone_no' in agentkyc.rejected_fields or 'whatsapp_no' in agentkyc.rejected_fields %}
+                <div class="field-section-title">Agency & Contact Details</div>
+                
+                {% if 'agency_name' in agentkyc.rejected_fields %}
+                <div class="form-group">
+                    <label>Agency Name</label>
+                    <input type="text" name="agency_name" class="form-control" value="{{ agentkyc.agency_name }}" required>
                 </div>
+                {% endif %}
 
-                <div class="status-sidebar">
-
-                   
-
+                {% if 'owner_name' in agentkyc.rejected_fields %}
+                <div class="form-group">
+                    <label>Owner Name</label>
+                    <input type="text" name="owner_name" class="form-control" value="{{ agentkyc.owner_name }}" required>
                 </div>
+                {% endif %}
 
-            </div>
-
-            <div class="upload-section">
-
-                <div class="file-drop-zone">
-                    <i class="fas fa-cloud-arrow-up upload-icon"></i>
-                    <p id="file-chosen">Click to re-upload valid document</p>
-
-             
-                    <input type="file" id="fileUpload" name="kyc_document" onchange="updateFileName()" hidden required>
-
-                    <button type="button" class="btn-secondary"
-                            onclick="document.getElementById('fileUpload').click()">
-                        Choose File
-                    </button>
-
+                {% if 'phone_no' in agentkyc.rejected_fields %}
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="text" name="phone_no" class="form-control" value="{{ agentkyc.phone_no }}" required>
                 </div>
+                {% endif %}
 
-                <div class="action-footer">
-                    <button type="submit" class="btn-primary">Submit Now</button>
+                {% if 'whatsapp_no' in agentkyc.rejected_fields %}
+                <div class="form-group">
+                    <label>WhatsApp Number</label>
+                    <input type="text" name="whatsapp_no" class="form-control" value="{{ agentkyc.whatsapp_no }}" required>
                 </div>
- <a href="{% url 'logout' %}" style="color:#d9534f; display:block; margin-top:10px;">
-            Logout
-        </a>
-            </div>
+                {% endif %}
+            {% endif %}
+
+            {% if 'office_address' in agentkyc.rejected_fields %}
+                <div class="field-section-title">Office Address</div>
+                <div class="form-group">
+                    <label>Office Address</label>
+                    <input type="text" name="office_address" class="form-control" value="{{ agentkyc.office_address }}" required>
+                </div>
+            {% endif %}
+
+            {% if 'ntn_no' in agentkyc.rejected_fields or 'ntn_doc' in agentkyc.rejected_fields or 'dts_no' in agentkyc.rejected_fields or 'dts_doc' in agentkyc.rejected_fields or 'cnic_no' in agentkyc.rejected_fields or 'cnic_f' in agentkyc.rejected_fields or 'cnic_b' in agentkyc.rejected_fields %}
+                <div class="field-section-title">Legal Documents</div>
+
+                {% if 'ntn_no' in agentkyc.rejected_fields %}
+                <div class="form-group">
+                    <label>NTN Number</label>
+                    <input type="text" name="ntn_no" class="form-control" value="{{ agentkyc.ntn_no }}" required>
+                </div>
+                {% endif %}
+
+                {% if 'ntn_doc' in agentkyc.rejected_fields %}
+                <div class="form-group">
+                    <label>NTN Document (PDF/Image)</label>
+                    <input type="file" name="ntn_doc" class="form-control" required>
+                </div>
+                {% endif %}
+
+                {% if 'dts_no' in agentkyc.rejected_fields %}
+                <div class="form-group">
+                    <label>DTS Number</label>
+                    <input type="text" name="dts_no" class="form-control" value="{{ agentkyc.dts_no }}" required>
+                </div>
+                {% endif %}
+
+                {% if 'dts_doc' in agentkyc.rejected_fields %}
+                <div class="form-group">
+                    <label>DTS Document (PDF/Image)</label>
+                    <input type="file" name="dts_doc" class="form-control" required>
+                </div>
+                {% endif %}
+
+                {% if 'cnic_no' in agentkyc.rejected_fields %}
+                <div class="form-group">
+                    <label>CNIC Number</label>
+                    <input type="text" name="cnic_no" class="form-control" value="{{ agentkyc.cnic_no }}" required>
+                </div>
+                {% endif %}
+
+                {% if 'cnic_f' in agentkyc.rejected_fields %}
+                <div class="form-group">
+                    <label>CNIC Front Side</label>
+                    <input type="file" name="cnic_f" class="form-control" required>
+                </div>
+                {% endif %}
+
+                {% if 'cnic_b' in agentkyc.rejected_fields %}
+                <div class="form-group">
+                    <label>CNIC Back Side</label>
+                    <input type="file" name="cnic_b" class="form-control" required>
+                </div>
+                {% endif %}
+            {% endif %}
+
+            {% if 'munazzam_no' in agentkyc.rejected_fields or 'munazzam_doc' in agentkyc.rejected_fields or 'iata_type' in agentkyc.rejected_fields or 'iata_no' in agentkyc.rejected_fields or 'iata_doc' in agentkyc.rejected_fields or 'ref_agency_name' in agentkyc.rejected_fields or 'iata_ref_doc' in agentkyc.rejected_fields %}
+                <div class="field-section-title">Hajj Details</div>
+
+                {% if 'munazzam_no' in agentkyc.rejected_fields %}
+                <div class="form-group">
+                    <label>Munazzam Number</label>
+                    <input type="text" name="munazzam_no" class="form-control" value="{{ agentkyc.munazzam_no }}" required>
+                </div>
+                {% endif %}
+
+                {% if 'munazzam_doc' in agentkyc.rejected_fields %}
+                <div class="form-group">
+                    <label>Munazzam Document</label>
+                    <input type="file" name="munazzam_doc" class="form-control" required>
+                </div>
+                {% endif %}
+
+                {% if 'iata_type' in agentkyc.rejected_fields %}
+                <div class="form-group">
+                    <label>IATA Type</label>
+                    <select name="iata_type" class="form-control" required>
+                        <option value="own" {% if agentkyc.iata_type == 'own' %}selected{% endif %}>Own IATA</option>
+                        <option value="reference" {% if agentkyc.iata_type == 'reference' %}selected{% endif %}>Non-IATA (Reference)</option>
+                    </select>
+                </div>
+                {% endif %}
+
+                {% if 'iata_no' in agentkyc.rejected_fields %}
+                <div class="form-group">
+                    <label>IATA Number</label>
+                    <input type="text" name="iata_no" class="form-control" value="{{ agentkyc.iata_no }}">
+                </div>
+                {% endif %}
+
+                {% if 'iata_doc' in agentkyc.rejected_fields %}
+                <div class="form-group">
+                    <label>IATA Document</label>
+                    <input type="file" name="iata_doc" class="form-control">
+                </div>
+                {% endif %}
+
+                {% if 'ref_agency_name' in agentkyc.rejected_fields %}
+                <div class="form-group">
+                    <label>Reference Agency Name</label>
+                    <input type="text" name="ref_agency_name" class="form-control" value="{{ agentkyc.ref_agency_name }}">
+                </div>
+                {% endif %}
+
+                {% if 'iata_ref_doc' in agentkyc.rejected_fields %}
+                <div class="form-group">
+                    <label>Reference Document</label>
+                    <input type="file" name="iata_ref_doc" class="form-control">
+                </div>
+                {% endif %}
+            {% endif %}
+
+            {% if 'ziy_no' in agentkyc.rejected_fields or 'ziy_doc' in agentkyc.rejected_fields %}
+                <div class="field-section-title">Ziyarat Details</div>
+
+                {% if 'ziy_no' in agentkyc.rejected_fields %}
+                <div class="form-group">
+                    <label>Ziyarat Number</label>
+                    <input type="text" name="ziy_no" class="form-control" value="{{ agentkyc.ziy_no }}" required>
+                </div>
+                {% endif %}
+
+                {% if 'ziy_doc' in agentkyc.rejected_fields %}
+                <div class="form-group">
+                    <label>Ziyarat Document</label>
+                    <input type="file" name="ziy_doc" class="form-control" required>
+                </div>
+                {% endif %}
+            {% endif %}
+
+            {% if 'bank_name' in agentkyc.rejected_fields or 'bank_iban' in agentkyc.rejected_fields or 'easypaisa_no' in agentkyc.rejected_fields or 'easypaisa_name' in agentkyc.rejected_fields or 'jazzcash_no' in agentkyc.rejected_fields or 'jazzcash_name' in agentkyc.rejected_fields %}
+                <div class="field-section-title">Financial Information</div>
+
+                {% if 'bank_name' in agentkyc.rejected_fields %}
+                <div class="form-group">
+                    <label>Bank Name</label>
+                    <input type="text" name="bank_name" class="form-control" value="{{ agentkyc.bank_name }}" required>
+                </div>
+                {% endif %}
+
+                {% if 'bank_iban' in agentkyc.rejected_fields %}
+                <div class="form-group">
+                    <label>Bank IBAN</label>
+                    <input type="text" name="bank_iban" class="form-control" value="{{ agentkyc.bank_iban }}" required>
+                </div>
+                {% endif %}
+
+                {% if 'easypaisa_no' in agentkyc.rejected_fields %}
+                <div class="form-group">
+                    <label>EasyPaisa Number</label>
+                    <input type="text" name="easypaisa_no" class="form-control" value="{{ agentkyc.easypaisa_no }}">
+                </div>
+                {% endif %}
+
+                {% if 'easypaisa_name' in agentkyc.rejected_fields %}
+                <div class="form-group">
+                    <label>EasyPaisa Account Title</label>
+                    <input type="text" name="easypaisa_name" class="form-control" value="{{ agentkyc.easypaisa_name }}">
+                </div>
+                {% endif %}
+
+                {% if 'jazzcash_no' in agentkyc.rejected_fields %}
+                <div class="form-group">
+                    <label>JazzCash Number</label>
+                    <input type="text" name="jazzcash_no" class="form-control" value="{{ agentkyc.jazzcash_no }}">
+                </div>
+                {% endif %}
+
+                {% if 'jazzcash_name' in agentkyc.rejected_fields %}
+                <div class="form-group">
+                    <label>JazzCash Account Title</label>
+                    <input type="text" name="jazzcash_name" class="form-control" value="{{ agentkyc.jazzcash_name }}">
+                </div>
+                {% endif %}
+            {% endif %}
+
+            <button type="submit" class="resubmit-btn">
+                <i class="fas fa-paper-plane"></i> Re-Submit Updated Documents
+            </button>
 
         </form>
 
     </div>
-
 </div>
-
-
-<script>
-function updateFileName() {
-    const fileInput = document.getElementById('fileUpload');
-    const fileChosen = document.getElementById('fileChosen');
-    if (fileInput.files.length > 0) {
-        fileChosen.textContent = "Selected: " + fileInput.files[0].name;
-    } else {
-        fileChosen.textContent = "Click to re-upload valid document";
-    }
-}
-</script>
 
 </body>
 </html>

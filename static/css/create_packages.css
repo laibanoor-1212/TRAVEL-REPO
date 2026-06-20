@@ -1,0 +1,313 @@
+/* --- Form Layout Container --- */
+.page-container {
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 0 20px;
+    font-family: 'Poppins', 'Segoe UI', sans-serif;
+}
+
+.form-wizard {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    overflow: hidden;
+    border: 1px solid #e6efe9; /* Light green tint border */
+}
+
+/* --- Wizard Header (Green & Emerald Gradient) --- */
+.wizard-header {
+    background: linear-gradient(135deg, #0f5132 0%, #146c43 100%); /* Premium Green Gradient */
+    padding: 30px 40px;
+    color: #ffffff;
+}
+
+.agency-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #a3cfbb; /* Soft Light Green */
+    font-weight: 700;
+}
+
+.agency-name {
+    font-size: 1.75rem;
+    margin: 5px 0 0 0;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+/* --- Stepped Form Body --- */
+.stepped-form {
+    padding: 40px;
+    background: #ffffff;
+}
+
+.form-part {
+    margin-bottom: 35px;
+    padding-bottom: 30px;
+    border-bottom: 1px dashed #d1e7dd; /* Light green dashed separator */
+}
+
+.form-part:last-of-type {
+    border-bottom: none;
+    margin-bottom: 20px;
+}
+
+/* --- Part Section Headings --- */
+.part-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.part-number {
+    background: #146c43; /* Theme Green */
+    color: #ffffff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.part-title h3 {
+    font-size: 1.2rem;
+    color: #0f5132; /* Deep Forest Green */
+    margin: 0;
+    font-weight: 600;
+}
+
+/* --- Input Grid System --- */
+.input-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.input-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.field-box {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.field-box.full-width {
+    margin-bottom: 15px;
+}
+
+/* --- Labels & Fields Style --- */
+.field-box label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #495057;
+}
+
+.field-box label i {
+    color: #198754; /* Green Icons */
+    margin-right: 4px;
+}
+
+.field-box input[type="text"],
+.field-box input[type="number"],
+.field-box input[type="date"],
+.field-box select,
+.field-box textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: #212529;
+    background-color: #f8f9fa; /* Off-white background */
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.field-box input:focus,
+.field-box select:focus,
+.field-box textarea:focus {
+    outline: none;
+    border-color: #198754; /* Green Focus Border */
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(25, 135, 84, 0.15); /* Soft Green Glow */
+}
+
+/* Locked Inputs (Agency Verification) */
+.locked-input {
+    background-color: #e9ecef !important;
+    color: #6c757d !important;
+    border-color: #dee2e6 !important;
+    cursor: not-allowed;
+    font-weight: 500;
+}
+
+/* --- Included Services (Pills Checklist) --- */
+.services-selection label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 10px;
+}
+
+.pill-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    color: #495057;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.pill input[type="checkbox"] {
+    accent-color: #198754; /* Green Checkbox */
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.pill:hover {
+    background: #e9ecef;
+    border-color: #ced4da;
+}
+
+/* Check hone par active state ka style */
+.pill:has(input:checked) {
+    background: #d1e7dd; /* Light Green fill */
+    border-color: #198754; /* Solid green border */
+    color: #0f5132;
+    font-weight: 500;
+}
+
+/* --- Media Upload Zone --- */
+.upload-zone {
+    margin-top: 15px;
+    position: relative;
+    border: 2px dashed #ced4da;
+    padding: 30px 20px;
+    border-radius: 10px;
+    text-align: center;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.upload-zone:hover {
+    border-color: #198754;
+    background: #f4f9f6; /* Very soft green tint */
+}
+
+.upload-zone input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.upload-zone label {
+    font-size: 0.95rem;
+    color: #495057;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.upload-zone label i {
+    font-size: 2rem;
+    color: #198754;
+}
+
+/* --- Form Action Buttons --- */
+.form-footer-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    padding-top: 10px;
+}
+
+.btn-clear {
+    padding: 12px 24px;
+    background: #f8f9fa;
+    color: #495057;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-clear:hover {
+    background: #e9ecef;
+    color: #212529;
+}
+
+.btn-publish {
+    padding: 12px 30px;
+    background: #198754; /* Theme Green Button */
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(25, 135, 84, 0.2);
+}
+
+.btn-publish:hover {
+    background: #146c43; /* Darker green on hover */
+    box-shadow: 0 6px 16px rgba(25, 135, 84, 0.3);
+    transform: translateY(-1px);
+}
+
+.btn-publish:active {
+    transform: translateY(0);
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+    .input-grid-3, .input-grid-2 {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    .stepped-form {
+        padding: 20px;
+    }
+    .wizard-header {
+        padding: 20px;
+    }
+    .form-footer-actions {
+        flex-direction: column-reverse;
+    }
+    .btn-clear, .btn-publish {
+        width: 100%;
+        text-align: center;
+    }
+}
