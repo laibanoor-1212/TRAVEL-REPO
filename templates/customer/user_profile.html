@@ -1,0 +1,122 @@
+{% extends 'base/user_layout.html' %}
+{% load static %}
+
+{% block title %}Detailed Profile Setup{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/user_profile.css' %}">
+
+<div class="profile-wrapper">
+    <div style="margin-bottom: 25px;">
+        <h2 style="margin:0; color:#2c3e50;">Profile Verification</h2>
+        <p style="color:#7f8c8d; font-size:14px;">Complete both parts to enable booking features.</p>
+    </div>
+
+    <form action="#" method="POST" enctype="multipart/form-data" class="profile-grid">
+        {% csrf_token %}
+
+        <div class="left-section">
+            <div class="setup-card" style="margin-bottom: 20px;">
+                <div class="section-title"><i class="fa-solid fa-user"></i> Personal & Identity</div>
+                <div class="form-rows">
+                    <div class="field-group">
+                        <label>Full Name (Passport)</label>
+                        <input type="text" name="full_name" required>
+                    </div>
+                    <div class="field-group">
+                        <label>Father/Husband Name</label>
+                        <input type="text" name="guardian" required>
+                    </div>
+                </div>
+                <div class="form-rows">
+                    <div class="field-group">
+                        <label>CNIC Number</label>
+                        <input type="text" name="cnic" placeholder="35201-XXXXXXX-X" required>
+                    </div>
+                    <div class="field-group">
+                        <label>Date of Birth</label>
+                        <input type="date" name="dob" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="setup-card">
+                <div class="section-title"><i class="fa-solid fa-plane-departure"></i> Passport & Travel</div>
+                <div class="form-rows">
+                    <div class="field-group">
+                        <label>Passport Number</label>
+                        <input type="text" name="pass_no" required>
+                    </div>
+                    <div class="field-group">
+                        <label>Passport Expiry</label>
+                        <input type="date" name="pass_expiry" required>
+                    </div>
+                </div>
+                <div class="form-rows">
+                    <div class="field-group">
+                        <label>Emergency Contact</label>
+                        <input type="text" name="em_phone" placeholder="+92 3XX XXXXXXX" required>
+                    </div>
+                    <div class="field-group">
+                        <label>Blood Group</label>
+                        <input type="text" name="blood" placeholder="e.g. O+">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-section">
+            <div class="setup-card" style="height: 100%;">
+                <div class="section-title"><i class="fa-solid fa-file-shield"></i> Document Scans</div>
+                <p style="font-size: 11px; color: #888; margin-top: -10px; margin-bottom: 15px;">Clear scans are required for Visa.</p>
+                
+                <div class="upload-list">
+                    <div class="upload-item" onclick="document.getElementById('f1').click();">
+                        <i class="fa-solid fa-address-book"></i>
+                        <p id="t1">Passport Front Side</p>
+                        <input type="file" id="f1" name="pass_scan" hidden required>
+                    </div>
+
+                    <div class="upload-item" onclick="document.getElementById('f2').click();">
+                        <i class="fa-solid fa-image"></i>
+                        <p id="t2">Passport Size Photo</p>
+                        <input type="file" id="f2" name="photo_scan" hidden required>
+                    </div>
+
+                    <div class="upload-item" onclick="document.getElementById('f3').click();">
+                        <i class="fa-solid fa-id-card"></i>
+                        <p id="t3">CNIC Front & Back</p>
+                        <input type="file" id="f3" name="cnic_scan" hidden required>
+                    </div>
+
+                    <div class="upload-item" onclick="document.getElementById('f4').click();" style="border-style: solid; border-width: 1px; background: #f8fafc;">
+                        <i class="fa-solid fa-syringe" style="color: #3498db;"></i>
+                        <p id="t4">Vaccination Certificate</p>
+                        <input type="file" id="f4" name="vaccine" hidden>
+                    </div>
+                </div>
+
+                <button type="submit" class="save-btn">Verify & Save All Data</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- <script>
+    function setupUpload(id, textId) {
+        document.getElementById(id).addEventListener('change', function() {
+            if (this.files[0]) {
+                const name = this.files[0].name;
+                document.getElementById(textId).innerText = "✅ " + (name.length > 20 ? name.substring(0, 18) + "..." : name);
+                document.getElementById(textId).style.color = "#27ae60";
+                this.parentElement.style.borderColor = "#27ae60";
+                this.parentElement.style.background = "#f0fff4";
+            }
+        });
+    }
+    setupUpload('f1', 't1');
+    setupUpload('f2', 't2');
+    setupUpload('f3', 't3');
+    setupUpload('f4', 't4');
+</script> -->
+{% endblock %}

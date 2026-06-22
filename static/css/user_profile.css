@@ -1,0 +1,105 @@
+.profile-wrapper { 
+    max-width: 1200px; 
+    margin: 0 auto; 
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Main Grid: 2 Columns */
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr; 
+    gap: 25px;
+    align-items: start;
+}
+
+.setup-card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    border: 1px solid #f0f0f0;
+}
+
+.section-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1a252f;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #27ae60;
+}
+
+/* Form Styling */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.field-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+
+.field-group input, .field-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    background: #fcfcfc;
+}
+
+/* Right Side: Upload Boxes Stacked */
+.upload-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.upload-item {
+    border: 2px dashed #cbd5e0;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+    background: #fff;
+}
+
+.upload-item:hover {
+    border-color: #27ae60;
+    background: #f0fff4;
+}
+
+.upload-item i { font-size: 20px; color: #27ae60; margin-bottom: 8px; }
+.upload-item p { font-size: 11px; margin: 0; color: #777; font-weight: 600; }
+
+.save-btn {
+    grid-column: span 2; /* Poori width le lega niche */
+    background: #1a252f;
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: 0.3s;
+}
+
+.save-btn:hover { background: #27ae60; transform: translateY(-2px); }
+
+/* Mobile Responsive */
+@media (max-width: 992px) {
+    .profile-grid { grid-template-columns: 1fr; }
+}

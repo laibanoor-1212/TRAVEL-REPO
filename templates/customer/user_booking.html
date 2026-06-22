@@ -1,0 +1,63 @@
+{% extends 'base/user_layout.html' %}
+{% load static %}
+
+{% block title %}My Bookings - Safar-e-Haram{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/user_booking.css' %}">
+
+<div class="bookings-wrapper">
+    
+    <div class="booking-header">
+        <div>
+            <h2 style="color: #2c3e50; font-weight: 600; margin: 0;">My Bookings</h2>
+        </div>
+        <a href="/" style="background: #1a252f; color: white; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 13px;">
+            <i class="fa-solid fa-plus"></i> New Booking
+        </a>
+    </div>
+
+    <div class="booking-card">
+        <table class="booking-table">
+            <thead>
+                <tr>
+                    <th class="col-pkg">Package</th>
+                    <th class="col-agent">Agent</th>
+                    <th class="col-date">Date</th>
+                    <th class="col-cost">Cost</th>
+                    <th class="col-status">Status</th>
+                    <th class="col-action">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-kaaba" style="color: #27ae60;"></i>
+                            <span style="font-weight: 600;">Premium Umrah</span>
+                        </div>
+                    </td>
+                    <td>Al-Khidmat</td>
+                    <td>15 Oct 2026</td>
+                    <td><b>285,000</b></td>
+                    <td><span class="status-badge status-confirmed">Confirmed</span></td>
+                    <td><a href="#" class="btn-view">View</a></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-mosque" style="color: #e67e22;"></i>
+                            <span style="font-weight: 600;">Economy Hajj</span>
+                        </div>
+                    </td>
+                    <td>Haramain Tours</td>
+                    <td>12 June 2026</td>
+                    <td><b>950,000</b></td>
+                    <td><span class="status-badge status-pending">Pending</span></td>
+                    <td><a href="#" class="btn-view">View</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
