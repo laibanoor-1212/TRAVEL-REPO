@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
@@ -10,6 +10,8 @@ from .models import CustomUser
 from django.utils.http import urlsafe_base64_decode,urlsafe_base64_encode
 from django.utils.encoding import force_str
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import user_passes_test
+from django.core.paginator import Paginator
 from django.contrib.auth.forms import PasswordResetForm,SetPasswordForm
 from .forms import CustomUserRegistrationForm
 
@@ -64,7 +66,7 @@ def register_view(request):
 def logout_view(request):
     logout(request)
     messages.success(request, "Logout successful!")
-    return redirect('login')
+    return redirect('accounts:login')
 
 def forget_password(request):
     if request.method == "POST":
@@ -123,4 +125,84 @@ def reset_password_confirm(request, uidb64, token):
 
     else:
         return render(request, "accounts/forget_password_invalid.html")
+    
 
+def is_platform_admin(user):
+    return user.is_authenticated and user.is_superuser
+
+@user_passes_test(is_platform_admin)
+def admin_manage_users(request):
+    base_users = CustomUser.objects.exclude(is_superuser=True).exclude(role='admin').order_by('-date_joined')
+    
+    active_tab = request.GET.get('tab', 'all')
+    
+    # 4 Alag Alag tab status ki filtration logic
+    if active_tab == 'active':
+        users_list = base_users.filter(is_active=True, is_approved=True)
+    elif active_tab == 'deactivated':
+        users_list = base_users.filter(is_active=False, is_approved=True)
+    elif active_tab == 'suspended':
+       
+        users_list = base_users.filter(is_active=False, is_approved=False).exclude(agency_name="BANNED_PERMANENTLY")
+    elif active_tab == 'perm_suspended':
+      
+        users_list = base_users.filter(agency_name="BANNED_PERMANENTLY")
+    else:
+        users_list = base_users 
+        
+    search_query = request.GET.get('search', '')
+    if search_query:
+        users_list = users_list.filter(email__icontains=search_query)
+        
+    # Counters object updates for top navigation indicators
+    counts = {
+        'all': base_users.count(),
+        'active': base_users.filter(is_active=True, is_approved=True).count(),
+        'deactivated': base_users.filter(is_active=False, is_approved=True).count(),
+        'suspended': base_users.filter(is_active=False, is_approved=False).exclude(agency_name="BANNED_PERMANENTLY").count(),
+        'perm_suspended': base_users.filter(agency_name="BANNED_PERMANENTLY").count(),
+    }
+        
+    paginator = Paginator(users_list, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'users': page_obj,
+        'search_query': search_query,
+        'active_tab': active_tab,
+        'counts': counts,
+        'total_users': users_list.count(),
+    }
+    return render(request, 'accounts/admin_users_list.html', context)
+
+
+@user_passes_test(is_platform_admin)
+def change_user_status(request, user_id, status_action):
+    user = get_object_or_404(CustomUser, id=user_id)
+    current_tab = request.GET.get('tab', 'all')
+    
+    if status_action == 'deactivate':
+        user.is_active = False
+        user.is_approved = True
+        messages.success(request, f"Account {user.email} has been deactivated.")
+    elif status_action == 'activate':
+        user.is_active = True
+        user.is_approved = True
+        if user.agency_name == "BANNED_PERMANENTLY":
+            user.agency_name = "" 
+        messages.success(request, f"Account {user.email} has been fully activated.")
+    elif status_action == 'suspend':
+        # Temporary Suspend logic
+        user.is_active = False
+        user.is_approved = False  
+        messages.warning(request, f"Account {user.email} has been temporarily suspended.")
+    elif status_action == 'perm_suspend':
+        # Permanent Suspend logic
+        user.is_active = False
+        user.is_approved = False
+        user.agency_name = "BANNED_PERMANENTLY"  
+        messages.error(request, f"Account {user.email} has been permanently blacklisted/suspended.")
+        
+    user.save()
+    return redirect(f"/accounts/admin-dashboard/users/?tab={current_tab}")

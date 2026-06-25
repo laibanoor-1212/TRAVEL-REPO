@@ -114,14 +114,14 @@
                         <li><a href="">User Dashboard</a></li>
                     {% endif %}
                     <hr>
-                    <li><a href="{% url 'logout' %}" style="color: #d9534f !important;">Logout</a></li>
+                    <li><a href="{% url 'accounts:logout' %}" style="color: #d9534f !important;">Logout</a></li>
                 </ul>
             </div>
         {% else %}
             <div class="auth-buttons">
                 
-                <a href="{% url 'register' %}" class="signup-btn">Sign-Up</a>
-                <a href="{% url 'login' %}" class="signup-btn">Login</a>
+                <a href="{% url 'accounts:register' %}" class="signup-btn">Sign-Up</a>
+                <a href="{% url 'accounts:login' %}" class="signup-btn">Login</a>
             </div>
         {% endif %}
 

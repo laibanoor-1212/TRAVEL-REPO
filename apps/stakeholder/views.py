@@ -7,6 +7,7 @@ from django.contrib import messages
 from packages.forms import PackageForm
 from packages.models import Package
 from packages.models import PackageType
+from bookings.models import Bookings,BookingCustomers
 from django.shortcuts import redirect, get_object_or_404
 
 
@@ -64,11 +65,11 @@ def missing_doc(request):
     agentkyc = AgentKYC.objects.filter(user=request.user).first()
 
     if not agentkyc:
-        return redirect('stakeholder:agent_kyc')
+        return redirect('stakeholder:KYC')
 
     # Agar status rollback nahi hai, to is page par aane ki zaroorat nahi
     if agentkyc.kyc_status != 'rollback':
-        return redirect('stakeholder:agent_kyc')
+        return redirect('stakeholder:KYC')
 
     
     form = KYCAgentForm(
@@ -123,8 +124,7 @@ def account_locked(request):
     return render(request, 'stakeholder/account_locked.html', {
         'agentkyc': agentkyc
     })
-def stakeholder_dashboard(request):
-    return render(request,'stakeholder/stakeholder_dashboard.html')
+
 
 def create_packages(request):
     package_types = PackageType.objects.filter(is_active=True)
@@ -247,14 +247,69 @@ def manage_packages(request):
             'inactive_packages': inactive_packages,
         }
     )
+# Is file ke top par Bookings model ko import zaroor kar lein agar pehle se nahi hai:
+# from bookings.models import Bookings  # (Apne booking model ka sahi import check kar lein)
+
+@login_required(login_url='/auth/login/')
+def stakeholder_dashboard(request):
+   
+    agent_bookings = Bookings.objects.filter(package__agency=request.user).order_by('-id')
+    
+    # 2. Agar date change requests ka model aapke paas hai to use yahan filter karein, 
+    # filhal hum empty list bhej rahe hain taake dashboard crash na ho
+    date_requests = [] 
+    
+    context = {
+        'bookings': agent_bookings,
+        'date_requests': date_requests,
+    }
+    return render(request, 'stakeholder/stakeholder_dashboard.html', context)
+
+
+
+
+@login_required(login_url='/auth/login/')
 def manage_booking(request):
-    return render(request,'stakeholder/manage_booking.html')
+    # ٹرمینل میں چیک کرنے کے لیے فرینڈلی ڈیبگنگ
+    all_bookings_count = Bookings.objects.count()
+    print(f"--- DEBUG: Total bookings in DB: {all_bookings_count} ---")
+    print(f"--- DEBUG: Logged in Travel Agent: {request.user.email} ---")
+    
+    # 🔴 درست لاجک: بکنگ کے پیکیج کی 'agency' کو لاگ ان یوزر سے میچ کریں
+    bookings = Bookings.objects.filter(package__agency=request.user).select_related('user', 'package').order_by('-id')
+    
+    print(f"--- DEBUG: Bookings found for this Agent: {bookings.count()} ---")
+
+    context = {
+        'bookings': bookings
+    }
+  
+    return render(request, 'stakeholder/manage_booking.html', context)
+@login_required(login_url='/auth/login/')
+def booking_detail_view(request, booking_id):
+    # 1. مین بکنگ کا ڈیٹا نکالا
+    booking = get_object_or_404(Bookings, id=booking_id, package__agency=request.user)
+    
+    # 2. 🔴 اس بکنگ سے جڑے تمام مسافروں (Travelers) کا ڈیٹا نکالا
+    # 'bookingcustomers_set' یا جو بھی آپ کے ماڈل کا نام ہے، اس کے ریلیٹڈ نیم سے ڈیٹا فلٹر کریں
+    travelers = BookingCustomers.objects.filter(booking=booking)
+    
+    context = {
+        'booking': booking,
+        'travelers': travelers, # یہ لسٹ ہم ٹیمپلیٹ میں بھیج رہے ہیں
+    }
+    return render(request, 'stakeholder/booking_detail.html', context)
 def earning_transaction(request):
-    return render(request,'stakeholder/earning_transaction.html')
+    return render(request, 'stakeholder/earning_transaction.html')
+
 def payments(request):
-    return render(request,'stakeholder/payments.html')
+    return render(request, 'stakeholder/payments.html')
+
 def agent_complains(request):
-    return render(request,'stakeholder/agent_complains.html')
+    return render(request, 'stakeholder/agent_complains.html')
+
 def cancelled_booking(request):
-    return render(request,'stakeholder/cancelled_booking.html')
+    return render(request, 'stakeholder/cancelled_booking.html')
+
+
 

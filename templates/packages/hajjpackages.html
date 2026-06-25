@@ -7,15 +7,15 @@
 
 <style>
     :root {
-        --emerald-primary: #059669;    /* Clean Royal Emerald */
-        --emerald-dark: #064e3b;       /* Premium Deep Forest Accent */
-        --gold-premium: #d97706;       /* Luxurious Amber Accent */
+        --emerald-primary: #059669;    
+        --emerald-dark: #064e3b;       
+        --gold-premium: #d97706;       
         --surface-white: #ffffff;
-        --body-neutral: #f8fafc;       /* Ultra Soft Slate White */
-        --text-slate-dark: #0f172a;    /* High Contrast Slate */
+        --body-neutral: #f8fafc;       
+        --text-slate-dark: #0f172a;    
         --text-slate-muted: #475569;
         --border-refined: #e2e8f0;
-        --radius-premium: 20px;
+        --radius-standard: 12px;
     }
 
     body {
@@ -27,219 +27,179 @@
     }
 
     /* ==========================================================================
-       1. CINEMATIC MODERN HERO BANNER (With Perfect Edge Spacing)
+       1. NORMAL HERO BANNER (Margins Adjusted)
        ========================================================================== */
     .hero-banner-wrapper {
-        max-width: 1400px;
-        margin: 40px auto 0 auto;
-        padding: 0 24px;
+        max-width: 1280px; /* Standard website layout width */
+        margin: 20px auto 0 auto; /* Spacing kam kar di */
+        padding: 0 15px;
         box-sizing: border-box;
     }
 
     .clean-luxury-banner {
         position: relative;
         background: linear-gradient(135deg, var(--emerald-dark) 0%, #022c22 100%);
-        border-radius: var(--radius-premium);
-        padding: 60px 40px;
+        border-radius: var(--radius-standard);
+        padding: 35px 20px; /* Excessive padding tightly reduced */
         text-align: center;
-        box-shadow: 0 10px 30px rgba(4, 47, 46, 0.08);
-        overflow: hidden;
-    }
-
-    /* Subtle Architectural Geometric Mesh Pattern */
-    .clean-luxury-banner::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background-image: radial-gradient(rgba(20, 184, 166, 0.15) 1px, transparent 1px);
-        background-size: 20px 20px;
-        z-index: 1;
-    }
-
-    .banner-text-core {
-        position: relative;
-        z-index: 2;
-        max-width: 750px;
-        margin: 0 auto;
+        box-shadow: 0 4px 12px rgba(4, 47, 46, 0.05);
     }
 
     .banner-text-core h1 {
-        font-size: 3rem;
+        font-size: 2.2rem; /* Normal Heading size */
         font-weight: 800;
         color: var(--surface-white);
-        margin: 0 0 12px 0;
-        letter-spacing: -1.5px;
+        margin: 0 0 6px 0;
+        letter-spacing: -0.5px;
     }
 
     .banner-text-core p {
-        font-size: 1.15rem;
+        font-size: 1rem;
         color: #d1fae5;
         margin: 0;
         font-weight: 400;
-        opacity: 0.9;
     }
 
     /* ==========================================================================
-       2. HORIZONTAL STREAMLINED FILTER ROW
+       2. COMPACT DENSITY HORIZONTAL FILTER ROW
        ========================================================================== */
     .portal-workspace {
-        max-width: 1400px;
-        margin: 32px auto 80px auto;
-        padding: 0 24px;
+        max-width: 1280px;
+        margin: 20px auto 40px auto; /* Normal page vertical gaps */
+        padding: 0 15px;
         box-sizing: border-box;
     }
 
     .horizontal-filter-strip {
         background: var(--surface-white);
-        padding: 18px 24px;
-        border-radius: 14px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+        padding: 12px 20px; /* Reduced box padding */
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
         border: 1px solid var(--border-refined);
         display: flex;
         align-items: center;
         justify-content: flex-start;
-        gap: 24px;
-        margin-bottom: 32px;
+        gap: 16px; /* Tight item spacing */
+        margin-bottom: 20px;
     }
 
     .filter-node-box {
         display: flex;
         flex-direction: column;
-        gap: 6px;
-        min-width: 240px;
+        gap: 4px;
+        min-width: 200px;
         flex-grow: 1;
     }
 
     .filter-node-box label {
-        font-size: 0.78rem;
+        font-size: 0.72rem;
         font-weight: 700;
         text-transform: uppercase;
         color: var(--emerald-primary);
-        letter-spacing: 0.8px;
+        letter-spacing: 0.5px;
     }
 
     .premium-custom-select {
         width: 100%;
-        padding: 12px 14px;
-        border-radius: 10px;
+        padding: 8px 12px; /* Normal clean compact input */
+        border-radius: 6px;
         border: 1px solid #cbd5e1;
         background-color: var(--surface-white);
-        font-size: 0.92rem;
+        font-size: 0.88rem;
         color: var(--text-slate-dark);
-        font-weight: 500;
         outline: none;
         cursor: pointer;
-        transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-    .premium-custom-select:focus {
-        border-color: var(--emerald-primary);
-        box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.08);
     }
 
     /* ==========================================================================
-       3. LUXURY WHITE & EMERALD COMPACT CARD MESH
+       3. STANDARD PRODUCT GRID MESH
        ========================================================================== */
     .editorial-packages-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-        gap: 32px;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px; /* Reduced gap for tightly packed natural grid */
     }
 
     .luxury-editorial-card {
         background: var(--surface-white);
-        border-radius: var(--radius-premium);
+        border-radius: var(--radius-standard);
         border: 1px solid var(--border-refined);
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        box-shadow: 0 4px 20px rgba(15, 23, 42, 0.02);
-        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s, border-color 0.3s;
+        box-shadow: 0 2px 10px rgba(15, 23, 42, 0.02);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
     .luxury-editorial-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 20px 35px rgba(4, 47, 46, 0.06);
-        border-color: #a7f3d0;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(4, 47, 46, 0.05);
     }
 
-    /* Card Visual Window */
     .card-media-window {
         position: relative;
-        height: 220px;
+        height: 180px; /* Standard non-stretched cover height */
         overflow: hidden;
-        background-color: #f1f5f9;
     }
 
     .card-media-window img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.5s ease;
     }
 
-    .luxury-editorial-card:hover .card-media-window img {
-        transform: scale(1.04);
-    }
-
-    /* Meta Tags Configuration */
     .media-floating-badges {
         position: absolute;
-        top: 18px;
-        left: 18px;
-        right: 18px;
+        top: 12px;
+        left: 12px;
+        right: 12px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        z-index: 2;
     }
 
     .agency-corporate-stamp {
-        background: rgba(255, 255, 255, 0.98);
-        padding: 6px 14px;
-        border-radius: 30px;
-        font-size: 0.8rem;
+        background: rgba(255, 255, 255, 0.96);
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
         font-weight: 700;
         color: var(--emerald-dark);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
 
     .tier-badge-pill {
-        padding: 6px 14px;
-        border-radius: 30px;
-        font-size: 0.72rem;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.65rem;
         font-weight: 800;
         text-transform: uppercase;
         color: var(--surface-white);
-        letter-spacing: 0.5px;
     }
     .tier-badge-pill.economy { background: #0284c7; }
     .tier-badge-pill.standard { background: var(--gold-premium); }
     .tier-badge-pill.vip { background: #7c3aed; }
     .tier-badge-pill.luxury { background: var(--emerald-primary); }
 
-    /* Specs & Content Panel Details */
     .card-content-assembly {
-        padding: 26px;
+        padding: 16px; /* Reduced element inner density */
         display: flex;
         flex-direction: column;
         flex-grow: 1;
     }
 
     .card-content-assembly h2 {
-        font-size: 1.4rem;
+        font-size: 1.15rem;
         font-weight: 700;
         color: var(--text-slate-dark);
-        margin: 0 0 12px 0;
+        margin: 0 0 8px 0;
         line-height: 1.3;
     }
 
-    /* Distinct Premium Price Tag Block */
     .luxury-price-block {
-        background: #f0fdf4; /* Ultra light emerald tint */
-        padding: 12px 16px;
-        border-radius: 10px;
-        margin-bottom: 20px;
+        background: #f0fdf4; 
+        padding: 8px 12px;
+        border-radius: 6px;
+        margin-bottom: 12px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -247,62 +207,53 @@
     }
 
     .price-sub-label {
-        font-size: 0.82rem;
+        font-size: 0.75rem;
         font-weight: 600;
         color: #065f46;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
     }
 
     .price-value-string {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
         font-weight: 800;
         color: var(--emerald-dark);
     }
 
-    /* Core Amenities Checklist Layout */
     .amenities-metric-list {
         list-style: none;
         padding: 0;
-        margin: 0 0 24px 0;
+        margin: 0 0 16px 0;
     }
 
     .amenities-metric-list li {
-        font-size: 0.92rem;
+        font-size: 0.85rem;
         color: var(--text-slate-muted);
-        margin-bottom: 12px;
+        margin-bottom: 8px;
         display: flex;
         align-items: center;
-        gap: 12px;
-    }
-
-    .amenities-metric-list li:last-child {
-        margin-bottom: 0;
+        gap: 10px;
     }
 
     .amenities-metric-list li i {
         color: var(--emerald-primary);
-        font-size: 1rem;
-        width: 18px;
+        font-size: 0.9rem;
+        width: 14px;
         text-align: center;
     }
 
-    /* Modern Action Triggers Row Buttons */
     .action-button-matrix {
         margin-top: auto;
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 14px;
+        gap: 10px;
     }
 
     .trigger-btn-base {
-        padding: 13px 16px;
-        border-radius: 8px;
-        font-size: 0.9rem;
+        padding: 10px 12px;
+        border-radius: 6px;
+        font-size: 0.85rem;
         font-weight: 600;
         text-align: center;
         text-decoration: none;
-        transition: all 0.2s ease;
     }
 
     .btn-outline-emerald {
@@ -323,31 +274,29 @@
 
     .btn-filled-emerald:hover {
         background: var(--emerald-dark);
-        border-color: var(--emerald-dark);
     }
 
     .empty-catalog-state {
         grid-column: 1 / -1;
         text-align: center;
-        padding: 70px 24px;
+        padding: 40px 20px;
         background: var(--surface-white);
-        border-radius: var(--radius-premium);
-        border: 1px solid var(--border-refined);
+        border-radius: var(--radius-standard);
         color: var(--text-slate-muted);
+        border: 1px solid var(--border-refined);
     }
 
-    /* Adaptive Grid System Responsiveness Breakpoints */
-    @media (max-width: 991px) {
+    @media (max-width: 768px) {
         .horizontal-filter-strip {
             flex-direction: column;
             align-items: stretch;
-            padding: 20px;
-            gap: 16px;
+            gap: 12px;
+            padding: 15px;
         }
         .filter-node-box {
             min-width: 100%;
         }
-        .banner-text-core h1 { font-size: 2.2rem; }
+        .banner-text-core h1 { font-size: 1.8rem; }
     }
 </style>
 
@@ -355,7 +304,7 @@
     <div class="clean-luxury-banner">
         <div class="banner-text-core">
             <h1>Hajj Packages 2026</h1>
-            <p>Compare verified premium operators and seamlessly secure your sacred pilgrimage journey.</p>
+            <p>Compare verified premium operators and secure your sacred journey.</p>
         </div>
     </div>
 </div>
@@ -363,7 +312,6 @@
 <div class="portal-workspace">
     
     <div class="horizontal-filter-strip">
-        
         <div class="filter-node-box">
             <label>Travel Operator</label>
             <select id="operatorSelect" class="premium-custom-select">
@@ -387,14 +335,13 @@
         <div class="filter-node-box">
             <label>Package Tier</label>
             <select id="tierSelect" class="premium-custom-select">
-                <option value="All">All Tier Variations</option>
+                <option value="All">All Tiers</option>
                 <option value="economy">Economy</option>
                 <option value="standard">Standard</option>
                 <option value="vip">VIP</option>
                 <option value="luxury">Luxury</option>
             </select>
         </div>
-
     </div>
 
     <div class="editorial-packages-grid">
@@ -405,8 +352,7 @@
                  data-price="{{ package.price }}">
 
                 <div class="card-media-window">
-                    <img src="{% if package.banner %}{{ package.banner.url }}{% else %}{% static 'img/kaaba.jpg' %}{% endif %}" 
-                         alt="Package Showcase Resource">
+                    <img src="{% if package.banner %}{{ package.banner.url }}{% else %}{% static 'img/kaaba.jpg' %}{% endif %}" alt="Showcase">
                     
                     <div class="media-floating-badges">
                         <span class="agency-corporate-stamp">
@@ -425,65 +371,54 @@
                     </div>
 
                     <ul class="amenities-metric-list">
-                        <li><i class="fa-regular fa-clock"></i> <span><strong>Duration:</strong> {{ package.duration_days }} Days Pilgrimage</span></li>
-                        <li><i class="fa-solid fa-hotel"></i> <span><strong>Accommodation:</strong> Verified Stays Included</span></li>
+                        <li><i class="fa-regular fa-clock"></i> <span><strong>Duration:</strong> {{ package.duration_days }} Days</span></li>
+                        <li><i class="fa-solid fa-hotel"></i> <span><strong>Accommodation:</strong> Included</span></li>
                         <li><i class="fa-solid fa-file-invoice-dollar"></i> <span><strong>Inclusions:</strong> 
                             {% if package.visa %}Visa{% endif %}{% if package.ticket %} | Ticket{% endif %}{% if package.transport %} | Transport{% endif %}
                         </span></li>
-                        <li><i class="fa-solid fa-circle-check"></i> <span><strong>Status:</strong> {{ package.seats_left }} Seats Left Available</span></li>
+                        <li><i class="fa-solid fa-circle-check"></i> <span><strong>Status:</strong> {{ package.seats_left }} Seats Left</span></li>
                     </ul>
 
                     <div class="action-button-matrix">
-                        <a href="{% url 'packages:packages_detail' package.id %}" class="trigger-btn-base btn-outline-emerald">View Details</a>
+                        <a href="" class="trigger-btn-base btn-outline-emerald">Details</a>
                         <a href="{% url 'bookings:book_package' package.id %}" class="trigger-btn-base btn-filled-emerald">Book Now</a>
                     </div>
                 </div>
             </div>
         {% empty %}
             <div class="empty-catalog-state">
-                <i class="fa-solid fa-magnifying-glass-chart" style="font-size: 2.5rem; margin-bottom: 14px; color: #cbd5e1;"></i>
-                <p>No active standard pilgrimage options found matching your exact request criteria.</p>
+                <p>No active packages found matching your criteria.</p>
             </div>
         {% endfor %}
     </div>
 </div>
 
 <script>
-    // High Performance Direct DOM Live Filtering Engine
     const operatorSelect = document.getElementById('operatorSelect');
     const priceSelect = document.getElementById('priceSelect');
     const tierSelect = document.getElementById('tierSelect');
 
     function executeCatalogFilter() {
-        const structuralPackageCards = document.querySelectorAll('.luxury-editorial-card');
+        const cards = document.querySelectorAll('.luxury-editorial-card');
         
         let targetedOperator = operatorSelect.value.toLowerCase().trim();
         let targetedPriceRange = priceSelect.value;
         let targetedTier = tierSelect.value.toLowerCase();
 
-        structuralPackageCards.forEach(card => {
-            let operationalMatchFlag = true;
+        cards.forEach(card => {
+            let match = true;
             let datasetOperator = (card.dataset.operator || "").toLowerCase().trim();
             let datasetPrice = parseFloat(card.dataset.price) || 0;
             let datasetTier = (card.dataset.tier || "").toLowerCase();
 
-            // 1. Operator Query Validator
-            if (targetedOperator !== "all" && !datasetOperator.includes(targetedOperator)) {
-                operationalMatchFlag = false;
-            }
+            if (targetedOperator !== "all" && !datasetOperator.includes(targetedOperator)) match = false;
+            if (targetedTier !== "all" && datasetTier !== targetedTier) match = false;
 
-            // 2. Tier Quality Query Validator
-            if (targetedTier !== "all" && datasetTier !== targetedTier) {
-                operationalMatchFlag = false;
-            }
+            if (targetedPriceRange === "Under 300000" && datasetPrice >= 300000) match = false;
+            if (targetedPriceRange === "300000 - 1000000" && (datasetPrice < 300000 || datasetPrice > 1000000)) match = false;
+            if (targetedPriceRange === "Above 1000000" && datasetPrice <= 1000000) match = false;
 
-            // 3. Pricing Metrics Range Validator
-            if (targetedPriceRange === "Under 300000" && datasetPrice >= 300000) operationalMatchFlag = false;
-            if (targetedPriceRange === "300000 - 1000000" && (datasetPrice < 300000 || datasetPrice > 1000000)) operationalMatchFlag = false;
-            if (targetedPriceRange === "Above 1000000" && datasetPrice <= 1000000) operationalMatchFlag = false;
-
-            // Trigger Display Matrix Transform Action
-            card.style.display = operationalMatchFlag ? "flex" : "none";
+            card.style.display = match ? "flex" : "none";
         });
     }
 

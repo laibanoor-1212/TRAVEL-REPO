@@ -7,45 +7,6 @@
         border-radius: 12px;
         box-shadow: var(--shadow);
     }
-    
-    /* Tabs Styling */
-    .tab-container {
-        display: flex;
-        gap: 20px;
-        margin-bottom: 25px;
-        border-bottom: 2px solid #eee;
-    }
-    .tab-btn {
-        padding: 10px 20px;
-        cursor: pointer;
-        font-weight: 600;
-        color: var(--text-muted);
-        border: none;
-        background: none;
-        position: relative;
-        transition: 0.3s;
-    }
-    .tab-btn.active {
-        color: var(--primary-green);
-    }
-    .tab-btn.active::after {
-        content: '';
-        position: absolute;
-        bottom: -2px;
-        left: 0;
-        width: 100%;
-        height: 2px;
-        background: var(--primary-green);
-    }
-    .request-count {
-        background: var(--danger);
-        color: white;
-        font-size: 10px;
-        padding: 2px 6px;
-        border-radius: 10px;
-        margin-left: 5px;
-        vertical-align: middle;
-    }
 
     /* Table & Badges */
     .status-badge {
@@ -53,9 +14,12 @@
         border-radius: 20px;
         font-size: 12px;
         font-weight: 600;
+        text-transform: capitalize;
     }
     .status-pending { background: #fff3cd; color: #856404; }
-    .status-date-req { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; } /* Blue for requests */
+    .status-approved { background: #d4edda; color: #155724; }
+    .status-rejected { background: #f8d7da; color: #721c24; }
+    .status-date-req { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
     
     .manage-btn {
         background: var(--primary-green);
@@ -68,118 +32,65 @@
         display: inline-flex;
         align-items: center;
         gap: 5px;
+        border: none;
+        cursor: pointer;
     }
     .manage-btn:hover { background: var(--light-green); }
-
-    .date-info { font-size: 12px; color: #666; }
-    .new-date-text { color: var(--success-green); font-weight: bold; }
 
     table { width: 100%; border-collapse: collapse; }
     th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
     th { color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
 
-    /* Hide/Show logic */
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
+    .empty-row { text-align: center; color: #888; font-style: italic; padding: 30px !important; }
 </style>
 
 <div class="booking-card">
     <div style="margin-bottom: 20px;">
-        <h2>Booking Operations</h2>
-        <p style="color: #666; font-size: 14px;">Manage all travel bookings and rescheduling requests here.</p>
+        <h2>Manage Bookings</h2>
+        <p style="color: #666; font-size: 14px;">View and manage customer documents for your packages.</p>
     </div>
 
-    <div class="tab-container">
-        <button class="tab-btn active" onclick="openTab(event, 'all-bookings')">All Bookings</button>
-        <button class="tab-btn" onclick="openTab(event, 'date-requests')">
-            Date Change Requests <span class="request-count">1</span>
-        </button>
-    </div>
-
-    <div id="all-bookings" class="tab-content active">
-        <table>
-            <thead>
-                <tr>
-                    <th>Booking ID</th>
-                    <th>Customer Name</th>
-                    <th>Package</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>#SH-1024</strong></td>
-                    <td>Ahmed Khan</td>
-                    <td>Premium Umrah Package</td>
-                    <td>
+    <table>
+        <thead>
+            <tr>
+                <th>Booking ID</th>
+                <th>Customer Name</th>
+                <th>Package Name</th>
+                <th>Total Persons</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td><strong>#{{ booking.booking_id|default:booking.id }}</strong></td>
+                <td>{{ booking.user.get_full_name|default:booking.user.username }}</td>
+                <td>{{ booking.package.name }}</td>
+                <td>{{ booking.total_persons }} Persons</td>
+                <td>
+                    {% if booking.status == 'pending' %}
                         <span class="status-badge status-pending">In Progress</span>
-                    </td>
-                    <td><a href="{% url 'stakeholder:booking_details' %}" class="manage-btn">Manage Docs</a></td>
-                </tr>
-                <tr>
-                    <td><strong>#SH-1026</strong></td>
-                    <td>Sajid Ali</td>
-                    <td>Economy Hajj 2026</td>
-                    <td>
-                        <span class="status-badge status-date-req"><i class="fas fa-clock"></i> Date Change Requested</span>
-                    </td>
-                    <td><a href="#" class="manage-btn">View Request</a></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div id="date-requests" class="tab-content">
-        <table>
-            <thead>
-                <tr>
-                    <th>Booking ID</th>
-                    <th>Customer</th>
-                    <th>Current Date</th>
-                    <th>Requested Date</th>
-                    <th>Reason</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>#SH-1026</strong></td>
-                    <td>Sajid Ali</td>
-                    <td class="date-info">12-May-2026</td>
-                    <td class="new-date-text">28-May-2026</td>
-                    <td style="max-width: 200px; font-size: 13px; color: #777;">"Visa processing taking longer than expected."</td>
-                    <td>
-                        <div style="display: flex; gap: 5px;">
-                            <button class="manage-btn" style="background: var(--success-green);" title="Approve"><i class="fas fa-check"></i></button>
-                            <button class="manage-btn" style="background: var(--danger);" title="Reject"><i class="fas fa-times"></i></button>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+                    {% elif booking.status == 'date_requested' %}
+                        <span class="status-badge status-date-req"><i class="fas fa-clock"></i> Date Requested</span>
+                    {% elif booking.status == 'approved' %}
+                        <span class="status-badge status-approved">Approved</span>
+                    {% else %}
+                        <span class="status-badge status-rejected">{{ booking.status }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'stakeholder:booking_detail' booking.id %}" class="manage-btn">
+                        <i class="fa-solid fa-file-medical"></i> Docs
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="empty-row">No bookings registered yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
-
-<script>
-    function openTab(evt, tabName) {
-        var i, tabcontent, tablinks;
-        
-        // Hide all tab content
-        tabcontent = document.getElementsByClassName("tab-content");
-        for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].style.display = "none";
-        }
-
-        // Remove active class from all buttons
-        tablinks = document.getElementsByClassName("tab-btn");
-        for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].className = tablinks[i].className.replace(" active", "");
-        }
-
-        // Show the current tab and add active class to button
-        document.getElementById(tabName).style.display = "block";
-        evt.currentTarget.className += " active";
-    }
-</script>
 {% endblock %}

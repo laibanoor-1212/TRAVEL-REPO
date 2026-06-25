@@ -4,16 +4,18 @@
 {% block content %}
 <style>
     :root {
-        --primary-green: #0b7a47; 
+        --primary-green: #0b6623;   /* Clean Deep Islamic Green consistent layout theme */
+        --light-green: #eef7f0;
         --pure-white: #ffffff;
         --danger-red: #d63031;
         --warning-orange: #f39c12;
         --muted-gray: #636e72;
         --info-blue: #0984e3;
+        --border-color: #e2e8f0;
     }
 
-    /* Tabs Styling */
-    .tab-menu { display: flex; gap: 5px; margin-bottom: 25px; border-bottom: 2px solid #eee; }
+    /* Tabs Layout Styling */
+    .tab-menu { display: flex; gap: 5px; margin-bottom: 25px; border-bottom: 2px solid var(--border-color); }
     .tab-link {
         padding: 14px 24px; cursor: pointer; background: none; border: none;
         font-weight: 600; color: #777; transition: 0.3s; position: relative;
@@ -24,50 +26,54 @@
         height: 3px; background: var(--primary-green);
     }
 
-    /* Table Styling */
-    .table-wrapper { background: var(--pure-white); border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); overflow: hidden; }
+    /* Grid Table Wrapper Design */
+    .table-wrapper { background: var(--pure-white); border-radius: 12px; box-shadow: 0 4px 20px rgba(11, 102, 35, 0.05); overflow: hidden; }
     .data-table { width: 100%; border-collapse: collapse; text-align: left; }
-    .data-table th { background: var(--primary-green); color: white; padding: 15px; font-size: 12px; text-transform: uppercase; }
-    .data-table td { padding: 15px; border-bottom: 1px solid #f1f1f1; font-size: 13px; color: #333; vertical-align: middle; }
+    .data-table th { background: var(--primary-green); color: white; padding: 16px; font-size: 13px; font-weight: 500; text-transform: uppercase; }
+    .data-table td { padding: 16px; border-bottom: 1px solid var(--border-color); font-size: 14px; color: #333; vertical-align: middle; }
 
-    /* Badges */
-    .badge { padding: 4px 10px; border-radius: 50px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
-    .badge-vip { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
-    .badge-economy { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
-    .badge-active { background: #d4edda; color: #155724; }
-    .badge-blocked { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    /* Badges Layout */
+    .badge { padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 500; display: inline-block; }
+    .badge-vip { background: #fff3cd; color: #856404; }
+    .badge-economy { background: #d1ecf1; color: #0c5460; }
+    .badge-active { background: var(--light-green); color: var(--primary-green); }
+    .badge-blocked { background: #fff5f5; color: var(--danger-red); }
 
-    /* Action Buttons */
+    /* Dashboard Actions Row */
     .btn-action {
-        padding: 8px 12px; border-radius: 6px; font-size: 11px; font-weight: 600;
+        padding: 8px 14px; border-radius: 6px; font-size: 12px; font-weight: 500;
         text-decoration: none; border: none; cursor: pointer; color: white; transition: 0.2s; display: inline-block;
         text-align: center;
     }
     .btn-blue { background: var(--info-blue); }
-    .btn-red { background: var(--danger-red); }
     .btn-orange { background: var(--warning-orange); }
+    .btn-red { background: var(--danger-red); }
     .btn-green { background: var(--primary-green); }
 
-    .small-info { font-size: 11px; color: #666; display: block; line-height: 1.4; }
+    .small-info { font-size: 12px; color: #718096; display: block; line-height: 1.5; }
+    .agent-wrapper { background-color: #fafbfc; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border-color); }
 
-    /* Tab Content Visibility */
+    /* Tab Switch Visibility Logic */
     .tab-content { display: none; }
-    .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+    .tab-content.active { display: block; animation: fadeIn 0.2s ease; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 </style>
 
 <div class="container" style="padding: 20px;">
     
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-        <h2 style="color: var(--primary-green); font-weight: 700;">Package Monitoring Portal</h2>
-        <div style="display: flex; gap: 10px;">
-            <select id="typeFilter" onchange="filterByType()" style="padding: 10px; border-radius: 20px; border: 1px solid #ddd; outline: none;">
+        <div>
+            <h2 style="color: var(--primary-green); font-weight: 600; font-size: 24px;">Package Monitoring Portal</h2>
+            <p style="color: #718096; font-size: 14px; margin-top: 4px;">Monitor and verify packages uploaded by travel agents/stakeholders</p>
+        </div>
+        <div style="display: flex; gap: 12px;">
+            <select id="typeFilter" onchange="filterByType()" style="padding: 10px 16px; border-radius: 6px; border: 1px solid var(--border-color); outline: none; font-size: 14px;">
                 <option value="all">All Types</option>
                 <option value="VIP">VIP</option>
                 <option value="Economy">Economy</option>
             </select>
-            <input type="text" id="pkgSearch" placeholder="Search Package, Agency or Email..." onkeyup="searchPackages()" 
-                   style="padding: 10px 18px; border-radius: 25px; border: 1px solid #ddd; width: 280px; outline: none;">
+            <input type="text" id="pkgSearch" placeholder="Search Package, Agent, Email or ID..." onkeyup="searchPackages()" 
+                   style="padding: 10px 16px; border-radius: 6px; border: 1px solid var(--border-color); width: 290px; outline: none; font-size: 14px;">
         </div>
     </div>
 
@@ -81,43 +87,41 @@
             <table class="data-table" id="packageTable">
                 <thead>
                     <tr>
-                        <th>Package ID</th>
+                        <th style="width: 110px;">Package ID</th>
                         <th>Package & Type</th>
-                        <th>Agency Details</th>
-                        <th>Dates (S - E)</th>
+                        <th>Uploaded By (Agent Details)</th>
+                        <th>Dates (Start - End)</th>
                         <th>Status</th>
-                        <th>Admin Actions</th>
+                        <th style="width: 280px; text-align: center;">Admin Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr data-type="VIP">
-                        <td><b>#PKG-990</b></td>
-                        <td><strong>Executive Hajj 2026</strong><br><span class="badge badge-vip">VIP</span></td>
-                        <td><b>Karwan Travels</b><br><span class="small-info">info@karwan.com</span></td>
-                        <td><span class="small-info">S: 15 Jun 26</span><span class="small-info">E: 30 Jun 26</span></td>
-                        <td><span class="badge badge-active">Active</span></td>
-                        <td>
-                            <div style="display: flex; gap: 5px;">
-                                <button class="btn-action btn-blue">View Details</button>
-                                <button class="btn-action btn-orange">Block</button>
-                                <button class="btn-action btn-red">Remove</button>
-                            </div>
-                        </td>
-                    </tr>
                     {% for pkg in active_packages %}
                     <tr data-type="{{ pkg.package_type }}">
                         <td><b>#{{ pkg.id }}</b></td>
                         <td><strong>{{ pkg.title }}</strong><br><span class="badge {% if pkg.package_type == 'VIP' %}badge-vip{% else %}badge-economy{% endif %}">{{ pkg.package_type }}</span></td>
-                        <td><b>{{ pkg.agency.agency_name }}</b><br><span class="small-info">{{ pkg.agency.email }}</span></td>
-                        <td><span class="small-info">S: {{ pkg.start_date|date:"d M y" }}</span><span class="small-info">E: {{ pkg.end_date|date:"d M y" }}</span></td>
-                        <td><span class="badge badge-active">Active</span></td>
                         <td>
-                            <div style="display: flex; gap: 5px;">
-                                <a href="{% url 'adminpanel:package_detail' pkg.id %}" class="btn-action btn-blue">View Details</a>
+                            <div class="agent-wrapper">
+                                <strong>{% firstof pkg.agency.agency_name pkg.user.agency_name pkg.user.username "Registered Agent" %}</strong>
+                                <span class="small-info">📧 {% firstof pkg.agency.email pkg.user.email "N/A" %}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="small-info">🛫 {{ pkg.start_date|date:"d M Y" }}</span>
+                            <span class="small-info">🛬 {{ pkg.end_date|date:"d M Y" }}</span>
+                        </td>
+                        <td><span class="badge badge-active">Active</span></td>
+                        <td style="text-align: center;">
+                            <div style="display: flex; gap: 6px; justify-content: center;">
+                                <a href="{% url 'packages:packages_detail' pkg.id %}" class="btn-action btn-blue">View Details</a>
                                 <a href="{% url 'adminpanel:block_package' pkg.id %}" class="btn-action btn-orange">Block</a>
                                 <a href="{% url 'adminpanel:remove_package' pkg.id %}" class="btn-action btn-red" onclick="return confirm('Delete permanently?')">Remove</a>
                             </div>
                         </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 30px; color: var(--muted-gray);">No active packages currently live on market module.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -127,43 +131,39 @@
 
     <div id="blockedTab" class="tab-content">
         <div class="table-wrapper">
-            <table class="data-table">
+            <table class="data-table" id="blockedPackageTable">
                 <thead>
                     <tr>
-                        <th>Package ID</th>
+                        <th style="width: 110px;">Package ID</th>
                         <th>Package Name</th>
-                        <th>Agency Details</th>
+                        <th>Uploaded By (Agent Details)</th>
                         <th>Reason / Status</th>
-                        <th>Admin Actions</th>
+                        <th style="width: 280px; text-align: center;">Admin Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td><b>#PKG-404</b></td>
-                        <td>Economy Umrah (Old)</td>
-                        <td><b>Fake Travels</b><br><small>spam@travel.com</small></td>
-                        <td><span class="badge badge-blocked">Blocked</span></td>
+                    {% for pkg in blocked_packages %}
+                    <tr data-type="{{ pkg.package_type }}">
+                        <td><b>#{{ pkg.id }}</b></td>
+                        <td><strong>{{ pkg.title }}</strong></td>
                         <td>
-                            <div style="display: flex; gap: 5px;">
-                                <button class="btn-action btn-blue">View</button>
-                                <button class="btn-action btn-green">Unblock</button>
-                                <button class="btn-action btn-red">Remove</button>
+                            <div class="agent-wrapper">
+                                <strong>{% firstof pkg.agency.agency_name pkg.user.agency_name pkg.user.username "Registered Agent" %}</strong>
+                                <span class="small-info">📧 {% firstof pkg.agency.email pkg.user.email "N/A" %}</span>
+                            </div>
+                        </td>
+                        <td><span class="badge badge-blocked">Blocked</span></td>
+                        <td style="text-align: center;">
+                            <div style="display: flex; gap: 6px; justify-content: center;">
+                                <a href="" class="btn-action btn-blue">View</a>
+                                <a href="{% url 'adminpanel:unblock_package' pkg.id %}" class="btn-action btn-green">Unblock</a>
+                                <a href="{% url 'adminpanel:remove_package' pkg.id %}" class="btn-action btn-red" onclick="return confirm('Delete permanently?')">Remove</a>
                             </div>
                         </td>
                     </tr>
-                    {% for pkg in blocked_packages %}
+                    {% empty %}
                     <tr>
-                        <td><b>#{{ pkg.id }}</b></td>
-                        <td>{{ pkg.title }}</td>
-                        <td><b>{{ pkg.agency.agency_name }}</b><br><small>{{ pkg.agency.email }}</small></td>
-                        <td><span class="badge badge-blocked">Blocked</span></td>
-                        <td>
-                            <div style="display: flex; gap: 5px;">
-                                <a href="{% url 'adminpanel:package_detail' pkg.id %}" class="btn-action btn-blue">View</a>
-                                <a href="{% url 'adminpanel:unblock_package' pkg.id %}" class="btn-action btn-green">Unblock</a>
-                                <a href="{% url 'adminpanel:remove_package' pkg.id %}" class="btn-action btn-red">Remove</a>
-                            </div>
-                        </td>
+                        <td colspan="5" style="text-align: center; padding: 30px; color: var(--muted-gray);">No blocked/inactive records found in repository segments.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -175,38 +175,50 @@
 <script>
     function openTab(evt, tabName) {
         var i, tabcontent, tablinks;
-        // Saaray tab content ko chupa do
         tabcontent = document.getElementsByClassName("tab-content");
         for (i = 0; i < tabcontent.length; i++) {
             tabcontent[i].style.display = "none";
             tabcontent[i].classList.remove("active");
         }
-        // Saaray buttons se 'active' class hata do
         tablinks = document.getElementsByClassName("tab-link");
         for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].className = tablinks[i].className.replace(" active", "");
+            tablinks[i].classList.remove("active");
         }
-        // Jo tab select hua hai usay dikhao
         document.getElementById(tabName).style.display = "block";
         document.getElementById(tabName).classList.add("active");
-        evt.currentTarget.className += " active";
+        evt.currentTarget.classList.add("active");
     }
 
     function filterByType() {
         var filter = document.getElementById("typeFilter").value.toUpperCase();
-        var tr = document.getElementById("packageTable").getElementsByTagName("tr");
-        for (var i = 1; i < tr.length; i++) {
-            var type = tr[i].getAttribute("data-type") ? tr[i].getAttribute("data-type").toUpperCase() : "";
-            tr[i].style.display = (filter === "ALL" || type === filter) ? "" : "none";
-        }
+        var tables = ["packageTable", "blockedPackageTable"];
+        
+        tables.forEach(function(tableId) {
+            var table = document.getElementById(tableId);
+            if (table) {
+                var tr = table.getElementsByTagName("tr");
+                for (var i = 1; i < tr.length; i++) {
+                    var type = tr[i].getAttribute("data-type") ? tr[i].getAttribute("data-type").toUpperCase() : "";
+                    if (filter === "ALL" || type === filter) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        });
     }
 
     function searchPackages() {
         var filter = document.getElementById("pkgSearch").value.toUpperCase();
-        var tr = document.querySelectorAll(".data-table tr");
-        for (var i = 1; i < tr.length; i++) {
+        var tr = document.querySelectorAll(".data-table tbody tr");
+        for (var i = 0; i < tr.length; i++) {
             var text = tr[i].textContent || tr[i].innerText;
-            tr[i].style.display = text.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+            if (text.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
         }
     }
 </script>

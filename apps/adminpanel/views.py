@@ -8,6 +8,8 @@ from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from stakeholder.models import AgentKYC
 from django.conf import settings
+from packages.models import Package
+from django.contrib.auth.decorators import user_passes_test
 User = get_user_model()
 
 def admin_login_view(request):
@@ -177,3 +179,49 @@ def admin_logout_view(request):
     logout(request)
     messages.success(request, "You have been logged out successfully.")
     return redirect('adminpanel:admin_login')
+def is_platform_admin(user):
+    return user.is_authenticated and user.is_superuser
+
+@user_passes_test(is_platform_admin)
+def admin_packages(request):
+    # 'is_active' ki jagah 'status' field use kar rahe hain
+    # Agar aap active status ke liye 'approved' use karti hain to 'active' ko change kar lein
+    active_packages = Package.objects.filter(status='active').order_by('-id')
+    
+    # Blocked packages ke liye status='blocked' filter karenge
+    blocked_packages = Package.objects.filter(status='blocked').order_by('-id')
+    
+    context = {
+        'active_packages': active_packages,
+        'blocked_packages': blocked_packages,
+    }
+    return render(request, 'adminpanel/admin_packages.html', context)
+
+
+@user_passes_test(is_platform_admin)
+def block_package(request, pkg_id):
+    """Package ko block karne ke liye"""
+    package = get_object_or_404(Package, id=pkg_id)
+    package.status = 'blocked'
+    package.save()
+    messages.warning(request, f"Package #{package.id} has been blocked successfully.")
+    return redirect('adminpanel:admin_packages')
+
+
+@user_passes_test(is_platform_admin)
+def unblock_package(request, pkg_id):
+    """Blocked package ko dobara active karne ke liye"""
+    package = get_object_or_404(Package, id=pkg_id)
+    package.status = 'active'
+    package.save()
+    messages.success(request, f"Package #{package.id} is now live again.")
+    return redirect('adminpanel:admin_packages')
+
+
+@user_passes_test(is_platform_admin)
+def remove_package(request, pkg_id):
+    """Package ko permanently delete karne ke liye"""
+    package = get_object_or_404(Package, id=pkg_id)
+    package.delete()
+    messages.error(request, "Package has been permanently removed from the system.")
+    return redirect('adminpanel:admin_packages')

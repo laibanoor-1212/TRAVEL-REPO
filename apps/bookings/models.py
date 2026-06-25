@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.utils.text import slugify
-from packages.models import Package
+from packages.models import Package# Aapka Booking model
 from customers.models import CustomerProfile
 
 
