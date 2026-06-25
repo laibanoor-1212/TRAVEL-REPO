@@ -538,3 +538,221 @@ textarea{
 </div>
 
 {% endblock %}
+
+{% extends 'customer/user_layout.html' %}
+{% load static %}
+
+{% block title %}My Bookings - Safar-e-Haram{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/booking.css' %}">
+
+<div class="bookings-wrapper">
+    <div class="booking-header">
+        <h2 style="color: #2c3e50; font-weight: 600; margin: 0;">My Bookings</h2>
+        <a href="/" class="btn-new-booking">
+            <i class="fa-solid fa-plus"></i> New Booking
+        </a>
+    </div>
+
+    <div class="booking-card">
+        {% if bookings %}
+            <table class="booking-table">
+                <thead>
+                    <tr>
+                        <th class="col-pkg">Booking ID</th>
+                        <th class="col-pkg">Package</th>
+                        <th class="col-date">Date</th>
+                        <th class="col-cost">Total Persons</th>
+                        <th class="col-cost">Cost (PKR)</th>
+                        <th class="col-status">Status</th>
+                        <th class="col-action">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                        <tr>
+                            <td><strong>{{ booking.booking_id }}</strong></td>
+                            <td><strong>{{ booking.package.title }}</strong></td>
+                            <td>{{ booking.created_at|date:"d M Y" }}</td>
+                            <td>{{ booking.total_persons }}</td>
+                            <td>{{ booking.total_amount }}</td>
+                            <td>
+                                <span class="status-badge 
+                                    {% if booking.status == 'confirmed' or booking.status == 'completed' %}status-confirmed
+                                    {% elif booking.status == 'pending' or booking.status == 'processing' %}status-pending
+                                    {% elif booking.status == 'cancelled' or booking.status == 'rejected' %}status-cancelled
+                                    {% else %}status-processing{% endif %}">
+                                    {{ booking.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-action btn-extend" onclick="openModal('extendModal-{{ booking.slug }}')">Extend</button>
+                                    
+                                    {% if booking.status != 'cancelled' and booking.status != 'completed' %}
+                                        <button class="btn-action btn-cancel" onclick="openModal('cancelModal-{{ booking.slug }}')">Cancel</button>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% for booking in bookings %}
+                
+                <div id="cancelModal-{{ booking.slug }}" class="modal-overlay" style="display: none;">
+                    <div class="modal-content">
+                        <h3>Cancel Booking ({{ booking.booking_id }})</h3>
+                        <p>Are you sure you want to cancel? Please provide a reason.</p>
+                        <form method="POST" action="">
+                            {% csrf_token %}
+                            <input type="hidden" name="booking_slug" value="{{ booking.slug }}">
+                            <textarea name="reason" placeholder="Write reason here..." required></textarea>
+                            <div class="modal-footer">
+                                <button type="button" class="btn-secondary" onclick="closeModal('cancelModal-{{ booking.slug }}')">Close</button>
+                                <button type="submit" name="action_type" value="cancel" class="btn-danger">Submit Request</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="extendModal-{{ booking.slug }}" class="modal-overlay" style="display: none;">
+                    <div class="modal-content">
+                        <h3>Extend Date Request ({{ booking.booking_id }})</h3>
+                        <form method="POST" action="">
+                            {% csrf_token %}
+                            <input type="hidden" name="booking_slug" value="{{ booking.slug }}">
+                            <label>New Expected Date:</label>
+                            <input type="date" name="new_date" required style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                            
+                            <label>Reason for Extension:</label>
+                            <textarea name="reason" placeholder="Why do you want to extend?" required></textarea>
+                            
+                            <div class="modal-footer">
+                                <button type="button" class="btn-secondary" onclick="closeModal('extendModal-{{ booking.slug }}')">Close</button>
+                                <button type="submit" name="action_type" value="extend" class="btn-primary">Send Request</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+            <div style="text-align: center; padding: 40px; color: #7f8c8d;">
+                <i class="fa-solid fa-folder-open" style="font-size: 40px; margin-bottom: 15px; color: #bdc3c7;"></i>
+                <h3>No Bookings Found</h3>
+                <p>You haven't booked any packages yet.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    function openModal(id) {
+        document.getElementById(id).style.display = 'flex';
+    }
+    function closeModal(id) {
+        document.getElementById(id).style.display = 'none';
+    }
+</script>
+{% endblock %}
+
+
+
+
+
+/* Bookings Page Container */
+.bookings-wrapper {
+    animation: fadeIn 0.6s ease-out;
+    max-width: 100%;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Booking Header Section */
+.booking-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+/* Booking Table Card */
+.booking-card {
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    padding: 20px;
+    overflow: hidden;
+    
+}
+
+.booking-table {
+    width: 100%;
+    border-collapse: collapse;
+   
+    table-layout: fixed;
+}
+
+.booking-table th {
+    background: #f8fbf9;
+    color: #555;
+    font-weight: 600;
+    text-align: left;
+    padding: 15px;
+    border-bottom: 2px solid #edf2f0;
+}
+
+.booking-table td {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+    font-size: 14px;
+    color: #333;
+}
+.col-pkg { width: 22%; }
+.col-agent { width: 18%; }
+.col-date { width: 15%; }
+.col-cost { width: 15%; }
+.col-status { width: 12%; }
+.col-action { width: 18%; text-align: center; }
+/* Status Badges */
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 50px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status-confirmed { background: #e8f5e9; color: #2e7d32; }
+.status-pending { background: #fff3e0; color: #ef6c00; }
+.status-cancelled { background: #ffebee; color: #c62828; }
+
+/* Action Buttons */
+.btn-view {
+    background: #27ae60;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 12px;
+    transition: 0.3s;
+}
+
+.btn-view:hover {
+    background: #219150;
+    box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3);
+}
+
+/* Empty State */
+.empty-bookings {
+    text-align: center;
+    padding: 50px;
+    color: #888;
+}

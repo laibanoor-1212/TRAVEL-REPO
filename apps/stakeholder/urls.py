@@ -23,6 +23,7 @@ urlpatterns = [
         views.create_packages,
         name='create_packages'
     ),
+    
 
     path(
         'manage-packages/',
@@ -42,7 +43,7 @@ urlpatterns = [
         name='delete_package'
     ),
 
-  
+    path('booking/<int:booking_id>/details/', views.booking_detail_view, name='booking_detail'),
      
 
    

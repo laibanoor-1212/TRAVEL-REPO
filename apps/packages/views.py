@@ -107,3 +107,12 @@ def manage_packages(request):
             'inactive_packages': inactive_packages,
         }
     )
+def packages_detail(request, package_id):
+       
+   
+    package = get_object_or_404(Package, id=package_id)
+    
+    context = {
+        'package': package,
+    }
+    return render(request, 'stakeholder/packages_detail.html', context)

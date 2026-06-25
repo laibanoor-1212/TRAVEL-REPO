@@ -1,0 +1,325 @@
+{% extends 'stakeholder/dashboard_layout2.html' %}
+{% block content %}
+<style>
+    .detail-container {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .back-btn {
+        background: transparent;
+        border: 1px solid #e2e8f0;
+        color: #1e293b;
+        padding: 10px 18px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 25px;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+    .back-btn:hover {
+        background: #f1f5f9;
+    }
+
+    /* Top Summary Cards */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+
+    .panel-card {
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+        border: 1px solid #e2e8f0;
+    }
+
+    .panel-header {
+        border-bottom: 2px solid #f1f5f9;
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+        color: #0f172a;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .panel-header h3 { margin: 0; font-size: 18px; font-weight: 800; }
+
+    .data-group {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .info-box {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        background: #f8fafc;
+        padding: 12px 15px;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .info-label {
+        font-size: 11px;
+        font-weight: 800;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .info-value {
+        font-size: 14px;
+        color: #0f172a;
+        font-weight: 700;
+    }
+
+    /* --- Travelers Section Heading --- */
+    .section-title {
+        font-size: 20px;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 40px 0 20px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* Traveler Dynamic Card Styling */
+    .traveler-master-card {
+        background: white;
+        border-radius: 24px;
+        padding: 30px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.02);
+        margin-bottom: 25px;
+    }
+
+    .traveler-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        border-bottom: 1px dashed #e2e8f0;
+        padding-bottom: 15px;
+    }
+
+    .t-badge {
+        background: var(--primary-green, #0f5132);
+        color: white;
+        width: 35px;
+        height: 35px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 14px;
+    }
+
+    /* Documents Attachment Download/View Layout */
+    .doc-attachment-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        margin-top: 20px;
+        background: #f8fafc;
+        padding: 15px;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .doc-item {
+        background: white;
+        border: 1px solid #e2e8f0;
+        padding: 12px;
+        border-radius: 10px;
+        text-align: center;
+    }
+
+    .doc-item span {
+        font-size: 11px;
+        font-weight: 700;
+        color: #475569;
+        display: block;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+    }
+
+    .btn-view-doc {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 12px;
+        color: white;
+        background: #0f172a;
+        text-decoration: none;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+    .btn-view-doc:hover { background: #1e293b; }
+
+    @media (max-width: 900px) {
+        .doc-attachment-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+        .info-grid, .data-group, .doc-attachment-grid { grid-template-columns: 1fr; }
+    }
+</style>
+
+<div class="detail-container">
+    
+    <a href="{% url 'stakeholder:manage_booking' %}" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Back to Bookings Table
+    </a>
+
+    <div class="info-grid">
+        <div class="panel-card">
+            <div class="panel-header">
+                <h3><i class="fa-solid fa-file-invoice-dollar" style="color: #6366f1;"></i> Booking Overview</h3>
+            </div>
+            <div class="data-group">
+                <div class="info-box">
+                    <span class="info-label">Main Account Holder</span>
+                    <span class="info-value">{{ booking.user.get_full_name|default:booking.user.username }}</span>
+                </div>
+                <div class="info-box">
+                    <span class="info-label">Total Amount</span>
+                    <span class="info-value" style="color: #10b981;">Rs. {{ booking.total_amount }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-card">
+            <div class="panel-header">
+                <h3><i class="fa-solid fa-umbrella-beach" style="color: #6366f1;"></i> Selected Package</h3>
+            </div>
+            <div class="data-group">
+                <div class="info-box">
+                    <span class="info-label">Package Name</span>
+                    <span class="info-value">{{ booking.package.name }}</span>
+                </div>
+                <div class="info-box">
+                    <span class="info-label">Total Registered Seats</span>
+                    <span class="info-value">{{ booking.total_persons }} Persons</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title">
+        <i class="fa-solid fa-users" style="color: #6366f1;"></i>
+        <span>Registered Travelers Details (Form Input)</span>
+    </div>
+
+    {% for traveler in travelers %}
+    <div class="traveler-master-card">
+        
+        <div class="traveler-header">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div class="t-badge">{{ forloop.counter }}</div>
+                <h4 style="margin:0; font-size: 16px; font-weight: 800; color: #1e293b;">Traveler Specifications</h4>
+            </div>
+            <span style="font-size: 11px; font-weight: 700; color: #64748b; background: #f1f5f9; padding: 4px 10px; border-radius: 20px;">
+                ID: #{{ traveler.id }}
+            </span>
+        </div>
+
+        <div class="data-group">
+            <div class="info-box">
+                <span class="info-label">Full Name</span>
+                <span class="info-value">{{ traveler.full_name }}</span>
+            </div>
+            <div class="info-box">
+                <span class="info-label">Mobile Number</span>
+                <span class="info-value">{{ traveler.phone_number }}</span>
+            </div>
+            <div class="info-box">
+                <span class="info-label">CNIC Identity Card</span>
+                <span class="info-value">{{ traveler.cnic }}</span>
+            </div>
+            <div class="info-box">
+                <span class="info-label">Email Address</span>
+                <span class="info-value">{{ traveler.email|default:"Not provided" }}</span>
+            </div>
+        </div>
+        
+        <div class="info-box" style="margin-top: 15px; width: 100%;">
+            <span class="info-label">Residential Address</span>
+            <span class="info-value" style="font-weight: 500;">{{ traveler.address|default:"Not provided" }}</span>
+        </div>
+
+        {% if traveler.passport_number %}
+        <div class="data-group" style="margin-top: 15px; background: #fff1f2; padding: 12px; border-radius: 12px; border: 1px solid #ffe4e6;">
+            <div>
+                <span class="info-label" style="color: #9f1239;">Passport Number</span>
+                <span class="info-value" style="color: #9f1239;">{{ traveler.passport_number }}</span>
+            </div>
+            <div>
+                <span class="info-label" style="color: #9f1239;">Passport Expiry Date</span>
+                <span class="info-value" style="color: #9f1239;">{{ traveler.passport_expiry|date:"d M, Y"|default:"N/A" }}</span>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="doc-attachment-grid">
+            
+            <div class="doc-item">
+                <span>CNIC Front</span>
+                {% if traveler.cnic_front %}
+                    <a href="{{ traveler.cnic_front.url }}" target="_blank" class="btn-view-doc"><i class="fa-solid fa-eye"></i> View</a>
+                {% else %}
+                    <small style="color: #ef4444; font-weight: 600;">Missing</small>
+                {% endif %}
+            </div>
+
+            <div class="doc-item">
+                <span>CNIC Back</span>
+                {% if traveler.cnic_back %}
+                    <a href="{{ traveler.cnic_back.url }}" target="_blank" class="btn-view-doc"><i class="fa-solid fa-eye"></i> View</a>
+                {% else %}
+                    <small style="color: #ef4444; font-weight: 600;">Missing</small>
+                {% endif %}
+            </div>
+
+            <div class="doc-item">
+                <span>Passport Scan</span>
+                {% if traveler.passport_scan %}
+                    <a href="{{ traveler.passport_scan.url }}" target="_blank" class="btn-view-doc"><i class="fa-solid fa-eye"></i> View</a>
+                {% else %}
+                    <small style="color: #64748b; font-weight: 600;">N/A</small>
+                {% endif %}
+            </div>
+
+            <div class="doc-item">
+                <span>Passport Photo</span>
+                {% if traveler.passport_photo %}
+                    <a href="{{ traveler.passport_photo.url }}" target="_blank" class="btn-view-doc"><i class="fa-solid fa-eye"></i> View</a>
+                {% else %}
+                    <small style="color: #64748b; font-weight: 600;">N/A</small>
+                {% endif %}
+            </div>
+
+        </div>
+
+    </div>
+    {% empty %}
+    <div class="panel-card" style="text-align: center; color: #64748b; font-style: italic;">
+        No specific travelers breakdown found for this booking instance.
+    </div>
+    {% endfor %}
+
+</div>
+{% endblock %}

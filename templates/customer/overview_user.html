@@ -1,0 +1,116 @@
+{% extends 'base/user_layout.html' %}
+{% load static %}
+
+{% block title %}Dashboard Overview{% endblock %}
+
+{% block content %}
+<div class="overview-wrapper">
+    
+    <div class="dashboard-header">
+        <div>
+            <h2 style="color: #2c3e50; font-weight: 600; margin: 0;">Assalam-o-Alaikum, {{ request.user.username }}!</h2>
+            <p style="color: #666; margin: 5px 0 0;">Safar-e-Haram: Tracking your spiritual journey.</p>
+        </div>
+        
+    </div>
+
+    <div class="quick-status-grid">
+        <div class="status-card" id="doc-card">
+            <div class="status-icon" style="background: #fdf2f2; color: #c81e1e;">
+                <i class="fa-solid fa-passport"></i>
+            </div>
+            <div class="status-info">
+                <h4>Documents</h4>
+                <p>Passport <span class="badge bg-pending">Pending</span></p>
+            </div>
+        </div>
+
+        <div class="status-card" id="payment-card">
+            <div class="status-icon" style="background: #e1effe; color: #1e429f;">
+                <i class="fa-solid fa-vault"></i>
+            </div>
+            <div class="status-info">
+                <h4>Payment (Escrow)</h4>
+                <p>Hold <span class="badge bg-hold">Verified</span></p>
+            </div>
+        </div>
+
+        <div class="status-card" id="ticket-card">
+            <div class="status-icon" style="background: #f3faf7; color: #046c4e;">
+                <i class="fa-solid fa-plane-up"></i>
+            </div>
+            <div class="status-info">
+                <h4>Flight Status</h4>
+                <p>Confirmed <span class="badge bg-success">Ready</span></p>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-bottom: 20px; font-weight: 600; display: flex; align-items: center; gap: 10px;">
+        <i class="fa-solid fa-map-location-dot"></i> Package Highlights
+    </div>
+
+    <div class="cards-container">
+        <div class="location-card">
+            <div class="image-box">
+                <img src="{% static '/images/umrah.jpeg' %}" alt="Makkah">
+                <span class="location-tag" style="background: #27ae60;">Makkah Mukarramah</span>
+            </div>
+            <div class="card-body">
+                <h4>Umrah Rituals</h4>
+                <ul class="check-list">
+                    <li><i class="fa-solid fa-check-circle" style="color: #27ae60;"></i> Tawaaf & Sa'ee</li>
+                    <li><i class="fa-solid fa-check-circle" style="color: #27ae60;"></i> Ziyarat-e-Maqamaat</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="location-card">
+            <div class="image-box">
+                <img src="{% static '/images/Masjid nabvi.png' %}" alt="Madinah">
+                <span class="location-tag" style="background: #e67e22;">Madinah Munawwarah</span>
+            </div>
+            <div class="card-body">
+                <h4>Masjid-an-Nabawi</h4>
+                <ul class="check-list">
+                    <li><i class="fa-solid fa-check-circle" style="color: #e67e22;"></i> Rowdah Rasool (S.A.W)</li>
+                    <li><i class="fa-solid fa-check-circle" style="color: #e67e22;"></i> Masjid Quba Visit</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("Safar-e-Haram Dashboard: Initialized");
+
+    // 1. Entrance Animation for Cards
+    const animatedElements = document.querySelectorAll('.status-card, .location-card');
+    animatedElements.forEach((el, index) => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'all 0.5s ease-out';
+        
+        setTimeout(() => {
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+        }, 100 * index);
+    });
+
+    // 2. Dynamic Status Logic (Example)
+    // Aap yahan backend se data la kar inko update kar sakte hain
+    const docStatus = "pending"; 
+    if(docStatus === "pending") {
+        document.getElementById('doc-card').style.borderLeft = "4px solid #c81e1e";
+    }
+
+    // 3. Simple Click Tracker for Report
+    const reportBtn = document.querySelector('.report-btn');
+    reportBtn.addEventListener('click', function(e) {
+        // e.preventDefault();
+        console.log("Generating travel report...");
+    });
+});
+</script>
+{% endblock %}

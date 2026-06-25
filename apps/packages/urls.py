@@ -10,7 +10,7 @@ urlpatterns = [
         views.create_packages,
         name='create_packages'
     ),
-
+path('package/detail/<int:package_id>/', views.packages_detail, name='packages_detail'),
     path(
         'manage-packages/',
         views.manage_packages,

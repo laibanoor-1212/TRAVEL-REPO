@@ -1,0 +1,412 @@
+{% extends 'adminpanel/admin_layout.html' %}
+
+{% block title %}Safar-e-Haram - Admin Dashboard{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --primary-green: #0b6623;    
+        --light-green: #eef7f0;      
+        --accent-green: #128c33;     
+        --text-dark: #2d3748;
+        --text-light: #718096;
+        --border-color: #e2e8f0;
+        --bg-white: #ffffff;
+        --danger-red: #c53030;
+        --danger-bg: #fff5f5;
+    }
+
+    .dashboard-container {
+        width: 100%;
+        background-color: var(--bg-white);
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(11, 102, 35, 0.06);
+        padding: 24px;
+        margin-top: 20px;
+    }
+
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .title-area h2 {
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--primary-green);
+    }
+
+    .title-area p {
+        font-size: 14px;
+        color: var(--text-light);
+        margin-top: 4px;
+    }
+
+    /* Tabs Styling Container */
+    .tabs-wrapper {
+        display: flex;
+        border-bottom: 2px solid var(--border-color);
+        margin-bottom: 24px;
+        gap: 8px;
+    }
+
+    .tab-link {
+        padding: 12px 20px;
+        text-decoration: none;
+        color: var(--text-light);
+        font-size: 14px;
+        font-weight: 500;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -2px;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .tab-link:hover {
+        color: var(--primary-green);
+    }
+
+    .tab-link.active-tab {
+        color: var(--primary-green);
+        border-bottom: 2px solid var(--primary-green);
+        font-weight: 600;
+    }
+
+    .tab-count {
+        background-color: #f1f5f9;
+        color: var(--text-dark);
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+    }
+
+    .tab-link.active-tab .tab-count {
+        background-color: var(--light-green);
+        color: var(--primary-green);
+    }
+
+    /* Controls Area */
+    .controls-area {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .search-box {
+        position: relative;
+    }
+
+    .search-box input {
+        padding: 10px 16px;
+        padding-left: 36px;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        font-size: 14px;
+        width: 240px;
+        outline: none;
+    }
+
+    .search-box::before {
+        content: "🔍";
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 13px;
+        color: var(--text-light);
+    }
+
+    .filter-btn {
+        background-color: var(--bg-white);
+        border: 1px solid var(--border-color);
+        padding: 10px 16px;
+        border-radius: 6px;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    .add-user-btn {
+        background-color: var(--primary-green);
+        color: var(--bg-white);
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .user-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        font-size: 14px;
+    }
+
+    .user-table th {
+        color: var(--text-light);
+        font-weight: 500;
+        padding: 16px;
+        border-bottom: 1px solid var(--border-color);
+        background-color: #fafbfc;
+    }
+
+    .user-table td {
+        padding: 16px;
+        border-bottom: 1px solid var(--border-color);
+        vertical-align: middle;
+    }
+
+    .badge {
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+        display: inline-block;
+    }
+
+    .badge.agent {
+        background-color: #e3f2fd;
+        color: #0d47a1;
+    }
+
+    .badge.customer {
+        background-color: #f5f5f5;
+        color: #424242;
+    }
+
+    .status-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+    }
+
+    .status-dot.active { background-color: #2e7d32; }
+    .status-dot.inactive { background-color: #718096; }
+    .status-dot.suspended { background-color: var(--danger-red); }
+
+    .action-cell { position: relative; }
+    .three-dots-btn {
+        background: none;
+        border: none;
+        font-size: 18px;
+        cursor: pointer;
+        color: var(--text-light);
+        padding: 4px 8px;
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        right: 0;
+        top: 40px;
+        background-color: var(--bg-white);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        z-index: 100;
+        width: 210px;
+        display: none;
+    }
+
+    .dropdown-menu a {
+        display: block;
+        padding: 10px 16px;
+        color: var(--text-dark);
+        text-decoration: none;
+        font-size: 13px;
+        text-align: left;
+    }
+
+    .dropdown-menu a:hover { background-color: #f7fafc; }
+    .dropdown-menu a.suspend-link {
+        color: var(--danger-red);
+        border-top: 1px solid var(--border-color);
+    }
+
+    .table-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+        font-size: 13px;
+        color: var(--text-light);
+    }
+
+    .pagination-controls { display: flex; gap: 4px; }
+    .pagination-controls a, .pagination-controls span {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        text-decoration: none;
+        color: var(--text-dark);
+    }
+
+    .pagination-controls .active-page {
+        background-color: var(--primary-green);
+        color: var(--bg-white);
+        border-color: var(--primary-green);
+    }
+</style>
+
+<div class="dashboard-container">
+    
+    <div class="dashboard-header">
+        <div class="title-area">
+            <h2>Users Registry</h2>
+            <p>Manage, audit, and configure user application status roles</p>
+        </div>
+        <div class="controls-area">
+            <form method="GET" action="{% url 'accounts:admin_manage_users' %}" class="search-box">
+                <input type="hidden" name="tab" value="{{ active_tab }}">
+                <input type="text" name="search" placeholder="Search by email..." value="{{ search_query }}">
+            </form>
+            <button class="filter-btn">⚙️ Filter</button>
+            <button class="add-user-btn">+ Add User</button>
+        </div>
+    </div>
+
+    <div class="tabs-wrapper">
+        <a href="?tab=all&search={{ search_query }}" class="tab-link {% if active_tab == 'all' %}active-tab{% endif %}">
+            All Users <span class="tab-count">{{ counts.all }}</span>
+        </a>
+        <a href="?tab=active&search={{ search_query }}" class="tab-link {% if active_tab == 'active' %}active-tab{% endif %}">
+            Active <span class="tab-count">{{ counts.active }}</span>
+        </a>
+        <a href="?tab=deactivated&search={{ search_query }}" class="tab-link {% if active_tab == 'deactivated' %}active-tab{% endif %}">
+            Deactivated <span class="tab-count">{{ counts.deactivated }}</span>
+        </a>
+        <a href="?tab=suspended&search={{ search_query }}" class="tab-link {% if active_tab == 'suspended' %}active-tab{% endif %}">
+            Suspended <span class="tab-count">{{ counts.suspended }}</span>
+        </a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div style="padding: 12px; margin-bottom: 16px; border-radius: 6px; background-color: var(--light-green); color: var(--primary-green); font-size: 14px; border-left: 4px solid var(--primary-green);">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="table-responsive">
+        <table class="user-table">
+            <thead>
+                <tr>
+                    <th style="width: 50px;">#</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Joined</th>
+                    <th>Status</th>
+                    <th style="width: 60px; text-align: center;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ forloop.counter|add:users.start_index|add:"-1" }}</td>
+                    <td><strong>{{ user.email }}</strong></td>
+                    <td>
+                        {% if user.role == 'stakeholder' %}
+                            <span class="badge agent">Stakeholder (Travel Agent)</span>
+                        {% elif user.role == 'user' %}
+                            <span class="badge customer">User (Customer)</span>
+                        {% else %}
+                            <span class="badge customer">{{ user.role }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ user.date_joined|date:"d M Y" }}</td>
+                    <td>
+                        <div class="status-wrapper">
+                            {% if user.is_active %}
+                                <span class="status-dot active"></span> <span>Active</span>
+                            {% elif not user.is_approved and not user.is_active %}
+                                <span class="status-dot suspended"></span> <span>Suspended</span>
+                            {% else %}
+                                <span class="status-dot inactive"></span> <span>Deactivated</span>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td class="action-cell" style="text-align: center;">
+                        <button class="three-dots-btn" onclick="toggleDropdown(event, 'dropdown-{{ user.id }}')">⋮</button>
+                        
+                        <div id="dropdown-{{ user.id }}" class="dropdown-menu">
+                            {% if user.is_active %}
+                                <a href="{% url 'accounts:change_user_status' user.id 'deactivate' %}?tab={{ active_tab }}">⏸ Deactivate</a>
+                                <a href="{% url 'accounts:change_user_status' user.id 'suspend' %}?tab={{ active_tab }}" class="suspend-link">🚫 Suspend Account</a>
+                            {% else %}
+                                <a href="{% url 'accounts:change_user_status' user.id 'activate' %}?tab={{ active_tab }}">✔️ Activate User</a>
+                                {% if user.is_approved %}
+                                    <a href="{% url 'accounts:change_user_status' user.id 'suspend' %}?tab={{ active_tab }}" class="suspend-link">🚫 Suspend Account</a>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 30px; color: var(--text-light);">No user records found in this segment.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="table-footer">
+        <div>Showing {{ users.start_index }} to {{ users.end_index }} of {{ total_users }} list records</div>
+        <div class="pagination-controls">
+            {% if users.has_previous %}
+                <a href="?page={{ users.previous_page_number }}&tab={{ active_tab }}&search={{ search_query }}">&lt;</a>
+            {% endif %}
+            
+            {% for num in users.paginator.page_range %}
+                {% if users.number == num %}
+                    <span class="active-page">{{ num }}</span>
+                {% else %}
+                    <a href="?page={{ num }}&tab={{ active_tab }}&search={{ search_query }}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if users.has_next %}
+                <a href="?page={{ users.next_page_number }}&tab={{ active_tab }}&search={{ search_query }}">&gt;</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleDropdown(event, dropdownId) {
+        event.stopPropagation();
+        const openMenus = document.querySelectorAll('.dropdown-menu');
+        openMenus.forEach(menu => {
+            if (menu.id !== dropdownId) menu.style.display = "none";
+        });
+
+        const currentMenu = document.getElementById(dropdownId);
+        currentMenu.style.display = (currentMenu.style.display === "block") ? "none" : "block";
+    }
+
+    window.addEventListener('click', function() {
+        const openMenus = document.querySelectorAll('.dropdown-menu');
+        openMenus.forEach(menu => menu.style.display = "none");
+    });
+</script>
+{% endblock %}
