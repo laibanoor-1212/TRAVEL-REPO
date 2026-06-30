@@ -7,9 +7,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <title>Safar-e-Haram | Admin Panel</title>
 
-<!-- Bootstrap CSS -->
 <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-<!-- Bootstrap Icons CDN -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <link rel="stylesheet" href="{% static 'css/commision.css' %}">
 <style>
@@ -87,7 +85,7 @@
   position:absolute;
   left:14px;
   right:14px;
- 
+  bottom: 20px; /* Aligned properly */
   display:flex;
   gap:12px;
   align-items:center;
@@ -148,37 +146,8 @@
     visibility: visible !important;
 }
 
-/* Dropdown visibility logic */
-.notif-dropdown {
-    position: absolute;
-    top: 50px;
-    right: 0;
-    width: 280px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-    display: none; /* JS control karega */
-    z-index: 2000;
-    border: 1px solid #eee;
-}
-
-.notif-item {
-    display: flex;
-    padding: 12px;
-    border-bottom: 1px solid #f5f5f5;
-    transition: 0.3s;
-}
-
-.notif-item:hover { background: #f9fbf9; }
-
-/* Show class for JS */
-.show-notif {
-    display: block !important;
-}
-
 .main{
   margin-left:250px;
-  /* width:calc(100% - 250px); */
   padding:25px;
   padding-top:95px;
   transition:margin-left .3s ease,width .3s ease;
@@ -186,14 +155,123 @@
 
 .main.collapsed{
   margin-left:78px;
-  /* width:calc(100% - 78px); */
+}
+
+/* Container Wrapper */
+.notification-dropdown-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+/* Bell Button */
+.bell-btn {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    color: #1b5e20; /* Dark Forest Green */
+    cursor: pointer;
+    position: relative;
+}
+
+/* Badge count */
+.bell-badge {
+    position: absolute;
+    top: -5px;
+    right: -8px;
+    background-color: #d32f2f; /* Alert Red */
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 50%;
+    font-weight: bold;
+}
+
+/* Dropdown Hidden by default */
+.notification-menu {
+    display: none; 
+    position: absolute;
+    right: 0;
+    top: 40px;
+    background: #ffffff;
+    width: 320px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+    border-radius: 6px;
+    z-index: 1000;
+}
+
+.noti-header {
+    background: #1b5e20; /* Theme Green */
+    color: white;
+    padding: 10px 15px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+.noti-header h4 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.noti-body {
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+.noti-item {
+    display: flex;
+    padding: 12px 15px;
+    text-decoration: none;
+    color: #333333;
+    border-bottom: 1px solid #f5f5f5;
+    transition: background 0.2s;
+}
+
+.noti-item:hover {
+    background: #f9f9f9;
+    color: initial;
+}
+
+/* Unread Notification Green Accent */
+.noti-item.unread {
+    background: #e8f5e9; /* Light Soft Green */
+    border-left: 3px solid #2e7d32;
+}
+
+.noti-icon-box {
+    margin-right: 12px;
+    color: #2e7d32;
+    font-size: 1.1rem;
+    margin-top: 3px;
+}
+
+.noti-title {
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.noti-desc {
+    font-size: 0.8rem;
+    color: #666666;
+    margin: 3px 0;
+}
+
+.noti-time {
+    font-size: 0.75rem;
+    color: #999999;
+}
+
+.no-noti {
+    padding: 15px;
+    text-align: center;
+    color: #888;
+    font-size: 0.9rem;
 }
 </style>
 </head>
 
 <body>
 
-<!-- ===== SIDEBAR ===== -->
 <aside id="sidebar" class="sidebar">
   <div class="brand">
     <div class="logo">SH</div>
@@ -202,13 +280,12 @@
       <p>Admin Panel</p>
     </div>
   </div>
-
   <nav>
     <a href="{% url 'adminpanel:admin_dashboard' %}" class="nav-link active">
       <i class="bi bi-speedometer2"></i>
       <span class="nav-text">Dashboard</span>
     </a>
-  <a href="{% url 'accounts:admin_manage_users' %}" class="nav-link">
+    <a href="{% url 'accounts:admin_manage_users' %}" class="nav-link">
       <i class="bi bi-people"></i>
       <span class="nav-text">Users</span>
     </a>
@@ -216,41 +293,45 @@
       <i class="bi bi-people"></i>
       <span class="nav-text">Travel Agents</span>
     </a>
+     <a href="{% url 'adminpanel:admin_customer' %}" class="nav-link">
+      <i class="bi bi-people"></i>
+      <span class="nav-text">Customers</span>
+    </a>
      <a href="{% url 'adminpanel:admin_packages' %}" class="nav-link">
       <i class="bi bi-briefcase"></i>
       <span class="nav-text">Packages</span>
     </a>
-    <a href="" class="nav-link">
+    <a href="{% url 'adminpanel:admin_bookings' %}" class="nav-link">
       <i class="bi bi-receipt"></i>
       <span class="nav-text">Bookings</span>
     </a>
     <a href="" class="nav-link">
-    <i class="bi bi-shield-check"></i>
-    <span class="nav-text">Escrow Release</span>
-</a>
+      <i class="bi bi-shield-check"></i>
+      <span class="nav-text">Escrow Release</span>
+    </a>
     <a href="" class="nav-link">
       <i class="bi bi-cash-stack"></i>
-      <span class="nav-text">Earnings and manage_commision</span>
+      <span class="nav-text">Earnings and Commission</span>
     </a>
     <a href="" class="nav-link">
       <i class="bi bi-exclamation-triangle"></i>
       <span class="nav-text">Complaints</span>
     </a>
      <a href="" class="nav-link">
-      <i class="bi bi-exclamation-triangle"></i>
-      <span class="nav-text">settings</span>
+      <i class="bi bi-gear"></i>
+      <span class="nav-text">Settings</span>
     </a>
     <a href="#" class="nav-link">
-    
       <i class="bi bi-book"></i>
       <span class="nav-text">Guides</span>
     </a>
-  </nav>
-
-  <a href="{% url 'accounts:logout' %}" class="logout">
+     <a href="{% url 'accounts:logout' %}" class="nav-link" class="logout">
     <i class="bi bi-box-arrow-right"></i>
     <span class="nav-text">Logout</span>
   </a>
+  </nav>
+
+ 
 </aside>
 
 <header id="topbar" class="topbar">
@@ -264,27 +345,43 @@
     </div>
   </div>
 
-  <div class="topbar=right">
-   
+  <div class="topbar-right">
     <div style="display: flex; align-items: center; gap: 25px;">
-                 <a href="" class="home-icon" title="Home"><i class="fas fa-home"></i></a>
-                <div class="notification-wrapper" onclick="toggleNotif()">
-                    <i class="fa-solid fa-bell" style="font-size: 20px; color: #888;"></i>
-                    
-                    <span class="notif-badge">1</span>
-                    
-                    <div class="notif-dropdown" id="notifDropdown">
-                        <div style="padding: 12px; background: #f8faf9; font-weight: bold; border-bottom: 1px solid #eee;">Notifications</div>
-                        <div class="notif-item">
-                            <i class="fa-solid fa-ticket" style="color: var(--primary);"></i>
-                            <div>
-                                <b>New agent added</b><br>
-                                <small>Agent has sent details verify now.</small>
-                            </div>
-                        </div>
-                        <a href="/notif-all/" style="display:block; text-align:center; padding: 10px; font-size: 12px; color: var(--primary); text-decoration:none;">View All</a>
-                    </div>
+        <a href="/" class="home-icon" title="Home" style="color: #1b5e20; font-size: 1.2rem;"><i class="fas fa-home"></i></a>
+        
+        <div class="notification-dropdown-wrapper">
+            <button class="bell-btn" onclick="toggleNotificationMenu()">
+                <i class="fas fa-bell"></i> 
+                {% if unread_count > 0 %}
+                    <span class="bell-badge">{{ unread_count }}</span>
+                {% endif %}
+            </button>
+
+            <div class="notification-menu" id="notificationMenu">
+                <div class="noti-header">
+                    <h4>Notifications</h4>
                 </div>
+                <div class="noti-body">
+                    {% if notifications %}
+                        {% for noti in notifications %}
+                            <a href="{% url 'notifications:mark_as_read' noti.slug %}" class="noti-item {% if not noti.is_read %}unread{% endif %}">
+                                <div class="noti-icon-box">
+                                    <i class="{{ noti.icon|default:'fas fa-info-circle' }}"></i>
+                                </div>
+                                <div class="noti-content">
+                                    <p class="noti-title">{{ noti.title }}</p>
+                                    <p class="noti-desc" style="margin:0;">{{ noti.message|truncatechars:50 }}</p>
+                                    <span class="noti-time">{{ noti.created_at|timesince }} ago</span>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    {% else %}
+                        <div class="no-noti">No new Notifications</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
   </div>
 </header>
 
@@ -293,8 +390,8 @@
   {% endblock %}
 </main>
 
-<!-- ===== JS ===== -->
 <script>
+// Sidebar Control
 const sidebar = document.getElementById("sidebar");
 const topbar  = document.getElementById("topbar");
 const main    = document.getElementById("main");
@@ -305,6 +402,29 @@ toggle.addEventListener("click", () => {
   topbar.classList.toggle("collapsed");
   main.classList.toggle("collapsed");
 });
+
+// MODIFIED: Custom Notification Toggle 
+function toggleNotificationMenu() {
+    var menu = document.getElementById("notificationMenu");
+    if (menu.style.display === "block") {
+        menu.style.display = "none";
+    } else {
+        menu.style.display = "block";
+    }
+}
+
+// Click outside dropdown to close
+window.onclick = function(event) {
+    if (!event.target.matches('.bell-btn') && !event.target.matches('.fa-bell') && !event.target.closest('.notification-dropdown-wrapper')) {
+        var dropdowns = document.getElementsByClassName("notification-menu");
+        for (var i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.style.display === "block") {
+                openDropdown.style.display = "none";
+            }
+        }
+    }
+}
 </script>
 
 </body>

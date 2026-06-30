@@ -15,4 +15,8 @@ urlpatterns = [
     path('packages/<int:pkg_id>/block/', views.block_package, name='block_package'),
     path('packages/<int:pkg_id>/unblock/', views.unblock_package, name='unblock_package'),
     path('packages/<int:pkg_id>/remove/', views.remove_package, name='remove_package'),
+    path('customers/', views.admin_customer, name='admin_customer'),
+    path('customers/<int:profile_id>/', views.customer_detail, name='customer_detail'),
+    path('bookings/', views.admin_bookings, name='admin_bookings'),
+    path('bookings/update/<int:booking_id>/', views.update_booking_status, name='update_booking_status'),
 ]

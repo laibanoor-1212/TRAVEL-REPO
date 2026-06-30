@@ -1,0 +1,232 @@
+{% extends 'adminpanel/admin_layout.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard - Customers Directory{% endblock %}
+
+{% block custom_css %}
+<style>
+    :root {
+        --primary-emerald: #053327;   
+        --emerald-light: #0b4a3a;
+        --emerald-accent: #115e4a;
+        --mint-soft: #f0fdf4;
+        --mint-border: #e6f4ea;
+        --pure-white: #ffffff;
+        --text-dark: #0f172a;
+        --text-muted: #475569;
+        --bg-light: #f8fafc;
+    }
+
+    body {
+        background-color: var(--bg-light);
+        color: var(--text-dark);
+    }
+
+    /* Top Identity Bar */
+    .dashboard-identity-bar {
+        background: var(--pure-white);
+        border: 2px solid var(--mint-border);
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 12px rgba(5, 51, 39, 0.02);
+        margin-bottom: 32px;
+    }
+
+    .identity-title {
+        color: var(--primary-emerald);
+        font-weight: 800;
+        font-size: 24px;
+    }
+
+    .counter-box {
+        background-color: var(--mint-soft);
+        border: 1px solid var(--mint-border);
+        border-radius: 12px;
+        padding: 10px 20px;
+    }
+
+    /* Modern Minimalist Table Setup */
+    .table-container-card {
+        background: var(--pure-white);
+        border-radius: 20px;
+        border: 2px solid var(--mint-border);
+        padding: 24px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.01);
+    }
+
+    .custom-table {
+        border-collapse: separate;
+        border-spacing: 0 10px;
+        margin-top: -10px;
+    }
+
+    .custom-table th {
+        color: var(--primary-emerald);
+        font-weight: 700;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border: none;
+        padding: 14px 20px;
+    }
+
+    .custom-table tbody tr {
+        background-color: var(--pure-white);
+        transition: all 0.2s ease;
+    }
+
+    .custom-table tbody tr:hover {
+        background-color: var(--mint-soft) !important;
+    }
+
+    .custom-table td {
+        padding: 16px 20px;
+        border-top: 1px solid var(--mint-border);
+        border-bottom: 1px solid var(--mint-border);
+        color: var(--text-dark);
+        font-size: 15px;
+    }
+
+    .custom-table td:first-child {
+        border-left: 1px solid var(--mint-border);
+        border-top-left-radius: 12px;
+        border-bottom-left-radius: 12px;
+    }
+
+    .custom-table td:last-child {
+        border-right: 1px solid var(--mint-border);
+        border-top-right-radius: 12px;
+        border-bottom-right-radius: 12px;
+    }
+
+    /* Badges & Identity Components */
+    .avatar-box {
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 2px solid var(--mint-border);
+    }
+
+    .badge-tier {
+        background-color: #ffffff;
+        color: var(--primary-emerald);
+        border: 1.5px solid var(--primary-emerald);
+        font-weight: 700;
+        font-size: 13px;
+        padding: 4px 12px;
+        border-radius: 8px;
+        text-transform: capitalize;
+    }
+
+    .status-badge-completed {
+        background-color: #15803d;
+        color: var(--pure-white);
+        font-weight: 700;
+        font-size: 12px;
+        padding: 6px 14px;
+        border-radius: 8px;
+    }
+
+    .status-badge-pending {
+        background-color: #b45309;
+        color: var(--pure-white);
+        font-weight: 700;
+        font-size: 12px;
+        padding: 6px 14px;
+        border-radius: 8px;
+    }
+
+    .btn-action-view {
+        background-color: var(--primary-emerald);
+        color: var(--pure-white);
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 14px;
+        padding: 8px 16px;
+        border: none;
+        transition: all 0.2s;
+    }
+
+    .btn-action-view:hover {
+        background-color: var(--emerald-light);
+        color: var(--pure-white);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+    
+    <div class="dashboard-identity-bar d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h2 class="identity-title m-0">Safar-e-Haram Directory</h2>
+            <p class="text-muted m-0 mt-1 fs-15">Manage and verify registered pilgrim and customer applications.</p>
+        </div>
+        <div class="counter-box d-flex align-items-center gap-2">
+            <span class="text-muted fw-bold fs-14">Total Submissions:</span>
+            <span class="fw-extrabold fs-5" style="color: var(--primary-emerald);">{{ customers.count }}</span>
+        </div>
+    </div>
+
+    <div class="table-container-card">
+        <div class="table-responsive">
+            <table class="table custom-table align-middle">
+                <thead>
+                    <tr>
+                        <th>Profile</th>
+                        <th>Full Name</th>
+                        <th>CNIC Number</th>
+                        <th>Phone</th>
+                        <th>City</th>
+                        <th>Budget</th>
+                        <th>Verification</th>
+                        <th class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for customer in customers %}
+                    <tr>
+                        <td>
+                            <div class="avatar-box">
+                                {% if customer.profile_picture %}
+                                    <img src="{{ customer.profile_picture.url }}" class="w-100 h-100 object-fit-cover" alt="">
+                                {% else %}
+                                    <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-light text-success fw-bold">
+                                        {{ customer.full_name|slice:":1" }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td>
+                            <span class="fw-bold text-dark d-block">{{ customer.full_name }}</span>
+                            <span class="text-muted fs-13">ID: #SH-{{ customer.id }}</span>
+                        </td>
+                        <td><code class="text-dark bg-light px-2 py-1 rounded fw-bold">{{ customer.cnic_number }}</code></td>
+                        <td class="fw-semibold text-muted">{{ customer.phone }}</td>
+                        <td class="text-dark fw-medium">{{ customer.city }}</td>
+                        <td>
+                            <span class="badge-tier">{{ customer.budget_preference }}</span>
+                        </td>
+                        <td>
+                            {% if customer.is_profile_completed %}
+                                <span class="status-badge-completed">Completed</span>
+                            {% else %}
+                                <span class="status-badge-pending">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <a href="{% url 'adminpanel:customer_detail' customer.pk %}" class="btn btn-action-view">View Profile</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-5 fw-bold">No active registrations available.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

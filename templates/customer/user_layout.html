@@ -20,17 +20,17 @@
         
         <nav class="side-nav">
             <p class="nav-group-title">Main Menu</p>
-            <a href="{% url 'base:overview_user'%}" class="nav-item {% if request.resolver_match.url_name == 'overview_user' %}active{% endif %}"><i class="fa-solid fa-gauge-high"></i> Overview</a>
-            <a href="{% url 'base:user_booking'%}" class="nav-item"><i class="fa-solid fa-kaaba"></i> My Bookings</a>
-            <a href="{% url 'base:user_profile'%}" class="nav-item"><i class="fas fa-user-plus"></i>Setup Profile </a>
+            <a href="{% url 'customers:overview_user'%}" class="nav-item {% if request.resolver_match.url_name == 'overview_user' %}active{% endif %}"><i class="fa-solid fa-gauge-high"></i> Overview</a>
+            <a href="{% url 'customers:user_bookings'%}" class="nav-item"><i class="fa-solid fa-kaaba"></i> My Bookings</a>
+            <a href="{% url 'customers:user_profile_view'%}" class="nav-item"><i class="fas fa-user-plus"></i>Setup Profile </a>
 
 
             <p class="nav-group-title">Finance & Escrow</p>
-            <a href="{% url 'base:user_escrow'%}" class="nav-item"><i class="fa-solid fa-shield-halved"></i> Escrow Status</a>
+            <a href="" class="nav-item"><i class="fa-solid fa-shield-halved"></i> Escrow Status</a>
             <a href="/payments/" class="nav-item"><i class="fa-solid fa-receipt"></i> Receipts</a>
 
             <p class="nav-group-title">Travel Documents</p>
-            <a href="{% url 'base:user_ticket'%}" class="nav-item"><i class="fa-solid fa-file-invoice"></i> Tickets & Visa</a>
+            <a href="" class="nav-item"><i class="fa-solid fa-file-invoice"></i> Tickets & Visa</a>
            
 
             <p class="nav-group-title">Support</p>
@@ -38,7 +38,7 @@
         </nav>
 
         <div class="logout-section">
-            <a href="/logout/" class="nav-item" style="color: var(--danger);"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+            <a href="{% url 'accounts:logout'%}" class="nav-item" style="color: var(--danger);"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
         </div>
     </aside>
 
@@ -49,23 +49,45 @@
             </div>
 
             <div style="display: flex; align-items: center; gap: 25px;">
-                 <a href="{% url 'base:home' %}" class="home-icon" title="Home"><i class="fas fa-home"></i></a>
-                <div class="notification-wrapper" onclick="toggleNotif()">
+                 <a href="" class="home-icon" title="Home"><i class="fas fa-home"></i></a>
+                <div class="notification-wrapper">
+                   
+                    <div class="notification-wrapper" onclick="toggleNotif(event)" style="position: relative; cursor: pointer;">
                     <i class="fa-solid fa-bell" style="font-size: 20px; color: #888;"></i>
                     
-                    <span class="notif-badge">1</span>
+                    {% if unread_count > 0 %}
+                        <span class="notif-badge" style="position: absolute; top: -5px; right: -5px; background: var(--danger, #dc3545); color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; font-weight: bold;">
+                            {{ unread_count }}
+                        </span>
+                    {% endif %}
                     
-                    <div class="notif-dropdown" id="notifDropdown">
-                        <div style="padding: 12px; background: #f8faf9; font-weight: bold; border-bottom: 1px solid #eee;">Notifications</div>
-                        <div class="notif-item">
-                            <i class="fa-solid fa-ticket" style="color: var(--primary);"></i>
-                            <div>
-                                <b>Ticket Uploaded!</b><br>
-                                <small>Agent has sent your PNG ticket. Confirm now.</small>
-                            </div>
+                    <div class="notif-dropdown" id="notifDropdown" style="display: none; position: absolute; right: 0; top: 35px; width: 320px; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 8px; border: 1px solid #eee; max-height: 400px; overflow-y: auto; z-index: 1050;">
+                        <div style="padding: 12px; background: #f8faf9; font-weight: bold; border-bottom: 1px solid #eee; color: #155c3b;">
+                            Notifications
                         </div>
-                        <a href="/notif-all/" style="display:block; text-align:center; padding: 10px; font-size: 12px; color: var(--primary); text-decoration:none;">View All</a>
+                        
+                        <div class="notif-body">
+                            {% if notifications %}
+                                {% for noti in notifications %}
+                                    <a href="{% url 'notifications:mark_as_read' noti.slug %}" class="notif-item" style="display: flex; gap: 12px; padding: 12px; text-decoration: none; color: #333; border-bottom: 1px solid #f1f1f1; transition: 0.2s; {% if not noti.is_read %}background: #f4fcf8;{% endif %}">
+                                        <i class="{{ noti.icon|default:'fa-solid fa-info-circle' }}" style="color: #155c3b; font-size: 1.1rem; padding-top: 3px;"></i>
+                                        <div style="flex: 1;">
+                                            <b style="font-size: 13px; display: block; margin-bottom: 2px;">{{ noti.title }}</b>
+                                            <small style="color: #666; font-size: 12px; display: block; line-height: 1.3;">{{ noti.message|truncatechars:60 }}</small>
+                                            <span style="font-size: 10px; color: #999; display: block; margin-top: 4px;">{{ noti.created_at|timesince }} ago</span>
+                                        </div>
+                                    </a>
+                                {% endfor %}
+                            {% else %}
+                                <div style="padding: 20px; text-align: center; color: #888; font-size: 13px;">
+                                    No new notifications
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <a href="/notif-all/" style="display:block; text-align:center; padding: 10px; font-size: 12px; color: #155c3b; text-decoration:none; border-top: 1px solid #eee; font-weight: 600;">View All</a>
                     </div>
+                </div>
                 </div>
 
                 <div style="display: flex; align-items: center; gap: 12px; border-left: 1px solid #eee; padding-left: 20px;">
@@ -84,18 +106,25 @@
     </div>
 
     <script>
-        function toggleNotif() {
+      function toggleNotif(event) {
+            // Dropdown menu ke andar click karne se toggle event ko rokne ke liye
+            event.stopPropagation();
             var dropdown = document.getElementById("notifDropdown");
             dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
         }
 
-        // Close dropdown when clicking outside
+        // Close dropdown when clicking anywhere outside
         window.onclick = function(event) {
-            if (!event.target.matches('.fa-bell') && !event.target.matches('.notification-wrapper')) {
-                var dropdown = document.getElementById("notifDropdown");
-                if (dropdown.style.display === "block") dropdown.style.display = "none";
+            var dropdown = document.getElementById("notifDropdown");
+            var wrapper = document.querySelector('.notification-wrapper');
+            
+            // Agar dropdown khula hai aur click dropdown ya bell par nahi hua, to band kar do
+            if (dropdown && dropdown.style.display === "block" && !wrapper.contains(event.target)) {
+                dropdown.style.display = "none";
             }
         }
+
+    
     </script>
 </body>
 </html>

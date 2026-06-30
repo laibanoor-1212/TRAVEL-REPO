@@ -4,8 +4,7 @@ from django.contrib import messages
 from packages.models import Package
 from .models import Bookings, BookingCustomers
 
-# 1. CUSTOMER SIDE: پیکیج بک کرنے کا ویو
-@login_required
+
 def book_package(request, package_id):
     # Database se automatic package dhoondna
     package = get_object_or_404(Package, id=package_id)
@@ -73,8 +72,7 @@ def book_package(request, package_id):
     return render(request, 'bookings/booking.html', {'package': package})
 
 
-# 2. STAKEHOLDER SIDE: بکنگز مینیج اور شو کرنے کا ویو
-@login_required
+ 
 def manage_bookings(request):
     # Database se sari Bookings nikalna (select_related query ko fast karta hai)
     bookings = Bookings.objects.all().select_related('user', 'package').order_by('-id')
