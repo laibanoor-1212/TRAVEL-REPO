@@ -9,6 +9,7 @@
         --danger-red: #d63031;
         --info-blue: #0984e3;
         --warning-orange: #f39c12;
+        --dark-slate: #1e293b;
     }
 
     /* Tabs Styling */
@@ -17,94 +18,196 @@
         padding: 14px 24px; cursor: pointer; background: none; border: none;
         font-weight: 600; color: #777; transition: 0.3s; position: relative;
     }
-    .tab-link.active { color: var(--primary-green); }
+    .tab-link.active { color: var(--primary-green); font-weight: 700; }
     .tab-link.active::after {
         content: ''; position: absolute; bottom: -2px; left: 0; width: 100%;
         height: 3px; background: var(--primary-green);
     }
 
     /* Table Container */
-    .table-wrapper { background: var(--pure-white); border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); overflow-x: auto; margin-bottom: 30px; }
+    .table-wrapper { background: var(--pure-white); border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); overflow-x: auto; margin-bottom: 30px; border: 1px solid #e2e8f0; }
     .data-table { width: 100%; border-collapse: collapse; text-align: left; min-width: 1100px; }
-    .data-table th { background: var(--primary-green); color: white; padding: 15px; font-size: 11px; text-transform: uppercase; }
-    .data-table td { padding: 15px; border-bottom: 1px solid #f1f1f1; font-size: 13px; vertical-align: middle; }
+    .data-table th { background: var(--primary-green); color: white; padding: 15px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .data-table td { padding: 15px; border-bottom: 1px solid #f1f1f1; font-size: 13px; vertical-align: middle; color: #334155; }
+    .data-table tr:hover { background-color: #f8fafc; }
 
     /* Status Badges */
-    .badge { padding: 5px 10px; border-radius: 50px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
-    .bg-progress { background: #fff3cd; color: #856404; }
-    .bg-completed { background: #d4edda; color: #155724; }
-    .bg-cancelled { background: #f8d7da; color: #721c24; }
+    .badge { padding: 6px 12px; border-radius: 50px; font-size: 10px; font-weight: 700; text-transform: uppercase; display: inline-block; }
+    .bg-pending { background: #fef3c7; color: #d97706; }
+    .bg-confirmed { background: #dcfce7; color: #15803d; }
+    .bg-cancelled { background: #fee2e2; color: #b91c1c; }
 
     /* Action Buttons */
     .btn-action {
-        padding: 7px 12px; border-radius: 6px; font-size: 11px; font-weight: 700;
+        padding: 8px 14px; border-radius: 8px; font-size: 11px; font-weight: 700;
         text-decoration: none; border: none; cursor: pointer; color: white; transition: 0.2s;
-        display: inline-block;
+        display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
     .btn-blue { background: var(--info-blue); }
     .btn-red { background: var(--danger-red); }
-    .btn-orange { background: var(--warning-orange); }
+    .btn-dark { background: var(--dark-slate); }
 
-    .small-id { font-size: 11px; color: #666; display: block; }
+    .small-id { font-size: 11px; color: #64748b; display: block; margin-top: 2px; }
     .tab-content { display: none; }
     .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* Custom Info Panel */
+    .info-panel { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 25px; margin-bottom: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
 </style>
 
 <div class="container" style="padding: 20px;">
+    {% if messages %}
+        {% for message in messages %}
+            <div style="padding: 15px; background: {% if message.tags == 'success' %}#dcfce7; color: #15803d;{% else %}#fee2e2; color: #b91c1c;{% endif %} border-radius: 8px; margin-bottom: 20px; font-weight: 600;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-        <h2 style="color: var(--primary-green); font-weight: 700;">Booking Control Center</h2>
-        <input type="text" id="bookingSearch" placeholder="Search ID or User..." onkeyup="searchBookings()" 
-               style="padding: 10px 18px; border-radius: 25px; border: 1px solid #ddd; width: 280px; outline: none;">
+        <div>
+            <h2 style="color: var(--primary-green); font-weight: 800; margin: 0; font-size: 26px;">Booking Control Center</h2>
+            <p style="color: #64748b; margin: 4px 0 0; font-size: 14px;">Manage routes, passengers data, and verification states.</p>
+        </div>
+        <input type="text" id="bookingSearch" placeholder="Search Booking ID, Customer..." onkeyup="searchBookings()" 
+               style="padding: 12px 20px; border-radius: 25px; border: 1px solid #cbd5e1; width: 300px; outline: none; font-size: 14px;">
     </div>
+
+    {% if selected_booking_details %}
+    <div class="info-panel" style="border-left: 5px solid var(--info-blue);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 style="margin:0; color: var(--dark-slate);"><i class="fa-solid fa-users" style="color: var(--info-blue);"></i> Traveler Profiles for #{{ selected_booking_details.booking_id }}</h3>
+            <a href="{% url 'adminpanel:admin_bookings' %}" style="text-decoration:none; color:#64748b; font-weight:bold;">&times; Close Panel</a>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            {% for customer in selected_booking_details.CustomerProfile.all %}
+            <div style="border: 1px solid #e2e8f0; padding: 20px; border-radius: 10px; background: #f8fafc;">
+                <h4 style="margin: 0 0 10px 0; color: var(--primary-green);">{{ customer.full_name }}</h4>
+                <p style="margin: 5px 0; font-size: 13px;"><b>Phone:</b> {{ customer.phone_number }}</p>
+                <p style="margin: 5px 0; font-size: 13px;"><b>CNIC:</b> {{ customer.cnic }}</p>
+                <p style="margin: 5px 0; font-size: 13px;"><b>Passport:</b> {{ customer.passport_number|default:"N/A" }}</p>
+                <p style="margin: 5px 0; font-size: 13px;"><b>Expiry:</b> {{ customer.passport_expiry|date:"d M Y"|default:"N/A" }}</p>
+                
+                <div style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #cbd5e1; display:flex; gap:10px; flex-wrap:wrap;">
+                    {% if customer.cnic_front %}<a href="{{ customer.cnic_front.url }}" target="_blank" style="color: var(--primary-green); text-decoration:none; font-size:12px; font-weight:bold;"><i class="fa-solid fa-image"></i> CNIC Front</a>{% endif %}
+                    {% if customer.cnic_back %}<a href="{{ customer.cnic_back.url }}" target="_blank" style="color: var(--primary-green); text-decoration:none; font-size:12px; font-weight:bold;"><i class="fa-solid fa-image"></i> CNIC Back</a>{% endif %}
+                    {% if customer.passport_scan %}<a href="{{ customer.passport_scan.url }}" target="_blank" style="color: var(--info-blue); text-decoration:none; font-size:12px; font-weight:bold;"><i class="fa-solid fa-passport"></i> Passport</a>{% endif %}
+                </div>
+            </div>
+            {% empty %}
+                <p style="color: #64748b;">No individual passenger profiles attached to this booking.</p>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if selected_booking_payment %}
+    <div class="info-panel" style="border-left: 5px solid var(--dark-slate); background: #f8fafc;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 style="margin:0; color: var(--dark-slate);"><i class="fa-solid fa-credit-card"></i> Escrow Accounting Matrix</h3>
+            <a href="{% url 'adminpanel:admin_bookings' %}" style="text-decoration:none; color:#64748b; font-weight:bold;">&times; Close Panel</a>
+        </div>
+        <div style="display: flex; gap: 40px; flex-wrap: wrap;">
+            <div><span style="font-size:12px; color:#64748b; display:block;">Total Required Amount</span><b style="font-size:20px; color:var(--dark-slate);">Rs. {{ selected_booking_payment.total_amount }}</b></div>
+            <div><span style="font-size:12px; color:#64748b; display:block;">Paid In Escrow Gate</span><b style="font-size:20px; color:#16a34a;">Rs. {{ selected_booking_payment.paid_amount }}</b></div>
+            <div><span style="font-size:12px; color:#64748b; display:block;">Remaining Liability</span><b style="font-size:20px; color:var(--danger-red);">Rs. {{ selected_booking_payment.total_amount|default:0 }}</b></div>
+        </div>
+    </div>
+    {% endif %}
 
     <div class="tab-menu">
-        <button class="tab-link active" onclick="openTab(event, 'inProgress')">In Progress</button>
+        <button class="tab-link active" onclick="openTab(event, 'pending')">Pending Requests</button>
+        <button class="tab-link" onclick="openTab(event, 'activeTours')">Active / Confirmed</button>
         <button class="tab-link" onclick="openTab(event, 'completed')">Completed</button>
-        <button class="tab-link" onclick="openTab(event, 'cancelled')">Cancelled</button>
+        <button class="tab-link" onclick="openTab(event, 'cancelled')">Cancelled / Rejected</button>
     </div>
 
-    <div id="inProgress" class="tab-content active">
+    <div id="pending" class="tab-content active">
         <div class="table-wrapper">
             <table class="data-table">
                 <thead>
                     <tr>
                         <th>Booking ID</th>
-                        <th>User & Agent</th>
-                        <th>Amount</th>
-                        <th>Confirmation</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th>User Account</th>
+                        <th>Package Title</th>
+                        <th>Headcount</th>
+                        <th>Total Cost</th>
+                        <th>Current State</th>
+                        <th style="text-align: center;">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {% for booking in bookings %}
+                        {% if booking.status == 'pending' or booking.status == 'processing' %}
+                        <tr>
+                            <td><b>#{{ booking.booking_id }}</b><br><span class="small-id">System ID: {{ booking.id }}</span></td>
+                            <td><strong>{{ booking.user.email }}</strong></td>
+                            <td><b>{{ booking.package.name }}</b></td>
+                            <td style="text-align: center;">{{ booking.total_persons }}</td>
+                            <td><b style="color: var(--primary-green);">Rs. {{ booking.total_amount }}</b></td>
+                            <td><span class="badge bg-pending">{{ booking.get_status_display }}</span></td>
+                            <td>
+                                <div style="display: flex; gap: 6px; justify-content: center;">
+                                    <a href="{% url 'adminpanel:admin_bookings' %}?view_id={{ booking.id }}" class="btn-action btn-blue"><i class="fa-solid fa-users"></i> Profile</a>
+                                    <a href="{% url 'adminpanel:admin_bookings' %}?payment_id={{ booking.id }}" class="btn-action btn-dark"><i class="fa-solid fa-wallet"></i> Payment</a>
+                                    <form action="{% url 'adminpanel:update_booking_status' booking.id %}" method="POST" style="margin: 0;">
+                                        {% csrf_token %}
+                                        <select name="status" onchange="this.form.submit()" style="padding:6px; border-radius:6px; font-weight:600; font-size:11px; border:1px solid #cbd5e1; cursor:pointer;">
+                                            <option value="" selected disabled>Update Status</option>
+                                            <option value="confirmed">Confirm</option>
+                                            <option value="cancelled">Cancel</option>
+                                            <option value="rejected">Reject</option>
+                                        </select>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    {% empty %}
+                        <tr><td colspan="7" style="text-align: center; padding: 30px; color: #94a3b8;">No pending records found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="activeTours" class="tab-content">
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
                     <tr>
-                        <td><b>#BK-501</b><br><span class="small-id">User ID: #U-12</span></td>
-                        <td><strong>Ali Ahmed</strong><br><small>Agent: Karwan Travels</small></td>
-                        <td><b>Rs. 120,000</b></td>
-                        <td><small>User: ✓ | Agent: !</small></td>
-                        <td><span class="badge bg-progress">In Progress</span></td>
-                        <td>
-                            <div style="display: flex; gap: 5px;">
-                                <button class="btn-action btn-blue">View</button>
-                                <button class="btn-action btn-red" onclick="return confirm('Cancel this booking?')">Cancel</button>
-                            </div>
-                        </td>
+                        <th>Booking ID</th>
+                        <th>User Account</th>
+                        <th>Package Title</th>
+                        <th>Total Cost</th>
+                        <th>Current State</th>
+                        <th style="text-align: center;">Actions</th>
                     </tr>
-                    {% for booking in in_progress_bookings %}
-                    <tr>
-                        <td><b>#{{ booking.id }}</b><br><span class="small-id">User: #{{ booking.user.id }}</span></td>
-                        <td><strong>{{ booking.user.first_name }}</strong><br><small>Agent: {{ booking.package.agency.agency_name }}</small></td>
-                        <td><b>Rs. {{ booking.total_amount }}</b></td>
-                        <td><small>User: {% if booking.user_confirmed %}✓{% else %}!{% endif %} | Agent: {% if booking.agent_confirmed %}✓{% else %}!{% endif %}</small></td>
-                        <td><span class="badge bg-progress">In Progress</span></td>
-                        <td>
-                            <div style="display: flex; gap: 5px;">
-                                <a href="{% url 'adminpanel:booking_view' booking.id %}" class="btn-action btn-blue">View</a>
-                                <a href="{% url 'adminpanel:cancel_booking' booking.id %}" class="btn-action btn-red" onclick="return confirm('Are you sure?')">Cancel</a>
-                            </div>
-                        </td>
-                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                        {% if booking.status == 'confirmed' or booking.status == 'visa_processing' or booking.status == 'ticket_issued' %}
+                        <tr>
+                            <td><b>#{{ booking.booking_id }}</b></td>
+                            <td><strong>{{ booking.user.email }}</strong></td>
+                            <td><b>{{ booking.package.name }}</b></td>
+                            <td><b>Rs. {{ booking.total_amount }}</b></td>
+                            <td><span class="badge bg-confirmed" style="background:#cfe2ff; color:#084298;">{{ booking.get_status_display }}</span></td>
+                            <td>
+                                <div style="display: flex; gap: 6px; justify-content: center;">
+                                    <a href="{% url 'adminpanel:admin_bookings' %}?view_id={{ booking.id }}" class="btn-action btn-blue">View Profiles</a>
+                                    <form action="{% url 'adminpanel:update_booking_status' booking.id %}" method="POST" style="margin: 0;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="status" value="completed">
+                                        <button type="submit" class="btn-action btn-blue" style="background:var(--primary-green);" onclick="return confirm('Mark this operational cycle as completed?');">Complete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    {% empty %}
+                        <tr><td colspan="6" style="text-align: center; padding: 30px; color: #94a3b8;">No active ongoing configurations running.</td></tr>
                     {% endfor %}
                 </tbody>
             </table>
@@ -117,31 +220,25 @@
                 <thead>
                     <tr>
                         <th>Booking ID</th>
-                        <th>User & Agent</th>
-                        <th>Amount Released</th>
-                        <th>Completion Date</th>
+                        <th>User Account</th>
+                        <th>Package Title</th>
+                        <th>Settled Amount</th>
                         <th>Status</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td><b>#BK-402</b></td>
-                        <td><strong>Sara Khan</strong><br><small>Agent: Al-Makkah</small></td>
-                        <td><b>Rs. 250,000</b></td>
-                        <td>12 Mar 2026</td>
-                        <td><span class="badge bg-completed">Completed</span></td>
-                        <td><button class="btn-action btn-blue">View History</button></td>
-                    </tr>
-                    {% for booking in completed_bookings %}
-                    <tr>
-                        <td><b>#{{ booking.id }}</b></td>
-                        <td><strong>{{ booking.user.first_name }}</strong></td>
-                        <td><b>Rs. {{ booking.total_amount }}</b></td>
-                        <td>{{ booking.updated_at|date:"d M Y" }}</td>
-                        <td><span class="badge bg-completed">Completed</span></td>
-                        <td><button class="btn-action btn-blue">View</button></td>
-                    </tr>
+                    {% for booking in bookings %}
+                        {% if booking.status == 'completed' %}
+                        <tr>
+                            <td><b>#{{ booking.booking_id }}</b></td>
+                            <td>{{ booking.user.email }}</td>
+                            <td>{{ booking.package.name }}</td>
+                            <td><b style="color: var(--primary-green);">Rs. {{ booking.total_amount }}</b></td>
+                            <td><span class="badge bg-completed">Completed</span></td>
+                        </tr>
+                        {% endif %}
+                    {% empty %}
+                        <tr><td colspan="5" style="text-align: center; padding: 30px; color: #94a3b8;">No records of fully executed operations.</td></tr>
                     {% endfor %}
                 </tbody>
             </table>
@@ -154,22 +251,26 @@
                 <thead>
                     <tr>
                         <th>Booking ID</th>
-                        <th>User</th>
-                        <th>Package</th>
-                        <th>Cancellation Date</th>
-                        <th>Reason</th>
+                        <th>User Account</th>
+                        <th>Package Title</th>
+                        <th>Retained Value</th>
                         <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td><b>#BK-105</b></td>
-                        <td>Kamran Zafar</td>
-                        <td>VIP Umrah</td>
-                        <td>05 Apr 2026</td>
-                        <td><small>Payment Timeout</small></td>
-                        <td><span class="badge bg-cancelled">Cancelled</span></td>
-                    </tr>
+                    {% for booking in bookings %}
+                        {% if booking.status == 'cancelled' or booking.status == 'rejected' or booking.status == 'refunded' %}
+                        <tr>
+                            <td><b>#{{ booking.booking_id }}</b></td>
+                            <td>{{ booking.user.email }}</td>
+                            <td>{{ booking.package.name }}</td>
+                            <td style="color: var(--danger-red);">Rs. {{ booking.total_amount }}</td>
+                            <td><span class="badge bg-cancelled">{{ booking.get_status_display }}</span></td>
+                        </tr>
+                        {% endif %}
+                    {% empty %}
+                        <tr><td colspan="5" style="text-align: center; padding: 30px; color: #94a3b8;">No cancelled listings archived.</td></tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
@@ -182,17 +283,18 @@
         tabcontent = document.getElementsByClassName("tab-content");
         for (i = 0; i < tabcontent.length; i++) { tabcontent[i].style.display = "none"; }
         tablinks = document.getElementsByClassName("tab-link");
-        for (i = 0; i < tablinks.length; i++) { tablinks[i].className = tablinks[i].className.replace(" active", ""); }
+        for (i = 0; i < tablinks.length; i++) { tablinks[i].classList.remove("active"); }
         document.getElementById(tabName).style.display = "block";
-        evt.currentTarget.className += " active";
+        evt.currentTarget.classList.add("active");
     }
 
     function searchBookings() {
         var filter = document.getElementById("bookingSearch").value.toUpperCase();
-        var tr = document.querySelectorAll(".data-table tr");
-        for (var i = 1; i < tr.length; i++) {
+        var currentTab = document.querySelector(".tab-content[style*='block'] ") || document.querySelector(".tab-content.active");
+        var tr = currentTab.querySelectorAll(".data-table tbody tr");
+        for (var i = 0; i < tr.length; i++) {
             var text = tr[i].textContent || tr[i].innerText;
-            tr[i].style.display = text.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+            if (text) { tr[i].style.display = text.toUpperCase().indexOf(filter) > -1 ? "" : "none"; }
         }
     }
 </script>

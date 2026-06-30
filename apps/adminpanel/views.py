@@ -8,8 +8,12 @@ from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from stakeholder.models import AgentKYC
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from packages.models import Package
+from customers.models import CustomerProfile 
+from bookings.models import Bookings, BookingStatusHistory
 from django.contrib.auth.decorators import user_passes_test
+from notifications.models import Notification
 User = get_user_model()
 
 def admin_login_view(request):
@@ -112,8 +116,30 @@ def admin_reset_password_confirm(request, uidb64, token):
 
     return render(request, "adminpanel/forget_password_invalid.html")
 
+
+
 def admin_dashboard(request):
-    return render(request,'adminpanel/admin_dashboard.html')
+  
+    notifications = request.user.notifications.filter(is_deleted=False)[:10]
+    unread_count = request.user.notifications.filter(is_read=False, is_deleted=False).count()
+
+    # 2. Admin panel ke main center area (feed) me saari activities dikhane ke liye
+    recent_activities = Notification.objects.filter(
+        recipient=request.user, 
+        is_deleted=False
+    ).order_by('-created_at')[:15] 
+
+    context = {
+       
+        'notifications': notifications,
+        'unread_count': unread_count,
+        
+        'recent_activities': recent_activities,
+        'pending_kyc_count': AgentKYC.objects.filter(kyc_status='pending').count(),
+        'total_packages_count': Package.objects.count(),
+        'total_bookings_count': Bookings.objects.count(),
+    }
+    return render(request, 'adminpanel/admin_dashboard.html', context)
 def agent_requests(request):
     pending_count = AgentKYC.objects.filter(
         kyc_status='pending'
@@ -225,3 +251,83 @@ def remove_package(request, pkg_id):
     package.delete()
     messages.error(request, "Package has been permanently removed from the system.")
     return redirect('adminpanel:admin_packages')
+
+
+
+def admin_customer(request):
+    customers = CustomerProfile.objects.all().order_by('-id')
+    
+    context = {
+        'customers': customers
+    }
+    return render(request, 'adminpanel/admin_customers.html', context)
+
+
+def customer_detail(request, profile_id):
+    customer_profile = get_object_or_404(CustomerProfile, id=profile_id)
+    selected_packages = customer_profile.interested_packages.split(',') if customer_profile.interested_packages else []
+    
+    context = {
+        'customer': customer_profile,
+        'selected_packages': selected_packages
+    }
+    return render(request, 'adminpanel/admin_customer_details.html', context)
+
+
+def admin_bookings(request):
+    if not request.user.is_authenticated:
+        return redirect('/accounts/login/')
+        
+    if not request.user.is_staff:
+        messages.error(request, "Aapko is page ka access nahi hai.")
+        return redirect('customers:user_dashboard')
+    all_bookings = Bookings.objects.all().select_related('user', 'package').prefetch_related('CustomerProfile').order_by('-created_at')
+    selected_booking_details = None
+    selected_booking_payment = None
+    
+    view_id = request.GET.get('view_id')
+    payment_id = request.GET.get('payment_id')
+    
+    if view_id:
+        selected_booking_details = get_object_or_404(Bookings, id=view_id)
+    if payment_id:
+        selected_booking_payment = get_object_or_404(Bookings, id=payment_id)
+        
+    context = {
+        'bookings': all_bookings,
+        'selected_booking_details': selected_booking_details,
+        'selected_booking_payment': selected_booking_payment,
+    }
+    return render(request, 'adminpanel/admin_booking.html', context)
+
+def update_booking_status(request, booking_id):
+    if not request.user.is_authenticated:
+        return redirect('/accounts/login/')
+        
+    if not request.user.is_staff:
+        messages.error(request, "you do not have authority to access this")
+        return redirect('customers:user_dashboard')
+        
+    if request.method == 'POST':
+        booking = get_object_or_404(Bookings, id=booking_id)
+        old_status = booking.status
+        new_status = request.POST.get('status')
+        valid_statuses = [choice[0] for choice in Bookings.STATUS_CHOICES]
+        
+        if new_status in valid_statuses:
+            booking.status = new_status
+            booking.save()
+            BookingStatusHistory.objects.create(
+                booking=booking,
+                old_status=old_status,
+                new_status=new_status,
+                changed_by=request.user,
+                remarks="Status updated via Admin Control Center."
+            )
+            
+            messages.success(request, f"Booking #{booking.booking_id}  status successfully '{booking.get_status_display()}'")
+        else:
+            messages.error(request, "Invalid status select kiya gaya hai.")
+            
+    # Status update hone ke baad wapas usi dashboard par redirect karein
+    return redirect('adminpanel:admin_bookings')

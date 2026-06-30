@@ -1,122 +1,483 @@
-{% extends 'base/user_layout.html' %}
+{% extends 'customer/user_layout.html' %}
 {% load static %}
 
-{% block title %}Detailed Profile Setup{% endblock %}
-
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/user_profile.css' %}">
+<style>
+    :root {
+        --primary-emerald: #053327;   
+        --emerald-light: #0b4a3a;
+        --emerald-soft: rgba(11, 74, 58, 0.12);
+        --pure-white: #ffffff;
+        --text-dark: #090d16;
+        --text-muted: #27374d;
+        --glass-bg: rgba(255, 255, 255, 0.9); 
+        --glass-border: rgba(11, 74, 58, 0.15);
+    }
 
-<div class="profile-wrapper">
-    <div style="margin-bottom: 25px;">
-        <h2 style="margin:0; color:#2c3e50;">Profile Verification</h2>
-        <p style="color:#7f8c8d; font-size:14px;">Complete both parts to enable booking features.</p>
-    </div>
+    .kyc-wrapper {
+        padding: 30px 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-    <form action="#" method="POST" enctype="multipart/form-data" class="profile-grid">
-        {% csrf_token %}
+    .kyc-card {
+        background: var(--pure-white);
+        border-radius: 20px; 
+        padding: 40px; 
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); 
+        border: 1px solid var(--glass-border);
+        width: 100%;
+        max-width: 950px;
+    }
 
-        <div class="left-section">
-            <div class="setup-card" style="margin-bottom: 20px;">
-                <div class="section-title"><i class="fa-solid fa-user"></i> Personal & Identity</div>
-                <div class="form-rows">
-                    <div class="field-group">
-                        <label>Full Name (Passport)</label>
-                        <input type="text" name="full_name" required>
-                    </div>
-                    <div class="field-group">
-                        <label>Father/Husband Name</label>
-                        <input type="text" name="guardian" required>
-                    </div>
-                </div>
-                <div class="form-rows">
-                    <div class="field-group">
-                        <label>CNIC Number</label>
-                        <input type="text" name="cnic" placeholder="35201-XXXXXXX-X" required>
-                    </div>
-                    <div class="field-group">
-                        <label>Date of Birth</label>
-                        <input type="date" name="dob" required>
-                    </div>
-                </div>
-            </div>
+    /* --- Custom Steps Timeline --- */
+    .timeline-container {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 45px;
+        position: relative;
+        max-width: 450px; 
+        margin-left: auto;
+        margin-right: auto;
+    }
 
-            <div class="setup-card">
-                <div class="section-title"><i class="fa-solid fa-plane-departure"></i> Passport & Travel</div>
-                <div class="form-rows">
-                    <div class="field-group">
-                        <label>Passport Number</label>
-                        <input type="text" name="pass_no" required>
-                    </div>
-                    <div class="field-group">
-                        <label>Passport Expiry</label>
-                        <input type="date" name="pass_expiry" required>
-                    </div>
-                </div>
-                <div class="form-rows">
-                    <div class="field-group">
-                        <label>Emergency Contact</label>
-                        <input type="text" name="em_phone" placeholder="+92 3XX XXXXXXX" required>
-                    </div>
-                    <div class="field-group">
-                        <label>Blood Group</label>
-                        <input type="text" name="blood" placeholder="e.g. O+">
-                    </div>
-                </div>
-            </div>
+    .timeline-container::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: rgba(11, 74, 58, 0.15);
+        transform: translateY(-50%);
+        z-index: 1;
+    }
+
+    .timeline-step {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #f8f9fa;
+        border: 2px solid rgba(11, 74, 58, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text-muted);
+        z-index: 2;
+        transition: all 0.3s ease;
+    }
+
+    .timeline-step.active {
+        border-color: var(--primary-emerald);
+        background: var(--primary-emerald);
+        color: var(--pure-white);
+        box-shadow: 0 0 0 5px rgba(11, 74, 58, 0.15);
+    }
+
+    .timeline-step.completed {
+        border-color: var(--emerald-light);
+        background: var(--primary-emerald);
+        color: var(--pure-white);
+    }
+
+    .form-step {
+        display: none;
+    }
+
+    .form-step.active {
+        display: block;
+        animation: fadeInCard 0.4s ease-out;
+    }
+
+    @keyframes fadeInCard {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .step-header {
+        margin-bottom: 35px;
+        border-bottom: 2px solid rgba(11, 74, 58, 0.1);
+        padding-bottom: 15px;
+    }
+
+    .step-header h2 {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--primary-emerald);
+        margin-bottom: 5px;
+    }
+
+    .step-header p {
+        font-size: 14px;
+        color: var(--text-muted);
+        margin-bottom: 0;
+    }
+
+    .form-label {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--primary-emerald);
+        margin-bottom: 8px;
+    }
+
+    .form-control, .form-select {
+        height: 48px; 
+        border-radius: 10px;
+        border: 1.5px solid rgba(11, 74, 58, 0.25);
+        background-color: #ffffff; 
+        padding: 10px 16px;
+        font-size: 14px;
+        color: #000000;
+        transition: all 0.2s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary-emerald);
+        box-shadow: 0 0 0 4px rgba(11, 74, 58, 0.1);
+        outline: 0;
+    }
+
+    .premium-upload-card {
+        border: 2px dashed rgba(11, 74, 58, 0.3);
+        border-radius: 10px;
+        padding: 20px;
+        background: #fdfdfd;
+        text-align: center;
+    }
+
+    .package-option {
+        border: 1.5px solid rgba(11, 74, 58, 0.2);
+        border-radius: 10px;
+        padding: 14px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        background: #fdfdfd;
+        transition: all 0.2s ease;
+    }
+
+    .package-option:hover {
+        border-color: var(--primary-emerald);
+    }
+
+    .form-check-input:checked {
+        background-color: var(--primary-emerald);
+        border-color: var(--primary-emerald);
+    }
+
+    .action-tray {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 40px;
+        padding-top: 25px;
+        border-top: 1px solid rgba(11, 74, 58, 0.1);
+    }
+
+    .btn-premium-next, .btn-premium-submit {
+        background: var(--primary-emerald);
+        color: var(--pure-white);
+        border: none;
+        padding: 12px 40px;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .btn-premium-next:hover, .btn-premium-submit:hover {
+        background: var(--emerald-light);
+    }
+
+    .btn-premium-prev {
+        background: #ffffff;
+        color: var(--primary-emerald);
+        border: 1.5px solid var(--primary-emerald);
+        padding: 12px 40px;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 600;
+    }
+</style>
+
+<div class="kyc-wrapper">
+    <div class="kyc-card">
+
+        <div class="timeline-container">
+            <div class="timeline-step active" id="stepIndicator-1">1</div>
+            <div class="timeline-step" id="stepIndicator-2">2</div>
+            <div class="timeline-step" id="stepIndicator-3">3</div>
         </div>
 
-        <div class="right-section">
-            <div class="setup-card" style="height: 100%;">
-                <div class="section-title"><i class="fa-solid fa-file-shield"></i> Document Scans</div>
-                <p style="font-size: 11px; color: #888; margin-top: -10px; margin-bottom: 15px;">Clear scans are required for Visa.</p>
+        <form method="POST" enctype="multipart/form-data" id="premiumKycForm">
+            {% csrf_token %}
+
+            <div class="form-step active" id="stepPanel-1">
+                <div class="step-header">
+                    <h2>Personal Profile</h2>
+                    <p>Your official credentials saved in our system.</p>
+                </div>
                 
-                <div class="upload-list">
-                    <div class="upload-item" onclick="document.getElementById('f1').click();">
-                        <i class="fa-solid fa-address-book"></i>
-                        <p id="t1">Passport Front Side</p>
-                        <input type="file" id="f1" name="pass_scan" hidden required>
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" name="full_name" class="form-control" value="{{ profile.full_name|default:'' }}" required>
                     </div>
-
-                    <div class="upload-item" onclick="document.getElementById('f2').click();">
-                        <i class="fa-solid fa-image"></i>
-                        <p id="t2">Passport Size Photo</p>
-                        <input type="file" id="f2" name="photo_scan" hidden required>
-                    </div>
-
-                    <div class="upload-item" onclick="document.getElementById('f3').click();">
-                        <i class="fa-solid fa-id-card"></i>
-                        <p id="t3">CNIC Front & Back</p>
-                        <input type="file" id="f3" name="cnic_scan" hidden required>
-                    </div>
-
-                    <div class="upload-item" onclick="document.getElementById('f4').click();" style="border-style: solid; border-width: 1px; background: #f8fafc;">
-                        <i class="fa-solid fa-syringe" style="color: #3498db;"></i>
-                        <p id="t4">Vaccination Certificate</p>
-                        <input type="file" id="f4" name="vaccine" hidden>
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label">Father / Husband Name</label>
+                        <input type="text" name="father_name" class="form-control" value="{{ profile.father_name|default:'' }}" required>
                     </div>
                 </div>
 
-                <button type="submit" class="save-btn">Verify & Save All Data</button>
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label">Date of Birth</label>
+                        <input type="date" name="date_of_birth" class="form-control" value="{{ profile.date_of_birth|date:'Y-m-d' }}" required>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label">Gender</label>
+                        <select name="gender" class="form-select" required>
+                            <option value="">Select Gender</option>
+                            <option value="Male" {% if profile.gender == "Male" %}selected{% endif %}>Male</option>
+                            <option value="Female" {% if profile.gender == "Female" %}selected{% endif %}>Female</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label">Marital Status</label>
+                        <select name="marital_status" class="form-select">
+                            <option value="">Select Status</option>
+                            <option value="Single" {% if profile.marital_status == "Single" %}selected{% endif %}>Single</option>
+                            <option value="Married" {% if profile.marital_status == "Married" %}selected{% endif %}>Married</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label">CNIC Number</label>
+                        <input type="text" name="cnic_number" class="form-control" placeholder="35202-1234567-1" value="{{ profile.cnic_number|default:'' }}" required>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label">Phone Number</label>
+                        <input type="text" name="phone" class="form-control" placeholder="03XX-XXXXXXX" value="{{ profile.phone|default:'' }}" required>
+                    </div>
+                </div>
             </div>
-        </div>
-    </form>
+
+            <div class="form-step" id="stepPanel-2">
+                <div class="step-header">
+                    <h2>Documents & Location</h2>
+                    <p>Your verified residential address and attached identification papers.</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label">Country</label>
+                        <input type="text" name="country" class="form-control" value="{{ profile.country|default:'Pakistan' }}">
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label">Province</label>
+                        <input type="text" name="province" class="form-control" value="{{ profile.province|default:'' }}">
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label">City</label>
+                        <input type="text" name="city" class="form-control" value="{{ profile.city|default:'' }}">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 mb-4">
+                        <label class="form-label">Complete Residential Address</label>
+                        <textarea name="address" rows="2" class="form-control">{{ profile.address|default:'' }}</textarea>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="premium-upload-card">
+                            <label class="form-label d-block text-start">CNIC Front Image</label>
+                            {% if profile.cnic_front %}
+                                <div class="mb-2 text-start">
+                                    <span class="badge bg-success mb-1">Uploaded File</span>
+                                    <br>
+                                    <img src="{{ profile.cnic_front.url }}" style="max-height: 80px; border-radius: 8px; border: 1px solid rgba(11, 74, 58, 0.2);">
+                                </div>
+                            {% endif %}
+                            <input type="file" name="cnic_front" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="premium-upload-card">
+                            <label class="form-label d-block text-start">CNIC Back Image</label>
+                            {% if profile.cnic_back %}
+                                <div class="mb-2 text-start">
+                                    <span class="badge bg-success mb-1">Uploaded File</span>
+                                    <br>
+                                    <img src="{{ profile.cnic_back.url }}" style="max-height: 80px; border-radius: 8px; border: 1px solid rgba(11, 74, 58, 0.2);">
+                                </div>
+                            {% endif %}
+                            <input type="file" name="cnic_back" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-step" id="stepPanel-3">
+                <div class="step-header">
+                    <h2>Journey Preferences</h2>
+                    <p>Your selected packages, budget setup, and critical healthcare support markers.</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 mb-4">
+                        <label class="form-label d-block mb-3">Select Intended Pilgrimage / Tour</label>
+                        <div class="row g-3">
+                            <div class="col-6 col-md-3">
+                                <label class="package-option" for="p_umrah">
+                                    <input class="form-check-input me-2" type="checkbox" name="interested_packages" value="umrah" id="p_umrah" {% if 'umrah' in saved_packages %}checked{% endif %}>
+                                    <span class="package-label">Umrah Journey</span>
+                                </label>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label class="package-option" for="p_hajj">
+                                    <input class="form-check-input me-2" type="checkbox" name="interested_packages" value="hajj" id="p_hajj" {% if 'hajj' in saved_packages %}checked{% endif %}>
+                                    <span class="package-label">Hajj Pilgrimage</span>
+                                </label>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label class="package-option" for="p_ziyarat">
+                                    <input class="form-check-input me-2" type="checkbox" name="interested_packages" value="iran_iraq" id="p_ziyarat" {% if 'iran_iraq' in saved_packages %}checked{% endif %}>
+                                    <span class="package-label">Holy Ziyarat</span>
+                                </label>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label class="package-option" for="p_turkey">
+                                    <input class="form-check-input me-2" type="checkbox" name="interested_packages" value="turkey" id="p_turkey" {% if 'turkey' in saved_packages %}checked{% endif %}>
+                                    <span class="package-label">Islamic Tour</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label">Package Budget Level</label>
+                        <select name="budget_preference" class="form-select">
+                            <option value="">Select Tier</option>
+                            <option value="budget" {% if profile.budget_preference == "budget" %}selected{% endif %}>Economy / Budget Friendly</option>
+                            <option value="standard" {% if profile.budget_preference == "standard" %}selected{% endif %}>Standard Comfort</option>
+                            <option value="premium" {% if profile.budget_preference == "premium" %}selected{% endif %}>Premium Elite</option>
+                            <option value="luxury" {% if profile.budget_preference == "luxury" %}selected{% endif %}>Luxury Full-Service</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label">Accommodation Type</label>
+                        <select name="travel_type" class="form-select">
+                            <option value="">Select Type</option>
+                            <option value="solo" {% if profile.travel_type == "solo" %}selected{% endif %}>Solo Traveler</option>
+                            <option value="family" {% if profile.travel_type == "family" %}selected{% endif %}>Family Group</option>
+                            <option value="group" {% if profile.travel_type == "group" %}selected{% endif %}>Shared Tour Group</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label">Emergency Contact Name</label>
+                        <input type="text" name="emergency_contact_name" class="form-control" value="{{ profile.emergency_contact_name|default:'' }}">
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label">Relation</label>
+                        <input type="text" name="relation" class="form-control" value="{{ profile.relation|default:'' }}">
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <label class="form-label">Contact Phone</label>
+                        <input type="text" name="emergency_contact_phone" class="form-control" value="{{ profile.emergency_contact_phone|default:'' }}">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label">Medical Concerns (If Any)</label>
+                        <input type="text" name="medical_condition" class="form-control" placeholder="e.g., Diabetes" value="{{ profile.medical_condition|default:'' }}">
+                    </div>
+
+                    <div class="col-md-6 mb-4 d-flex align-items-center">
+                        <div class="form-check mt-3">
+                            <input class="form-check-input" type="checkbox" name="wheelchair_required" id="p_wheelchair" {% if profile.wheelchair_required %}checked{% endif %}>
+                            <label class="form-check-label ms-1" for="p_wheelchair">Special Wheelchair Assistance Required</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-check mt-4">
+                    <input class="form-check-input" type="checkbox" required id="p_terms" {% if profile.is_profile_completed %}checked{% endif %}>
+                    <label class="form-check-label ms-1" for="p_terms">I legally attest that the provided data matches my official passport documents.</label>
+                </div>
+            </div>
+
+            <div class="action-tray">
+                <button type="button" class="btn-premium-prev" id="prevPanelBtn" onclick="navigateStep(-1)" style="display: none;">Back</button>
+                <button type="button" class="btn-premium-next" id="nextPanelBtn" onclick="navigateStep(1)" style="margin-left: auto;">Continue</button>
+                <button type="submit" class="btn-premium-submit" id="submitFormBtn" style="display: none; margin-left: auto;">Update Profile</button>
+            </div>
+        </form>
+    </div>
 </div>
 
-<!-- <script>
-    function setupUpload(id, textId) {
-        document.getElementById(id).addEventListener('change', function() {
-            if (this.files[0]) {
-                const name = this.files[0].name;
-                document.getElementById(textId).innerText = "✅ " + (name.length > 20 ? name.substring(0, 18) + "..." : name);
-                document.getElementById(textId).style.color = "#27ae60";
-                this.parentElement.style.borderColor = "#27ae60";
-                this.parentElement.style.background = "#f0fff4";
-            }
-        });
+<script>
+    let activeStep = 1;
+    const maxSteps = 3; 
+
+    function navigateStep(forward) {
+        if (forward === 1) {
+            const currentFields = document.getElementById(`stepPanel-${activeStep}`).querySelectorAll('[required]');
+            let keepsValid = true;
+            currentFields.forEach(f => {
+                if (!f.checkValidity()) {
+                    f.reportValidity();
+                    keepsValid = false;
+                }
+            });
+            if (!keepsValid) return;
+        }
+
+        document.getElementById(`stepPanel-${activeStep}`).classList.remove('active');
+        activeStep += forward;
+        document.getElementById(`stepPanel-${activeStep}`).classList.add('active');
+
+        updateTimeline();
+
+        document.getElementById('prevPanelBtn').style.display = activeStep === 1 ? 'none' : 'block';
+        if (activeStep === maxSteps) {
+            document.getElementById('nextPanelBtn').style.display = 'none';
+            document.getElementById('submitFormBtn').style.display = 'block';
+        } else {
+            document.getElementById('nextPanelBtn').style.display = 'block';
+            document.getElementById('submitFormBtn').style.display = 'none';
+        }
     }
-    setupUpload('f1', 't1');
-    setupUpload('f2', 't2');
-    setupUpload('f3', 't3');
-    setupUpload('f4', 't4');
-</script> -->
+
+    function updateTimeline() {
+        for (let i = 1; i <= maxSteps; i++) {
+            const indicator = document.getElementById(`stepIndicator-${i}`);
+            if (i < activeStep) {
+                indicator.classList.add('completed');
+                indicator.classList.remove('active');
+                indicator.innerHTML = "✓";
+            } else if (i === activeStep) {
+                indicator.classList.add('active');
+                indicator.classList.remove('completed');
+                indicator.innerHTML = i;
+            } else {
+                indicator.classList.remove('active', 'completed');
+                indicator.innerHTML = i;
+            }
+        }
+    }
+</script>
 {% endblock %}

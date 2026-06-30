@@ -46,7 +46,6 @@ def register_view(request):
 
             user = form.save(commit=False)
             user.save()
-            # stakeholder  go to login
             if user.role == 'stakeholder':
                 request.session['stakeholder_id'] = user.id
                 messages.success(request, "Stakeholder account created successfully. Please submit your docs.")
@@ -55,7 +54,7 @@ def register_view(request):
             else:
                 login(request, user,backend='django.contrib.auth.backends.ModelBackend')
                 messages.success(request, "User account created successfully")
-                return redirect('user_dashboard')
+                return redirect('customers:user_dashboard')
 
     else:
         form = CustomUserRegistrationForm()

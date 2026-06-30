@@ -247,16 +247,11 @@ def manage_packages(request):
             'inactive_packages': inactive_packages,
         }
     )
-# Is file ke top par Bookings model ko import zaroor kar lein agar pehle se nahi hai:
-# from bookings.models import Bookings  # (Apne booking model ka sahi import check kar lein)
 
 @login_required(login_url='/auth/login/')
 def stakeholder_dashboard(request):
    
     agent_bookings = Bookings.objects.filter(package__agency=request.user).order_by('-id')
-    
-    # 2. Agar date change requests ka model aapke paas hai to use yahan filter karein, 
-    # filhal hum empty list bhej rahe hain taake dashboard crash na ho
     date_requests = [] 
     
     context = {
@@ -265,17 +260,32 @@ def stakeholder_dashboard(request):
     }
     return render(request, 'stakeholder/stakeholder_dashboard.html', context)
 
+@login_required(login_url='/auth/login/')
+def stakeholder_dashboard(request):
 
+    agent_bookings = Bookings.objects.filter(package__agency=request.user).order_by('-id')
+    date_requests = [] 
+
+    notifications = request.user.notifications.filter(is_deleted=False)[:10]
+    unread_count = request.user.notifications.filter(is_read=False, is_deleted=False).count()
+
+    context = {
+        'bookings': agent_bookings,
+        'date_requests': date_requests,
+        
+        'notifications': notifications,
+        'unread_count': unread_count,
+    }
+    return render(request, 'stakeholder/stakeholder_dashboard.html', context)
 
 
 @login_required(login_url='/auth/login/')
 def manage_booking(request):
-    # ٹرمینل میں چیک کرنے کے لیے فرینڈلی ڈیبگنگ
     all_bookings_count = Bookings.objects.count()
     print(f"--- DEBUG: Total bookings in DB: {all_bookings_count} ---")
     print(f"--- DEBUG: Logged in Travel Agent: {request.user.email} ---")
     
-    # 🔴 درست لاجک: بکنگ کے پیکیج کی 'agency' کو لاگ ان یوزر سے میچ کریں
+    
     bookings = Bookings.objects.filter(package__agency=request.user).select_related('user', 'package').order_by('-id')
     
     print(f"--- DEBUG: Bookings found for this Agent: {bookings.count()} ---")
@@ -286,17 +296,15 @@ def manage_booking(request):
   
     return render(request, 'stakeholder/manage_booking.html', context)
 @login_required(login_url='/auth/login/')
-def booking_detail_view(request, booking_id):
-    # 1. مین بکنگ کا ڈیٹا نکالا
+def booking_detail_view(request, booking_id): 
+   
     booking = get_object_or_404(Bookings, id=booking_id, package__agency=request.user)
     
-    # 2. 🔴 اس بکنگ سے جڑے تمام مسافروں (Travelers) کا ڈیٹا نکالا
-    # 'bookingcustomers_set' یا جو بھی آپ کے ماڈل کا نام ہے، اس کے ریلیٹڈ نیم سے ڈیٹا فلٹر کریں
     travelers = BookingCustomers.objects.filter(booking=booking)
     
     context = {
         'booking': booking,
-        'travelers': travelers, # یہ لسٹ ہم ٹیمپلیٹ میں بھیج رہے ہیں
+        'travelers': travelers,
     }
     return render(request, 'stakeholder/booking_detail.html', context)
 def earning_transaction(request):
