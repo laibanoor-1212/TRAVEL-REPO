@@ -1,0 +1,144 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="containera">
+  <section class="about-hero">
+    <div>
+      <h1>About Safar-e-Haram</h1>
+      <p class="lead">
+        Hajj and Umrah are important journeys for Muslims, but many people find it difficult to understand every step. Safar-e-Haram is a simple web platform that guides pilgrims with step-by-step instructions through text and videos. It also includes a verified marketplace where only licensed HGOs from Pakistan can list their travel packages, allowing users to compare and book safely.
+      </p>
+      <a href="#" class="btn">Explore More</a>
+    </div>
+
+    <div class="hero-image">
+      <img src="{% static 'images/image 2.jpg' %}">
+      
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="card">
+      <div style="flex:1;">
+        <h2>Our Mission</h2>
+        <p>
+          To make Hajj and Umrah easier, well-organized, and spiritually focused by providing clear guidance, trusted travel packages, and essential location information for every pilgrim.
+        </p>
+      </div>
+      <div class="round-block">
+        
+        <img src="{% static 'images/pic 3.jpg' %}">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="icon-square">🕋</div>
+      <div style="flex:1;">
+        <h2>Our Vision</h2>
+        <p>
+          To become the most reliable digital guide for pilgrims worldwide, ensuring every pilgrim feels supported and confident throughout the journey.
+        </p>
+      </div>
+    </div>
+
+    <div class="card full-width">
+      <h2>Our Goal</h2>
+      <p>
+        Our goal is to bring all licensed Hajj & Umrah companies onto one trusted platform. Safar-e-Haram gives these stakeholders a shared space where they can upload and manage their different travel packages, making it easier for pilgrims to view and compare everything in one place.
+      </p>
+      <h2>Companies</h2>
+
+      <div class="logo-slider">
+        <div class="slide-track">
+
+          <div class="slidea"><img src="{% static 'images/logo1.png' %}"></div>
+          <div class="slidea"><img src="{% static 'images/logo2.png' %}"></div>
+          <div class="slidea"><img src="{% static 'images/logo3.png' %}"></div>
+          <div class="slidea"><img src="{% static 'images/logo4.png' %}"></div>
+          <div class="slidea"><img src="{% static 'images/logo5.png' %}"></div>
+          <div class="slidea"><img src="{% static 'images/logo6.png' %}"></div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="margin-top:28px;">
+    <div class="card">
+      <h2>Our Values</h2>
+
+      <div class="values">
+        <div class="value-item">
+          <h3><span class="diamond"></span>Trust</h3>
+          <p>We provide accurate and verified information.</p>
+        </div>
+
+        <div class="value-item">
+          <h3><span class="diamond"></span>Authenticity</h3>
+          <p>All packages come from officially licensed HGOs.</p>
+        </div>
+
+        <div class="value-item">
+          <h3><span class="diamond"></span>Ease of Use</h3>
+          <p>A smooth and simple experience for all pilgrims.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+</div>
+
+<footer class="footer-wrapper">
+ 
+  <div class="footer-top-curve">
+    <svg viewBox="0 0 1440 150" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      
+      <path fill="#ffff" d="M0,64 C360,160 1080,0 1440,96 L1440,0 L0,0 Z"></path>
+    </svg>
+  </div>
+
+
+  <div class="footer-content">
+    <div class="footer-columns">
+      <div>
+        <h3>About Safar-e-Haram</h3>
+        <p>Safar-e-Haram guides you on a blessed journey — helping pilgrims explore routes, maps, and essential Hajj & Umrah information in one place.</p>
+      </div>
+
+      <div>
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Guides</a></li>
+          <li><a href="#">Maps</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3>Support</h3>
+        <ul>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms & Conditions</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-social">
+      <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+      <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+      <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2025 Safar-e-Haram. All Rights Reserved.</p>
+    </div>
+  </div>
+</footer>
+
+
+{% endblock content %}

@@ -1,0 +1,245 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html {
+  font-family: 'Poppins', sans-serif;
+  }
+.containera{
+  max-width: 1400px;
+  margin: 100px auto 30px auto;
+  padding: 0 20px;
+}
+.about-hero {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 30px;
+  align-items: center;
+  margin-top: 8px;
+  padding: 48px;
+  background: linear-gradient(180deg, rgba(15,81,50,0.07), rgba(15,81,50,0.02));
+  border-radius: 18px;
+}
+.about-hero h1 {
+  color: #0f5132;
+  font-size: 44px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.about-hero p.lead {
+  font-size: 16px;
+  color: #254b3d;
+  max-width: 680px;
+  opacity: 0.9;
+}
+.hero-image {
+  justify-self: center;
+  width: 400px;
+  height: 300px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #e9f4ea;
+  box-shadow: 0 12px 30px rgba(12,40,30,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 25px;
+  text-decoration: none;
+  background-color: #0f5132;
+  color: #fbf8f2;
+  font-weight: 500;
+  transition: 0.3s ease;
+}
+.btn:hover {
+  background-color: #4c6b51;
+}
+
+.section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+  margin-top: 44px;
+}
+
+
+.card {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 14px;
+  box-shadow: 0 10px 24px rgba(12,40,30,0.05);
+  display: flex;
+  gap: 18px;
+}
+
+.card h2 {
+  color: #0f5132;
+  font-size: 26px;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.card p {
+  color: #2b4f40;
+  font-size: 16px;
+}
+
+
+.round-block,
+.mission {
+  width: 200px;
+  height: 200px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #eaf3ea, #f7fbf7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 18px rgba(12,40,30,0.04);
+  overflow: hidden;
+}
+.round-block img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+.icon-square {
+  width: 80px;
+  height: 80px;
+  border-radius: 16px;
+  background: #dff1dd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f5132;
+  font-size: 34px;
+  box-shadow: 0 6px 12px rgba(12,40,30,0.03);
+}
+
+
+.full-width {
+  grid-column: span 2;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.logo-slider {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 110px;
+  margin-top: 20px;
+}
+.slide-track {
+  display: flex;
+  width: calc(200px * 12);
+  animation: scroll 20s linear infinite;
+}
+.slidea {
+  height: 100px;
+  width: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+}
+.slidea img {
+  width: 100%;
+  height: 80px;
+  object-fit: contain;
+  filter: grayscale(100%);
+  opacity: 0.9;
+  transition: 0.5s;
+}
+.slidea img:hover {
+  filter: grayscale(1%);
+  opacity: 1;
+  cursor: pointer;
+}
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+
+.values {
+  display: flex;
+  gap: 18px;
+  margin-top: 26px;
+}
+.value-item {
+  flex: 1;
+  padding: 12px 14px;
+}
+.value-item h3 {
+  font-size: 18px;
+  color: #0f5132;
+  margin-bottom: 6px;
+}
+.value-item p {
+  font-size: 14px;
+  color: #355a4a;
+}
+.diamond {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  transform: rotate(45deg);
+  background: #cfe7d3;
+  margin-right: 8px;
+  border-radius: 2px;
+}
+
+
+.footer-tag {
+  text-align: center;
+  margin: 48px 0 100px;
+  color: #0f5132;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+
+@media (max-width: 900px) {
+  .about-hero {
+    grid-template-columns: 1fr;
+    padding: 28px;
+  }
+  .hero-image {
+    width: 100%;
+    height: 240px;
+  }
+  .section {
+    grid-template-columns: 1fr;
+  }
+  .container {
+    padding: 12px;
+  }
+  .about-hero h1 {
+    font-size: 34px;
+  }
+  .full-width {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 420px) {
+  .about-hero h1 {
+    font-size: 28px;
+  }
+
+  .about-hero p.lead {
+    font-size: 15px;
+  }
+}
