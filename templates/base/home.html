@@ -1,0 +1,472 @@
+{% extends 'base/base.html' %}
+{% block content %}
+{% load static %} 
+
+<section class="hero-sectionbg">
+  
+   <div class="video-wrapper">
+  <video autoplay muted loop id="bg-video">
+    <source src="{% static 'videos/kabba.mp4' %}" type="video/mp4">
+  </video>
+
+  <div class="overlay2"></div>
+
+ 
+  <div class="hero-search1 text-center">
+    <!-- <h1>أَهْلًا وَسَهْلًا مَرْحَبًا</h1> -->
+     
+    <!-- <h1 class="animate-title" data-aos="fade-down">Welcome to <span>Safar-e-Haram</span></h1> -->
+   <h3 class="hero-quote">
+  <span>“And</span>
+  <span>perform</span>
+  <span>Hajj</span>
+  <span>and</span>
+  <span>Umrah</span>
+  <span>for</span>
+  <span>the</span>
+  <span>sake</span>
+  <span>of</span>
+  <span>Allah”</span>
+  <span>(Al-Quran)</span>
+</h3>
+  <p class="animate-subtitle">The Trusted Marketplace to Compare & Book Sacred Travel Packages</p>
+    <div class="search-box-container">
+        <form action="" method="GET" class="hero-search-form-inline">
+          <input type="text" name="q" placeholder="Search packages, destinations, or travel agents..." required>
+          <button type="submit">Search</button>
+        </form>
+      </div>
+      <div class="hero-action-buttons">
+        <a href="{% url 'base:packages' %}" class="btn-customer">Find a Package</a>
+        
+        <a href="{% url 'stakeholder:create_profile' %}" class="btn-agent">Register as Agent</a>
+      </div>
+     
+</div>
+</div>
+   
+    <div id="heroSlider" class="carousel slide carousel-fade transparent-box" data-bs-ride="carousel" data-bs-interval="3000">
+      <div class="carousel-inner">
+
+        
+        <div class="carousel-item active">
+          <img src="{% static 'images/kabbaview.jpeg' %}" class="d-block w-100" alt="Kaaba">
+          <div class="carousel-caption d-none d-md-block">
+            <h3>Begin Your Journey with Faith</h3>
+            <p>Experience the peace and blessings of Makkah — the heart of Islam.</p>
+          </div>
+        </div>
+
+        <div class="carousel-item">
+          <img src="{% static 'images/madinahview.jpg' %}" class="d-block w-100" alt="Madinah">
+          <div class="carousel-caption d-none d-md-block">
+            <h3>City of our beloved Nabi</h3>
+            <p>Experience the restless and the most peaceful place in the world.</p>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <img src="{% static 'images/mina.jpeg' %}" class="d-block w-100" alt="Mina">
+          <div class="carousel-caption d-none d-md-block">
+            <h3>The Sacred Valley of Mina</h3>
+            <p>Witness the unity of millions gathered in devotion and humility.</p>
+          </div>
+        </div>
+
+        
+        <div class="carousel-item">
+          <img src="{% static 'images/jabal-e-rehmat.jpeg' %}" class="d-block w-100" alt="Jabal-e-Rehmat">
+          <div class="carousel-caption d-none d-md-block">
+            <h3>Mount of Mercy</h3>
+            <p>Remember the mercy and forgiveness granted at Arafat.</p>
+          </div>
+        </div>
+
+        
+        <div class="carousel-item">
+          <img src="{% static 'images/graveyard.jpeg' %}" class="d-block w-100" alt="Jannat al-Baqi">
+          <div class="carousel-caption d-none d-md-block">
+            <h3>Jannat al-Baqi</h3>
+            <p>Pay respects to the pious souls resting in Madinah.</p>
+          </div>
+        </div>
+
+        
+        <div class="carousel-item">
+          <img src="{% static 'images/arafah.jpeg' %}" class="d-block w-100" alt="Arafah">
+          <div class="carousel-caption d-none d-md-block">
+            <h3>The Day of Arafah</h3>
+            <p>Stand in humility, seeking forgiveness and renewal of faith.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  <div class="custom-shape-divider-bottom">
+     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+   
+    <path d="M0,40 C150,0 400,120 1200,100 L1200,120 L0,120 Z" class="shape-fill"></path>
+
+  </svg>
+  </div>
+</section>
+
+
+<section class="prayer-timing">
+  <div class="container1">
+  <h1>🕋 Prayer Times</h1>
+  <div id="user" class="city">
+    <h2 id="userCity" color:white></h2>
+    <div class="cards" id="user-cards"></div>
+  </div>
+</div>
+</section>
+
+<section class="premium-marketplace-section">
+    <div class="safar-marketplace-wrapper">
+        <div class="safar-row">
+            
+            <div class="safar-col-text">
+                <div class="content-box">
+                    <span class="eyebrow-text">Trusted Marketplace</span>
+                    <h2 class="section-title">Your Gateway to a <span>Hassle-Free Pilgrimage</span></h2>
+                    <p class="section-lead">
+                        Safar-e-Haram connects you directly with verified travel agents to create your ideal spiritual journey. Compare and book packages that include all your essential needs.
+                    </p>
+
+                    <div class="marketplace-features-grid">
+                        <div class="feature-item">
+                            <div class="f-icon"><i class="fas fa-id-card"></i></div>
+                            <h5>Visa Issuance</h5>
+                        </div>
+                        <div class="feature-item">
+                            <div class="f-icon"><i class="fas fa-hotel"></i></div>
+                            <h5>Hotels</h5>
+                        </div>
+                        <div class="feature-item">
+                            <div class="f-icon"><i class="fas fa-utensils"></i></div>
+                            <h5>Catering</h5>
+                        </div>
+                        <div class="feature-item">
+                            <div class="f-icon"><i class="fas fa-bus-alt"></i></div>
+                            <h5>Transport</h5>
+                        </div>
+                        <div class="feature-item">
+                            <div class="f-icon"><i class="fas fa-mosque"></i></div>
+                            <h5>Rawdah</h5>
+                        </div>
+                        <div class="feature-item">
+                            <div class="f-icon"><i class="fas fa-plane"></i></div>
+                            <h5>Flights</h5>
+                        </div>
+                    </div>
+                    
+                    <div class="action-area">
+                        <a href="{% url 'base:packages' %}" class="btn-safar-gold">Explore Agent Packages</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="safar-col-visual">
+                <div class="image-stack-container">
+                    <div class="stack-img main-photo shadow">
+                        <img src="{% static 'images/travelagent2.jpeg' %}" alt="Agent Help">
+                    </div>
+                    <div class="stack-img second-photo shadow-lg">
+                        <img src="{% static 'images/passport.jpeg' %}" alt="Kaaba View">
+                    </div>
+                    <div class="stack-img third-photo shadow">
+                        <img src="{% static 'images/luxury_bus.jpeg' %}" alt="Transport">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+<section class="hajj-section">
+  <div class="hajj-container">
+    
+    
+    <div class="hajj-left">
+      <div class="image-stack">
+        <img src="{% static 'images/makkah.jpg' %}" alt="Kaaba in Makkah" class="img-large">
+        <img src="{% static 'images/unnamed.jpg' %}" alt="Pilgrims during Hajj" class="img-small">
+        <img src="{% static 'images/ihram.jpeg' %}" alt="Zamzam water" class="img-top">
+      </div>
+    </div>
+
+    
+  <div class="hajj-right">
+    <h1 class="ayah">وَأَذِّن فِي النَّاسِ بِالْحَجِّ يَأْتُوكَ رِجَالًا</h1>
+    <p class="translation">
+        “And proclaim the Hajj to the people; they will come to you from every distant pass.” 
+        <small>(Surah Al-Hajj 22:27)</small>
+    </p>
+
+    <div class="content-text">
+        <h2 style="color: var(--color); font-weight: 700; margin-bottom: 15px;">Your Trusted Gateway to the Holy Land</h2>
+        
+        <p>
+            <strong>Safar-e-Haram</strong> is more than just a guide—it is a specialized <strong>Marketplace</strong> 
+            where faith meets convenience. We bring together certified <strong>Travel Agents</strong> and 
+            devoted pilgrims on a single platform.
+        </p>
+        
+        <p>
+            Whether you are an agent looking to showcase premium <strong>Hajj & Umrah Packages</strong> 
+            or a pilgrim searching for the most reliable and affordable journey, we provide the 
+            tools, maps, and rituals to make your spiritual dream a reality.
+        </p>
+    </div>
+
+    <div class="hero-btns" style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 25px;">
+        <button class="learn-btn" style="border: 2px solid var(--color);">
+            <a href="{% url 'base:hajjpackages' %}" style="color: var(--color); text-decoration:none;">EXPLORE PACKAGES</a>
+        </button>
+        
+        <button class="learn-btn" style="background: transparent;border: 2px solid var(--color);color: var(--color);">
+            <a href="{% url 'base:Guide' %}" style="color:inherit; text-decoration:none;">PILGRIM GUIDE</a>
+        </button>
+    </div>
+</div>
+
+  </div>
+</section>
+
+
+
+<section class="pilgrim-services">
+  <h1> OUR SERVICES</h1><br>
+  <h2> Serving pilgrims</h2>
+  <div class="containerg">
+
+   
+    <div class="left-media">
+      
+      <video class="arched-media" autoplay loop muted playsinline>
+  <source src="{% static 'videos/kabbaview.mp4' %}" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+    
+
+      <div class="hero-caption">
+        <h2>Striving for Excellence in the Islamic Way</h2>
+        <p>Guides, maps and practical tips for your pilgrimage.</p>
+      </div>
+    </div>
+
+    <!-- RIGHT: Grid of cards (2 columns x 2 rows) -->
+    <div class="right-cards">
+      <div class="cardb">
+        <div class="cardimg">
+          <img src="{% static 'images/umrah.jpeg' %}" alt="Umrah">
+        </div>
+        <div class="info">
+          <h3>Umrah Guide</h3>
+          <p>Step-by-step guidance and practical tips.</p>
+           <button class="view"><a href="{% url 'base:Guide' %}">View More</a></button>
+        </div>
+      </div>
+
+      <div class="cardb">
+        <div class="cardimg">
+          <img src="{% static 'images/hajj.jpeg' %}" alt="Hajj">
+        </div>
+        <div class="info">
+          <h3>Hajj Guide</h3>
+          <p>Learn every ritual clearly and simply.</p>
+           <button class="view"><a href="{% url 'base:hajj-guide' %}">View More</a></button>
+        </div>
+      </div>
+
+      <div class="cardb">
+        <div class="cardimg">
+          <img src="{% static 'images/masjidquba.jpg' %}" alt="Ziyarat">
+        </div>
+        <div class="info">
+          <h3>Ziyarat Places</h3>
+          <p>Explore important ziyarat locations and tips.</p>
+          <button class="view"><a href="{% url 'base:ziyarat' %}">View More</a></button>
+        </div>
+      </div>
+      
+
+      <div class="cardb">
+        <div class="cardimg">
+          <img src="{% static 'images/madina.jpeg' %}" alt="Map">
+        </div>
+        <div class="info">
+          <h3>Map & Navigation</h3>
+          <p>Find routes and nearby landmarks easily.</p>
+           <button class="view">Veiw More</button>
+        </div>
+      </div>
+      <div class="cardb">
+        <div class="cardimg">
+          <img src="{% static 'images/ahram3.jpeg' %}" alt="Map">
+        </div>
+        <div class="info">
+        <h3>Ahram</h3>
+          <p>how to wear ihram and its restrictions</p>
+           <button class="view"><a href="{% url 'base:ahram'%}">Veiw More</a></button>
+        </div>
+      </div>
+       <div class="cardb">
+        <div class="cardimg">
+          <img src="{% static 'images/market.jpeg' %}" alt="Map">
+        </div>
+        <div class="info">
+        <h3>Packages</h3>
+          <p>hajj and umrah packages form different travel agents</p>
+           <button class="view"><a href="{% url 'base:hajjpackages'%}">Veiw More</a></button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="destinations-section">
+  <div class="container-dest">
+    
+    <h1 class="dest-title">Explore Sacred Destinations</h1>
+    <p class="dest-subtitle">
+      Discover complete travel packages for all major spiritual journeys — all in one place.
+    </p>
+
+    <div class="dest-grid">
+
+      <div class="dest-card">
+        <img src="{% static 'images/makkah.jpg' %}">
+        <div class="dest-overlay">
+          <h3>Hajj Packages</h3>
+          <p>Experience the sacred pilgrimage of a lifetime.</p>
+        </div>
+      </div>
+
+      <div class="dest-card">
+        <img src="{% static 'images/umrah.jpeg' %}">
+        <div class="dest-overlay">
+          <h3>Umrah Packages</h3>
+          <p>Plan your spiritual journey anytime of the year.</p>
+        </div>
+      </div>
+
+      <div class="dest-card">
+        <img src="{% static 'images/iran.jpeg' %}" >
+        <div class="dest-overlay">
+          <h3>Iran Ziyarat</h3>
+          <p>Visit Mashhad, Qom and other sacred sites.</p>
+        </div>
+      </div>
+
+      <div class="dest-card">
+        <img src="{% static 'images/iraq.jpeg' %}">
+        <div class="dest-overlay">
+          <h3>Iraq Ziyarat</h3>
+          <p>Karbala, Najaf & holy shrines await you.</p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<section class="dual-portal">
+    <div class="portal-header">
+        <h1>JOIN OUR COMMUNITY</h1>
+        <h2>Dedicated to the Guests of Allah</h2>
+    </div>
+
+    <div class="portal-container">
+        <div class="portal-card user-card">
+            <div class="portal-icon"><i class="fas fa-kaaba"></i></div>
+            <h3>For Pilgrims</h3>
+            <p>Find the perfect Hajj or Umrah package. Compare prices, read reviews, and book with verified travel agents securely.</p>
+            <ul class="portal-list">
+                <li><i class="fas fa-check"></i> Verified Travel Packages</li>
+                <li><i class="fas fa-check"></i> Step-by-Step Ritual Guides</li>
+                <li><i class="fas fa-check"></i> Secure Payment Protection</li>
+            </ul>
+            <a href="{% url 'base:hajjpackages' %}" class="portal-btn">Find a Package</a>
+        </div>
+
+        <div class="portal-card agent-card">
+            <div class="portal-icon"><i class="fas fa-store"></i></div>
+            <h3>For Travel Agents</h3>
+            <p>Take your agency online. Showcase your packages to thousands of pilgrims and manage your bookings with our easy dashboard.</p>
+            <ul class="portal-list">
+                <li><i class="fas fa-check"></i> Expand Your Business Reach</li>
+                <li><i class="fas fa-check"></i> Easy Package Management</li>
+                <li><i class="fas fa-check"></i> Trusted Escrow Transactions</li>
+            </ul>
+            <a href="{% url 'stakeholder:create_profile'%}" class="portal-btn agent-btn">Register as Agent</a>
+        </div>
+    </div>
+</section>
+
+
+<footer class="footer-wrapper">
+ 
+  <div class="footer-top-curve">
+    <svg viewBox="0 0 1440 150" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      
+      <path fill="#ffff" d="M0,64 C360,160 1080,0 1440,96 L1440,0 L0,0 Z"></path>
+    </svg>
+  </div>
+
+
+  <div class="footer-content">
+    <img src="{% static 'images/logo.png'%}" alt="">
+    <div class="footer-columns">
+      <div>
+        <h3> Safar-e-Haram</h3>
+        <p>Safar-e-Haram guides you on a blessed journey — helping pilgrims explore routes, maps, and essential Hajj & Umrah information in one place.</p>
+      </div>
+
+      <div>
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Guides</a></li>
+          <li><a href="#">Maps</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3>Support</h3>
+        <ul>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms & Conditions</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-social">
+      <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+      <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+      <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2025 Safar-e-Haram. All Rights Reserved.</p>
+    </div>
+  </div>
+</footer>
+
+
+<script>
+    // Optional JS if you want interactive "Read More" button
+    document.querySelector('.read-more').addEventListener('click', () => {
+        alert('Redirect to more info page');
+    });
+</script>
+
+ 
+
+
+ {% endblock %} 
