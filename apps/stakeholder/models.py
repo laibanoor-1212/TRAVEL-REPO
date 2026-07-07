@@ -37,12 +37,8 @@ class AgentKYC(models.Model):
     iata_ref_doc = models.FileField(upload_to='agent_kyc/iata_reference/', blank=True, null=True )
     ziy_no = models.CharField( max_length=255,blank=True )
     ziy_doc = models.FileField( upload_to='agent_kyc/ziy/',blank=True, null=True)
-    bank_iban = models.CharField(max_length=255,   blank=True)
-    bank_name = models.CharField(max_length=255, blank=True)
-    easypaisa_no = models.CharField( max_length=20, blank=True)
-    easypaisa_name = models.CharField(max_length=255,blank=True)
-    jazzcash_no = models.CharField( max_length=20,blank=True )
-    jazzcash_name = models.CharField( max_length=255,blank=True )
+    raast_id = models.CharField(max_length=100, blank=True, null=True,help_text="Agent's Raast ID (mobile number or IBAN) for escrow payout")
+   
     kyc_status = models.CharField(max_length=20,choices=STATUS_CHOICES, default='pending')
     admin_comment = models.TextField(blank=True)
     submission_count = models.PositiveIntegerField(default=0)
@@ -54,5 +50,6 @@ class AgentKYC(models.Model):
     def __str__(self):
 
         return f"{self.agency_name} - {self.kyc_status}"
+    
     
     

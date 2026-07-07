@@ -3,7 +3,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
-from stakeholder.models import AgentKYC  
+from stakeholder.models import AgentKYC
 from bookings.models import Bookings
 from packages.models import Package
 from notifications.models import Notification
@@ -12,24 +12,26 @@ User = get_user_model()
 
 def get_all_admins():
     return User.objects.filter(is_superuser=True)
+
+
 @receiver(post_save, sender=User)
 def handle_user_registration(sender, instance, created, **kwargs):
     if created:
         admins = get_all_admins()
-        is_agent = getattr(instance, 'is_agent', False)
-        
+        # FIX: CustomUser mein 'is_agent' field nahi hai, 'role' field hai
+        is_agent = getattr(instance, 'role', 'user') == 'stakeholder'
+
         if is_agent:
             n_type = 'agent_registered'
             title = "New Agent Registered"
             message = f"Agent '{instance.username}' has registered and is awaiting verification."
-            redirect_url = "/adminpanel/agents/" 
+            redirect_url = "/adminpanel/agents/"
         else:
             n_type = 'register'
             title = "New Customer Registration"
             message = f"Customer '{instance.username}' has successfully created an account."
             redirect_url = "/adminpanel/customers/"
 
-        # Tamam admins ko notify karein
         for admin in admins:
             Notification.objects.create(
                 recipient=admin,
@@ -46,9 +48,8 @@ def handle_user_registration(sender, instance, created, **kwargs):
 @receiver(post_save, sender=AgentKYC)
 def handle_kyc_signals(sender, instance, created, **kwargs):
     admins = get_all_admins()
-    agent_user = instance.user  # AgentProfile ka User generic relation
-    
-    # SCENARIO A: Agent ne pehli baar Profile/KYC submit kiya
+    agent_user = instance.user
+
     if created:
         for admin in admins:
             Notification.objects.create(
@@ -61,11 +62,10 @@ def handle_kyc_signals(sender, instance, created, **kwargs):
                 redirect_url=f"/adminpanel/kyc/{instance.id}/",
                 icon="fas fa-file-medical"
             )
-            
-   
+
     else:
         status = getattr(instance, 'kyc_status', 'pending')
-        
+
         if status == 'approved':
             n_type = 'kyc_approved'
             title = "KYC Approved Successfully"
@@ -85,49 +85,54 @@ def handle_kyc_signals(sender, instance, created, **kwargs):
             priority = 'medium'
             icon = "fas fa-undo"
         else:
-            return 
+            return
         Notification.objects.create(
             recipient=agent_user,
-            sender=None, 
+            sender=None,
             title=title,
             message=message,
             notification_type=n_type,
             priority=priority,
-            redirect_url="/stakeholder/dashboard/",  
+            redirect_url="/stakeholder/dashboard/",
             icon=icon
         )
+
 
 @receiver(post_save, sender=Package)
 def handle_package_upload(sender, instance, created, **kwargs):
     if created:
         admins = get_all_admins()
-        agent_name = instance.agent.username if instance.agent else "System"
-        
+        # FIX: Package model mein field 'agency' hai, 'agent' nahi
+        agent_name = instance.agency.username if instance.agency else "System"
+
         for admin in admins:
             Notification.objects.create(
                 recipient=admin,
-                sender=instance.agent,
+                sender=instance.agency,
                 title="New Package Uploaded",
-                message=f"Agent '{agent_name}' has uploaded a new package: '{instance.title}'.",
+                # FIX: Package model mein field 'name' hai, 'title' nahi
+                message=f"Agent '{agent_name}' has uploaded a new package: '{instance.name}'.",
                 notification_type='package_created',
                 priority='medium',
                 redirect_url=f"/adminpanel/packages/{instance.id}/",
                 icon="fas fa-box-open"
             )
 
+
 @receiver(post_save, sender=Bookings)
 def handle_booking_signals(sender, instance, created, **kwargs):
     if created:
         admins = get_all_admins()
-        customer = instance.customer 
-        package = instance.package  
-        agent = package.agent if package else None
+        customer = instance.user
+        package = instance.package
+        agent = package.agency if package else None
+
         for admin in admins:
             Notification.objects.create(
                 recipient=admin,
                 sender=customer,
                 title="New Package Booked",
-                message=f"Customer '{customer.username}' booked '{package.title}'.",
+                message=f"Customer '{customer.username}' booked '{package.name}'.",
                 notification_type='booking_created',
                 priority='high',
                 redirect_url=f"/adminpanel/bookings/{instance.id}/",
@@ -138,7 +143,8 @@ def handle_booking_signals(sender, instance, created, **kwargs):
                 recipient=agent,
                 sender=customer,
                 title="Your Package Has a New Booking!",
-                message=f"Great news! '{customer.username}' has booked your package '{package.title}'.",
+                # FIX: yahan bhi 'package.title' tha, 'package.name' hona chahiye
+                message=f"Great news! '{customer.username}' has booked your package '{package.name}'.",
                 notification_type='booking_pending',
                 priority='high',
                 redirect_url=f"/stakeholder/bookings/{instance.id}/",

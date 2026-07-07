@@ -3,152 +3,182 @@
 
 {% block title %}Review Profile - {{ customer.full_name }}{% endblock %}
 
-{% block custom_css %}
+{% block content %}
 <style>
     :root {
-        --primary-emerald: #053327;   
-        --emerald-light: #0b4a3a;
-        --emerald-soft: rgba(11, 74, 58, 0.08);
+        --primary-green: #0b7a47; 
         --pure-white: #ffffff;
-        --text-dark: #0f172a;
-        --text-muted: #475569;
-        --border-color: rgba(11, 74, 58, 0.15);
-        --input-bg: #f8fafc;
+        --danger-red: #d63031;
+       
+        --warning-orange: #f39c12;
+       
+        --light-bg: #f8fafc;
+        --border-color: #e2e8f0;
     }
 
-    .admin-form-wrapper {
-        padding: 30px;
-        background: #fafafa;
-        font-family: system-ui, -apple-system, sans-serif;
-    }
-
-    /* Top Action Header */
-    .form-header-bar {
+    /* Top Identity Panel matching Control Center */
+    .identity-panel {
+        background: var(--pure-white);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 30px;
-        border-bottom: 2px solid var(--emerald-soft);
-        padding-bottom: 15px;
+        flex-wrap: wrap;
+        gap: 20px;
     }
 
-    .btn-back-directory {
-        background: var(--pure-white);
-        color: var(--primary-emerald);
-        border: 1.5px solid var(--primary-emerald);
-        font-weight: 700;
-        padding: 10px 20px;
-        border-radius: 10px;
-        transition: all 0.2s ease;
-        text-decoration: none;
+    .identity-title {
+        color: var(--primary-green) !important;
+        font-weight: 800;
+        margin: 0;
+        font-size: 26px;
+    }
+
+    .identity-subtitle {
+        color: #64748b;
+        margin: 4px 0 0;
         font-size: 14px;
     }
 
-    .btn-back-directory:hover {
-        background: var(--primary-emerald);
-        color: var(--pure-white);
-    }
-
-    /* Main Form Container */
-    .review-form-card {
+    .btn-back-control {
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        color: #64748b;
         background: var(--pure-white);
         border: 1px solid var(--border-color);
-        border-radius: 20px;
-        padding: 40px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+        transition: 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .btn-back-control:hover {
+        background: var(--light-bg);
+        color: var( --primary-green);
+    }
+
+    /* Form Container Card matching Booking profiles */
+    .profile-form-card {
+        background: var(--pure-white) !important;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        padding: 30px;
+        margin-bottom: 30px;
     }
 
     .form-section-title {
-        font-size: 16px;
+        font-size: 13px;
         font-weight: 800;
-        color: var(--primary-emerald);
+        color: var(--primary-green) !important;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        margin-top: 30px;
+        margin-top: 35px;
         margin-bottom: 20px;
         padding-bottom: 8px;
-        border-bottom: 2px solid var(--emerald-soft);
+        border-bottom: 2px solid #f1f5f9;
     }
-    .review-form-card .form-section-title:first-child {
+
+    .profile-form-card .form-section-title:first-child {
         margin-top: 0;
     }
 
-    /* Form Inputs Custom Styling (Disabled Shape but Highly Readable) */
+    /* Layout Responsive Grid */
+    .grid-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 15px;
+    }
+
+    .grid-row-full {
+        display: grid;
+        grid-template-columns: 1fr;
+        margin-bottom: 15px;
+    }
+
+    /* Form Inputs Read-Only / Review Custom Layout */
     .review-group {
-        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
     }
 
     .review-label {
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 700;
-        color: var(--primary-emerald);
+        color: #64748b;
         margin-bottom: 8px;
-        display: block;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
     }
 
-    .review-input-shape {
-        width: 100%;
-        height: 48px;
-        background-color: var(--input-bg);
-        border: 1.5px solid #e2e8f0;
-        border-radius: 10px;
+    .review-data-box {
+        background-color: var(--light-bg) !important;
+        border: 1px solid var(--border-color) !important;
+        border-radius: 8px;
         padding: 12px 16px;
         font-size: 14px;
-        color: var(--text-dark);
+        color: var( --primary-green) !important;
         font-weight: 600;
+        min-height: 45px;
         display: flex;
         align-items: center;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
     }
 
-    textarea.review-input-shape {
-        height: auto;
-        min-height: 80px;
-        white-space: normal;
+    .review-data-box.textarea-box {
         align-items: flex-start;
+        min-height: 75px;
+        line-height: 1.5;
     }
 
-    /* Premium View Document Button */
-    .btn-view-asset {
-        background: var(--primary-emerald);
-        color: var(--pure-white);
+    /* Premium Documents Action Buttons */
+    .btn-view-document {
+        background: var( --primary-green) !important;
+        color: white !important;
         border: none;
-        height: 48px;
+        height: 45px;
         width: 100%;
-        border-radius: 10px;
+        border-radius: 8px;
         font-weight: 700;
-        font-size: 14px;
+        font-size: 13px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         gap: 8px;
         cursor: pointer;
-        transition: background 0.2s;
+        transition: 0.2s;
         text-decoration: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
 
-    .btn-view-asset:hover {
-        background: var(--emerald-light);
-        color: var(--pure-white);
+    .btn-view-document:hover {
+        background: var(--primary-green);
+        transform: translateY(-1px);
     }
 
-    .btn-disabled-asset {
-        background: #f1f5f9;
-        color: #94a3b8;
-        border: 1px dashed #cbd5e1;
+    .btn-disabled-document {
+        background: #e2e8f0 !important;
+        color: #94a3b8 !important;
+        border: 1px dashed #cbd5e1 !important;
         cursor: not-allowed;
+        box-shadow: none;
     }
 
-    /* CSS Only Pure Modal Engine */
+    /* Pure CSS Modal overlay logic matching the previous clean system */
     .image-modal-overlay {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(5, 51, 39, 0.6);
+        background: rgba(30, 41, 59, 0.6);
         backdrop-filter: blur(4px);
         display: flex;
         align-items: center;
@@ -156,7 +186,7 @@
         z-index: 9999;
         opacity: 0;
         pointer-events: none;
-        transition: opacity 0.3s ease;
+        transition: opacity 0.25s ease;
     }
 
     .image-modal-overlay:target {
@@ -166,145 +196,148 @@
 
     .modal-box-content {
         background: var(--pure-white);
-        padding: 20px;
-        border-radius: 16px;
-        max-width: 700px;
+        padding: 25px;
+        border-radius: 12px;
+        max-width: 650px;
         width: 90%;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
         position: relative;
+        border: 1px solid var(--border-color);
     }
 
     .modal-box-content img {
         width: 100%;
-        max-height: 450px;
+        max-height: 400px;
         object-fit: contain;
-        border-radius: 8px;
+        border-radius: 6px;
+        margin-top: 10px;
     }
 
     .btn-close-modal {
         position: absolute;
-        top: -15px;
-        right: -15px;
-        width: 35px;
-        height: 35px;
-        background: var(--primary-emerald);
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        top: 15px;
+        right: 15px;
+        color: #64748b;
         text-decoration: none;
-        font-weight: 700;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        font-weight: bold;
+        font-size: 20px;
+    }
+    
+    .btn-close-modal:hover {
+        color: var(--danger-red);
     }
 </style>
-{% endblock %}
 
-{% block content %}
-<div class="admin-form-wrapper">
+<div style="padding: 20px;">
 
-    <div class="form-header-bar">
+    <div class="identity-panel">
         <div>
-            <h2 class="m-0 fw-bold" style="color: var(--primary-emerald);">Pilgrim Master Profile Review</h2>
-            <small class="text-muted">Account Registration File: {{ customer.full_name|default:"New Applicant" }}</small>
+            <h2 class="identity-title">Pilgrim Master Profile Review</h2>
+            <p class="identity-subtitle">Account Registration File: {{ customer.full_name|default:"New Applicant" }}</p>
         </div>
-        <a href="{% url 'adminpanel:admin_customer' %}" class="btn-back-directory">&larr; Return to Directory</a>
+        <a href="{% url 'adminpanel:admin_customer' %}" class="btn-back-control">&larr; Return to Directory</a>
     </div>
 
-    <div class="review-form-card">
+    <div class="profile-form-card">
         
         <div class="form-section-title">1. Personal Identity Profile</div>
-        <div class="row">
-            <div class="col-md-6 review-group">
+        
+        <div class="grid-row">
+            <div class="review-group">
                 <label class="review-label">Full Name of Applicant</label>
-                <div class="review-input-shape">{{ customer.full_name|default:"—" }}</div>
+                <div class="review-data-box">{{ customer.full_name|default:"—" }}</div>
             </div>
-            <div class="col-md-6 review-group">
+            <div class="review-group">
                 <label class="review-label">Father / Husband Name</label>
-                <div class="review-input-shape">{{ customer.father_name|default:"—" }}</div>
+                <div class="review-data-box">{{ customer.father_name|default:"—" }}</div>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-4 review-group">
+        <div class="grid-row">
+            <div class="review-group">
                 <label class="review-label">CNIC Identity Number</label>
-                <div class="review-input-shape" style="font-family: monospace;">{{ customer.cnic_number|default:"—" }}</div>
+                <div class="review-data-box" style="font-family: monospace;">{{ customer.cnic_number|default:"—" }}</div>
             </div>
-            <div class="col-md-4 review-group">
+            <div class="review-group">
                 <label class="review-label">Date of Birth</label>
-                <div class="review-input-shape">{{ customer.date_of_birth|date:"d M, Y"|default:"—" }}</div>
+                <div class="review-data-box">{{ customer.date_of_birth|date:"d M, Y"|default:"—" }}</div>
             </div>
-            <div class="col-md-4 review-group">
+            <div class="review-group">
                 <label class="review-label">Gender</label>
-                <div class="review-input-shape text-capitalize">{{ customer.gender|default:"—" }}</div>
+                <div class="review-data-box" style="text-transform: capitalize;">{{ customer.gender|default:"—" }}</div>
             </div>
         </div>
 
         <div class="form-section-title">2. Contact & Correspondence Address</div>
-        <div class="row">
-            <div class="col-md-4 review-group">
+        
+        <div class="grid-row">
+            <div class="review-group">
                 <label class="review-label">Active Mobile Connection</label>
-                <div class="review-input-shape">{{ customer.phone|default:"—" }}</div>
+                <div class="review-data-box">{{ customer.phone|default:"—" }}</div>
             </div>
-            <div class="col-md-4 review-group">
+            <div class="review-group">
                 <label class="review-label">City Region</label>
-                <div class="review-input-shape">{{ customer.city|default:"—" }}</div>
+                <div class="review-data-box">{{ customer.city|default:"—" }}</div>
             </div>
-            <div class="col-md-4 review-group">
+            <div class="review-group">
                 <label class="review-label">Province / Country</label>
-                <div class="review-input-shape">{{ customer.province|default:"—" }} ({{ customer.country|default:"Pakistan" }})</div>
+                <div class="review-data-box">{{ customer.province|default:"—" }} ({{ customer.country|default:"Pakistan" }})</div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12 review-group">
+
+        <div class="grid-row-full">
+            <div class="review-group">
                 <label class="review-label">Permanent Residential Address</label>
-                <div class="review-input-shape textarea">{{ customer.address|default:"No physical address entry filed." }}</div>
+                <div class="review-data-box textarea-box">{{ customer.address|default:"No physical address entry filed." }}</div>
             </div>
         </div>
 
         <div class="form-section-title">3. Tour Matrix & Logistics Matrix</div>
-        <div class="row">
-            <div class="col-md-4 review-group">
+        
+        <div class="grid-row">
+            <div class="review-group">
                 <label class="review-label">Requested Tour Segment</label>
-                <div class="review-input-shape text-capitalize" style="color: var(--primary-emerald); font-weight:700;">
-                    {{ customer.interested_packages|default:"No Selection Selected" }}
+                <div class="review-data-box" style="color: var(--primary-green); font-weight: 700;">
+                    {{ customer.interested_packages|default:"No Package Selected" }}
                 </div>
             </div>
-            <div class="col-md-4 review-group">
+            <div class="review-group">
                 <label class="review-label">Budget Tier Preference</label>
-                <div class="review-input-shape text-capitalize" style="color: #16a34a;">{{ customer.budget_preference|default:"Standard Tier" }}</div>
+                <div class="review-data-box" style="color: var(--warning-orange);">{{ customer.budget_preference|default:"Standard Tier" }}</div>
             </div>
-            <div class="col-md-4 review-group">
+            <div class="review-group">
                 <label class="review-label">Special Wheelchair Assistance Link</label>
-                <div class="review-input-shape">
-                    {% if customer.wheelchair_required %}⚠️ Logistics Assistance Needed{% else %}No Mobility Issues{% endif %}
+                <div class="review-data-box">
+                    {% if customer.wheelchair_required %} Logistics Assistance Needed{% else %}No Mobility Issues{% endif %}
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12 review-group">
+
+        <div class="grid-row-full">
+            <div class="review-group">
                 <label class="review-label">Declared Healthcare/Medical Notes</label>
-                <div class="review-input-shape">{{ customer.medical_condition|default:"No historical data filed." }}</div>
+                <div class="review-data-box textarea-box">{{ customer.medical_condition|default:"No historical data filed." }}</div>
             </div>
         </div>
 
         <div class="form-section-title">4. Document Assets Verification</div>
-        <div class="row g-4">
-            <div class="col-md-6 review-group">
+        
+        <div class="grid-row">
+            <div class="review-group">
                 <label class="review-label">CNIC Front Copy</label>
                 {% if customer.cnic_front %}
-                    <a href="#openFrontCnic" class="btn-view-asset">👁 View CNIC Front Image</a>
+                    <a href="#openFrontCnic" class="btn-view-document"><i class="fa-solid fa-image"></i> View CNIC Front Image</a>
                 {% else %}
-                    <div class="btn-view-asset btn-disabled-asset">🚫 File Not Uploaded</div>
+                    <div class="btn-view-document btn-disabled-document"> File Not Uploaded</div>
                 {% endif %}
             </div>
 
-            <div class="col-md-6 review-group">
+            <div class="review-group">
                 <label class="review-label">CNIC Back Copy</label>
                 {% if customer.cnic_back %}
-                    <a href="#openBackCnic" class="btn-view-asset">👁 View CNIC Back Image</a>
+                    <a href="#openBackCnic" class="btn-view-document"><i class="fa-solid fa-image"></i> View CNIC Back Image</a>
                 {% else %}
-                    <div class="btn-view-asset btn-disabled-asset">🚫 File Not Uploaded</div>
+                    <div class="btn-view-document btn-disabled-document"> File Not Uploaded</div>
                 {% endif %}
             </div>
         </div>
@@ -316,7 +349,8 @@
 <div id="openFrontCnic" class="image-modal-overlay">
     <div class="modal-box-content">
         <a href="#" class="btn-close-modal">&times;</a>
-        <h5 class="mb-3 fw-bold" style="color: var(--primary-emerald);">CNIC Front Side Proof</h5>
+        <h4 style="margin: 0 0 10px; color: var( --primary-green); font-weight: 700;">CNIC Front Side Proof</h4>
+        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 10px 0;">
         <img src="{{ customer.cnic_front.url }}" alt="Front Document">
     </div>
 </div>
@@ -326,7 +360,8 @@
 <div id="openBackCnic" class="image-modal-overlay">
     <div class="modal-box-content">
         <a href="#" class="btn-close-modal">&times;</a>
-        <h5 class="mb-3 fw-bold" style="color: var(--primary-emerald);">CNIC Back Side Proof</h5>
+        <h4 style="margin: 0 0 10px; color: var( --primary-green); font-weight: 700;">CNIC Back Side Proof</h4>
+        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 10px 0;">
         <img src="{{ customer.cnic_back.url }}" alt="Back Document">
     </div>
 </div>

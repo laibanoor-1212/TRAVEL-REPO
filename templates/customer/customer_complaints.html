@@ -1,0 +1,30 @@
+{% extends 'customer/user_layout.html' %} {% block content %}
+<div style="max-width: 600px; margin: 40px auto; padding: 30px; background: #fff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); font-family: sans-serif;">
+    <h2 style="color: #0b7a47; margin-bottom: 5px; font-weight: 800;">Submit a Complaint / Query</h2>
+    <p style="color: #64748b; font-size: 14px; margin-bottom: 25px;">Let us know if you are facing issues with your tickets, hotel, or packages.</p>
+    
+    <form method="POST">
+        {% csrf_token %}
+        <div style="margin-bottom: 15px;">
+            <label style="display:block; font-size:12px; font-weight:700; color:#475569; text-transform:uppercase; margin-bottom:8px;">What is the issue about?</label>
+            <select name="complaint_type" required style="width:100%; padding:12px; border-radius:8px; border:1px solid #cbd5e1; outline:none;">
+                {% for value, label in issues %}
+                    <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label style="display:block; font-size:12px; font-weight:700; color:#475569; text-transform:uppercase; margin-bottom:8px;">Subject / Title</label>
+            <input type="text" name="subject" required placeholder="e.g., Ticket not received for Booking #123" style="width:100%; padding:12px; border-radius:8px; border:1px solid #cbd5e1; outline:none;">
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="display:block; font-size:12px; font-weight:700; color:#475569; text-transform:uppercase; margin-bottom:8px;">Explain your issue in detail</label>
+            <textarea name="description" rows="5" required placeholder="Provide as much details as possible..." style="width:100%; padding:12px; border-radius:8px; border:1px solid #cbd5e1; outline:none; resize:none;"></textarea>
+        </div>
+
+        <button type="submit" style="width:100%; padding:14px; background:#0b7a47; color:#fff; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:15px;">Submit Grievance</button>
+    </form>
+</div>
+{% endblock %}

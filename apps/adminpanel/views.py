@@ -14,6 +14,9 @@ from customers.models import CustomerProfile
 from bookings.models import Bookings, BookingStatusHistory
 from django.contrib.auth.decorators import user_passes_test
 from notifications.models import Notification
+from .models import Complaint
+from payments.models import Payment, PaymentProof, PaymentStatusLog
+from payments import services
 User = get_user_model()
 
 def admin_login_view(request):
@@ -331,3 +334,148 @@ def update_booking_status(request, booking_id):
             
     # Status update hone ke baad wapas usi dashboard par redirect karein
     return redirect('adminpanel:admin_bookings')
+
+
+def admin_complaints(request):
+    if request.method == "POST" and 'update_status' in request.POST:
+        complaint_id = request.POST.get('complaint_id')
+        new_status = request.POST.get('status')
+        complaint = get_object_or_404(Complaint, id=complaint_id)
+        complaint.status = new_status
+        complaint.save()
+        return redirect('adminpanel:admin_complaints')
+    complaints = Complaint.objects.all().order_by('-created_at')
+    return render(request, 'adminpanel/admin_complaint.html', {'complaints': complaints})
+
+
+
+
+
+def _is_admin(user):
+    return user.is_authenticated and user.is_staff
+
+
+
+
+
+
+def admin_payments_list(request):
+    payments = Payment.objects.select_related('booking', 'customer', 'agent').order_by('-created_at')
+
+    method_filter = request.GET.get('method')
+    status_filter = request.GET.get('status')
+
+    if method_filter:
+        payments = payments.filter(payment_method=method_filter)
+    if status_filter:
+        payments = payments.filter(payment_status=status_filter)
+
+    context = {
+        'payments': payments,
+        'method_filter': method_filter,
+        'status_filter': status_filter,
+    }
+    return render(request, 'adminpanel/payment_list.html', context)
+
+
+# ---------------------------------------------------------------------
+# 2. Payment detail — proofs, escrow status, audit trail sab yahan
+# ---------------------------------------------------------------------
+
+
+def admin_payment_detail(request, payment_id):
+    payment = get_object_or_404(
+        Payment.objects.select_related('booking', 'customer', 'agent'), pk=payment_id
+    )
+    proofs = payment.proofs.all().order_by('-uploaded_at')
+    status_logs = payment.status_logs.all().order_by('changed_at')
+
+    context = {
+        'payment': payment,
+        'proofs': proofs,
+        'status_logs': status_logs,
+    }
+    return render(request, 'adminpanel/payment_detail.html', context)
+
+
+# ---------------------------------------------------------------------
+# 3. Raast proof verify / reject
+# ---------------------------------------------------------------------
+
+def admin_verify_proof(request, proof_id):
+    proof = get_object_or_404(PaymentProof, pk=proof_id)
+
+    if request.method == "POST":
+        try:
+            services.verify_raast_proof(proof, verified_by=request.user)
+            messages.success(request, "Proof verify ho gaya, payment escrow mein hold ho gayi hai.")
+        except (ValueError, PermissionError) as e:
+            messages.error(request, f"Proof verify nahi hua: {e}")
+
+    return redirect('adminpanel:payment_detail', payment_id=proof.payment_id)
+
+
+def admin_reject_proof(request, proof_id):
+    proof = get_object_or_404(PaymentProof, pk=proof_id)
+
+    if request.method == "POST":
+        reason = request.POST.get('reason', 'Fake ya invalid proof.')
+        try:
+            services.reject_raast_proof(proof, rejected_by=request.user, reason=reason)
+            messages.warning(request, "Proof reject kar diya gaya, customer ko dobara upload karna hoga.")
+        except (ValueError, PermissionError) as e:
+            messages.error(request, f"Proof reject nahi hua: {e}")
+
+    return redirect('adminpanel:payment_detail', payment_id=proof.payment_id)
+
+
+# ---------------------------------------------------------------------
+# 4. Release Payment — sabse critical action
+# ---------------------------------------------------------------------
+
+def admin_release_payment(request, payment_id):
+    payment = get_object_or_404(Payment, pk=payment_id)
+
+    if request.method == "POST":
+        notes = request.POST.get('release_notes', '')
+        try:
+            services.release_payment(payment, released_by_admin=request.user, release_notes=notes)
+            messages.success(request, f"Payment #{payment.id} successfully release ho gayi.")
+        except (ValueError, PermissionError) as e:
+            messages.error(request, f"Payment release nahi hui: {e}")
+
+    return redirect('adminpanel:payment_detail', payment_id=payment.id)
+
+
+# ---------------------------------------------------------------------
+# 5. Cancel / Refund (optional actions)
+# ---------------------------------------------------------------------
+
+@login_required(login_url='/auth/login/')
+@user_passes_test(_is_admin, login_url='/auth/login/')
+def admin_cancel_payment(request, payment_id):
+    payment = get_object_or_404(Payment, pk=payment_id)
+
+    if request.method == "POST":
+        reason = request.POST.get('reason', '')
+        try:
+            services.cancel_payment(payment, cancelled_by=request.user, reason=reason)
+            messages.warning(request, f"Payment #{payment.id} cancel kar diya gaya.")
+        except ValueError as e:
+            messages.error(request, f"Cancel nahi hua: {e}")
+
+    return redirect('adminpanel:payment_detail', payment_id=payment.id)
+
+
+def admin_refund_payment(request, payment_id):
+    payment = get_object_or_404(Payment, pk=payment_id)
+
+    if request.method == "POST":
+        reason = request.POST.get('reason', '')
+        try:
+            services.refund_payment(payment, refunded_by=request.user, reason=reason)
+            messages.warning(request, f"Payment #{payment.id} refund process ho gaya.")
+        except (ValueError, PermissionError) as e:
+            messages.error(request, f"Refund nahi hua: {e}")
+
+    return redirect('adminpanel:payment_detail', payment_id=payment.id)

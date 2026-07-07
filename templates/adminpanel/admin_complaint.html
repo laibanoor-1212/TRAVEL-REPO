@@ -1,166 +1,180 @@
-{% extends 'adminpanel/admin_layout.html' %}
+{% extends "adminpanel/admin_layout.html" %}
+{% block title %}Complaints Resolving Center | Safar-e-Haram{% endblock %}
 
 {% block content %}
 <style>
-    
-    .complaint-container {
-        padding: 25px;
-        background-color: #f4f7f6;
-        min-height: 100vh;
-        font-family: sans-serif;
+    :root {
+        --primary-green: #0b7a47; 
+        --pure-white: #ffffff;
+        --danger-red: #d63031;
+        --info-blue: #0984e3;
+        --warning-orange: #f39c12;
+        --dark-slate: #1e293b;
+        --light-bg: #f8fafc;
+        --border-color: #e2e8f0;
     }
 
-    .header-flex {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
+    .tab-menu { display: flex; gap: 5px; margin-bottom: 25px; border-bottom: 2px solid #eee; }
+    .tab-link {
+        padding: 14px 24px; cursor: pointer; background: none; border: none;
+        font-weight: 600; color: #777; transition: 0.3s; position: relative;
+    }
+    .tab-link.active { color: var(--primary-green); font-weight: 700; }
+    .tab-link.active::after {
+        content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 3px; background: var(--primary-green);
     }
 
-    .status-cards {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 15px;
-        margin-bottom: 30px;
-    }
+    .table-wrapper { background: var(--pure-white); border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); overflow-x: auto; margin-bottom: 30px; border: 1px solid #e2e8f0; }
+    .data-table { width: 100%; border-collapse: collapse; text-align: left; min-width: 1100px; }
+    .data-table th { background: var(--primary-green); color: white; padding: 15px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .data-table td { padding: 15px; border-bottom: 1px solid #f1f1f1; font-size: 13px; vertical-align: middle; color: #334155; }
+    .data-table tr:hover { background-color: #f8fafc; }
 
-    .s-card {
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    }
+    /* Custom Role Mapping Badges */
+    .role-badge { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+    .role-customer { background: #e0f2fe; color: #0369a1; } /* For 'user' */
+    .role-agent { background: #f3e8ff; color: #6b21a8; }    /* For 'stakeholder' */
 
-    .complaint-table-card {
-        background: white;
-        border-radius: 10px;
-        padding: 20px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        overflow-x: auto;
-    }
+    .badge { padding: 6px 12px; border-radius: 50px; font-size: 10px; font-weight: 700; text-transform: uppercase; display: inline-block; }
+    .bg-pending { background: #fee2e2; color: #b91c1c; }
+    .bg-progress { background: #fef3c7; color: #d97706; }
+    .bg-resolved { background: #dcfce7; color: #15803d; }
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
-    }
-
-    th {
-        text-align: left;
-        background-color: #f8f9fa;
-        padding: 12px;
-        color: #555;
-        border-bottom: 2px solid #eee;
-    }
-
-    td {
-        padding: 15px 12px;
-        border-bottom: 1px solid #eee;
-        color: #333;
-    }
-
-    /* Badges */
-    .badge {
-        padding: 5px 10px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: bold;
-    }
-    .bg-pending { background: #fff3cd; color: #c00c15; }
-    .bg-resolved { background: #d4edda; color: #155724; }
-    .bg-escrow { background: #cce5ff; color: #000d85; }
-
-    .action-btn {
-        padding: 6px 12px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 13px;
-        margin-right: 5px;
-    }
-    .view-btn { background: #007bff; color: white; }
-    .refund-btn { background: #dc3545; color: white; }
+    .small-id { font-size: 11px; color: #64748b; display: block; margin-top: 2px; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 </style>
 
-<div class="complaint-container">
-    <div class="header-flex">
-        <h1 style="margin:0; color: #333;">Complaints & Disputes</h1>
-        <div class="filters">
-            <select style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
-                <option>All Complaints</option>
-                <option>Pending</option>
-                <option>Refund Disputed</option>
-            </select>
+<div style="padding: 20px; font-family: sans-serif;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+        <div>
+            <h2 style="color: var(--primary-green); font-weight: 800; margin: 0; font-size: 26px;">Grievance & Complaints Desk</h2>
+            <p style="color: #64748b; margin: 4px 0 0; font-size: 14px;">Monitor customer operations issues and corporate stakeholder claims.</p>
+        </div>
+        <input type="text" id="complaintSearch" placeholder="Search Email or Issue..." onkeyup="searchComplaints()" 
+               style="padding: 12px 20px; border-radius: 25px; border: 1px solid #cbd5e1; width: 300px; outline: none; font-size: 14px;">
+    </div>
+
+    <div class="tab-menu">
+        <button class="tab-link active" onclick="openTab(event, 'open_claims')">Active / Unresolved Cases</button>
+        <button class="tab-link" onclick="openTab(event, 'closed_claims')">Resolved Archive</button>
+    </div>
+
+    <div id="open_claims" class="tab-content active">
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Filer Identity</th>
+                        <th>Frontend Role</th>
+                        <th>Issue Category</th>
+                        <th>Subject & Detailed Grievance</th>
+                        <th>Filed Date</th>
+                        <th>Current State</th>
+                        <th style="text-align: center;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for complaint in complaints %}
+                        {% if complaint.status != 'resolved' %}
+                        <tr>
+                            <td><b>{{ complaint.user.email }}</b><br><span class="small-id">Case Token: #SH-C-{{ complaint.id }}</span></td>
+                            <td>
+                                <span class="role-badge {% if complaint.user_role == 'user' %}role-customer{% else %}role-agent{% endif %}">
+                                    {{ complaint.get_user_role_display }}
+                                </span>
+                            </td>
+                            <td style="font-weight: 700; color: var(--dark-slate);">{{ complaint.get_complaint_type_display }}</td>
+                            <td>
+                                <strong style="color: #1e293b;">{{ complaint.subject }}</strong>
+                                <p style="margin: 4px 0 0; color: #64748b; font-size: 12px; max-width: 400px; line-height: 1.4;">{{ complaint.description }}</p>
+                            </td>
+                            <td>{{ complaint.created_at|date:"d M Y, h:i A" }}</td>
+                            <td>
+                                <span class="badge {% if complaint.status == 'pending' %}bg-pending{% else %}bg-progress{% endif %}">
+                                    {{ complaint.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <form method="POST" style="margin: 0; display: flex; gap: 5px;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="update_status" value="1">
+                                    <input type="hidden" name="complaint_id" value="{{ complaint.id }}">
+                                    <select name="status" onchange="this.form.submit()" style="padding:6px; border-radius:6px; font-weight:600; font-size:11px; border:1px solid #cbd5e1; cursor:pointer;">
+                                        <option value="" selected disabled>Action Execution</option>
+                                        <option value="in_progress">Investigate Case</option>
+                                        <option value="resolved">Mark Resolved / Close</option>
+                                    </select>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    {% empty %}
+                        <tr><td colspan="7" style="text-align: center; padding: 30px; color: #94a3b8;">No active open complaints reported. System status fully operational.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <div class="status-cards">
-        <div class="s-card" style="border-color: #ffc107;">
-            <small>Active Complaints</small>
-            <div style="font-size: 24px; font-weight: bold;">12</div>
+    <div id="closed_claims" class="tab-content">
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Filer Identity</th>
+                        <th>Frontend Role</th>
+                        <th>Issue Category</th>
+                        <th>Core Summary</th>
+                        <th>Resolution Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for complaint in complaints %}
+                        {% if complaint.status == 'resolved' %}
+                        <tr>
+                            <td><b>{{ complaint.user.email }}</b><br><span class="small-id">Case Token: #SH-C-{{ complaint.id }}</span></td>
+                            <td>
+                                <span class="role-badge {% if complaint.user_role == 'user' %}role-customer{% else %}role-agent{% endif %}">
+                                    {{ complaint.get_user_role_display }}
+                                </span>
+                            </td>
+                            <td>{{ complaint.get_complaint_type_display }}</td>
+                            <td>
+                                <strong style="color: #64748b; text-decoration: line-through;">{{ complaint.subject }}</strong>
+                                <p style="margin: 2px 0 0; color: #94a3b8; font-size: 12px;">{{ complaint.description }}</p>
+                            </td>
+                            <td><span class="badge bg-resolved">Closed & Resolved</span></td>
+                        </tr>
+                        {% endif %}
+                    {% empty %}
+                        <tr><td colspan="5" style="text-align: center; padding: 30px; color: #94a3b8;">No resolved archives logged in the logs database.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-        <div class="s-card" style="border-color: #dc3545;">
-            <small>Escrow On Hold</small>
-            <div style="font-size: 24px; font-weight: bold;">₹45,000</div>
-        </div>
-        <div class="s-card" style="border-color: #28a745;">
-            <small>Resolved This Month</small>
-            <div style="font-size: 24px; font-weight: bold;">84</div>
-        </div>
-    </div>
-
-    <div class="complaint-table-card">
-        <table>
-            <thead>
-                <tr>
-                    <th>Complaint ID</th>
-                    <th>User (Customer)</th>
-                    <th>Travel Agent</th>
-                    <th>Subject</th>
-                    <th>Status</th>
-                    <th>Escrow Action</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="complaintTableBody">
-                <tr>
-                    <td>#CMP-1021</td>
-                    <td><strong>Ali Khan</strong></td>
-                    <td>Mecca Travels Ltd</td>
-                    <td>Hotel not as described</td>
-                    <td><span class="badge bg-pending">Under Review</span></td>
-                    <td><span class="badge bg-escrow">Funds Locked</span></td>
-                    <td>
-                        <button class="action-btn view-btn" onclick="viewComplaint('1021')">Details</button>
-                        <button class="action-btn refund-btn" onclick="triggerRefund('1021')">Refund</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>#CMP-1022</td>
-                    <td><strong>Sara Ahmed</strong></td>
-                    <td>Umrah Group Pro</td>
-                    <td>Visa processing delay</td>
-                    <td><span class="badge bg-resolved">Resolved</span></td>
-                    <td><small>Paid to Agent</small></td>
-                    <td>
-                        <button class="action-btn view-btn">View</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
     </div>
 </div>
 
 <script>
-    function viewComplaint(id) {
-        alert("Opening full chat log and evidence for Complaint #" + id);
-        // Here you would typically open a Django URL or a Modal
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) { tabcontent[i].style.display = "none"; }
+        tablinks = document.getElementsByClassName("tab-link");
+        for (i = 0; i < tablinks.length; i++) { tablinks[i].classList.remove("active"); }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.classList.add("active");
     }
 
-    function triggerRefund(id) {
-        if(confirm("Are you sure you want to release Escrow funds back to the User?")) {
-            alert("Processing refund for Complaint #" + id + "... Agent will be notified.");
-            // Logic to call Django Backend to reverse the transaction
+    function searchComplaints() {
+        var filter = document.getElementById("complaintSearch").value.toUpperCase();
+        var currentTab = document.querySelector(".tab-content[style*='block'] ") || document.querySelector(".tab-content.active");
+        var tr = currentTab.querySelectorAll(".data-table tbody tr");
+        for (var i = 0; i < tr.length; i++) {
+            var text = tr[i].textContent || tr[i].innerText;
+            if (text) { tr[i].style.display = text.toUpperCase().indexOf(filter) > -1 ? "" : "none"; }
         }
     }
 </script>
