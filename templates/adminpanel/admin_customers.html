@@ -3,225 +3,292 @@
 
 {% block title %}Admin Dashboard - Customers Directory{% endblock %}
 
-{% block custom_css %}
+{% block content %}
 <style>
     :root {
-        --primary-emerald: #053327;   
-        --emerald-light: #0b4a3a;
-        --emerald-accent: #115e4a;
-        --mint-soft: #f0fdf4;
-        --mint-border: #e6f4ea;
+        --primary-green:  #0b7a47; 
         --pure-white: #ffffff;
-        --text-dark: #0f172a;
-        --text-muted: #475569;
-        --bg-light: #f8fafc;
+        --danger-red: #d63031;
+      
+        --warning-orange: #f39c12;
+       
+        --light-bg: #f8fafc;
+        --border-color: #e2e8f0;
     }
 
-    body {
-        background-color: var(--bg-light);
-        color: var(--text-dark);
-    }
-
-    /* Top Identity Bar */
-    .dashboard-identity-bar {
+    /* Top Identity Panel matching Bookings Page */
+    .identity-panel {
         background: var(--pure-white);
-        border: 2px solid var(--mint-border);
-        border-radius: 16px;
-        padding: 24px;
-        box-shadow: 0 4px 12px rgba(5, 51, 39, 0.02);
-        margin-bottom: 32px;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
     }
 
     .identity-title {
-        color: var(--primary-emerald);
+        color: var(--primary-green);
         font-weight: 800;
-        font-size: 24px;
+        margin: 0;
+        font-size: 26px;
     }
 
-    .counter-box {
-        background-color: var(--mint-soft);
-        border: 1px solid var(--mint-border);
-        border-radius: 12px;
+    .identity-subtitle {
+        color: #64748b;
+        margin: 4px 0 0;
+        font-size: 14px;
+    }
+
+    .counter-badge-box {
+        background: #dcfce7;
+        color: #15803d;
         padding: 10px 20px;
-    }
-
-    /* Modern Minimalist Table Setup */
-    .table-container-card {
-        background: var(--pure-white);
-        border-radius: 20px;
-        border: 2px solid var(--mint-border);
-        padding: 24px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.01);
-    }
-
-    .custom-table {
-        border-collapse: separate;
-        border-spacing: 0 10px;
-        margin-top: -10px;
-    }
-
-    .custom-table th {
-        color: var(--primary-emerald);
+        border-radius: 8px;
         font-weight: 700;
         font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Table Container & Wrapper Styling */
+    .table-outer-card {
+        background: var(--pure-white);
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+        width: 100%;
+    }
+
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        min-width: 1100px;
+    }
+
+    .data-table th {
+        background: var(--primary-green);
+        color: white;
+        padding: 15px;
+        font-size: 11px;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        border: none;
-        padding: 14px 20px;
-    }
-
-    .custom-table tbody tr {
-        background-color: var(--pure-white);
-        transition: all 0.2s ease;
-    }
-
-    .custom-table tbody tr:hover {
-        background-color: var(--mint-soft) !important;
-    }
-
-    .custom-table td {
-        padding: 16px 20px;
-        border-top: 1px solid var(--mint-border);
-        border-bottom: 1px solid var(--mint-border);
-        color: var(--text-dark);
-        font-size: 15px;
-    }
-
-    .custom-table td:first-child {
-        border-left: 1px solid var(--mint-border);
-        border-top-left-radius: 12px;
-        border-bottom-left-radius: 12px;
-    }
-
-    .custom-table td:last-child {
-        border-right: 1px solid var(--mint-border);
-        border-top-right-radius: 12px;
-        border-bottom-right-radius: 12px;
-    }
-
-    /* Badges & Identity Components */
-    .avatar-box {
-        width: 42px;
-        height: 42px;
-        border-radius: 10px;
-        overflow: hidden;
-        border: 2px solid var(--mint-border);
-    }
-
-    .badge-tier {
-        background-color: #ffffff;
-        color: var(--primary-emerald);
-        border: 1.5px solid var(--primary-emerald);
         font-weight: 700;
+    }
+
+    .data-table td {
+        padding: 15px;
+        border-bottom: 1px solid #f1f1f1;
         font-size: 13px;
-        padding: 4px 12px;
-        border-radius: 8px;
-        text-transform: capitalize;
+        vertical-align: middle;
+        color: #334155;
     }
 
-    .status-badge-completed {
-        background-color: #15803d;
-        color: var(--pure-white);
-        font-weight: 700;
-        font-size: 12px;
-        padding: 6px 14px;
-        border-radius: 8px;
+    .data-table tr:hover {
+        background-color: var(--light-bg);
     }
 
-    .status-badge-pending {
-        background-color: #b45309;
-        color: var(--pure-white);
-        font-weight: 700;
-        font-size: 12px;
-        padding: 6px 14px;
-        border-radius: 8px;
+    /* Customer Identity Elements */
+    .avatar-wrapper {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid #cbd5e1;
+        background: #f1f5f9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    .btn-action-view {
-        background-color: var(--primary-emerald);
-        color: var(--pure-white);
-        border-radius: 10px;
+    .avatar-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .customer-name-text {
         font-weight: 700;
+        color: var(--dark-slate);
         font-size: 14px;
-        padding: 8px 16px;
-        border: none;
-        transition: all 0.2s;
     }
 
-    .btn-action-view:hover {
-        background-color: var(--emerald-light);
-        color: var(--pure-white);
+    .small-system-id {
+        font-size: 11px;
+        color: #64748b;
+        display: block;
+        margin-top: 2px;
+    }
+
+    .cnic-display-box {
+        background: #f1f5f9;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-family: monospace;
+        color: #475569;
+    }
+
+    /* Status Badges */
+    .badge {
+        padding: 6px 12px;
+        border-radius: 50px;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        display: inline-block;
+    }
+    .bg-completed { background: #dcfce7; color: #15803d; }
+    .bg-pending { background: #fef3c7; color:var(--danger-red) }
+    .bg-tier { background: #e0f2fe; color: var(--primary-green):; }
+
+    /* Action Link Button */
+    .btn-action-view-profile {
+        padding: 8px 14px;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+        color: white !important;
+        background: var(--primary-green);
+        transition: 0.2s;
+        display: inline-flex;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .btn-action-view-profile:hover {
+        background: var(--primary-green):;
+        transform: translateY(-1px);
+    }
+
+    .search-input-field {
+        padding: 12px 20px;
+        border-radius: 25px;
+        border: 1px solid #cbd5e1;
+        width: 300px;
+        outline: none;
+        font-size: 14px;
+    }
+
+    .empty-state-container {
+        text-align: center;
+        padding: 40px;
+        color: #94a3b8;
     }
 </style>
-{% endblock %}
 
-{% block content %}
-<div class="container-fluid px-0">
-    
-    <div class="dashboard-identity-bar d-flex justify-content-between align-items-center flex-wrap gap-3">
+<div style="padding: 20px;">
+
+    <div class="identity-panel">
         <div>
-            <h2 class="identity-title m-0">Safar-e-Haram Directory</h2>
-            <p class="text-muted m-0 mt-1 fs-15">Manage and verify registered pilgrim and customer applications.</p>
+            <h2 class="identity-title">Safar-e-Haram Directory</h2>
+            <p class="identity-subtitle">Manage and verify registered pilgrim and customer applications.</p>
         </div>
-        <div class="counter-box d-flex align-items-center gap-2">
-            <span class="text-muted fw-bold fs-14">Total Submissions:</span>
-            <span class="fw-extrabold fs-5" style="color: var(--primary-emerald);">{{ customers.count }}</span>
+
+        <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+            <input type="text" id="directorySearch" placeholder="Search Name, CNIC, Phone..." onkeyup="searchDirectory()" class="search-input-field">
+            
+            <div class="counter-badge-box">
+                <span>Total Submissions:</span>
+                <strong>{{ customers.count }}</strong>
+            </div>
         </div>
     </div>
 
-    <div class="table-container-card">
-        <div class="table-responsive">
-            <table class="table custom-table align-middle">
+    <div class="table-outer-card">
+        <div style="margin-bottom: 20px;">
+            <h4 style="margin: 0; color: var(--dark-slate); font-weight: 700;">Customer Directory</h4>
+            <p style="margin: 4px 0 0; color: #64748b; font-size: 12px;">Registered customers and pilgrims raw data files</p>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="data-table" id="customerTable">
                 <thead>
                     <tr>
-                        <th>Profile</th>
+                        <th style="width: 70px;">Profile</th>
                         <th>Full Name</th>
                         <th>CNIC Number</th>
                         <th>Phone</th>
                         <th>City</th>
                         <th>Budget</th>
                         <th>Verification</th>
-                        <th class="text-end">Action</th>
+                        <th style="text-align: right; padding-right: 20px;">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for customer in customers %}
                     <tr>
                         <td>
-                            <div class="avatar-box">
+                            <div class="avatar-wrapper">
                                 {% if customer.profile_picture %}
-                                    <img src="{{ customer.profile_picture.url }}" class="w-100 h-100 object-fit-cover" alt="">
+                                    <img src="{{ customer.profile_picture.url }}" alt="{{ customer.full_name }}">
                                 {% else %}
-                                    <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-light text-success fw-bold">
+                                    <span style="font-weight: 700; color: var(--primary-green);">
                                         {{ customer.full_name|slice:":1" }}
-                                    </div>
+                                    </span>
                                 {% endif %}
                             </div>
                         </td>
+
                         <td>
-                            <span class="fw-bold text-dark d-block">{{ customer.full_name }}</span>
-                            <span class="text-muted fs-13">ID: #SH-{{ customer.id }}</span>
+                            <span class="customer-name-text">{{ customer.full_name }}</span>
+                            <span class="small-system-id">ID: #SH-{{ customer.id }}</span>
                         </td>
-                        <td><code class="text-dark bg-light px-2 py-1 rounded fw-bold">{{ customer.cnic_number }}</code></td>
-                        <td class="fw-semibold text-muted">{{ customer.phone }}</td>
-                        <td class="text-dark fw-medium">{{ customer.city }}</td>
+
                         <td>
-                            <span class="badge-tier">{{ customer.budget_preference }}</span>
+                            <span class="cnic-display-box">{{ customer.cnic_number }}</span>
                         </td>
+
+                        <td style="font-weight: 600; color: #475569;">
+                            {{ customer.phone }}
+                        </td>
+
+                        <td>
+                            {{ customer.city }}
+                        </td>
+
+                        <td>
+                            <span class="badge bg-tier">
+                                {{ customer.budget_preference }}
+                            </span>
+                        </td>
+
                         <td>
                             {% if customer.is_profile_completed %}
-                                <span class="status-badge-completed">Completed</span>
+                                <span class="badge bg-completed">Completed</span>
                             {% else %}
-                                <span class="status-badge-pending">Pending</span>
+                                <span class="badge bg-pending">Pending</span>
                             {% endif %}
                         </td>
-                        <td class="text-end">
-                            <a href="{% url 'adminpanel:customer_detail' customer.pk %}" class="btn btn-action-view">View Profile</a>
+
+                        <td style="text-align: right; padding-right: 20px;">
+                            <a href="{% url 'adminpanel:customer_detail' customer.pk %}" class="btn-action-view-profile">
+                                View Profile
+                            </a>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="8" class="text-center text-muted py-5 fw-bold">No active registrations available.</td>
+                        <td colspan="8">
+                            <div class="empty-state-container">
+                                <h5 style="margin: 0 0 5px; font-size: 16px; font-weight: 700; color: #64748b;">No Active Registrations</h5>
+                                <p style="margin: 0; font-size: 13px;">No customer applications are available at the moment.</p>
+                            </div>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -229,4 +296,26 @@
         </div>
     </div>
 </div>
+
+<script>
+    function searchDirectory() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("directorySearch");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("customerTable");
+        tr = table.getElementsByTagName("tr");
+
+        for (i = 1; i < tr.length; i++) {
+            // Pura row data text access karke target search filter match karna
+            var rowText = tr[i].textContent || tr[i].innerText;
+            if (rowText) {
+                if (rowText.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }       
+        }
+    }
+</script>
 {% endblock %}

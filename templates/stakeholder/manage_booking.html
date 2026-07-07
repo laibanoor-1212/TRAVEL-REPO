@@ -1,19 +1,22 @@
 {% extends 'stakeholder/dashboard_layout2.html' %}
 {% block content %}
 <style>
-    .booking-card {
-        background: white;
-        padding: 25px;
-        border-radius: 12px;
-        box-shadow: var(--shadow);
+    .bk-1{
+       margin-top: 50px;
+          margin-left: 50px;
+          color:#155724;
+          margin-bottom: 15px; 
     }
-
-    /* Table & Badges */
+    .bk h2{
+     
+          color:#155724;
+         
+    }
     .status-badge {
-        padding: 6px 12px;
+        padding: 12px 6px;
         border-radius: 20px;
-        font-size: 12px;
-        font-weight: 600;
+        font-size: 10px;
+        font-weight: 500;
         text-transform: capitalize;
     }
     .status-pending { background: #fff3cd; color: #856404; }
@@ -44,8 +47,8 @@
     .empty-row { text-align: center; color: #888; font-style: italic; padding: 30px !important; }
 </style>
 
-<div class="booking-card">
-    <div style="margin-bottom: 20px;">
+<div class="bk-1">
+    <div class="bk" style="margin-bottom: 20px;">
         <h2>Manage Bookings</h2>
         <p style="color: #666; font-size: 14px;">View and manage customer documents for your packages.</p>
     </div>

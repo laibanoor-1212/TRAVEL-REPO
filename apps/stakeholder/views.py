@@ -4,9 +4,10 @@ from .forms import KYCAgentForm
 from .models import AgentKYC
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from packages.forms import PackageForm
+# from packages.forms import PackageForm
 from packages.models import Package
 from packages.models import PackageType
+from adminpanel.models import Complaint
 from bookings.models import Bookings,BookingCustomers
 from django.shortcuts import redirect, get_object_or_404
 
@@ -130,18 +131,11 @@ def create_packages(request):
     package_types = PackageType.objects.filter(is_active=True)
 
     if request.method == "POST":
-        # HTML form se values extract karein (both duration and duration_days fallback)
         duration_val = request.POST.get('duration') or request.POST.get('duration_days')
-
-        # Agar duration validation fail ho jaye toh default setup implement karein
         if not duration_val:
-            duration_val = 15  # Model default value setup
-
-        # Safe Object Creation matching all model attributes
+            duration_val = 15  
         Package.objects.create(
-            # Logged-in user ko directly agency ForeignKey assign karein
             agency=request.user,
-            
             name=request.POST.get('name'),
             package_type_id=request.POST.get('package_type'),
             tier=request.POST.get('tier', 'standard'),
@@ -178,16 +172,11 @@ def create_packages(request):
     )
 
 def update_package(request, pk):
-    # 1. Jis package ko edit karna hai usko database se nikala
     package = get_object_or_404(Package, pk=pk)
-    
-    # 🔴 SAB SE ZAROORI LINE: Jo types shell mein add ki thin, unhe yahan se fetch karna lazmi hai
     package_types = PackageType.objects.all() 
 
     if request.method == 'POST':
         package.name = request.POST.get('name')
-        
-        # Package Type update karne ka logic
         type_id = request.POST.get('package_type')
         if type_id:
             package.package_type_id = type_id
@@ -202,8 +191,6 @@ def update_package(request, pk):
         package.application_deadline = request.POST.get('application_deadline')
         package.makkah_hotel = request.POST.get('makkah_hotel')
         package.madinah_hotel = request.POST.get('madinah_hotel')
-        
-        # Checkboxes logic
         package.visa = 'visa' in request.POST
         package.ticket = 'ticket' in request.POST
         package.transport = 'transport' in request.POST
@@ -213,7 +200,6 @@ def update_package(request, pk):
             package.banner = request.FILES['banner']
 
         package.save()
-        # Apne dashboard yamanage packages wale url ka sahi naam yahan likhein
         return redirect('stakeholder:manage-packages') 
 
   
@@ -224,12 +210,7 @@ def update_package(request, pk):
     
     return render(request, 'stakeholder/edit_package.html', context)
 def delete_package(request, pk):
-    package = get_object_or_404(Package, pk=pk)
-    
-    # Security Check: (Optional)
-    # if package.stakeholder != request.user.stakeholder_profile:
-    #     return redirect('dashboard')
-        
+    package = get_object_or_404(Package, pk=pk)  
     package.delete()
     messages.success(request, "Package deleted successfully!")
     return redirect('packages:manage_packages')
@@ -313,11 +294,50 @@ def earning_transaction(request):
 def payments(request):
     return render(request, 'stakeholder/payments.html')
 
-def agent_complains(request):
-    return render(request, 'stakeholder/agent_complains.html')
+def agent_complaints(request):
+    if request.method == "POST":
+        complaint_type = request.POST.get('complaint_type')
+        subject = request.POST.get('subject')
+        description = request.POST.get('description')
+        Complaint.objects.create(
+            user=request.user,
+            user_role='stakeholder',  
+            complaint_type=complaint_type,
+            subject=subject,
+            description=description
+        )
+        return redirect('stakeholder:agent_complaints') 
+ 
+    agent_issues = [
+        ('no_payment', 'Payment Pending / Commission Not Received'),
+        ('info_not_sent', 'Customer Data Not Forwarded to Supplier'),
+        ('portal_error', 'Web App Technical Error / System Crash'),
+        ('visa_delay', 'Visa Processing Issues for Group'),
+        ('other', 'Other Operational Issues'),
+    ]
+    return render(request, 'stakeholder/agent_complaints.html', {'issues': agent_issues})
 
 def cancelled_booking(request):
     return render(request, 'stakeholder/cancelled_booking.html')
 
 
+
+
+def view_profile(request):
+    agentkyc = AgentKYC.objects.filter(user=request.user).first()
+    if request.method == 'POST':
+        if not agentkyc:
+            messages.error(request, "Please complete your KYC first.")
+            return redirect('stakeholder:view_profile')
+
+        agentkyc.phone_no = request.POST.get('phone_no', agentkyc.phone_no)
+        agentkyc.whatsapp_no = request.POST.get('whatsapp_no', agentkyc.whatsapp_no)
+        agentkyc.raast_id = request.POST.get('raast_id', agentkyc.raast_id)
+        agentkyc.save()
+        messages.success(request, "Your profile has been updated successfully.")
+        return redirect('stakeholder:view_profile')
+    context = {
+        'agentkyc': agentkyc,
+    }
+    return render(request, 'stakeholder/view_profile.html', context)
 

@@ -14,14 +14,17 @@ from django.contrib.auth.decorators import user_passes_test
 from django.core.paginator import Paginator
 from django.contrib.auth.forms import PasswordResetForm,SetPasswordForm
 from .forms import CustomUserRegistrationForm
-
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib import messages
 
-
 def login_view(request):
     if request.user.is_authenticated:
-        return redirect('stakeholder:KYC')
+        if request.user.is_superuser or request.user.is_staff:
+                return redirect('adminpanel:admin_login') 
+        elif request.user.role == 'stakeholder':
+            return redirect('stakeholder:KYC')
+        else:
+            return redirect('customers:user_dashboard')
 
     if request.method == "POST":
        
@@ -33,7 +36,13 @@ def login_view(request):
             auth_login(request, user)
             
             messages.success(request, "Login Successful!")
-            return redirect('stakeholder:KYC')
+            if user.is_superuser or user.is_staff:
+                    return redirect('adminpanel:admin_login') 
+            elif user.role == 'stakeholder':
+                return redirect('stakeholder:KYC')
+            else:
+                return redirect('customers:user_dashboard')
+           
         else:
             messages.error(request, "Invalid Username/Email or Password.")
             
