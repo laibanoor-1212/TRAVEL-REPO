@@ -1,0 +1,98 @@
+{% extends 'adminpanel/admin_layout.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3 class="mb-4">Payments — Escrow Management</h3>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Filters -->
+    <form method="get" class="row g-2 mb-4">
+        <div class="col-auto">
+            <select name="method" class="form-select">
+                <option value="">All Methods</option>
+                <option value="stripe" {% if method_filter == 'stripe' %}selected{% endif %}>Stripe</option>
+                <option value="raast" {% if method_filter == 'raast' %}selected{% endif %}>Raast</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <select name="status" class="form-select">
+                <option value="">All Statuses</option>
+                <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+                <option value="payment_submitted" {% if status_filter == 'payment_submitted' %}selected{% endif %}>Payment Submitted</option>
+                <option value="payment_verified" {% if status_filter == 'payment_verified' %}selected{% endif %}>Payment Verified</option>
+                <option value="held_in_escrow" {% if status_filter == 'held_in_escrow' %}selected{% endif %}>Held in Escrow</option>
+                <option value="ticket_uploaded" {% if status_filter == 'ticket_uploaded' %}selected{% endif %}>Ticket Uploaded</option>
+                <option value="customer_approved" {% if status_filter == 'customer_approved' %}selected{% endif %}>Customer Approved</option>
+                <option value="released" {% if status_filter == 'released' %}selected{% endif %}>Released</option>
+                <option value="cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                <option value="refunded" {% if status_filter == 'refunded' %}selected{% endif %}>Refunded</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-outline-primary">Filter</button>
+            <a href="{% url 'adminpanel:admin_payments_list' %}" class="btn btn-outline-secondary">Reset</a>
+        </div>
+    </form>
+
+    <!-- Payments Table -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Booking</th>
+                    <th>Customer</th>
+                    <th>Agent</th>
+                    <th>Method</th>
+                    <th>Amount</th>
+                    <th>Payment Status</th>
+                    <th>Escrow Status</th>
+                    <th>Created</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in payments %}
+                <tr>
+                    <td>{{ payment.id }}</td>
+                    <td>#{{ payment.booking_id }}</td>
+                    <td>{{ payment.customer.username }}</td>
+                    <td>{{ payment.agent.username }}</td>
+                    <td>
+                        {% if payment.payment_method == 'stripe' %}
+                            <span class="badge bg-info text-dark">Stripe</span>
+                        {% else %}
+                            <span class="badge bg-primary">Raast</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ payment.amount }} {{ payment.currency }}</td>
+                    <td>
+                        <span class="badge
+                            {% if payment.payment_status == 'released' %}bg-success
+                            {% elif payment.payment_status == 'cancelled' or payment.payment_status == 'refunded' %}bg-danger
+                            {% elif payment.payment_status == 'held_in_escrow' %}bg-warning text-dark
+                            {% else %}bg-secondary{% endif %}">
+                            {{ payment.get_payment_status_display }}
+                        </span>
+                    </td>
+                    <td>{{ payment.get_escrow_status_display }}</td>
+                    <td>{{ payment.created_at|date:"d M Y, H:i" }}</td>
+                    <td>
+                        <a href="{% url 'adminpanel:payment_detail' payment.id %}" class="btn btn-sm btn-outline-primary">View</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="10" class="text-center text-muted">Koi payment nahi mila.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

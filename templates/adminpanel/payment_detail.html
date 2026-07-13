@@ -1,0 +1,168 @@
+{% extends 'adminpanel/admin_layout.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <a href="{% url 'adminpanel:admin_payments_list' %}" class="btn btn-sm btn-outline-secondary mb-3">&larr; Back to Payments</a>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="row">
+        <!-- Left: Payment info -->
+        <div class="col-md-7">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <strong>Payment #{{ payment.id }}</strong>
+                    <span class="badge
+                        {% if payment.payment_status == 'released' %}bg-success
+                        {% elif payment.payment_status == 'cancelled' or payment.payment_status == 'refunded' %}bg-danger
+                        {% elif payment.payment_status == 'held_in_escrow' %}bg-warning text-dark
+                        {% else %}bg-secondary{% endif %} float-end">
+                        {{ payment.get_payment_status_display }}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm">
+                        <tr><th>Booking</th><td>#{{ payment.booking_id }}</td></tr>
+                        <tr><th>Customer</th><td>{{ payment.customer.username }} ({{ payment.customer.email }})</td></tr>
+                        <tr><th>Agent</th><td>{{ payment.agent.username }} ({{ payment.agent.agency_name|default:"-" }})</td></tr>
+                        <tr><th>Method</th><td>{{ payment.get_payment_method_display }}</td></tr>
+                        <tr><th>Amount</th><td>{{ payment.amount }} {{ payment.currency }}</td></tr>
+                        <tr><th>Transaction ID</th><td>{{ payment.transaction_id|default:"-" }}</td></tr>
+                        {% if payment.payment_method == 'stripe' %}
+                        <tr><th>Stripe PaymentIntent</th><td>{{ payment.stripe_payment_intent_id|default:"-" }}</td></tr>
+                        {% endif %}
+                        <tr><th>Escrow Status</th><td>{{ payment.get_escrow_status_display }}</td></tr>
+                        <tr><th>Customer Approved?</th>
+                            <td>
+                                {% if payment.booking.customer_approved %}
+                                    <span class="badge bg-success">Yes — {{ payment.booking.customer_approved_at|date:"d M Y, H:i" }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Not yet</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr><th>Paid At</th><td>{{ payment.paid_at|date:"d M Y, H:i"|default:"-" }}</td></tr>
+                        <tr><th>Released At</th><td>{{ payment.released_at|date:"d M Y, H:i"|default:"-" }}</td></tr>
+                        <tr><th>Released By</th><td>{{ payment.released_by.username|default:"-" }}</td></tr>
+                    </table>
+                </div>
+            </div>
+            {% if payment.payment_method == 'raast' %}
+            <div class="card mb-4">
+                <div class="card-header"><strong>Raast Payment Proofs</strong></div>
+                <div class="card-body">
+                    {% for proof in proofs %}
+                    <div class="border rounded p-3 mb-3">
+                        <p><strong>Transaction Reference:</strong> {{ proof.transaction_reference }}</p>
+                        <p><strong>Uploaded By:</strong> {{ proof.uploaded_by.username }} on {{ proof.uploaded_at|date:"d M Y, H:i" }}</p>
+
+                        {% if proof.screenshot %}
+                            <img src="{{ proof.screenshot.url }}" class="img-fluid rounded mb-2" style="max-height: 300px;" alt="Payment proof screenshot">
+                        {% endif %}
+
+                        {% if proof.is_verified %}
+                            <span class="badge bg-success">Verified by {{ proof.verified_by.username }} on {{ proof.verified_at|date:"d M Y, H:i" }}</span>
+                        {% elif proof.rejection_reason %}
+                            <span class="badge bg-danger">Rejected: {{ proof.rejection_reason }}</span>
+                        {% else %}
+                            <div class="d-flex gap-2 mt-2">
+                                <form method="post" action="{% url 'adminpanel:verify_proof' proof.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-success"
+                                        onclick="return confirm('Confirm: verify that the proof is real or not.');">
+                                        Verify Proof
+                                    </button>
+                                </form>
+                                <form method="post" action="{% url 'adminpanel:reject_proof' proof.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <input type="text" name="reason" class="form-control form-control-sm d-inline-block" style="width:auto;" placeholder="Rejection reason" required>
+                                    <button type="submit" class="btn btn-sm btn-danger">Reject</button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% empty %}
+                    <p class="text-muted">no proof upload now</p>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Release / Cancel / Refund actions -->
+            <div class="card mb-4">
+                <div class="card-header"><strong>Escrow Actions</strong></div>
+                <div class="card-body">
+                    {% if payment.escrow_status == 'held_in_escrow' and payment.booking.customer_approved %}
+                        <form method="post" action="{% url 'adminpanel:release_payment' payment.id %}" class="mb-3">
+                            {% csrf_token %}
+                            <div class="mb-2">
+                                <label class="form-label">Release Notes (optional)</label>
+                                <input type="text" name="release_notes" class="form-control">
+                            </div>
+                            <button type="submit" class="btn btn-success"
+                                onclick="return confirm('Confirm: release payment to agent are you confirm?');">
+                                Release Payment
+                            </button>
+                        </form>
+                    {% elif payment.payment_status == 'released' %}
+                        <p class="text-success mb-0">payment already released.</p>
+                    {% else %}
+                        <p class="text-muted mb-0">
+                           Release is not available— escrow hold and customer approval is needed.
+                        </p>
+                    {% endif %}
+
+                    {% if payment.payment_status != 'released' and payment.payment_status != 'cancelled' and payment.payment_status != 'refunded' %}
+                    <hr>
+                    <div class="d-flex gap-2">
+                        <form method="post" action="{% url 'adminpanel:cancel_payment' payment.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <input type="text" name="reason" class="form-control form-control-sm d-inline-block" style="width:auto;" placeholder="Cancel reason">
+                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                onclick="return confirm('Confirm: ye payment cancel kar dein?');">Cancel Payment</button>
+                        </form>
+                        <form method="post" action="{% url 'adminpanel:refund_payment' payment.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <input type="text" name="reason" class="form-control form-control-sm d-inline-block" style="width:auto;" placeholder="Refund reason">
+                            <button type="submit" class="btn btn-sm btn-outline-warning"
+                                onclick="return confirm('Confirm: payment refund process?');">Refund Payment</button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Audit trail -->
+        <div class="col-md-5">
+            <div class="card">
+                <div class="card-header"><strong>Audit Trail (Status History)</strong></div>
+                <ul class="list-group list-group-flush">
+                    {% for log in status_logs %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between">
+                            <span>
+                                <strong>{{ log.old_status|default:"—" }}</strong> &rarr; <strong>{{ log.new_status }}</strong>
+                            </span>
+                            <small class="text-muted">{{ log.changed_at|date:"d M Y, H:i" }}</small>
+                        </div>
+                        {% if log.changed_by %}
+                            <small class="text-muted">by {{ log.changed_by.username }}</small>
+                        {% endif %}
+                        {% if log.notes %}
+                            <div class="small">{{ log.notes }}</div>
+                        {% endif %}
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item text-muted">no status change record.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
