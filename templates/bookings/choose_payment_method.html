@@ -1,0 +1,95 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="text-center mb-4">
+                <h3>Complete Your Payment</h3>
+                <p class="text-muted">Booking #{{ booking.id }} — {{ booking.package.name }}</p>
+                <h4 class="text-success">PKR {{ booking.package.price }}</h4>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="row g-4">
+
+                    <!-- Stripe option -->
+                    <div class="col-md-6">
+                        <label class="payment-option-card w-100 h-100 d-block">
+                            <input type="radio" name="payment_method" value="stripe" class="d-none payment-radio" required>
+                            <div class="card h-100 border-2 payment-card">
+                                <div class="card-body text-center py-4">
+                                    <div class="mb-3">
+                                        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <rect width="48" height="48" rx="10" fill="#635BFF"/>
+                                            <path d="M22 17c0-1 .9-1.5 2.2-1.5 2 0 4.5.6 6.5 1.7v-6.1c-2.2-.9-4.3-1.2-6.5-1.2-5.3 0-8.9 2.8-8.9 7.4 0 7.2 10 6 10 9.1 0 1.2-1 1.6-2.5 1.6-2.2 0-5-.9-7.2-2.1v6.2c2.4 1 4.9 1.5 7.2 1.5 5.5 0 9.2-2.7 9.2-7.4 0-7.7-10-6.3-10-9.2z" fill="white"/>
+                                        </svg>
+                                    </div>
+                                    <h5 class="card-title mb-1">Pay with Stripe</h5>
+                                    <p class="text-muted small mb-0">Card payment (Test Mode)</p>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- Raast option -->
+                    <div class="col-md-6">
+                        <label class="payment-option-card w-100 h-100 d-block">
+                            <input type="radio" name="payment_method" value="raast" class="d-none payment-radio" required>
+                            <div class="card h-100 border-2 payment-card">
+                                <div class="card-body text-center py-4">
+                                    <div class="mb-3">
+                                        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <rect width="48" height="48" rx="10" fill="#00A651"/>
+                                            <path d="M14 24h20M24 14v20" stroke="white" stroke-width="3" stroke-linecap="round"/>
+                                        </svg>
+                                    </div>
+                                    <h5 class="card-title mb-1">Pay with Raast</h5>
+                                    <p class="text-muted small mb-0">Bank app / JazzCash transfer</p>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+
+                </div>
+
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg">Continue</button>
+                </div>
+            </form>
+
+            <div class="text-center mt-4">
+                <small class="text-muted">
+                 your payment hold in secure escrow system until you receive the ticket and approve it.
+                </small>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    .payment-card {
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        border-color: #dee2e6 !important;
+    }
+    .payment-card:hover {
+        border-color: #86b7fe !important;
+        box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.06);
+    }
+    .payment-radio:checked + .payment-card {
+        border-color: #0d6efd !important;
+        box-shadow: 0 0 0 0.2rem rgba(13,110,253,0.15);
+        background-color: #f0f6ff;
+    }
+</style>
+{% endblock %}

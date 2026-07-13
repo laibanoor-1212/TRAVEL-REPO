@@ -1,0 +1,92 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h4 class="mb-1">Stripe Payment</h4>
+                    <p class="text-muted mb-4">Booking #{{ booking.id }} — PKR {{ payment.amount }}</p>
+
+                    <div class="alert alert-info small">
+                        Test Mode: card number <strong>4242 4242 4242 4242</strong>,any future date, or any CVC.
+                    </div>
+
+                    <form id="payment-form">
+                        <div id="payment-element" class="mb-3"></div>
+                        <div id="payment-message" class="alert alert-danger d-none"></div>
+                        <button id="submit-btn" class="btn btn-primary w-100 py-2">
+                            <span id="btn-text">Pay PKR {{ payment.amount }}</span>
+                            <span id="btn-spinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    const stripe = Stripe("{{ stripe_publishable_key }}");
+    const clientSecret = "{{ client_secret }}";
+    const elements = stripe.elements({ clientSecret });
+    const paymentElement = elements.create("payment");
+    paymentElement.mount("#payment-element");
+
+    const form = document.getElementById("payment-form");
+    const submitBtn = document.getElementById("submit-btn");
+    const btnText = document.getElementById("btn-text");
+    const btnSpinner = document.getElementById("btn-spinner");
+    const messageBox = document.getElementById("payment-message");
+
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(";").shift();
+    }
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        submitBtn.disabled = true;
+        btnText.classList.add("d-none");
+        btnSpinner.classList.remove("d-none");
+        messageBox.classList.add("d-none");
+
+        const { error, paymentIntent } = await stripe.confirmPayment({
+            elements,
+            redirect: "if_required",
+        });
+
+        if (error) {
+            messageBox.textContent = error.message;
+            messageBox.classList.remove("d-none");
+            submitBtn.disabled = false;
+            btnText.classList.remove("d-none");
+            btnSpinner.classList.add("d-none");
+            return;
+        }
+        const response = await fetch("{% url 'bookings:confirm_stripe_payment' booking.id %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken"),
+                "Content-Type": "application/json",
+            },
+        });
+        const result = await response.json();
+
+        if (result.success) {
+            window.location.href = result.redirect_url;
+        } else {
+            messageBox.textContent = result.error || "if any problem try again";
+            messageBox.classList.remove("d-none");
+            submitBtn.disabled = false;
+            btnText.classList.remove("d-none");
+            btnSpinner.classList.add("d-none");
+        }
+    });
+</script>
+{% endblock %}

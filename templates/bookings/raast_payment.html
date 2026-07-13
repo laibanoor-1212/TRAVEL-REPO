@@ -1,0 +1,70 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Raast Payment Instructions</h5>
+                </div>
+                <div class="card-body">
+                    <p>Booking #{{ booking.id }} ke liye <strong>PKR {{ payment.amount }}</strong>transfer on the id written below</p>
+
+                    <div class="d-flex align-items-center justify-content-between bg-light border rounded p-3 mb-3">
+                        <div>
+                            <small class="text-muted d-block">Admin's Raast ID</small>
+                            <strong id="raast-id" class="fs-5">{{ admin_raast_id }}</strong>
+                        </div>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="copyRaastId()">Copy</button>
+                    </div>
+
+                    <ol class="small text-muted">
+                        <li>open your booking app or JazzCash raast id and sent <strong>PKR {{ payment.amount }}</strong> payment.</li>
+                        <li>after transaction completed ,copy transaction ID/reference number.</li>
+                        <li>write transaction ID in given from and upload transaction screenshot.</li>
+                        <li>Admin verify your payment  in 24 hours.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h6 class="mb-0">Upload Payment Proof</h6>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'bookings:upload_raast_proof' booking.id %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Transaction ID / Reference Number</label>
+                            <input type="text" name="transaction_reference" class="form-control" required
+                                   placeholder="e.g. TRX123456789">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Payment Screenshot</label>
+                            <input type="file" name="screenshot" class="form-control" accept="image/*">
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Submit Proof</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function copyRaastId() {
+        const text = document.getElementById("raast-id").innerText;
+        navigator.clipboard.writeText(text);
+        alert("Raast ID copy ho gayi!");
+    }
+</script>
+{% endblock %}
