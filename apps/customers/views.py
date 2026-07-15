@@ -2,9 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from bookings.models import Bookings  
 from .models import CustomerProfile
-from notifications.models import Notification
+from adminpanel.models import Complaint
 
-@login_required(login_url='/accounts/login/')
+@login_required(login_url='/auth/login/')
 def user_profile_view(request):
     profile, created = CustomerProfile.objects.get_or_create(user=request.user)
     
@@ -33,8 +33,6 @@ def user_profile_view(request):
         profile.wheelchair_required = 'wheelchair_required' in request.POST
         profile.budget_preference = request.POST.get('budget_preference')
         profile.travel_type = request.POST.get('travel_type')
-        
-        # Checkboxes handling (interested_packages)
         packages_list = request.POST.getlist('interested_packages')
         profile.interested_packages = ",".join(packages_list) if packages_list else ""
         
@@ -57,13 +55,13 @@ def user_profile_view(request):
     return render(request, 'customer/user_profile.html', context)
 
 
-@login_required(login_url='/accounts/login/')
+@login_required(login_url='/auth/login/')
 def customer_kyc(request):
-    # Agar profile database mein pehle se hai toh utha lo, nahi toh safe error handling karo
+   
     try:
         profile = CustomerProfile.objects.get(user=request.user)
     except CustomerProfile.DoesNotExist:
-        profile = CustomerProfile(user=request.user)  # Sirf memory mein object banaya hai, save nahi kiya abhi
+        profile = CustomerProfile(user=request.user) 
 
     if request.method == 'POST':
         profile.full_name = request.POST.get('full_name')
@@ -79,7 +77,7 @@ def customer_kyc(request):
         profile.province = request.POST.get('province')
         profile.city = request.POST.get('city')
         profile.address = request.POST.get('address')
-        profile.cnic_number = request.POST.get('cnic_number') or None  # Empty string ki jagah NULL save hoga
+        profile.cnic_number = request.POST.get('cnic_number') or None  
         
         profile.emergency_contact_name = request.POST.get('emergency_contact_name')
         profile.relation = request.POST.get('relation')
@@ -98,13 +96,11 @@ def customer_kyc(request):
             profile.cnic_back = request.FILES['cnic_back']
 
         profile.is_profile_completed = True
-        profile.save()  # Idhar profile database mein insert/update ho jaye gi bina duplicate key error ke
+        profile.save() 
         return redirect('customers:user_dashboard') 
-        
-    # GET request par template ko profile pass karein (chahe woh khali ho ya database se aayi ho)
     return render(request, 'customer/customer_kyc.html', {'profile': profile})
 
-
+@login_required(login_url='/auth/login/')
 def user_bookings(request):
     current_user_bookings = Bookings.objects.filter(user=request.user).order_by('-created_at')
     context = {
@@ -112,7 +108,7 @@ def user_bookings(request):
     }
     return render(request, 'customer/user_booking.html', context)
 
-@login_required(login_url='/accounts/login/')
+@login_required(login_url='/auth/login/')
 def user_dashboard(request):
     notifications = request.user.notifications.filter(is_deleted=False)[:10]
     unread_count = request.user.notifications.filter(is_read=False, is_deleted=False).count()
@@ -127,3 +123,28 @@ def user_dashboard(request):
 
 def overview_user(request):
     return render(request,'customer/overview_user.html')
+def customer_complaints(request):
+    if request.method == "POST":
+        complaint_type = request.POST.get('complaint_type')
+        subject = request.POST.get('subject')
+        description = request.POST.get('description')
+        Complaint.objects.create(
+            user=request.user,
+            user_role='user',  
+            complaint_type=complaint_type,
+            subject=subject,
+            description=description
+        )
+        return redirect('customers:customer_complaints') 
+    customer_issues = [
+        ('no_ticket', 'Flight Ticket Not Received Yet'),
+        ('visa_delay', 'Visa Processing Delay / Document Issue'),
+        ('passport_issue', 'Passport Return Issue'),
+        ('wrong_billing', 'Incorrect Amount Charged'),
+        ('transport_missing', 'Transport/Bus Not Arrived'),
+        ('driver_behavior', 'Driver Misbehavior'),
+        ('hotel_not_booked', 'Hotel Booking Not Found at Check-in'),
+        ('room_quality', 'Room Quality/Amenities Not as Promised'),
+        ('other', 'Other Issues / Emergency Assistance'),
+    ]
+    return render(request, 'customer/customer_complaints.html', {'issues': customer_issues})

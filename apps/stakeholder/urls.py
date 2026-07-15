@@ -11,12 +11,13 @@ urlpatterns = [
    path("agent_details/", views.agent_details, name="create_profile"),
    path("missing_doc/", views.missing_doc, name="missing_doc"),
    path("account_locked/", views.account_locked, name="account_locked"),
+    path("view_profile/", views.view_profile, name="view_profile"),
    path("dashboard/", views.stakeholder_dashboard, name="stakeholder_dashboard"),
    
    path("manage_booking/", views.manage_booking, name="manage_booking"),
    path("earning_transaction/", views.earning_transaction, name="earning_transaction"),
    path("payments/", views.payments, name="payments"),
-    path("agent_complains/", views.agent_complains, name="agent_complains"),
+    path("agent_complaints/", views.agent_complaints, name="agent_complaints"),
       path("cancelled_booking/", views.cancelled_booking, name="cancelled_booking"),
     path(
         'create-package/',

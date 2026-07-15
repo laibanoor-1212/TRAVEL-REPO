@@ -198,7 +198,7 @@
         <i class="fas fa-th-large"></i> Dashboard
       </a>
 
-      <a href="" class="{% if request.resolver_match.url_name == 'view_profile' %}active{% endif %}">
+      <a href="{% url 'stakeholder:view_profile'%}" class="{% if request.resolver_match.url_name == 'view_profile' %}active{% endif %}">
         <i class="fas fa-id-card"></i> My Profile
       </a>
 
@@ -216,7 +216,7 @@
         <i class="fas fa-file-invoice-dollar"></i> Payments
       </a>
 
-      <a href="{% url 'stakeholder:agent_complains' %}"  class="{% if request.resolver_match.url_name == 'agent_complains' %}active{% endif %}">
+      <a href="{% url 'stakeholder:agent_complaints' %}"  class="{% if request.resolver_match.url_name == 'agent_complains' %}active{% endif %}">
         <i class="fas fa-headset"></i> Complaints & Support
       </a>
       <a href="{% url 'stakeholder:cancelled_booking' %}" class="{% if request.resolver_match.url_name == 'cancelled_bookings' %}active{% endif %}">

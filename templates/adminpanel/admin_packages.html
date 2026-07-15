@@ -4,13 +4,13 @@
 {% block content %}
 <style>
     :root {
-        --primary-green: #0b6623;   /* Clean Deep Islamic Green consistent layout theme */
+        --primary-green: #0b7a47; 
         --light-green: #eef7f0;
         --pure-white: #ffffff;
         --danger-red: #d63031;
         --warning-orange: #f39c12;
         --muted-gray: #636e72;
-        --info-blue: #0984e3;
+      
         --border-color: #e2e8f0;
     }
 
@@ -34,7 +34,7 @@
 
     /* Badges Layout */
     .badge { padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 500; display: inline-block; }
-    .badge-vip { background: #fff3cd; color: #856404; }
+    .badge-vip { background: #fff3cd; color: var(--primary-green):; }
     .badge-economy { background: #d1ecf1; color: #0c5460; }
     .badge-active { background: var(--light-green); color: var(--primary-green); }
     .badge-blocked { background: #fff5f5; color: var(--danger-red); }
@@ -45,7 +45,7 @@
         text-decoration: none; border: none; cursor: pointer; color: white; transition: 0.2s; display: inline-block;
         text-align: center;
     }
-    .btn-blue { background: var(--info-blue); }
+    .btn-blue { background: var(--primary-green); }
     .btn-orange { background: var(--warning-orange); }
     .btn-red { background: var(--danger-red); }
     .btn-green { background: var(--primary-green); }
