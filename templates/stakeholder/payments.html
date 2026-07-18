@@ -3,7 +3,6 @@
 
 {% block content %}
 
-
 <div id="payments-page">
     <div style="margin-bottom: 20px;">
         <h2>Payment Transactions</h2>
@@ -11,50 +10,87 @@
     </div>
 
     <div class="payment-card">
+        {% if payments %}
         <div style="overflow-x: auto;">
             <table class="payment-table">
                 <thead>
                     <tr>
-                        <th style="width: 15%;">Transaction ID</th>
-                        <th style="width: 15%;">User Name</th>
+                        <th style="width: 13%;">Transaction ID</th>
+                        <th style="width: 13%;">Customer</th>
                         <th style="width: 10%;">Amount</th>
-                        <th style="width: 15%;">Payment (Stripe)</th>
-                        <th style="width: 15%;">Escrow Status</th>
-                        <th style="width: 15%;">Date</th>
-                        
+                        <th style="width: 14%;">Payment Method</th>
+                        <th style="width: 14%;">Escrow Status</th>
+                        <th style="width: 12%;">Date</th>
+                        <th style="width: 14%;">Action</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {% for payment in payments %}
                     <tr>
-                        <td>#TRX-88291</td>
-                        <td><strong>Ali Ahmed</strong></td>
-                        <td class="amount">PKR 4,500</td>
-                        <td><span class="status-badge status-hold">Hold</span></td>
-                        <td><span class="status-badge status-pending">In Escrow</span></td>
-                        <td>12 April 2026</td>
-                        
+                        <td>
+                            {% if payment.transaction_id %}
+                                #{{ payment.transaction_id }}
+                            {% elif payment.stripe_payment_intent_id %}
+                                #{{ payment.stripe_payment_intent_id|truncatechars:18 }}
+                            {% else %}
+                                #TRX-{{ payment.id }}
+                            {% endif %}
+                        </td>
+                        <td><strong>{{ payment.customer.get_full_name|default:payment.customer.username }}</strong></td>
+                        <td class="amount">PKR {{ payment.amount }}</td>
+                        <td>
+                            <span class="status-badge {% if payment.payment_status == 'released' %}status-released{% elif payment.payment_status in 'cancelled,refunded' %}status-cancelled{% else %}status-hold{% endif %}">
+                                {{ payment.get_payment_method_display }} — {{ payment.get_payment_status_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="status-badge {% if payment.escrow_status == 'released' %}status-released{% elif payment.escrow_status == 'held_in_escrow' %}status-pending{% else %}status-hold{% endif %}">
+                                {{ payment.get_escrow_status_display }}
+                            </span>
+                        </td>
+                        <td>{{ payment.created_at|date:"d M Y" }}</td>
+                        <td>
+                            {% if payment.booking.ticket %}
+                                <span class="status-badge status-released">Ticket Sent</span>
+                            {% else %}
+                                <a href="{% url 'stakeholder:agent_upload_ticket' payment.booking.id %}" class="btn-send-ticket">
+                                    Send Ticket
+                                </a>
+                            {% endif %}
+                        </td>
                     </tr>
-                    <tr>
-                        <td>#TRX-88295</td>
-                        <td><strong>Sara Khan</strong></td>
-                        <td class="amount">PKR 12,000</td>
-                        <td><span class="status-badge status-released">Received</span></td>
-                        <td><span class="status-badge status-released">Released</span></td>
-                        <td>10 April 2026</td>
-                       
-                    </tr>
-                    <tr>
-                        <td>#TRX-88301</td>
-                        <td><strong>Zain Malik</strong></td>
-                        <td class="amount">PKR 6,200</td>
-                        <td><span class="status-badge status-hold">Hold</span></td>
-                        <td><span class="status-badge status-pending">In Escrow</span></td>
-                        <td>08 April 2026</td>
-                        
-                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
+        {% else %}
+        <div style="text-align: center; padding: 40px; color: #7f8c8d;">
+            <p>No payment transactions yet.</p>
+        </div>
+        {% endif %}
     </div>
 </div>
+
+<style>
+    /* Fallback in case status-cancelled isn't already defined in your booking.css */
+    .status-cancelled {
+        background-color: #fdecea;
+        color: #c0392b;
+    }
+    .btn-send-ticket {
+        display: inline-block;
+        background-color: #198754;
+        color: #fff;
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+    .btn-send-ticket:hover {
+        background-color: #146c43;
+        color: #fff;
+    }
+</style>
 {% endblock %}

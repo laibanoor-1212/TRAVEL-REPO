@@ -1,0 +1,51 @@
+{% extends 'stakeholder/dashboard_layout2.html' %}
+{% load static %}
+
+{% block content %}
+
+<div id="payments-page">
+    <div style="margin-bottom: 20px;">
+        <h2>Send Confirmed Ticket</h2>
+        <p style="color: #666;">Booking #{{ booking.id }} — {{ booking.user.get_full_name|default:booking.user.username }}</p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div style="padding: 10px 14px; border-radius: 8px; margin-bottom: 16px;
+                {% if message.tags == 'error' %}background:#fdecea; color:#c0392b;
+                {% elif message.tags == 'success' %}background:#e8f5ec; color:#146c43;
+                {% else %}background:#fff8e6; color:#7a5b00;{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="payment-card" style="padding: 24px; max-width: 520px;">
+        <div style="background:#e8f5ec; color:#146c43; padding:12px 14px; border-radius:8px; font-size:14px; margin-bottom:20px;">
+            Payment of <strong>PKR {{ payment.amount }}</strong> is held in escrow. Once you upload the ticket,
+            the customer will review and approve it before payment is released to you.
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div style="margin-bottom: 16px;">
+                <label style="display:block; font-weight:600; margin-bottom:6px;">Ticket File (PDF/Image)</label>
+                <input type="file" name="ticket_file" required
+                    style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;">
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label style="display:block; font-weight:600; margin-bottom:6px;">Notes (optional)</label>
+                <textarea name="notes" rows="3" placeholder="Flight details, PNR, etc."
+                    style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"></textarea>
+            </div>
+
+            <button type="submit" style="width:100%; background:#198754; color:#fff; border:none;
+                padding:12px; border-radius:8px; font-weight:600; font-size:15px;">
+                Upload Ticket
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

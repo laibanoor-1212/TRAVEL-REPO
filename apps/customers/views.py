@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from bookings.models import Bookings  
 from .models import CustomerProfile
 from adminpanel.models import Complaint
+from payments.models import Payment
+from bookings.models import Ticket 
 
 @login_required(login_url='/auth/login/')
 def user_profile_view(request):
@@ -148,3 +150,23 @@ def customer_complaints(request):
         ('other', 'Other Issues / Emergency Assistance'),
     ]
     return render(request, 'customer/customer_complaints.html', {'issues': customer_issues})
+
+@login_required(login_url='/auth/login/')
+def escrow_status_overview(request):
+    payments = Payment.objects.filter(
+        customer=request.user
+    ).select_related('booking', 'booking__package').order_by('-created_at')
+
+    context = {'payments': payments}
+    return render(request, 'customer/customer_escrow_status.html', context)
+
+
+@login_required
+def user_ticket(request):
+    tickets = (
+        Ticket.objects
+        .filter(booking__user=request.user)
+        .select_related('booking', 'booking__package', 'agent')
+        .order_by('-uploaded_at')
+    )
+    return render(request, 'customer/user_ticket.html', {'tickets': tickets})
