@@ -17,6 +17,8 @@ urlpatterns = [
    path("manage_booking/", views.manage_booking, name="manage_booking"),
    path("earning_transaction/", views.earning_transaction, name="earning_transaction"),
    path("payments/", views.payments, name="payments"),
+   path('escrow-status/', views.escrow_status_overview, name='escrow_status'),
+   path('booking/<int:booking_id>/upload-ticket/', views.agent_upload_ticket, name='agent_upload_ticket'),
     path("agent_complaints/", views.agent_complaints, name="agent_complaints"),
       path("cancelled_booking/", views.cancelled_booking, name="cancelled_booking"),
     path(

@@ -1,91 +1,153 @@
-{% extends 'base/user_layout.html' %}
+{% extends 'customer/user_layout.html' %}
 {% load static %}
 
-{% block title %}Visa & Ticket Status - Safar-e-Haram{% endblock %}
+{% block title %}Tickets & Visa - Safar-e-Haram{% endblock %}
 
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/visa_ticket.css' %}">
-
-<div class="travel-wrapper">
-    <div class="page-header">
-        <h2 style="color: #2c3e50; margin: 0;">Travel Documents</h2>
-        <p style="color: #7f8c8d; font-size: 14px;">Track your Visa processing and E-Ticket status.</p>
+<div class="tickets-page">
+    <div style="margin-bottom: 20px;">
+        <h2 style="color: #155c3b; font-weight: 600; margin: 0;">Tickets & Visa</h2>
+        <p style="color: #666; margin-top: 4px;">Confirmed tickets uploaded by your travel agent.</p>
     </div>
 
-    <div class="travel-grid">
-        
-        <div class="status-card">
-            <div class="card-head">
-                <div class="icon-box visa-icon"><i class="fa-solid fa-passport"></i></div>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    {% if tickets %}
+    <div class="ticket-grid">
+        {% for ticket in tickets %}
+        <div class="ticket-card">
+            <div class="ticket-card-header">
                 <div>
-                    <h4 style="margin:0;">Visa Processing</h4>
-                    <small>Status: <b style="color: #e67e22;">In Progress</b></small>
+                    <span class="ticket-eyebrow">Booking #{{ ticket.booking.booking_id|default:ticket.booking.id }}</span>
+                    <h4>{{ ticket.booking.package.name }}</h4>
                 </div>
+                {% if ticket.booking.customer_approved %}
+                    <span class="ticket-status badge-approved"><i class="fa-solid fa-circle-check"></i> Approved</span>
+                {% else %}
+                    <span class="ticket-status badge-pending"><i class="fa-solid fa-hourglass-half"></i> Awaiting your review</span>
+                {% endif %}
             </div>
 
-            <div class="progress-container">
-                <div class="progress-step completed">
-                    <div class="dot"></div>
-                    <span>Documents Submitted</span>
-                </div>
-                <div class="progress-step active">
-                    <div class="dot"></div>
-                    <span>Sent to Embassy</span>
-                </div>
-                <div class="progress-step">
-                    <div class="dot"></div>
-                    <span>Visa Stamping</span>
-                </div>
-                <div class="progress-step">
-                    <div class="dot"></div>
-                    <span>Visa Ready</span>
-                </div>
-            </div>
+            <div class="ticket-card-body">
+                <p class="ticket-meta">Uploaded by {{ ticket.agent.get_full_name|default:ticket.agent.username }} on {{ ticket.uploaded_at|date:"d M Y" }}</p>
+                {% if ticket.notes %}
+                    <p class="ticket-notes">{{ ticket.notes }}</p>
+                {% endif %}
 
-            <div class="doc-preview">
-                <p style="font-size: 12px; color: #666;"><i class="fa-solid fa-circle-info"></i> Visa copy will be available for download once "Visa Ready" status is reached.</p>
-                <button class="btn-download disabled" disabled><i class="fa-solid fa-download"></i> Download E-Visa</button>
+                <div class="ticket-actions">
+                    <a href="{{ ticket.ticket_file.url }}" target="_blank" class="btn-outline-ticket">
+                        <i class="fa-solid fa-file-arrow-down"></i> View Ticket
+                    </a>
+
+                    {% if not ticket.booking.customer_approved %}
+                    <form method="post" action="" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-approve-ticket"
+                            onclick="return confirm('Confirm this ticket is correct? Approving allows the admin to release payment to your agent.');">
+                            <i class="fa-solid fa-check"></i> Approve
+                        </button>
+                    </form>
+                    {% endif %}
+
+                    <a href="{% url 'bookings:payment_status_view' ticket.booking.id %}" class="btn-link-ticket">
+                        View full status →
+                    </a>
+                </div>
             </div>
         </div>
-
-        <div class="status-card">
-            <div class="card-head">
-                <div class="icon-box ticket-icon"><i class="fa-solid fa-plane-departure"></i></div>
-                <div>
-                    <h4 style="margin:0;">Flight E-Ticket</h4>
-                    <small>Status: <b style="color: #27ae60;">Confirmed</b></small>
-                </div>
-            </div>
-
-            <div class="ticket-details">
-                <div class="ticket-info-row">
-                    <span>Airline:</span>
-                    <b>Saudi Arabian Airlines (SV)</b>
-                </div>
-                <div class="ticket-info-row">
-                    <span>Flight No:</span>
-                    <b>SV-734</b>
-                </div>
-                <div class="ticket-info-row">
-                    <span>Departure:</span>
-                    <b>15 Oct 2026 - Lahore (LHE)</b>
-                </div>
-                <div class="ticket-info-row">
-                    <span>Arrival:</span>
-                    <b>15 Oct 2026 - Jeddah (JED)</b>
-                </div>
-                <div class="ticket-info-row">
-                    <span>PNR:</span>
-                    <b style="color: #1e429f; letter-spacing: 1px;">SJH8829</b>
-                </div>
-            </div>
-
-            <div class="doc-preview" style="background: #f0fff4; border: 1px solid #c6f6d5;">
-                <p style="font-size: 12px; color: #166534;"><i class="fa-solid fa-check-circle"></i> Your ticket has been issued. You can download it now.</p>
-                <a href="#" class="btn-download active"><i class="fa-solid fa-file-pdf"></i> Download E-Ticket</a>
-            </div>
-        </div>
-
+        {% endfor %}
     </div>
+    {% else %}
+    <div class="tickets-empty">
+        <i class="fa-solid fa-ticket"></i>
+        <h3>No tickets yet</h3>
+        <p>Once your agent uploads a confirmed ticket, it'll appear here for you to review and approve.</p>
+    </div>
+    {% endif %}
 </div>
+
+<style>
+    .ticket-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 18px;
+    }
+    .ticket-card {
+        background: #fff;
+        border: 1px solid #e3ece6;
+        border-radius: 14px;
+        padding: 20px;
+    }
+    .ticket-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 14px;
+    }
+    .ticket-eyebrow {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #6c7d73;
+    }
+    .ticket-card-header h4 {
+        margin: 2px 0 0;
+        font-size: 16px;
+        color: #1f2f25;
+    }
+    .ticket-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 999px;
+        white-space: nowrap;
+    }
+    .badge-approved { background: #e6f4ea; color: #146c43; }
+    .badge-pending { background: #fff4e0; color: #8a5a00; }
+
+    .ticket-meta { font-size: 13px; color: #6c7d73; margin: 0 0 8px; }
+    .ticket-notes { font-size: 13px; color: #444; background: #f6f9f7; padding: 10px 12px; border-radius: 8px; margin-bottom: 14px; }
+
+    .ticket-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 10px; }
+
+    .btn-outline-ticket {
+        display: inline-flex; align-items: center; gap: 6px;
+        border: 1px solid #155c3b; color: #155c3b;
+        padding: 8px 14px; border-radius: 8px;
+        font-size: 13px; font-weight: 600; text-decoration: none;
+    }
+    .btn-outline-ticket:hover { background: #e6f4ea; color: #155c3b; }
+
+    .btn-approve-ticket {
+        display: inline-flex; align-items: center; gap: 6px;
+        background: #155c3b; color: #fff; border: none;
+        padding: 9px 14px; border-radius: 8px;
+        font-size: 13px; font-weight: 600; cursor: pointer;
+    }
+    .btn-approve-ticket:hover { background: #1f7a4f; }
+
+    .btn-link-ticket {
+        font-size: 13px; color: #6c7d73; text-decoration: underline;
+        margin-left: auto;
+    }
+
+    .tickets-empty {
+        background: #fff;
+        border: 1px solid #e3ece6;
+        border-radius: 14px;
+        text-align: center;
+        padding: 48px 20px;
+        color: #7f8c8d;
+    }
+    .tickets-empty i { font-size: 32px; color: #bdc3c7; margin-bottom: 12px; display: block; }
+    .tickets-empty h3 { font-size: 16px; color: #444; margin-bottom: 4px; }
+</style>
 {% endblock %}
