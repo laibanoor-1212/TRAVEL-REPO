@@ -9,6 +9,9 @@ from packages.models import Package
 from packages.models import PackageType
 from adminpanel.models import Complaint
 from bookings.models import Bookings,BookingCustomers
+from payments.models import Payment
+from bookings.models import Bookings, Ticket
+from payments import services
 from django.shortcuts import redirect, get_object_or_404
 
 
@@ -291,8 +294,6 @@ def booking_detail_view(request, booking_id):
 def earning_transaction(request):
     return render(request, 'stakeholder/earning_transaction.html')
 
-def payments(request):
-    return render(request, 'stakeholder/payments.html')
 
 def agent_complaints(request):
     if request.method == "POST":
@@ -341,3 +342,59 @@ def view_profile(request):
     }
     return render(request, 'stakeholder/view_profile.html', context)
 
+@login_required(login_url='/auth/login/')
+def payments(request):
+    payments = Payment.objects.filter(
+        agent=request.user,
+        escrow_status__in=['held_in_escrow', 'released']   # <-- sirf escrow tak pohanchi hui payments
+    ).select_related('booking', 'customer').order_by('-created_at')
+
+    context = {'payments': payments}
+    return render(request, 'stakeholder/payments.html', context)
+
+
+@login_required(login_url='/auth/login/')
+def agent_upload_ticket(request, booking_id):
+    booking = get_object_or_404(Bookings, pk=booking_id, package__agency=request.user)
+    payment = getattr(booking, 'payment', None)
+
+    if not payment or payment.escrow_status != 'held_in_escrow':
+        messages.error(request, "ticket upload only when payment is in escrow")
+        return redirect('stakeholder:payments')
+
+    if hasattr(booking, 'ticket'):
+        messages.info(request, "ticket already uploaded")
+        return redirect('stakeholder:payments')
+
+    if request.method == "POST":
+        ticket_file = request.FILES.get('ticket_file')
+        notes = request.POST.get('notes', '')
+
+        if not ticket_file:
+            messages.error(request, "Ticket file select karein.")
+            return redirect('stakeholder:ticket_send', booking_id=booking.id)
+
+        Ticket.objects.create(
+            booking=booking,
+            agent=request.user,
+            ticket_file=ticket_file,
+            notes=notes,
+        )
+
+        try:
+            services.mark_ticket_uploaded(payment)
+            messages.success(request, "ticket upload wait kar the customer approval.")
+        except ValueError as e:
+            messages.error(request, f"Status is not updated: {e}")
+
+        return redirect('stakeholder:payments')
+
+    return render(request, 'stakeholder/ticket_send.html', {'booking': booking, 'payment': payment})
+@login_required(login_url='/auth/login/')
+def escrow_status_overview(request):
+    payments = Payment.objects.filter(
+        customer=request.user
+    ).select_related('booking', 'booking__package').order_by('-created_at')
+
+    context = {'payments': payments}
+    return render(request, 'customer/escrow_status.html', context)

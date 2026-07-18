@@ -26,11 +26,11 @@
 
 
             <p class="nav-group-title">Finance & Escrow</p>
-            <a href="" class="nav-item"><i class="fa-solid fa-shield-halved"></i> Escrow Status</a>
+            <a href="{% url 'customers:escrow_status'%}" class="nav-item {% if request.resolver_match.url_name == 'escrow_status' %}active{% endif %}"><i class="fa-solid fa-shield-halved"></i> Escrow Status</a>
             <a href="/payments/" class="nav-item"><i class="fa-solid fa-receipt"></i> Receipts</a>
 
             <p class="nav-group-title">Travel Documents</p>
-            <a href="" class="nav-item"><i class="fa-solid fa-file-invoice"></i> Tickets & Visa</a>
+            <a href="{% url 'customers:user_ticket'%}" class="nav-item"><i class="fa-solid fa-file-invoice"></i> Tickets & Visa</a>
            
 
             <p class="nav-group-title">Support</p>

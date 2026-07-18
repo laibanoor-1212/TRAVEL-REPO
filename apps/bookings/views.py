@@ -64,9 +64,8 @@ def book_package(request, package_id):
         
         # Success Message
         booking_display_id = getattr(booking, 'booking_id', booking.id)
-        messages.success(request, f"Booking #{booking_display_id} kamyabi se register ho gai hai!")
-        
-         
+        messages.success(request, f"Booking #{booking_display_id} register sucessfully!")
+        return redirect('bookings:choose_payment_method', booking_id=booking.id)
         
     return render(request, 'bookings/booking.html', {'package': package})
 
@@ -219,3 +218,5 @@ def approve_ticket_view(request, booking_id):
             messages.error(request, f"Approve nahi hua: {e}")
 
     return redirect('bookings:payment_status', booking_id=booking.id)
+
+
