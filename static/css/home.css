@@ -1,25 +1,19 @@
-/* ===== 1. RESET & VARIABLES ===== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-
 :root {
   --color: #065f46;
   --seccolor: #31a074;
   --subsec: #ffffff;
   --accent: #ffd700;
 }
-
-html,
-body {
+html,body {
   font-family: "Poppins", sans-serif;
   overflow-x: hidden;
   width: 100%;
 }
-
-/* ===== 2. NAVBAR (Always Visible) ===== */
 nav {
   background: linear-gradient(90deg, var(--color), var(--seccolor));
   position: fixed;
@@ -32,7 +26,6 @@ nav {
   align-items: center;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
-
 .nav-container {
   display: flex;
   justify-content: space-between;
@@ -51,11 +44,8 @@ nav {
   font-size: 1.5rem;
   font-weight: 700;
   color: white;
-  /* padding-left: 30px; */
   text-decoration: none;
 }
-
-/* Hamburger Icon (Three Lines) */
 .menu-icon {
   display: none;
   font-size: 26px;
@@ -63,12 +53,11 @@ nav {
   cursor: pointer;
   z-index: 5001;
 }
-
 .menu {
   display: flex;
   align-items: center;
   align-items: center;
-  margin-left: auto; /* Is se menu right ki taraf push hoga */
+  margin-left: auto; 
   margin-right: 40px;
 }
 
@@ -85,16 +74,12 @@ nav {
   font-size: 16px;
   font-weight: 600;
 }
-
-/*  ICONS */
 .nav-icons-group {
   display: flex;
   align-items: center;
   gap: 12px;
   margin-left: 70px;
 }
-
-/* PROFILE ICON WRAPPER */
 .user-profile-wrap {
   position: relative;
   cursor: pointer;
@@ -425,7 +410,6 @@ nav {
     padding-left: 0;
   }
 }
-/* ===== SPLASH SCREEN (Default View) ===== */
 .splash {
   position: fixed;
   top: 0;
@@ -451,12 +435,12 @@ nav {
 .splash img {
   width: 150px;
   height: auto;
-  margin-bottom: 20px; /* Text se fasla */
+  margin-bottom: 20px; 
   animation: fadeInScale 1.5s ease-out;
 }
 
 .splash p {
-  font-size: clamp(24px, 5vw, 40px); /* Mobile par chota, Desktop par bada */
+  font-size: clamp(24px, 5vw, 40px); 
   color: var(--subsec);
   font-weight: 600;
 }
@@ -464,7 +448,7 @@ nav {
 .splash.display-none {
   opacity: 0;
   visibility: hidden;
-  pointer-events: none; /* Taake niche wali screen click ho sakay */
+  pointer-events: none; 
 }
 
 @keyframes fadeInScale {
@@ -499,8 +483,6 @@ nav {
   top: 0;
   left: 0;
 }
-
-/* ===== CURVE DIVIDER  ===== */
 .custom-shape-divider-bottom {
   position: absolute;
   bottom: -1px;
@@ -521,8 +503,6 @@ nav {
 .shape-fill {
   fill: #ffffff;
 }
-
-/* ===== RESPONSIVE CURVE (For Mobile & Tablet) ===== */
 @media (max-width: 850px) {
   .hero-sectionbg {
     height: 70vh;
@@ -536,16 +516,13 @@ nav {
     top: 40%;
   }
 }
-/* ===== SLIDER POSITION (Adjusted) ===== */
 .transparent-box {
   position: absolute;
-
-  bottom: -100px;
+  bottom: -250px;
   left: 50%;
   transform: translateX(-50%);
   width: 85%;
   max-width: 1000px;
-
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(15px);
   border-radius: 25px;
@@ -562,7 +539,6 @@ nav {
   border-radius: 18px;
 }
 
-/* ===== MOBILE ADJUSTMENTS ===== */
 @media (max-width: 850px) {
   .transparent-box {
     width: 95%;
@@ -576,7 +552,7 @@ nav {
 }
 .hero-search1 {
   position: absolute;
-  top: 45%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 90%;
@@ -610,7 +586,6 @@ nav {
   animation: wordReveal 0.5s ease-out forwards;
 }
 
-/* Animations delays (Jitne spans hain, unhe numbering dein) */
 .hero-quote span:nth-child(1) {
   animation-delay: 0.2s;
 }
@@ -733,17 +708,59 @@ nav {
   color: #f8f9fa;
   margin-bottom: 10px;
 }
-/* ===== PRAYER TIMING SECTION  ===== */
-.prayer-timing {
-  position: relative;
-  margin-top: 180px;
-  padding: 60px 20px;
-  width: 100%;
-  background: #ffffff;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.destinations{
+    width:100%;
+    padding:80px 20px;
+    background:#f8f9fa;
+    margin-top: 200px;
+}
+.destinations h1{
+    text-align:center;
+    font-size:38px;
+    color:#1b4332;
+    margin-bottom:50px;
+    font-weight:700;
+}
+.destination-cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(270px,1fr));
+    gap:40px;
+}
+
+.destination-card{
+    background:#fff;
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 8px 16px rgba(0,0,0,.12);
+    transition:.3s;
+    cursor:pointer;
+}
+
+.destination-card:hover{
+    transform:translateY(-10px);
+    box-shadow:0 15px 30px rgba(0,0,0,.18);
+}
+
+.destination-card img{
+    width:100%;
+    height:220px;
+    object-fit:cover;
+}
+
+.card-content{
+    padding:20px;
+}
+
+.card-content h3{
+    font-size:24px;
+    color:#1b4332;
+    margin-bottom:10px;
+}
+
+.card-content p{
+    color:#666;
+    font-size:15px;
+    line-height:1.6;
 }
 .container1 {
   width: 100%;
@@ -767,67 +784,87 @@ nav {
 
 .cards {
   display: grid;
-  /* Laptop: 5-6 cards, Tablet: 3 cards, Mobile: 2 cards */
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 20px;
   width: 100%;
   justify-content: center;
   padding: 10px;
 }
-
-.prayer-card {
-  position: relative;
-  width: 100%;
-  height: 250px;
-  border-radius: 20px;
-  overflow: hidden;
-  background: #f9f9f9;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-  transition: all 0.4s ease-in-out;
-  border: 1px solid #eee;
+.packages{
+    width:100%;
+    padding:80px 20px;
+    background:#ffffff;
 }
 
-.prayer-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-}
-.prayer-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-position: center;
-  z-index: 1;
-  filter: brightness(0.85);
-}
-.prayer-info {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  padding: 20px 10px;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
-  z-index: 2;
-  text-align: center;
-  color: white;
+.packages h1{
+    text-align:center;
+    font-size:38px;
+    color:#0b5d4b;
+    margin-bottom:50px;
+    font-weight:700;
 }
 
-.prayer-info h3 {
-  font-size: 1.2rem;
-  margin: 0;
-  font-weight: 600;
-  letter-spacing: 1px;
+.package-cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(270px,1fr));
+    gap:30px;
 }
 
-.prayer-info p {
-  font-size: 1.3rem;
-  color: var(--seccolor);
-  margin-top: 5px;
-  font-weight: bold;
+.package-card{
+    background:#fff;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 8px 20px rgba(0,0,0,.12);
+    transition:0.3s;
 }
 
-/* ===== RESPONSIVE MEDIA QUERIES ===== */
+.package-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 15px 30px rgba(0,0,0,.18);
+}
+
+.package-card img{
+    width:100%;
+    height:220px;
+    object-fit:cover;
+}
+
+.package-content{
+    padding:20px;
+    text-align:center;
+}
+
+.package-content h3{
+    color:#0b5d4b;
+    margin-bottom:10px;
+    font-size:24px;
+}
+
+.package-content p{
+    color:#666;
+    margin-bottom:12px;
+}
+
+.package-content h4{
+    color:#0b5d4b;
+    font-size:22px;
+    margin-bottom:18px;
+}
+
+.package-btn{
+    display:inline-block;
+    text-decoration:none;
+    background:#0b5d4b;
+    color:#fff; 
+    padding:10px 25px;
+    border-radius:30px;
+    transition:.3s;
+}
+
+.package-btn:hover{
+    background:#31a074; 
+    color:#fff; 
+}
 @media (max-width: 992px) {
   .prayer-timing {
     margin-top: 140px;
@@ -837,7 +874,6 @@ nav {
   }
 }
 
-/* For Mobile (up to 768px) */
 @media (max-width: 768px) {
   .prayer-timing {
     margin-top: 100px;
@@ -860,8 +896,6 @@ nav {
     font-size: 1.1rem;
   }
 }
-
-/* For very small screens (up to 400px) */
 @media (max-width: 400px) {
   .cards {
     grid-template-columns: repeat(2, 1fr);
@@ -961,8 +995,6 @@ nav {
   margin: 0;
   color: var(--color);
 }
-
-/* Image Stack Logic */
 .image-stack-container {
   position: relative;
   height: 450px;
@@ -1004,7 +1036,6 @@ nav {
   opacity: 0.6;
 }
 
-/* Button */
 .btn-safar-gold {
   background: var(--seccolor);
   color: white;
@@ -1021,8 +1052,6 @@ nav {
   color: #fff;
   transform: translateY(-3px);
 }
-
-/* Responsive */
 @media (max-width: 991px) {
   .safar-row {
     flex-direction: column;
@@ -1055,8 +1084,6 @@ nav {
     height: 300px;
   }
 }
-
-/* ===== HAJJ SECTION (Compact Version) ===== */
 .hajj-section {
   background-color: var(--subsec);
   padding: 60px 2%; 
@@ -1071,8 +1098,6 @@ nav {
   align-items: center;
   gap: 30px;
 }
-
-/* Image Stack Styling */
 .hajj-left {
   position: relative;
   display: flex;
@@ -1114,14 +1139,12 @@ nav {
   border: 5px solid #fff;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
-
-/* Right Content Styling */
 .hajj-right {
   text-align: left;
 }
 
 .hajj-right h1.ayah {
-  font-size: 1.8rem; /* Compact size */
+  font-size: 1.8rem; 
   color: var(--color);
   margin-bottom: 10px;
   line-height: 1.4;
@@ -1147,8 +1170,6 @@ nav {
   color: #444;
   margin-bottom: 15px;
 }
-
-/* Buttons Fix */
 .hero-btns .learn-btn {
   padding: 10px 22px;
   color: var(--color);
@@ -1163,8 +1184,82 @@ nav {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* ===== RESPONSIVE (Mobile & Tablet) ===== */
+.destinations-section {
+  padding: 80px 5%;
+  background: #f9fdfb;
+  text-align: center;
+}
 
+.dest-title {
+  font-size: 38px;
+  font-weight: 800;
+  color: var(--color);
+  margin-bottom: 10px;
+}
+
+.dest-subtitle {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 40px;
+}
+
+.dest-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 25px;
+}
+
+.dest-card {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  height: 280px;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+.dest-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: 0.5s;
+}
+
+.dest-overlay {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 20px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.8));
+  color: #fff;
+  text-align: left;
+}
+
+.dest-overlay h3 {
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+
+.dest-overlay p {
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+.dest-card:hover img {
+  transform: scale(1.1);
+}
+
+@media (max-width: 992px) {
+  .dest-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .dest-grid {
+    grid-template-columns: 1fr;
+  }
+}
 @media (max-width: 992px) {
   .hajj-container {
     grid-template-columns: 1fr; 
@@ -1238,8 +1333,6 @@ nav {
   font-weight: 800;
   font-family: "Poppins", sans-serif;
 }
-
-/*  LAYOUT CONTAINER  */
 .containerg {
   display: flex;
   gap: 30px;
@@ -1247,8 +1340,6 @@ nav {
   margin: 0 auto;
   align-items: stretch; 
 }
-
-/* LEFT MEDIA: Arched Video */
 .left-media {
   flex: 0 0 30%;
   position: relative;
@@ -1263,8 +1354,6 @@ nav {
   object-fit: cover;
   transition: filter 0.5s ease;
 }
-
-/* RIGHT CARDS: 3x2 Grid */
 .right-cards {
   flex: 1;
   display: grid;
@@ -1281,7 +1370,6 @@ nav {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
 }
 
-/* Image Setup */
 .cardimg {
   width: 100%;
   height: 100%;
@@ -1314,12 +1402,12 @@ nav {
   );
   display: flex;
   flex-direction: column;
-  justify-content: flex-end; /* Text neche se start ho kar upar aayega */
+  justify-content: flex-end; 
   padding: 30px 20px;
   color: #fff;
   text-align: center;
   opacity: 0;
-  transform: translateY(30px); /* Halki si movement neche se upar */
+  transform: translateY(30px); 
   transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
   z-index: 2;
 }
@@ -1387,9 +1475,6 @@ nav {
 .view:hover a {
   color: #064e3b;
 }
-
-/* ===== RESPONSIVE ===== */
-
 @media (max-width: 1200px) {
   .right-cards {
     grid-template-columns: repeat(2, 1fr);
@@ -1537,7 +1622,6 @@ nav {
   transform: translateY(-10px);
 }
 
-/* Responsive Fix */
 @media (max-width: 768px) {
   .portal-card {
     min-width: 100%;
