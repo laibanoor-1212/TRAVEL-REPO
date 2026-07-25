@@ -21,14 +21,14 @@ from django.urls import path,include
 
 urlpatterns = [
     path('secret-django-admin/', admin.site.urls),
-    # path('', include('base.urls')),
+    path('', include('base.urls')),
     path('auth/', include('accounts.urls')),
     path('stakeholder/', include('stakeholder.urls')),
     path('adminpanel/', include('adminpanel.urls')),
     path('customers/', include('customers.urls')),
     path('accounts/', include('allauth.urls')),
     path('packages/', include('packages.urls')),
-    path('base/', include('base.urls')),
+ 
     path('bookings/', include('bookings.urls')),
       path('notifications/', include('notifications.urls')),
       

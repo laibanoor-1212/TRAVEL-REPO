@@ -12,7 +12,10 @@ from bookings.models import Bookings,BookingCustomers
 from payments.models import Payment
 from bookings.models import Bookings, Ticket
 from payments import services
+from django.db.models import Sum, F
+from payments.models import Payment
 from django.shortcuts import redirect, get_object_or_404
+
 
 
 @login_required(login_url='/auth/login/')
@@ -44,7 +47,7 @@ def agent_kyc_view(request):
             obj = form.save(commit=False)
 
             obj.user = user
-            obj.kyc_status = 'pending'   # only when user submits new KYC
+            obj.kyc_status = 'pending' 
 
             obj.save()
 
@@ -291,8 +294,6 @@ def booking_detail_view(request, booking_id):
         'travelers': travelers,
     }
     return render(request, 'stakeholder/booking_detail.html', context)
-def earning_transaction(request):
-    return render(request, 'stakeholder/earning_transaction.html')
 
 
 def agent_complaints(request):
@@ -321,9 +322,6 @@ def agent_complaints(request):
 def cancelled_booking(request):
     return render(request, 'stakeholder/cancelled_booking.html')
 
-
-
-
 def view_profile(request):
     agentkyc = AgentKYC.objects.filter(user=request.user).first()
     if request.method == 'POST':
@@ -346,7 +344,7 @@ def view_profile(request):
 def payments(request):
     payments = Payment.objects.filter(
         agent=request.user,
-        escrow_status__in=['held_in_escrow', 'released']   # <-- sirf escrow tak pohanchi hui payments
+        escrow_status__in=['held_in_escrow', 'released']  
     ).select_related('booking', 'customer').order_by('-created_at')
 
     context = {'payments': payments}
@@ -383,7 +381,7 @@ def agent_upload_ticket(request, booking_id):
 
         try:
             services.mark_ticket_uploaded(payment)
-            messages.success(request, "ticket upload wait kar the customer approval.")
+            messages.success(request, "ticket upload wait for the customer approval.")
         except ValueError as e:
             messages.error(request, f"Status is not updated: {e}")
 
@@ -395,6 +393,26 @@ def escrow_status_overview(request):
     payments = Payment.objects.filter(
         customer=request.user
     ).select_related('booking', 'booking__package').order_by('-created_at')
-
     context = {'payments': payments}
     return render(request, 'customer/escrow_status.html', context)
+
+
+
+def earning_transaction(request):
+   
+    agent_payments = Payment.objects.filter(
+        booking__package__agency=request.user
+    ).select_related('booking', 'booking__user', 'booking__package').order_by('-created_at')
+    released_payments = agent_payments.filter(escrow_status='RELEASED')
+    total_earnings = released_payments.aggregate(total=Sum('amount'))['total'] or 0
+    commission_deducted = float(total_earnings) * 0.10
+    net_payable = float(total_earnings) - commission_deducted
+
+    context = {
+        'payments': agent_payments,
+        'total_earnings': total_earnings,
+        'commission_deducted': commission_deducted,
+        'net_payable': net_payable,
+    }
+    
+    return render(request, 'stakeholder/earning_transaction.html', context)

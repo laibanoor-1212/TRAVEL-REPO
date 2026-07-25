@@ -7,7 +7,9 @@ from packages.models import Package
 from .models import Bookings, BookingCustomers
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import Bookings
+from django.utils import timezone
+from .models import Bookings, Ticket 
+from django.urls import reverse
 from payments.models import Payment, PaymentMethod
 from payments import services
 
@@ -61,8 +63,6 @@ def book_package(request, package_id):
                 )
             except Exception as e:
                 print(f"Error saving traveler {i+1}: {e}")
-        
-        # Success Message
         booking_display_id = getattr(booking, 'booking_id', booking.id)
         messages.success(request, f"Booking #{booking_display_id} register sucessfully!")
         return redirect('bookings:choose_payment_method', booking_id=booking.id)
@@ -72,16 +72,11 @@ def book_package(request, package_id):
 
  
 def manage_bookings(request):
-    # Database se sari Bookings nikalna (select_related query ko fast karta hai)
     bookings = Bookings.objects.all().select_related('user', 'package').order_by('-id')
-    
     context = {
         'bookings': bookings
     }
     return render(request, 'stakeholder/manage_bookings.html', context)
-
-
-
 
 @login_required(login_url='/auth/login/')
 def choose_payment_method(request, booking_id):
@@ -140,7 +135,6 @@ def stripe_checkout_page(request, booking_id):
 
 @login_required(login_url='/auth/login/')
 def confirm_stripe_payment(request, booking_id):
-    """Stripe.js se payment confirm hone ke baad frontend ye endpoint call karega (AJAX)."""
     booking = get_object_or_404(Bookings, pk=booking_id, user=request.user)
     payment = get_object_or_404(Payment, booking=booking, payment_method=PaymentMethod.STRIPE)
 
@@ -151,9 +145,8 @@ def confirm_stripe_payment(request, booking_id):
     except ValueError as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=400)
 
-    return JsonResponse({'success': True, 'redirect_url': f'/bookings/{booking.id}/payment-status/'})
-
-
+    redirect_url = reverse('bookings:payment_status', kwargs={'booking_id': booking.id})
+    return JsonResponse({'success': True, 'redirect_url': redirect_url})
 @login_required(login_url='/auth/login/')
 def raast_payment_page(request, booking_id):
     booking = get_object_or_404(Bookings, pk=booking_id, user=request.user)
@@ -177,7 +170,7 @@ def upload_raast_proof(request, booking_id):
         screenshot = request.FILES.get('screenshot')
 
         if not transaction_reference:
-            messages.error(request, "Transaction ID daalna zaroori hai.")
+            messages.error(request, "Transaction ID is mandatory.")
             return redirect('bookings:raast_payment', booking_id=booking.id)
 
         services.submit_raast_proof(
@@ -186,14 +179,14 @@ def upload_raast_proof(request, booking_id):
             screenshot=screenshot,
             transaction_reference=transaction_reference,
         )
-        messages.success(request, "Proof submit ho gayi, admin verification ka wait karein.")
+        messages.success(request, "Proof is submitted, wait for admin verification.")
         return redirect('bookings:payment_status', booking_id=booking.id)
 
     return redirect('bookings:raast_payment', booking_id=booking.id)
 
 
 @login_required(login_url='/auth/login/')
-def payment_status_view(request, booking_id):
+def payment_status(request, booking_id):
     booking = get_object_or_404(Bookings, pk=booking_id, user=request.user)
     payment = getattr(booking, 'payment', None)
     ticket = getattr(booking, 'ticket', None)
@@ -205,18 +198,5 @@ def payment_status_view(request, booking_id):
     }
     return render(request, 'bookings/payment_status.html', context)
 
-@login_required(login_url='/auth/login/')
-def approve_ticket_view(request, booking_id):
-    booking = get_object_or_404(Bookings, pk=booking_id, user=request.user)
-    payment = get_object_or_404(Payment, booking=booking)
-
-    if request.method == "POST":
-        try:
-            services.mark_customer_approved(payment, customer_user=request.user)
-            messages.success(request, "Ticket approve ho gaya, admin payment release kar dega.")
-        except ValueError as e:
-            messages.error(request, f"Approve nahi hua: {e}")
-
-    return redirect('bookings:payment_status', booking_id=booking.id)
 
 

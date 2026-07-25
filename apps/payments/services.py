@@ -1,16 +1,7 @@
-"""
-payments/services.py
-======================
-Escrow ki poori business logic yahan hai. Views ya admin actions kabhi
-bhi payment.payment_status ko directly set NAHI karenge — hamesha ye
-functions call karenge. Isse:
-  - Har transition PaymentStatusLog mein audit ho jati hai
-  - Invalid transitions (jaise approval se pehle release) yahin rukte hain
-  - Gateway (Stripe/Raast) ka logic escrow rules se alag rehta hai
-"""
-
 from django.db import transaction
 from django.utils import timezone
+from django.core.exceptions import ValidationError
+
 
 from .models import (
     Payment,
@@ -21,10 +12,6 @@ from .models import (
     PaymentStatus,
 )
 
-
-# ---------------------------------------------------------------------
-# Internal helper — audit log likhna kabhi mat bhoolna
-# ---------------------------------------------------------------------
 
 def _log_transition(payment, old_status, new_status, changed_by=None, notes=""):
     PaymentStatusLog.objects.create(
@@ -43,49 +30,43 @@ def _set_status(payment, new_status, changed_by=None, notes=""):
     _log_transition(payment, old_status, new_status, changed_by=changed_by, notes=notes)
 
 
-# ---------------------------------------------------------------------
-# 1. Stripe — auto verification (Test Mode)
-# ---------------------------------------------------------------------
-
 def mark_stripe_payment_submitted(payment: Payment, stripe_payment_intent_id: str):
-    """Stripe se PaymentIntent create hote hi call karein."""
     if payment.payment_method != "stripe":
-        raise ValueError("Ye payment Stripe method ki nahi hai.")
+        raise ValueError("it is not stripe method payment")
 
     payment.stripe_payment_intent_id = stripe_payment_intent_id
     payment.save(update_fields=["stripe_payment_intent_id", "updated_at"])
     _set_status(payment, PaymentStatus.PAYMENT_SUBMITTED, notes="Stripe PaymentIntent created.")
 
+    booking = payment.booking
+    booking.status = "processing"
+    booking.save(update_fields=["status"])
+
 
 def verify_stripe_payment(payment: Payment, stripe_status: str):
-    """
-    Stripe se webhook/confirmation aane ke baad call karein.
-    stripe_status: Stripe se aaya hua status (e.g. 'succeeded').
-    """
     if payment.payment_method != "stripe":
-        raise ValueError("Ye payment Stripe method ki nahi hai.")
+        raise ValueError("It is  not stirpe method payment")
 
     if stripe_status != "succeeded":
         _set_status(payment, PaymentStatus.CANCELLED, notes=f"Stripe status: {stripe_status}")
+
+        booking = payment.booking
+        booking.status = "cancelled"
+        booking.save(update_fields=["status"])
+
         return payment
 
     payment.paid_at = timezone.now()
     payment.save(update_fields=["paid_at", "updated_at"])
     _set_status(payment, PaymentStatus.PAYMENT_VERIFIED, notes="Auto-verified by Stripe Test Mode.")
 
-    # Stripe verify hote hi seedha escrow mein hold ho jata hai
     hold_in_escrow(payment)
     return payment
 
 
-# ---------------------------------------------------------------------
-# 2. Raast — manual verification via proof upload
-# ---------------------------------------------------------------------
-
 def submit_raast_proof(payment: Payment, uploaded_by, screenshot=None, transaction_reference=""):
-    """Customer proof upload karta hai — admin verification ka wait shuru hota hai."""
     if payment.payment_method != "raast":
-        raise ValueError("Ye payment Raast method ki nahi hai.")
+        raise ValueError("this  payment is not Raast method")
 
     proof = PaymentProof.objects.create(
         payment=payment,
@@ -97,13 +78,17 @@ def submit_raast_proof(payment: Payment, uploaded_by, screenshot=None, transacti
     payment.save(update_fields=["transaction_id", "updated_at"])
     _set_status(payment, PaymentStatus.PAYMENT_SUBMITTED, changed_by=uploaded_by,
                 notes="Raast proof uploaded, admin verification pending.")
+
+    booking = payment.booking
+    booking.status = "processing"
+    booking.save(update_fields=["status"])
+
     return proof
 
 
 def verify_raast_proof(proof: PaymentProof, verified_by):
-    """Sirf admin (is_staff) call kar sakta hai."""
     if not verified_by.is_staff:
-        raise PermissionError("Sirf admin Raast payment verify kar sakta hai.")
+        raise PermissionError("only admin can verify Raast payment")
 
     proof.is_verified = True
     proof.verified_by = verified_by
@@ -121,9 +106,8 @@ def verify_raast_proof(proof: PaymentProof, verified_by):
 
 
 def reject_raast_proof(proof: PaymentProof, rejected_by, reason: str):
-    """Fake/invalid proof — admin reject karta hai, customer ko dobara upload karna hoga."""
     if not rejected_by.is_staff:
-        raise PermissionError("Sirf admin proof reject kar sakta hai.")
+        raise PermissionError(" only admin can proof ,reject")
 
     proof.is_verified = False
     proof.verified_by = rejected_by
@@ -134,17 +118,18 @@ def reject_raast_proof(proof: PaymentProof, rejected_by, reason: str):
     payment = proof.payment
     _set_status(payment, PaymentStatus.PENDING, changed_by=rejected_by,
                 notes=f"Raast proof rejected: {reason}")
+
+    booking = payment.booking
+    booking.status = "pending"
+    booking.save(update_fields=["status"])
+
     return proof
 
-
-# ---------------------------------------------------------------------
-# 3. Hold in Escrow — dono methods (Stripe/Raast) ke liye common step
-# ---------------------------------------------------------------------
 
 @transaction.atomic
 def hold_in_escrow(payment: Payment):
     if payment.payment_status != PaymentStatus.PAYMENT_VERIFIED:
-        raise ValueError("Payment abhi verified nahi hai, escrow mein hold nahi ho sakta.")
+        raise ValueError("Payment is not verified yet, do not hold in escrow.")
 
     EscrowTransaction.objects.get_or_create(
         payment=payment,
@@ -152,62 +137,58 @@ def hold_in_escrow(payment: Payment):
     )
     payment.escrow_status = PaymentStatus.HELD_IN_ESCROW
     payment.save(update_fields=["escrow_status", "updated_at"])
-    _set_status(payment, PaymentStatus.HELD_IN_ESCROW, notes="Funds held in escrow.")
+    _set_status(payment, PaymentStatus.HELD_IN_ESCROW, notes="Funds held in escrow")
+
+    booking = payment.booking
+    booking.status = "processing"
+    booking.save(update_fields=["status"])
+
     return payment
 
 
-# ---------------------------------------------------------------------
-# 4. Ticket upload + customer approval (booking app se call hoga)
-# ---------------------------------------------------------------------
-
 def mark_ticket_uploaded(payment: Payment):
     if payment.payment_status != PaymentStatus.HELD_IN_ESCROW:
-        raise ValueError("Escrow hold hone se pehle ticket upload valid nahi.")
-    _set_status(payment, PaymentStatus.TICKET_UPLOADED, notes="Agent uploaded confirmed ticket.")
+        raise ValueError("before Escrow hold ticket upload is not valid")
+    _set_status(payment, PaymentStatus.TICKET_UPLOADED, notes="Agent uploaded confirmed ticket")
+
+    booking = payment.booking
+    booking.status = "ticket_issued"
+    booking.save(update_fields=["status"])
+
     return payment
 
 
 def mark_customer_approved(payment: Payment, customer_user):
     booking = payment.booking
     if payment.payment_status != PaymentStatus.TICKET_UPLOADED:
-        raise ValueError("Ticket upload hone se pehle approval valid nahi.")
+        raise ValueError("before Ticket upload approval is not valid ")
 
     booking.customer_approved = True
     booking.customer_approved_at = timezone.now()
-    booking.save(update_fields=["customer_approved", "customer_approved_at", "updated_at"])
+    booking.status = "confirmed"
+    booking.save(update_fields=["customer_approved", "customer_approved_at", "status", "updated_at"])
 
     _set_status(payment, PaymentStatus.CUSTOMER_APPROVED, changed_by=customer_user,
                 notes="Customer approved the ticket.")
     return payment
 
-
-# ---------------------------------------------------------------------
-# 5. Release Payment — SIRF admin, sirf approval ke baad
-# ---------------------------------------------------------------------
-
 @transaction.atomic
 def release_payment(payment: Payment, released_by_admin, release_notes: str = ""):
-    """
-    Escrow ka sabse critical function. Teeno checks fail-safe hain:
-      1. escrow_status held_in_escrow hona chahiye
-      2. booking.customer_approved True hona chahiye
-      3. released_by_admin.is_staff True hona chahiye
-    """
     if not released_by_admin.is_staff:
-        raise PermissionError("Sirf admin payment release kar sakta hai.")
+        raise PermissionError("only admin can release payment")
 
     if payment.escrow_status != PaymentStatus.HELD_IN_ESCROW:
-        raise ValueError("Payment escrow mein hold nahi hai, release nahi ho sakta.")
+        raise ValueError("Payment is not hold in escrow ,release is not possible")
 
-    if not payment.booking.customer_approved:
-        raise ValueError("Customer approval se pehle payment release nahi ho sakta.")
+    # ✅ Fix: Check if ticket exists and if customer approved it
+    if not hasattr(payment.booking, 'ticket') or not payment.booking.ticket.customer_approved:
+        raise ValidationError("To release Payment ticket approve by the customer is mandatory")
 
     if hasattr(payment, "release_record"):
-        raise ValueError("Ye payment pehle hi release ho chuka hai.")
+        raise ValueError("this payment already released")
 
     raast_reference = ""
     if payment.payment_method == "raast":
-        # Snapshot — us waqt ke agent ke raast_id ka
         raast_reference = payment.agent_raast_id or ""
 
     PaymentRelease.objects.create(
@@ -230,25 +211,30 @@ def release_payment(payment: Payment, released_by_admin, release_notes: str = ""
     _set_status(payment, PaymentStatus.RELEASED, changed_by=released_by_admin,
                 notes=release_notes or "Payment released by admin.")
 
+    booking = payment.booking
+    booking.status = "completed"
+    booking.save(update_fields=["status", "updated_at"])
+
     return payment
 
 
-# ---------------------------------------------------------------------
-# 6. Cancel / Refund (branches only allowed before RELEASED)
-# ---------------------------------------------------------------------
-
 def cancel_payment(payment: Payment, cancelled_by, reason: str = ""):
     if payment.payment_status == PaymentStatus.RELEASED:
-        raise ValueError("Released payment cancel nahi ho sakta.")
+        raise ValueError("Released payment is impossible to cancel.")
     _set_status(payment, PaymentStatus.CANCELLED, changed_by=cancelled_by, notes=reason)
+
+    booking = payment.booking
+    booking.status = "cancelled"
+    booking.save(update_fields=["status"])
+
     return payment
 
 
 def refund_payment(payment: Payment, refunded_by, reason: str = ""):
     if payment.payment_status == PaymentStatus.RELEASED:
-        raise ValueError("Released payment refund nahi ho sakta — ye alag dispute process hoga.")
+        raise ValueError("Released payment is not possible to refund  — its a separate dispute process")
     if not refunded_by.is_staff:
-        raise PermissionError("Sirf admin refund process kar sakta hai.")
+        raise PermissionError("only admin process refund")
 
     if hasattr(payment, "escrow_transaction"):
         escrow_txn = payment.escrow_transaction
@@ -256,4 +242,9 @@ def refund_payment(payment: Payment, refunded_by, reason: str = ""):
         escrow_txn.save(update_fields=["status", "updated_at"])
 
     _set_status(payment, PaymentStatus.REFUNDED, changed_by=refunded_by, notes=reason)
+
+    booking = payment.booking
+    booking.status = "refunded"
+    booking.save(update_fields=["status"])
+
     return payment

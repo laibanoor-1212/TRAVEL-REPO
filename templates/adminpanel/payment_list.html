@@ -1,0 +1,207 @@
+{% extends 'adminpanel/admin_layout.html' %}
+{% block title %}Payments — Escrow Management | Safar-e-Haram{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --primary-green: #0b7a47; 
+        --pure-white: #ffffff;
+        --danger-red: #d63031;
+        --warning-orange: #f39c12;
+        --dark-slate: #1e293b;
+        --info-blue: #0284c7;
+    }
+
+    /* Table Container & Layout Structure */
+    .table-wrapper { 
+        background: var(--pure-white); 
+        border-radius: 12px; 
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05); 
+        overflow-x: auto; 
+        margin-bottom: 30px; 
+        border: 1px solid #e2e8f0; 
+    }
+    .data-table { width: 100%; border-collapse: collapse; text-align: left; min-width: 1100px; }
+    .data-table th { background: var(--primary-green); color: white; padding: 15px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .data-table td { padding: 15px; border-bottom: 1px solid #f1f1f1; font-size: 13px; vertical-align: middle; color: #334155; }
+    .data-table tr:hover { background-color: #f8fafc; }
+
+    /* Custom Filter Box matching Booking Control top bars */
+    .filter-panel { 
+        background: white; 
+        border: 1px solid #e2e8f0; 
+        border-radius: 12px; 
+        padding: 15px 20px; 
+        margin-bottom: 25px; 
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+    .filter-select {
+        padding: 10px 15px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        outline: none;
+        font-size: 14px;
+        color: var(--dark-slate);
+        min-width: 180px;
+        cursor: pointer;
+    }
+
+    /* Action Buttons Styles */
+    .btn-action {
+        padding: 8px 14px; border-radius: 8px; font-size: 11px; font-weight: 700;
+        text-decoration: none; border: none; cursor: pointer; color: white; transition: 0.2s;
+        display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .btn-blue { background: var(--primary-green); }
+    .btn-outline-clear { background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
+    .btn-outline-clear:hover { background: #e2e8f0; }
+
+    /* Custom Status Badges matching Booking layout rules */
+    .badge { padding: 6px 12px; border-radius: 50px; font-size: 10px; font-weight: 700; text-transform: uppercase; display: inline-block; }
+    .bg-released { background: #dcfce7; color: #15803d; }
+    .bg-failed { background: #fee2e2; color: #b91c1c; }
+    .bg-escrow-hold { background: #fef3c7; color: #b45309; }
+    .bg-neutral { background: #f1f5f9; color: #475569; }
+
+    .small-id { font-size: 11px; color: #64748b; display: block; margin-top: 2px; }
+    .search-input-box {
+        padding: 12px 20px; 
+        border-radius: 25px; 
+        border: 1px solid #cbd5e1; 
+        width: 300px; 
+        outline: none; 
+        font-size: 14px;
+    }
+</style>
+
+<div class="container" style="padding: 20px;">
+    <!-- Messages Notification Bar -->
+    {% if messages %}
+        {% for message in messages %}
+            <div style="padding: 15px; background: {% if message.tags == 'success' %}#dcfce7; color: #15803d;{% else %}#fee2e2; color: #b91c1c;{% endif %} border-radius: 8px; margin-bottom: 20px; font-weight: 600;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Top Management Brand Row -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+        <div>
+            <h2 style="color: var(--primary-green); font-weight: 800; margin: 0; font-size: 26px;">Payments — Escrow Management</h2>
+            <p style="color: #64748b; margin: 4px 0 0; font-size: 14px;">Audit transactional records, track incoming payment methods, and oversee security releases.</p>
+        </div>
+        <!-- Client Side Quick Filtering -->
+        <input type="text" id="paymentSearch" placeholder="Search Payments, Customer, ID..." onkeyup="searchPaymentsTable()" class="search-input-box">
+    </div>
+
+    <!-- Alignment Form Filter Matrix -->
+    <div class="filter-panel">
+        <form method="get" id="filterForm" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin: 0;">
+            <!-- Added onchange submission -->
+            <select name="method" class="filter-select" onchange="this.form.submit()">
+                <option value="">All Methods</option>
+                <option value="stripe" {% if method_filter == 'stripe' %}selected{% endif %}>Stripe Gateway</option>
+                <option value="raast" {% if method_filter == 'raast' %}selected{% endif %}>Raast P2P Transfer</option>
+            </select>
+
+            <!-- Added onchange submission -->
+            <select name="status" class="filter-select" onchange="this.form.submit()">
+                <option value="">All Statuses</option>
+                <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+                <option value="payment_submitted" {% if status_filter == 'payment_submitted' %}selected{% endif %}>Payment Submitted</option>
+                <option value="payment_verified" {% if status_filter == 'payment_verified' %}selected{% endif %}>Payment Verified</option>
+                <option value="held_in_escrow" {% if status_filter == 'held_in_escrow' %}selected{% endif %}>Held in Escrow</option>
+                <option value="ticket_uploaded" {% if status_filter == 'ticket_uploaded' %}selected{% endif %}>Ticket Uploaded</option>
+                <option value="customer_approved" {% if status_filter == 'customer_approved' %}selected{% endif %}>Customer Approved</option>
+                <option value="released" {% if status_filter == 'released' %}selected{% endif %}>Released</option>
+                <option value="cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                <option value="refunded" {% if status_filter == 'refunded' %}selected{% endif %}>Refunded</option>
+            </select>
+
+            <button type="submit" class="btn-action btn-blue" style="height: 40px; padding: 0 20px;">Filter Data</button>
+            <a href="{% url 'adminpanel:admin_payments_list' %}" class="btn-action btn-outline-clear" style="height: 40px; padding: 0 16px; display: inline-flex; align-items: center; justify-content: center;">Reset</a>
+        </form>
+    </div>
+
+    <!-- Core Payments Main Table Structure -->
+    <div class="table-wrapper">
+        <table class="data-table" id="paymentsMainTable">
+            <thead>
+                <tr>
+                    <th># ID</th>
+                    <th>Booking</th>
+                    <th>Customer</th>
+                    <th>Assigned Agent</th>
+                    <th>Method</th>
+                    <th>Settled Amount</th>
+                    <th>Payment Status</th>
+                    <th>Escrow Status</th>
+                    <th>Created At</th>
+                    <th style="text-align: center;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in payments %}
+                <tr>
+                    <td><b>#{{ payment.id }}</b></td>
+                    <td><span style="font-weight: 700; color: var(--dark-slate);">#{{ payment.booking_id }}</span></td>
+                    <td>
+                        <strong>{{ payment.customer.username }}</strong>
+                    </td>
+                    <td>
+                        <strong>{{ payment.agent.username }}</strong>
+                    </td>
+                    <td>
+                        {% if payment.payment_method == 'stripe' %}
+                            <span class="badge bg-neutral" style="background:#e0f2fe; color:#0369a1;">Stripe</span>
+                        {% else %}
+                            <span class="badge bg-neutral" style="background:#e0e7ff; color:#4338ca;">Raast</span>
+                        {% endif %}
+                    </td>
+                    <td><b style="color: var(--primary-green); font-size: 14px;">{{ payment.amount }} {{ payment.currency }}</b></td>
+                    <td>
+                        <span class="badge 
+                            {% if payment.payment_status == 'released' %}bg-released
+                            {% elif payment.payment_status == 'cancelled' or payment.payment_status == 'refunded' %}bg-failed
+                            {% elif payment.payment_status == 'held_in_escrow' %}bg-escrow-hold
+                            {% else %}bg-neutral{% endif %}">
+                            {{ payment.get_payment_status_display }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge bg-neutral" style="border: 1px solid #cbd5e1; font-weight: 600;">
+                            {{ payment.get_escrow_status_display }}
+                        </span>
+                    </td>
+                    <td style="color: #64748b;">{{ payment.created_at|date:"d M Y, H:i" }}</td>
+                    <td style="text-align: center;">
+                        <a href="{% url 'adminpanel:payment_detail' payment.id %}" class="btn-action btn-blue" style="padding: 6px 16px;">
+                            Manage
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="10" style="text-align: center; padding: 40px; color: #94a3b8; font-weight: 500;">
+                        Koi payment records aap ke filter parameters ke mutabiq nahi mile.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function searchPaymentsTable() {
+        var filter = document.getElementById("paymentSearch").value.toUpperCase();
+        var rows = document.querySelectorAll("#paymentsMainTable tbody tr");
+        for (var i = 0; i < rows.length; i++) {
+            var rowText = rows[i].textContent || rows[i].innerText;
+            if (rowText) {
+                rows[i].style.display = rowText.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+            }
+        }
+    }
+</script>
+{% endblock %}
