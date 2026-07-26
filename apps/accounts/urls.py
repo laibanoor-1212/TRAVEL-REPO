@@ -9,5 +9,4 @@ urlpatterns = [
     path("reset-confirm/<uidb64>/<token>/",views.reset_password_confirm,name="reset_confirm"),
     path('adminpanel/users/', views.admin_manage_users, name='admin_manage_users'),
     path('adminpanel/users/<int:user_id>/action/<str:status_action>/', views.change_user_status, name='change_user_status'),
-    
 ]

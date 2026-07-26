@@ -30,8 +30,8 @@ urlpatterns = [
     path('packages/', include('packages.urls')),
     path('base/', include('base.urls')),
     path('bookings/', include('bookings.urls')),
-      path('notifications/', include('notifications.urls')),
-      
+    path('notifications/', include('notifications.urls')),
+    
 
 ]
 # to open files in browsers like images and pdf
