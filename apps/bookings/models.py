@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.utils.text import slugify
-from packages.models import Package
+from packages.models import Package# Aapka Booking model
 from customers.models import CustomerProfile
 
 
@@ -101,3 +101,16 @@ class BookingStatusHistory(models.Model):
 
     def __str__(self):
         return f"{self.booking.booking_id} - {self.new_status}"
+class Ticket(models.Model):
+    booking = models.OneToOneField(
+        Bookings, on_delete=models.CASCADE, related_name='ticket'
+    )
+    agent = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='uploaded_tickets'
+    )
+    ticket_file = models.FileField(upload_to='tickets/')
+    notes = models.TextField(blank=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Ticket for Booking #{self.booking_id}"

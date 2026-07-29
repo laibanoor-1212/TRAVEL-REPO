@@ -1,0 +1,429 @@
+{% extends 'base/base.html' %}
+{% block content %}
+{% load static %}
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    :root {
+        --emerald-primary: #059669;    
+        --emerald-dark: #064e3b;       
+        --gold-premium: #d97706;       
+        --surface-white: #ffffff;
+        --body-neutral: #f8fafc;       
+        --text-slate-dark: #0f172a;    
+        --text-slate-muted: #475569;
+        --border-refined: #e2e8f0;
+        --radius-standard: 12px;
+    }
+
+    body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background-color: var(--body-neutral);
+        color: var(--text-slate-dark);
+        margin: 0;
+        padding: 0;
+    }
+
+    /* ==========================================================================
+       1. NORMAL HERO BANNER (Margins Adjusted)
+       ========================================================================== */
+    .hero-banner-wrapper {
+        max-width: 1280px; /* Standard website layout width */
+        margin: 20px auto 0 auto; /* Spacing kam kar di */
+        padding: 0 15px;
+        box-sizing: border-box;
+    }
+
+    .clean-luxury-banner {
+        position: relative;
+        background: linear-gradient(135deg, var(--emerald-dark) 0%, #022c22 100%);
+        border-radius: var(--radius-standard);
+        padding: 35px 20px; /* Excessive padding tightly reduced */
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(4, 47, 46, 0.05);
+    }
+
+    .banner-text-core h1 {
+        font-size: 2.2rem; /* Normal Heading size */
+        font-weight: 800;
+        color: var(--surface-white);
+        margin: 0 0 6px 0;
+        letter-spacing: -0.5px;
+    }
+
+    .banner-text-core p {
+        font-size: 1rem;
+        color: #d1fae5;
+        margin: 0;
+        font-weight: 400;
+    }
+
+    /* ==========================================================================
+       2. COMPACT DENSITY HORIZONTAL FILTER ROW
+       ========================================================================== */
+    .portal-workspace {
+        max-width: 1280px;
+        margin: 20px auto 40px auto; /* Normal page vertical gaps */
+        padding: 0 15px;
+        box-sizing: border-box;
+    }
+
+    .horizontal-filter-strip {
+        background: var(--surface-white);
+        padding: 12px 20px; /* Reduced box padding */
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        border: 1px solid var(--border-refined);
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 16px; /* Tight item spacing */
+        margin-bottom: 20px;
+    }
+
+    .filter-node-box {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 200px;
+        flex-grow: 1;
+    }
+
+    .filter-node-box label {
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--emerald-primary);
+        letter-spacing: 0.5px;
+    }
+
+    .premium-custom-select {
+        width: 100%;
+        padding: 8px 12px; /* Normal clean compact input */
+        border-radius: 6px;
+        border: 1px solid #cbd5e1;
+        background-color: var(--surface-white);
+        font-size: 0.88rem;
+        color: var(--text-slate-dark);
+        outline: none;
+        cursor: pointer;
+    }
+
+    /* ==========================================================================
+       3. STANDARD PRODUCT GRID MESH
+       ========================================================================== */
+    .editorial-packages-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px; /* Reduced gap for tightly packed natural grid */
+    }
+
+    .luxury-editorial-card {
+        background: var(--surface-white);
+        border-radius: var(--radius-standard);
+        border: 1px solid var(--border-refined);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 2px 10px rgba(15, 23, 42, 0.02);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .luxury-editorial-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(4, 47, 46, 0.05);
+    }
+
+    .card-media-window {
+        position: relative;
+        height: 180px; /* Standard non-stretched cover height */
+        overflow: hidden;
+    }
+
+    .card-media-window img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .media-floating-badges {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        right: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .agency-corporate-stamp {
+        background: rgba(255, 255, 255, 0.96);
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--emerald-dark);
+    }
+
+    .tier-badge-pill {
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.65rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: var(--surface-white);
+    }
+    .tier-badge-pill.economy { background: #0284c7; }
+    .tier-badge-pill.standard { background: var(--gold-premium); }
+    .tier-badge-pill.vip { background: #7c3aed; }
+    .tier-badge-pill.luxury { background: var(--emerald-primary); }
+
+    .card-content-assembly {
+        padding: 16px; /* Reduced element inner density */
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    .card-content-assembly h2 {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--text-slate-dark);
+        margin: 0 0 8px 0;
+        line-height: 1.3;
+    }
+
+    .luxury-price-block {
+        background: #f0fdf4; 
+        padding: 8px 12px;
+        border-radius: 6px;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border: 1px solid #d1fae5;
+    }
+
+    .price-sub-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #065f46;
+    }
+
+    .price-value-string {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: var(--emerald-dark);
+    }
+
+    .amenities-metric-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 16px 0;
+    }
+
+    .amenities-metric-list li {
+        font-size: 0.85rem;
+        color: var(--text-slate-muted);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .amenities-metric-list li i {
+        color: var(--emerald-primary);
+        font-size: 0.9rem;
+        width: 14px;
+        text-align: center;
+    }
+
+    .action-button-matrix {
+        margin-top: auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .trigger-btn-base {
+        padding: 10px 12px;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-align: center;
+        text-decoration: none;
+    }
+
+    .btn-outline-emerald {
+        background: transparent;
+        color: var(--emerald-primary);
+        border: 1px solid var(--emerald-primary);
+    }
+
+    .btn-outline-emerald:hover {
+        background: #f0fdf4;
+    }
+
+    .btn-filled-emerald {
+        background: var(--emerald-primary);
+        color: var(--surface-white);
+        border: 1px solid var(--emerald-primary);
+    }
+
+    .btn-filled-emerald:hover {
+        background: var(--emerald-dark);
+    }
+
+    .empty-catalog-state {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 40px 20px;
+        background: var(--surface-white);
+        border-radius: var(--radius-standard);
+        color: var(--text-slate-muted);
+        border: 1px solid var(--border-refined);
+    }
+
+    @media (max-width: 768px) {
+        .horizontal-filter-strip {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 12px;
+            padding: 15px;
+        }
+        .filter-node-box {
+            min-width: 100%;
+        }
+        .banner-text-core h1 { font-size: 1.8rem; }
+    }
+</style>
+
+<div class="hero-banner-wrapper">
+    <div class="clean-luxury-banner">
+        <div class="banner-text-core">
+            <h1>Hajj Packages 2026</h1>
+            <p>Compare verified premium operators and secure your sacred journey.</p>
+        </div>
+    </div>
+</div>
+
+<div class="portal-workspace">
+    
+    <div class="horizontal-filter-strip">
+        <div class="filter-node-box">
+            <label>Travel Operator</label>
+            <select id="operatorSelect" class="premium-custom-select">
+                <option value="All">All Operators</option>
+                <option value="Al-Faisal Travels">Al-Faisal Travels</option>
+                <option value="Haramain Tours">Haramain Tours</option>
+                <option value="Nusrat Hajj Group">Nusrat Hajj Group</option>
+            </select>
+        </div>
+
+        <div class="filter-node-box">
+            <label>Price Range</label>
+            <select id="priceSelect" class="premium-custom-select">
+                <option selected value="All">All Pricing Levels</option>
+                <option value="Under 300000">Under PKR 300,000</option>
+                <option value="300000 - 1000000">PKR 300,000 - PKR 1,000,000</option>
+                <option value="Above 1000000">Above PKR 1,000,000</option>
+            </select>
+        </div>
+
+        <div class="filter-node-box">
+            <label>Package Tier</label>
+            <select id="tierSelect" class="premium-custom-select">
+                <option value="All">All Tiers</option>
+                <option value="economy">Economy</option>
+                <option value="standard">Standard</option>
+                <option value="vip">VIP</option>
+                <option value="luxury">Luxury</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="editorial-packages-grid">
+        {% for package in packages %}
+            <div class="luxury-editorial-card"
+                 data-operator="{% if package.agency.stakeholder_profile %}{{ package.agency.stakeholder_profile.agency_name }}{% else %}{{ package.agency.username }}{% endif %}"
+                 data-tier="{{ package.tier }}"
+                 data-price="{{ package.price }}">
+
+                <div class="card-media-window">
+                    <img src="{% if package.banner %}{{ package.banner.url }}{% else %}{% static 'img/kaaba.jpg' %}{% endif %}" alt="Showcase">
+                    
+                    <div class="media-floating-badges">
+                        <span class="agency-corporate-stamp">
+                            {% if package.agency.stakeholder_profile %}{{ package.agency.stakeholder_profile.agency_name }}{% else %}{{ package.agency.username }}{% endif %}
+                        </span>
+                        <span class="tier-badge-pill {{ package.tier }}">{{ package.get_tier_display }}</span>
+                    </div>
+                </div>
+
+                <div class="card-content-assembly">
+                    <h2>{{ package.name }}</h2>
+                    
+                    <div class="luxury-price-block">
+                        <span class="price-sub-label">Total Cost</span>
+                        <span class="price-value-string">PKR {{ package.price }}</span>
+                    </div>
+
+                    <ul class="amenities-metric-list">
+                        <li><i class="fa-regular fa-clock"></i> <span><strong>Duration:</strong> {{ package.duration_days }} Days</span></li>
+                        <li><i class="fa-solid fa-hotel"></i> <span><strong>Accommodation:</strong> Included</span></li>
+                        <li><i class="fa-solid fa-file-invoice-dollar"></i> <span><strong>Inclusions:</strong> 
+                            {% if package.visa %}Visa{% endif %}{% if package.ticket %} | Ticket{% endif %}{% if package.transport %} | Transport{% endif %}
+                        </span></li>
+                        <li><i class="fa-solid fa-circle-check"></i> <span><strong>Status:</strong> {{ package.seats_left }} Seats Left</span></li>
+                    </ul>
+
+                    <div class="action-button-matrix">
+                        <a href="" class="trigger-btn-base btn-outline-emerald">Details</a>
+                        <a href="{% url 'bookings:book_package' package.id %}" class="trigger-btn-base btn-filled-emerald">Book Now</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="empty-catalog-state">
+                <p>No active packages found matching your criteria.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    const operatorSelect = document.getElementById('operatorSelect');
+    const priceSelect = document.getElementById('priceSelect');
+    const tierSelect = document.getElementById('tierSelect');
+
+    function executeCatalogFilter() {
+        const cards = document.querySelectorAll('.luxury-editorial-card');
+        
+        let targetedOperator = operatorSelect.value.toLowerCase().trim();
+        let targetedPriceRange = priceSelect.value;
+        let targetedTier = tierSelect.value.toLowerCase();
+
+        cards.forEach(card => {
+            let match = true;
+            let datasetOperator = (card.dataset.operator || "").toLowerCase().trim();
+            let datasetPrice = parseFloat(card.dataset.price) || 0;
+            let datasetTier = (card.dataset.tier || "").toLowerCase();
+
+            if (targetedOperator !== "all" && !datasetOperator.includes(targetedOperator)) match = false;
+            if (targetedTier !== "all" && datasetTier !== targetedTier) match = false;
+
+            if (targetedPriceRange === "Under 300000" && datasetPrice >= 300000) match = false;
+            if (targetedPriceRange === "300000 - 1000000" && (datasetPrice < 300000 || datasetPrice > 1000000)) match = false;
+            if (targetedPriceRange === "Above 1000000" && datasetPrice <= 1000000) match = false;
+
+            card.style.display = match ? "flex" : "none";
+        });
+    }
+
+    operatorSelect.addEventListener("change", executeCatalogFilter);
+    priceSelect.addEventListener("change", executeCatalogFilter);
+    tierSelect.addEventListener("change", executeCatalogFilter);
+</script>
+{% endblock %}

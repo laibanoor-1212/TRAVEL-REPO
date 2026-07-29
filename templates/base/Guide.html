@@ -1,0 +1,236 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/guide.css' %}">
+<div class="guide-container">
+
+  <!-- Hero Section -->
+  <section class="hero-section1">
+    <div class="overlay"></div>
+    <div class="hero-text">
+      <h1>Umrah Guide</h1>
+      <p>Your step-by-step companion for performing Umrah with devotion and ease.<br>
+         Learn about every ritual, from Miqat to Halq & Taqseer, and fulfill your journey perfectly.</p>
+    </div>
+  </section>
+
+  <!-- Card Grid -->
+  <section class="card-grid">
+
+    <div class="guide-card">
+      <img src="{% static 'images/miqat.jpg' %}" alt="Miqat">
+      <div class="card-overlay">
+        <h3>Miqat</h3>
+        <div class="card-buttons">
+    <a href="{% url 'base:miqat' %}" class="explore-btn">Listen</a>
+    <a href="{% url 'base:miqat' %}" class="explore-btn">Read</a>
+</div>
+
+      </div>
+    </div>
+
+    <div class="guide-card">
+      <img src="{% static 'images/ihram.jpeg' %}" alt="Ihram">
+      <div class="card-overlay">
+        <h3>Ihram</h3>
+        <div class="card-buttons">
+        <a href="{% url 'base:ahram' %}" class="explore-btn">Listen</a>
+    <a href="{% url 'base:ahram' %}" class="explore-btn">Read</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="guide-card">
+      <img src="{% static 'images/tawaf3.jpeg' %}" alt="Tawaf">
+      <div class="card-overlay">
+        <h3>Tawaf</h3>
+        <div class="card-buttons">
+          <button class="btn-listen"> <a href="{% url 'base:tawaf' %}" class="explore-btn">Read</a></button>
+          <button class="btn-read">Listen</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="guide-card">
+      <img src="{% static 'images/umrah.jpeg' %}" alt="Sa’i">
+      <div class="card-overlay">
+        <h3>Sa’i</h3>
+        <div class="card-buttons">
+          <button class="btn-listen">Listen</button>
+          <button class="btn-read"><a href="{% url 'base:Sai' %}" class="explore-btn">Read</a></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="guide-card">
+      <img src="{% static 'images/umrah.png' %}" alt="Halq & Taqseer">
+      <div class="card-overlay">
+        <h3>Halq & Taqseer</h3>
+        <div class="card-buttons">
+          <button class="btn-listen">Listen</button>
+          <button class="btn-read"><a href="{% url 'base:halaq' %}">Read</a></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="guide-card">
+      <img src="{% static 'images/flights.png' %}" alt="Violations & Penalties">
+      <div class="card-overlay">
+        <h3>Violations & Penalties</h3>
+        <div class="card-buttons">
+          <button class="btn-listen">Listen</button>
+          <button class="btn-read">Read</button>
+        </div>
+      </div>
+    </div>
+
+  </section>
+</div>
+
+
+<footer class="footer-wrapper">
+ 
+  <div class="footer-top-curve">
+    <svg viewBox="0 0 1440 150" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      
+      <path fill="#ffff" d="M0,64 C360,160 1080,0 1440,96 L1440,0 L0,0 Z"></path>
+    </svg>
+  </div>
+
+
+  <div class="footer-content">
+    <div class="footer-columns">
+      <div>
+        <h3>About Safar-e-Haram</h3>
+        <p>Safar-e-Haram guides you on a blessed journey — helping pilgrims explore routes, maps, and essential Hajj & Umrah information in one place.</p>
+      </div>
+
+      <div>
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Guides</a></li>
+          <li><a href="#">Maps</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3>Support</h3>
+        <ul>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms & Conditions</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-social">
+      <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+      <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+      <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2025 Safar-e-Haram. All Rights Reserved.</p>
+    </div>
+  </div>
+</footer>
+
+{% endblock %}
+
+
+
+
+
+
+
+<!-- <section class="guide-hero">
+  
+  <div class="hero-text1">
+    <h1>About Guide</h1>
+     <h3 lang="ar" dir="rtl">رحلة مباركة إلى بيت الله.</h3>
+  <pre lang="en">"A blessed journey to the House of Allah."</pre>
+    <p>A complete step by step guide about the your hajj and umrah journey
+      with written details and also video links through you can listen all 
+      steps of ahram,tawaf,umrah ,hajj
+    </p>
+  </div>
+   <div class="about-image">
+    <img src="{% static '/images/labbaik.png' %}" alt="Kaaba">
+  </div>
+  <div class="custom-shape-divider-bottom">
+  <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+    <path d="M321.39,56.44C161.58,87.21,0,30,0,30V120H1200V0C1000,60,600,20,321.39,56.44Z" class="shape-fill"></path>
+  </svg>
+  </div>
+</section> -->
+
+<!-- ========== GUIDE SECTIONS ========== -->
+   <!-- <h2 class="slider-title">Explore Your Journey</h2>
+<section class="travel-slider-section">
+  <div class="container">
+
+    <div class="swiper mySwiper">
+      <div class="swiper-wrapper">
+
+        <!-- Slide 1 -->
+        <!-- <div class="swiper-slide">
+          <div class="travel-card">
+            <img src="{% static 'images/miqat.jpg' %}" alt="Miqat Places">
+            <div class="card-content">
+              <h3>Miqat Places</h3>
+              <p>Learn about sacred boundaries before Ihram.</p>
+              <a href="#" class="btn-view">View More</a>
+            </div>
+          </div>
+        </div> -->
+
+        <!-- Slide 2 -->
+        <!-- <div class="swiper-slide">
+          <div class="travel-card">
+            <img src="{% static 'images/ahram.jpg' %}" alt="Ahram Guide">
+            <div class="card-content">
+              <h3>Ahram Guide</h3>
+              <p>Rules and preparation for Ihram.</p>
+              <a href="#" class="btn-view"></a>
+            </div>
+          </div>
+        </div> -->
+
+        <!-- Slide 3 -->
+        <!-- <div class="swiper-slide">
+          <div class="travel-card">
+            <img src="{% static 'images/makkah.jpg' %}" alt="Umrah Guide">
+            <div class="card-content">
+              <h3>Umrah Guide</h3>
+              <p>Step-by-step Umrah rituals made simple.</p>
+              <a href="#" class="btn-view">Read</a>
+              <a href="#" class="btn-view">listen</a>
+            </div>
+          </div>
+        </div> -->
+
+        <!-- Slide 4 -->
+        <!-- <div class="swiper-slide">
+          <div class="travel-card">
+            <img src="{% static 'images/unnamed.jpg' %}" alt="Hajj Guide">
+            <div class="card-content">
+              <h3>Hajj Guide</h3>
+              <p>Detailed guidance for Hajj journey.</p>
+              <a href="#" class="btn-view">Read</a>
+              <a href="#" class="btn-view">Listen</a>
+            </div>
+          </div>
+        </div>
+      </div> -->
+
+      <!-- Arrows -->
+      <!-- <div class="swiper-button-next"></div>
+      <div class="swiper-button-prev"></div>
+    </div>
+  </div>
+</section> -->
+
+

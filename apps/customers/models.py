@@ -36,7 +36,7 @@ class CustomerProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name='customer_profile' )
     full_name = models.CharField(max_length=255)
     father_name = models.CharField(max_length=255)
-    date_of_birth = models.DateField()
+    date_of_birth = models.DateField(blank=True, null=True)
     gender = models.CharField( max_length=20,choices=GENDER_CHOICES)
     marital_status = models.CharField(max_length=20,choices=MARITAL_STATUS_CHOICES,blank=True,null=True)
     phone = models.CharField(max_length=20)

@@ -1,0 +1,123 @@
+{% extends 'customer/user_layout.html' %}
+{% load static %}
+
+{% block title %}Escrow Status - Safar-e-Haram{% endblock %}
+
+{% block content %}
+<div class="escrow-overview-page">
+    <div style="margin-bottom: 20px;">
+        <h2 style="color: #155c3b; font-weight: 600; margin: 0;">Escrow Status</h2>
+        <p style="color: #666; margin-top: 4px;">Track where every payment stands, from submission to release.</p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="escrow-card">
+        {% if payments %}
+        <div style="overflow-x: auto;">
+            <table class="escrow-table">
+                <thead>
+                    <tr>
+                        <th>Booking</th>
+                        <th>Package</th>
+                        <th>Amount</th>
+                        <th>Method</th>
+                        <th>Escrow Status</th>
+                        <th>Date</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in payments %}
+                    <tr>
+                        <td><strong>#{{ payment.booking.booking_id|default:payment.booking.id }}</strong></td>
+                        <td>{{ payment.booking.package.name }}</td>
+                        <td class="amount">PKR {{ payment.amount }}</td>
+                        <td>{{ payment.get_payment_method_display }}</td>
+                        <td>
+                            <span class="escrow-badge
+                                {% if payment.escrow_status == 'released' %}badge-released
+                                {% elif payment.escrow_status == 'held_in_escrow' %}badge-held
+                                {% elif payment.escrow_status in 'cancelled,refunded' %}badge-cancelled
+                                {% else %}badge-pending{% endif %}">
+                                {{ payment.get_escrow_status_display }}
+                            </span>
+                        </td>
+                        <td>{{ payment.created_at|date:"d M Y" }}</td>
+                        <td>
+                            <a href="{% url 'bookings:payment_status_view' payment.booking.id %}" class="btn-view-status">
+                                View
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 40px; color: #7f8c8d;">
+            <i class="fa-solid fa-shield-halved" style="font-size: 32px; color: #bdc3c7; margin-bottom: 12px;"></i>
+            <h3 style="font-size: 16px;">No payments yet</h3>
+            <p>Once you start paying for a booking, its escrow status will show up here.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .escrow-card {
+        background: #fff;
+        border: 1px solid #e3ece6;
+        border-radius: 14px;
+        padding: 8px;
+    }
+    .escrow-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .escrow-table th {
+        text-align: left;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #6c7d73;
+        padding: 14px 16px;
+        border-bottom: 1px solid #e3ece6;
+    }
+    .escrow-table td {
+        padding: 14px 16px;
+        border-bottom: 1px solid #f0f5f2;
+        font-size: 14px;
+    }
+    .escrow-table tr:last-child td { border-bottom: none; }
+    .amount { font-weight: 600; }
+
+    .escrow-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    .badge-held { background: #fff4e0; color: #8a5a00; }
+    .badge-released { background: #e6f4ea; color: #146c43; }
+    .badge-pending { background: #eef1f0; color: #5f6f68; }
+    .badge-cancelled { background: #fdecea; color: #c0392b; }
+
+    .btn-view-status {
+        display: inline-block;
+        background: #155c3b;
+        color: #fff;
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+    .btn-view-status:hover { background: #1f7a4f; color: #fff; }
+</style>
+{% endblock %}
