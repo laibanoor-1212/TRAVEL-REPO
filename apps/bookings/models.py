@@ -111,6 +111,8 @@ class Ticket(models.Model):
     ticket_file = models.FileField(upload_to='tickets/')
     notes = models.TextField(blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
-
+    customer_approved = models.BooleanField(default=False)
+    customer_approved_at = models.DateTimeField(blank=True, null=True)
+    customer_rejection_reason = models.TextField(blank=True, null=True)
     def __str__(self):
         return f"Ticket for Booking #{self.booking_id}"

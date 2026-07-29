@@ -17,3 +17,7 @@ def hajj_guide(request):
 
 def ziyarat(request):
     return render(request, 'base/about.html')
+def hajj_packages(request):
+    active_packages = Package.objects.filter(status='active').order_by('-created_at')
+    
+    return render(request, 'packages/hajjpackages.html', {'packages': active_packages})

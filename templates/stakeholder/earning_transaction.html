@@ -1,26 +1,28 @@
 {% extends 'stakeholder/dashboard_layout2.html' %}
 {% load static %}
 
-
 {% block content %}
 
 <link rel="stylesheet" href="{% static 'css/agent_earnings.css' %}">
 
 <div class="dashboard-wrapper">
+    <!-- Top Stats Bar -->
     <div class="grid">
         <div class="card">
-            <h3>Total Earnings</h3>
-            <h2>PKR 320,000</h2>
+            <h3>Total Released Earnings</h3>
+            <h2>PKR {{ total_earnings|floatformat:2 }}</h2>
         </div>
         <div class="card">
-            <h3>Commission Deducted</h3>
-            <h2>PKR 32,000</h2>
+            <h3>Commission Deducted (10%)</h3>
+            <h2>PKR {{ commission_deducted|floatformat:2 }}</h2>
         </div>
         <div class="card">
-            <h3>Net Payable</h3>
-            <h2>PKR 288,000</h2>
+            <h3>Net Payable to Agent</h3>
+            <h2>PKR {{ net_payable|floatformat:2 }}</h2>
         </div>
     </div>
+
+    <!-- Dynamic History Table -->
     <div class="card full">
         <h3>Transaction History</h3>
         <div class="table-wrapper">
@@ -34,63 +36,41 @@
                         <th>Commission %</th>
                         <th>Commission Cut</th>
                         <th>Agent Earning</th>
-                        <th>Payment Status</th>
+                        <th>Escrow Status</th>
                     </tr>
                 </thead>
 
                 <tbody>
-
+                    {% for payment in payments %}
                     <tr>
-                        <td>TRV-001</td>
-                        <td>Ahmed Khan</td>
-                        <td>VIP Hajj</td>
-                        <td>450000</td>
+                        <td>{{ payment.booking.booking_id }}</td>
+                        <td>{{ payment.booking.user.get_full_name|default:payment.booking.user.username }}</td>
+                        <td>{{ payment.booking.package.title }}</td>
+                        <td>PKR {{ payment.amount|floatformat:0 }}</td>
                         <td>10%</td>
-                        <td>45000</td>
-                        <td>405000</td>
-                        <td><span class="paid">Paid</span></td>
+                        <td>PKR {{ payment.amount|default:0|pluralize }}</td> <!-- Replace with calculation if needed -->
+                        <td>PKR {{ payment.amount|floatformat:0 }}</td>
+                        <td>
+                            {% if payment.escrow_status == 'RELEASED' %}
+                                <span class="paid">Released</span>
+                            {% elif payment.escrow_status == 'HELD_IN_ESCROW' %}
+                                <span class="pending">Held in Escrow</span>
+                            {% else %}
+                                <span class="failed">{{ payment.get_escrow_status_display }}</span>
+                            {% endif %}
+                        </td>
                     </tr>
-
+                    {% empty %}
                     <tr>
-                        <td>TRV-002</td>
-                        <td>Sara Ali</td>
-                        <td>Economy Umrah</td>
-                        <td>120000</td>
-                        <td>8%</td>
-                        <td>9600</td>
-                        <td>110400</td>
-                        <td><span class="pending">Pending</span></td>
+                        <td colspan="8" style="text-align: center; padding: 20px;">
+                            Koi payment records nahi mile.
+                        </td>
                     </tr>
-
-                    <tr>
-                        <td>TRV-003</td>
-                        <td>Khalid Raza</td>
-                        <td>Deluxe Umrah</td>
-                        <td>185000</td>
-                        <td>12%</td>
-                        <td>22200</td>
-                        <td>162800</td>
-                        <td><span class="paid">Paid</span></td>
-                    </tr>
-
-                    <tr>
-                        <td>TRV-004</td>
-                        <td>Usman Ali</td>
-                        <td>VIP Umrah</td>
-                        <td>250000</td>
-                        <td>10%</td>
-                        <td>25000</td>
-                        <td>225000</td>
-                        <td><span class="failed">Failed</span></td>
-                    </tr>
-
+                    {% endfor %}
                 </tbody>
-
             </table>
         </div>
-
     </div>
-
 </div>
 
 {% endblock %}

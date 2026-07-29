@@ -1,10 +1,15 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from bookings.models import Bookings  
+ 
 from .models import CustomerProfile
 from adminpanel.models import Complaint
 from payments.models import Payment
-from bookings.models import Ticket 
+from bookings.models import Bookings,Ticket 
+from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib import messages
+from django.utils import timezone
+from payments import services
+
 
 @login_required(login_url='/auth/login/')
 def user_profile_view(request):
@@ -160,13 +165,45 @@ def escrow_status_overview(request):
     context = {'payments': payments}
     return render(request, 'customer/customer_escrow_status.html', context)
 
-
-@login_required
+@login_required(login_url='/auth/login/')
 def user_ticket(request):
-    tickets = (
-        Ticket.objects
-        .filter(booking__user=request.user)
-        .select_related('booking', 'booking__package', 'agent')
-        .order_by('-uploaded_at')
+    bookings = (
+        Bookings.objects.filter(user=request.user, ticket__isnull=False)
+        .select_related('package', 'ticket')
+        .order_by('-id')
     )
-    return render(request, 'customer/user_ticket.html', {'tickets': tickets})
+    return render(request, 'customer/user_ticket.html', {'bookings': bookings})
+
+def approve_ticket(request, booking_id):
+    if request.method == "POST":
+        # Customer ke user account ke mutabiq booking get karein
+        booking = get_object_or_404(Bookings, id=booking_id, user=request.user)
+        
+        try:
+            # Booking se linked ticket ko direct target karein
+            ticket = booking.ticket  # Yeh OneToOneField ki wajah se milega
+            ticket.customer_approved = True
+            ticket.customer_approved_at = timezone.now()
+            ticket.customer_rejection_reason = None  # Purani rejection clear karne ke liye
+            ticket.save()
+            messages.success(request, "Ticket successfully approved!")
+        except Ticket.DoesNotExist:
+            messages.error(request, "Is booking ke liye abhi koi ticket upload nahi kiya gaya.")
+            
+        return redirect('customers:user_ticket')  # Apne tickets page ka sahi url name dein
+
+def reject_ticket_view(request, booking_id):
+    if request.method == "POST":
+        booking = get_object_or_404(Bookings, id=booking_id, user=request.user)
+        reason = request.POST.get('reason')
+        
+        try:
+            ticket = booking.ticket
+            ticket.customer_approved = False
+            ticket.customer_rejection_reason = reason
+            ticket.save()
+            messages.success(request, "Ticket rejection status updated.")
+        except Ticket.DoesNotExist:
+            messages.error(request, "Ticket record nahi mila.")
+            
+        return redirect('customers:user_ticket')

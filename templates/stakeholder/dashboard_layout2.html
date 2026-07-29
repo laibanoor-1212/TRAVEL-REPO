@@ -209,7 +209,8 @@
         <i class="fas fa-calendar-check"></i> Manage Bookings
       </a>
 
-      <a href="{% url 'stakeholder:earning_transaction' %}" class="{% if request.resolver_match.url_name == 'earning_transaction' %}active{% endif %}">
+     
+<a href="{% url 'stakeholder:earning_transaction' %}" class="{% if request.resolver_match.url_name == 'earning_transaction' %}active{% endif %}">
         <i class="fas fa-wallet"></i> My Earnings
       </a>
       <a href="{% url 'stakeholder:payments' %}" class="{% if request.resolver_match.url_name == 'payments' %}active{% endif %}">

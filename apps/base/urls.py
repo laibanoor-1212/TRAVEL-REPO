@@ -11,3 +11,5 @@ urlpatterns = [
     path('hajj-guide/', views.hajj_guide, name='hajj-guide'),
     path('ziyarat/', views.ziyarat, name='ziyarat'),
 ]
+    path('hajj_packages/', views.hajj_packages, name='hajj_packages'),
+]

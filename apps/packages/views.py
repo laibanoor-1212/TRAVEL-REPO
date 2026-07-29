@@ -5,9 +5,10 @@ from .models import Package,PackageType
 from django.shortcuts import redirect, get_object_or_404
 
 def create_packages(request):
+    package_types = PackageType.objects.all()
 
     if request.method == "POST":
-        form = PackageForm(request.POST)
+        form = PackageForm(request.POST, request.FILES) 
 
         if form.is_valid():
             form.save()
@@ -25,7 +26,10 @@ def create_packages(request):
     return render(
         request,
         'stakeholder/create_packages.html',
-        {'form': form}
+        {
+            'form': form,
+            'package_types': package_types 
+        }
     )
 def update_package(request, pk):
     package = get_object_or_404(Package, pk=pk)
@@ -108,10 +112,7 @@ def manage_packages(request):
         }
     )
 def packages_detail(request, package_id):
-       
-   
     package = get_object_or_404(Package, id=package_id)
-    
     context = {
         'package': package,
     }

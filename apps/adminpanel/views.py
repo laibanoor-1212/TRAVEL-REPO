@@ -9,12 +9,13 @@ from django.core.mail import send_mail
 from stakeholder.models import AgentKYC
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from packages.models import Package
+from packages.models import Package,PackageType
 from customers.models import CustomerProfile 
 from bookings.models import Bookings, BookingStatusHistory
 from django.contrib.auth.decorators import user_passes_test
 from notifications.models import Notification
 from .models import Complaint
+from payments.models import CommissionSetting
 from payments.models import Payment, PaymentProof, PaymentStatusLog
 from payments import services
 User = get_user_model()
@@ -122,11 +123,8 @@ def admin_reset_password_confirm(request, uidb64, token):
 
 
 def admin_dashboard(request):
-  
     notifications = request.user.notifications.filter(is_deleted=False)[:10]
     unread_count = request.user.notifications.filter(is_read=False, is_deleted=False).count()
-
-    # 2. Admin panel ke main center area (feed) me saari activities dikhane ke liye
     recent_activities = Notification.objects.filter(
         recipient=request.user, 
         is_deleted=False
@@ -185,7 +183,7 @@ def review_agent(request, pk):
 
         if action == 'approve':
             profile.kyc_status = 'approved'
-            profile.rejected_fields = ""  # Clear fields on approval
+            profile.rejected_fields = "" 
             messages.success(request, "KYC approved successfully.")
         
         elif action == 'reject':
@@ -194,9 +192,7 @@ def review_agent(request, pk):
             
         elif action == 'rollback':
             profile.kyc_status = 'rollback'
-            # Checkboxes se selected fields ki list lein
             selected_fields = request.POST.getlist('reject_fields_list')
-            # Comma-separated string bana kar save karein (e.g., "agency_name,ntn_doc")
             profile.rejected_fields = ",".join(selected_fields)
             messages.warning(request, "KYC status set to rollback with selected fields.")
 
@@ -213,13 +209,8 @@ def is_platform_admin(user):
 
 @user_passes_test(is_platform_admin)
 def admin_packages(request):
-    # 'is_active' ki jagah 'status' field use kar rahe hain
-    # Agar aap active status ke liye 'approved' use karti hain to 'active' ko change kar lein
     active_packages = Package.objects.filter(status='active').order_by('-id')
-    
-    # Blocked packages ke liye status='blocked' filter karenge
     blocked_packages = Package.objects.filter(status='blocked').order_by('-id')
-    
     context = {
         'active_packages': active_packages,
         'blocked_packages': blocked_packages,
@@ -229,7 +220,6 @@ def admin_packages(request):
 
 @user_passes_test(is_platform_admin)
 def block_package(request, pkg_id):
-    """Package ko block karne ke liye"""
     package = get_object_or_404(Package, id=pkg_id)
     package.status = 'blocked'
     package.save()
@@ -239,7 +229,7 @@ def block_package(request, pkg_id):
 
 @user_passes_test(is_platform_admin)
 def unblock_package(request, pkg_id):
-    """Blocked package ko dobara active karne ke liye"""
+    
     package = get_object_or_404(Package, id=pkg_id)
     package.status = 'active'
     package.save()
@@ -346,19 +336,8 @@ def admin_complaints(request):
         return redirect('adminpanel:admin_complaints')
     complaints = Complaint.objects.all().order_by('-created_at')
     return render(request, 'adminpanel/admin_complaint.html', {'complaints': complaints})
-
-
-
-
-
 def _is_admin(user):
     return user.is_authenticated and user.is_staff
-
-
-
-
-
-
 def admin_payments_list(request):
     payments = Payment.objects.select_related('booking', 'customer', 'agent').order_by('-created_at')
 
@@ -377,12 +356,6 @@ def admin_payments_list(request):
     }
     return render(request, 'adminpanel/payment_list.html', context)
 
-
-# ---------------------------------------------------------------------
-# 2. Payment detail — proofs, escrow status, audit trail sab yahan
-# ---------------------------------------------------------------------
-
-
 def admin_payment_detail(request, payment_id):
     payment = get_object_or_404(
         Payment.objects.select_related('booking', 'customer', 'agent'), pk=payment_id
@@ -396,12 +369,6 @@ def admin_payment_detail(request, payment_id):
         'status_logs': status_logs,
     }
     return render(request, 'adminpanel/payment_detail.html', context)
-
-
-# ---------------------------------------------------------------------
-# 3. Raast proof verify / reject
-# ---------------------------------------------------------------------
-
 def admin_verify_proof(request, proof_id):
     proof = get_object_or_404(PaymentProof, pk=proof_id)
 
@@ -429,10 +396,6 @@ def admin_reject_proof(request, proof_id):
     return redirect('adminpanel:payment_detail', payment_id=proof.payment_id)
 
 
-# ---------------------------------------------------------------------
-# 4. Release Payment — sabse critical action
-# ---------------------------------------------------------------------
-
 def admin_release_payment(request, payment_id):
     payment = get_object_or_404(Payment, pk=payment_id)
 
@@ -445,11 +408,6 @@ def admin_release_payment(request, payment_id):
             messages.error(request, f"Payment release nahi hui: {e}")
 
     return redirect('adminpanel:payment_detail', payment_id=payment.id)
-
-
-# ---------------------------------------------------------------------
-# 5. Cancel / Refund (optional actions)
-# ---------------------------------------------------------------------
 
 @login_required(login_url='/auth/login/')
 @user_passes_test(_is_admin, login_url='/auth/login/')
@@ -479,3 +437,49 @@ def admin_refund_payment(request, payment_id):
             messages.error(request, f"Refund nahi hua: {e}")
 
     return redirect('adminpanel:payment_detail', payment_id=payment.id)
+
+
+
+def add_package_type(request):
+    if request.method == "POST":
+        name = request.POST.get('name', '').strip()
+        description = request.POST.get('description', '').strip()
+
+        if name:
+            pkg_type, created = PackageType.objects.get_or_create(
+                name=name,
+                defaults={'description': description}
+            )
+            if created:
+                messages.success(request, f"Package Type '{name}' add successfully")
+            else:
+                messages.warning(request, f"Package Type '{name}' is already available")
+            return redirect('adminpanel:add_package_type') 
+        else:
+            messages.error(request, "Package Type ka naam likhna zaroori hai.")
+    package_types = PackageType.objects.all().order_by('-id')
+    return render(request, 'adminpanel/package_type.html', {'package_types': package_types})
+
+def delete_package_type(request, pk):
+    package_type = get_object_or_404(PackageType, pk=pk)
+    type_name = package_type.name
+    package_type.delete()
+    messages.success(request, f"Package Type '{type_name}' successfully delete ho gaya hai.")
+    return redirect('adminpanel:add_package_type')
+
+
+
+def set_commission(request):
+    commission_setting, created = CommissionSetting.objects.get_or_create(id=1)
+
+    if request.method == "POST":
+        rate = request.POST.get('commission_percentage')
+        if rate:
+            commission_setting.commission_percentage = rate
+            commission_setting.save()
+            messages.success(request, f"Admin commission updated successfully to {rate}%!")
+            return redirect('adminpanel:set_commission')
+
+    return render(request, 'adminpanel/set_commision.html', {
+        'commission_setting': commission_setting
+    })

@@ -1,153 +1,314 @@
 {% extends 'customer/user_layout.html' %}
-{% load static %}
-
-{% block title %}Tickets & Visa - Safar-e-Haram{% endblock %}
 
 {% block content %}
-<div class="tickets-page">
-    <div style="margin-bottom: 20px;">
-        <h2 style="color: #155c3b; font-weight: 600; margin: 0;">Tickets & Visa</h2>
-        <p style="color: #666; margin-top: 4px;">Confirmed tickets uploaded by your travel agent.</p>
-    </div>
-
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
-
-    {% if tickets %}
-    <div class="ticket-grid">
-        {% for ticket in tickets %}
-        <div class="ticket-card">
-            <div class="ticket-card-header">
-                <div>
-                    <span class="ticket-eyebrow">Booking #{{ ticket.booking.booking_id|default:ticket.booking.id }}</span>
-                    <h4>{{ ticket.booking.package.name }}</h4>
-                </div>
-                {% if ticket.booking.customer_approved %}
-                    <span class="ticket-status badge-approved"><i class="fa-solid fa-circle-check"></i> Approved</span>
-                {% else %}
-                    <span class="ticket-status badge-pending"><i class="fa-solid fa-hourglass-half"></i> Awaiting your review</span>
-                {% endif %}
-            </div>
-
-            <div class="ticket-card-body">
-                <p class="ticket-meta">Uploaded by {{ ticket.agent.get_full_name|default:ticket.agent.username }} on {{ ticket.uploaded_at|date:"d M Y" }}</p>
-                {% if ticket.notes %}
-                    <p class="ticket-notes">{{ ticket.notes }}</p>
-                {% endif %}
-
-                <div class="ticket-actions">
-                    <a href="{{ ticket.ticket_file.url }}" target="_blank" class="btn-outline-ticket">
-                        <i class="fa-solid fa-file-arrow-down"></i> View Ticket
-                    </a>
-
-                    {% if not ticket.booking.customer_approved %}
-                    <form method="post" action="" style="display:inline;">
-                        {% csrf_token %}
-                        <button type="submit" class="btn-approve-ticket"
-                            onclick="return confirm('Confirm this ticket is correct? Approving allows the admin to release payment to your agent.');">
-                            <i class="fa-solid fa-check"></i> Approve
-                        </button>
-                    </form>
-                    {% endif %}
-
-                    <a href="{% url 'bookings:payment_status_view' ticket.booking.id %}" class="btn-link-ticket">
-                        View full status →
-                    </a>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-    {% else %}
-    <div class="tickets-empty">
-        <i class="fa-solid fa-ticket"></i>
-        <h3>No tickets yet</h3>
-        <p>Once your agent uploads a confirmed ticket, it'll appear here for you to review and approve.</p>
-    </div>
-    {% endif %}
-</div>
-
 <style>
-    .ticket-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-        gap: 18px;
+    .sh-container {
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        padding: 24px;
+        background-color: #f8fafc;
+        min-height: 100vh;
     }
-    .ticket-card {
-        background: #fff;
-        border: 1px solid #e3ece6;
+    .sh-header {
+        margin-bottom: 28px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    .sh-title {
+        font-size: 26px;
+        color: #0f2d1e;
+        font-weight: 800;
+        margin: 0 0 4px 0;
+    }
+    .sh-subtitle {
+        color: #64748b;
+        font-size: 14px;
+        margin: 0;
+    }
+    .sh-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+        gap: 20px;
+    }
+    @media (max-width: 480px) {
+        .sh-grid { grid-template-columns: 1fr; }
+    }
+    .sh-card {
+        background: #ffffff;
         border-radius: 14px;
+        border: 1px solid #e2e8f0;
+        border-top: 4px solid #0f5132;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .sh-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    }
+    .sh-card-body {
         padding: 20px;
     }
-    .ticket-card-header {
+    .sh-card-top {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        gap: 10px;
-        margin-bottom: 14px;
+        gap: 12px;
     }
-    .ticket-eyebrow {
+    .sh-id-badge {
         font-size: 11px;
+        font-weight: 700;
+        color: #475569;
+        background: #f1f5f9;
+        padding: 3px 8px;
+        border-radius: 4px;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: #6c7d73;
     }
-    .ticket-card-header h4 {
-        margin: 2px 0 0;
+    .sh-pkg-title {
         font-size: 16px;
-        color: #1f2f25;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 8px 0 0 0;
     }
-    .ticket-status {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 12px;
-        font-weight: 600;
+    .sh-status {
+        font-size: 11px;
+        font-weight: 700;
         padding: 4px 10px;
-        border-radius: 999px;
+        border-radius: 20px;
         white-space: nowrap;
     }
-    .badge-approved { background: #e6f4ea; color: #146c43; }
-    .badge-pending { background: #fff4e0; color: #8a5a00; }
+    .sh-status-pending { background: #fef3c7; color: #d97706; }
+    .sh-status-approved { background: #dcfce7; color: #15803d; }
+    .sh-status-rejected { background: #fee2e2; color: #b91c1c; }
 
-    .ticket-meta { font-size: 13px; color: #6c7d73; margin: 0 0 8px; }
-    .ticket-notes { font-size: 13px; color: #444; background: #f6f9f7; padding: 10px 12px; border-radius: 8px; margin-bottom: 14px; }
-
-    .ticket-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 10px; }
-
-    .btn-outline-ticket {
-        display: inline-flex; align-items: center; gap: 6px;
-        border: 1px solid #155c3b; color: #155c3b;
-        padding: 8px 14px; border-radius: 8px;
-        font-size: 13px; font-weight: 600; text-decoration: none;
+    .sh-doc-section {
+        background: #f4f9f6;
+        border-radius: 8px;
+        padding: 12px 14px;
+        margin-top: 16px;
+        border-left: 3px solid #198754;
     }
-    .btn-outline-ticket:hover { background: #e6f4ea; color: #155c3b; }
-
-    .btn-approve-ticket {
-        display: inline-flex; align-items: center; gap: 6px;
-        background: #155c3b; color: #fff; border: none;
-        padding: 9px 14px; border-radius: 8px;
-        font-size: 13px; font-weight: 600; cursor: pointer;
+    .sh-doc-title {
+        font-size: 12px;
+        font-weight: 700;
+        color: #14532d;
+        margin: 0 0 10px 0;
     }
-    .btn-approve-ticket:hover { background: #1f7a4f; }
-
-    .btn-link-ticket {
-        font-size: 13px; color: #6c7d73; text-decoration: underline;
-        margin-left: auto;
+    .sh-btn-flex {
+        display: flex;
+        gap: 8px;
     }
-
-    .tickets-empty {
-        background: #fff;
-        border: 1px solid #e3ece6;
-        border-radius: 14px;
+    .sh-btn-doc {
+        flex: 1;
         text-align: center;
-        padding: 48px 20px;
-        color: #7f8c8d;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 8px;
+        border-radius: 6px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
     }
-    .tickets-empty i { font-size: 32px; color: #bdc3c7; margin-bottom: 12px; display: block; }
-    .tickets-empty h3 { font-size: 16px; color: #444; margin-bottom: 4px; }
+    .sh-btn-doc-main { background: #0f5132; color: #ffffff; }
+    .sh-btn-doc-main:hover { background: #146c43; }
+    .sh-btn-doc-side { background: #ffffff; color: #0f5132; border: 1px solid #c2e0d1; }
+    .sh-btn-doc-side:hover { background: #eef7f2; }
+
+    .sh-rejection-alert {
+        background: #fff5f5;
+        border: 1px solid #fecaca;
+        color: #991b1b;
+        padding: 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        margin-top: 12px;
+    }
+
+    .sh-card-footer {
+        background: #f8fafc;
+        padding: 12px 20px;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+    .sh-btn-action-reject {
+        background: transparent;
+        border: 1px solid #cbd5e1;
+        color: #64748b;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+    .sh-btn-action-reject:hover { border-color: #fca5a5; color: #ef4444; background: #fff5f5; }
+    
+    .sh-btn-action-approve {
+        background: #0f5132;
+        border: none;
+        color: white;
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+    .sh-btn-action-approve:hover { background: #146c43; }
+
+    .sh-inline-box {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 12px;
+        margin-top: 12px;
+    }
+    .sh-inline-box textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        font-size: 12px;
+        resize: none;
+        box-sizing: border-box;
+    }
+    .sh-inline-box textarea:focus { outline: none; border-color: #0f5132; }
+    .sh-inline-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 6px;
+        margin-top: 8px;
+    }
 </style>
+
+<div class="sh-container">
+
+    <!-- Header Section -->
+    <div class="sh-header">
+        <h1 class="sh-title">My Tickets & Visa Documents</h1>
+        <p class="sh-subtitle">Review your uploaded travel documents and verify their current status.</p>
+    </div>
+
+    <!-- Django Notification Messages -->
+    {% if messages %}
+        <div style="margin-bottom: 20px;">
+            {% for message in messages %}
+                <div style="padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-bottom: 8px; 
+                     {% if message.tags == 'success' %} background-color: #dcfce7; color: #15803d; {% else %} background-color: #fef3c7; color: #92400e; {% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Main Content Grid -->
+    {% if bookings %}
+        <div class="sh-grid">
+            {% for booking in bookings %}
+                <div class="sh-card">
+
+                    <div class="sh-card-body">
+                        <div class="sh-card-top">
+                            <div>
+                                <span class="sh-id-badge">{{ booking.booking_id }}</span>
+                                <h3 class="sh-pkg-title">{{ booking.package.title }}</h3>
+                            </div>
+
+                            <div>
+                                {% if booking.ticket.customer_approved %}
+                                    <span class="sh-status sh-status-approved">Approved</span>
+                                {% elif booking.ticket.customer_rejection_reason %}
+                                    <span class="sh-status sh-status-rejected">Rejected</span>
+                                {% else %}
+                                    <span class="sh-status sh-status-pending">Pending Review</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Document Download Section -->
+                        <div class="sh-doc-section">
+                            <p class="sh-doc-title">📄 Agent Documents</p>
+                            <div class="sh-btn-flex">
+                                {% if booking.ticket.ticket_file %}
+                                    <a href="{{ booking.ticket.ticket_file.url }}" target="_blank" class="sh-btn-doc sh-btn-doc-main">
+                                        👁️ View Ticket
+                                    </a>
+                                {% endif %}
+
+                                {% if booking.ticket.visa_file %}
+                                    <a href="{{ booking.ticket.visa_file.url }}" target="_blank" class="sh-btn-doc sh-btn-doc-side">
+                                        👁️ Visa Doc
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Rejection Alerts -->
+                        {% if booking.ticket.customer_rejection_reason %}
+                            <div class="sh-rejection-alert">
+                                <strong>Rejection Reason:</strong> {{ booking.ticket.customer_rejection_reason }}
+                            </div>
+                        {% endif %}
+
+                        <!-- INLINE REJECT BOX -->
+                        <div id="rejectBox-{{ booking.id }}" class="sh-inline-box" style="display: none;">
+                            <form method="POST" action="{% url 'customers:reject_ticket' booking.id %}" style="margin: 0;">
+                                {% csrf_token %}
+                                <label style="display: block; font-size: 11px; font-weight: bold; margin-bottom: 5px; color: #475569;">Specify Reason *</label>
+                                <textarea name="reason" rows="3" required placeholder="Example: Incorrect name spelling, wrong travel dates, etc..."></textarea>
+                                <div class="sh-inline-actions">
+                                    <button type="button" class="sh-btn-action-reject" style="padding: 4px 10px;" onclick="toggleRejectBox('{{ booking.id }}')">Cancel</button>
+                                    <button type="submit" class="sh-btn-action-approve" style="padding: 4px 10px; background: #dc2626;">Submit Rejection</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Footer Action Forms -->
+                    <div class="sh-card-footer">
+                        {% if not booking.ticket.customer_approved %}
+                            <button type="button" class="sh-btn-action-reject" onclick="toggleRejectBox('{{ booking.id }}')">
+                                Reject
+                            </button>
+
+                            <form action="{% url 'customers:approve_ticket' booking.id %}" method="POST" onsubmit="return confirm('Are you sure you want to approve this ticket document?');" style="margin: 0;">
+                                {% csrf_token %}
+                                <button type="submit" class="sh-btn-action-approve">
+                                    Approve & Verify
+                                </button>
+                            </form>
+                        {% else %}
+                            <span style="color: #15803d; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
+                                ✓ Verified on {{ booking.ticket.customer_approved_at|date:"d M, Y" }}
+                            </span>
+                        {% endif %}
+                    </div>
+
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <!-- Empty State -->
+        <div style="background: white; border: 2px dashed #cbd5e1; padding: 40px; text-align: center; border-radius: 12px; max-w: 450px; margin: 40px auto;">
+            <div style="font-size: 36px; margin-bottom: 10px;">🎫</div>
+            <h3 style="margin: 0 0 6px 0; color: #0f5132; font-size: 18px;">No Travel Documents Found</h3>
+            <p style="margin: 0; color: #64748b; font-size: 13px;">Once your agent uploads your ticket or visa copies, they will instantly appear here.</p>
+        </div>
+    {% endif %}
+
+</div>
+
+<script>
+    function toggleRejectBox(bookingId) {
+        const rejectBox = document.getElementById(`rejectBox-${bookingId}`);
+        if (rejectBox.style.display === 'none') {
+            rejectBox.style.display = 'block';
+        } else {
+            rejectBox.style.display = 'none';
+        }
+    }
+</script>
 {% endblock %}

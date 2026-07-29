@@ -49,7 +49,7 @@
                         </td>
                         <td>{{ payment.created_at|date:"d M Y" }}</td>
                         <td>
-                            <a href="{% url 'bookings:payment_status_view' payment.booking.id %}" class="btn-view-status">
+                            <a href="{% url 'bookings:payment_status' payment.booking.id %}" class="btn-view-status">
                                 View
                             </a>
                         </td>

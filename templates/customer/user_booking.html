@@ -54,7 +54,7 @@
               {% if not booking.payment %}
               <a href="{% url 'bookings:choose_payment_method' booking.id %}" class="btn-action btn-primary">Pay Now</a>
               {% else %}
-              <a href="{% url 'bookings:payment_status_view' booking.id %}" class="btn-action btn-primary">Track Payment</a>
+              <a href="{% url 'bookings:payment_status' booking.id %}" class="btn-action btn-primary">Track Payment</a>
               {% endif %}
 
               <button class="btn-action btn-extend" onclick="openModal('extendModal-{{ booking.slug }}')">

@@ -301,6 +301,10 @@
       <i class="bi bi-briefcase"></i>
       <span class="nav-text">Packages</span>
     </a>
+     <a href="{% url 'adminpanel:add_package_type' %}" class="nav-link">
+      <i class="fas fa-tags"></i>
+      <span class="nav-text">Packages Type</span>
+    </a>
     <a href="{% url 'adminpanel:admin_bookings' %}" class="nav-link">
       <i class="bi bi-receipt"></i>
       <span class="nav-text">Bookings</span>
@@ -309,7 +313,7 @@
       <i class="bi bi-shield-check"></i>
       <span class="nav-text">payments</span>
     </a>
-    <a href="" class="nav-link">
+    <a href="{% url 'adminpanel:set_commission'%}" class="nav-link">
       <i class="bi bi-cash-stack"></i>
       <span class="nav-text">Earnings and Commission</span>
     </a>
