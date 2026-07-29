@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.db import models
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator,MaxValueValidator
 
 class PaymentMethod(models.TextChoices):
     STRIPE = "stripe", "Stripe (Test Mode)"
@@ -114,27 +114,37 @@ class EscrowTransaction(models.Model):
 
     def __str__(self):
         return f"Escrow for Payment #{self.payment_id} — {self.status}"
-
-
-
-class PaymentRelease(models.Model):
-   
-    payment = models.OneToOneField(Payment, on_delete=models.CASCADE, related_name="release_record")
-
+class PaymentRelease(models.Model):   
+    payment = models.OneToOneField(
+        Payment, on_delete=models.CASCADE, related_name="release_record"
+    )
     released_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="release_actions",
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="release_actions",
         limit_choices_to={"is_staff": True},
     )
-    amount_released = models.DecimalField(max_digits=12, decimal_places=2)
-    release_notes = models.TextField(blank=True)
-
-    
+    total_amount = models.DecimalField(
+        max_digits=12, decimal_places=2, default=0.00
+    ) 
+    admin_commission_percentage = models.DecimalField(
+        max_digits=5, decimal_places=2, default=0.00
+    )  
+    admin_commission_amount = models.DecimalField(
+        max_digits=12, decimal_places=2, default=0.00
+    )
+    amount_released = models.DecimalField(
+        max_digits=12, decimal_places=2, default=0.00
+    ) 
+  
     raast_payout_reference = models.CharField(max_length=255, blank=True)
-
+    release_notes = models.TextField(blank=True)
     released_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Release for Payment #{self.payment_id} by {self.released_by}"
+        return f"Release #{self.id} for Payment #{self.payment_id} - Rs.{self.amount_released}"
+
+  
 
 
 
@@ -158,3 +168,23 @@ class PaymentStatusLog(models.Model):
 
     def __str__(self):
         return f"Payment #{self.payment_id}: {self.old_status} -> {self.new_status}"
+
+class CommissionSetting(models.Model):
+    commission_percentage = models.DecimalField(
+        max_length=5,
+        max_digits=5,
+        decimal_places=2,
+        default=10.00,  # Default 10% commission
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
+        help_text="Set default admin commission percentage (e.g. 10.00 for 10%)"
+    )
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Current Commission: {self.commission_percentage}%"
+
+    @classmethod
+    def get_commission_rate(cls):
+        """Helper method to get current active commission percentage"""
+        setting = cls.objects.first()
+        return setting.commission_percentage if setting else Decimal('10.00')

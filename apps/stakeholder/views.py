@@ -235,17 +235,17 @@ def manage_packages(request):
         }
     )
 
-@login_required(login_url='/auth/login/')
-def stakeholder_dashboard(request):
+# @login_required(login_url='/auth/login/')
+# def stakeholder_dashboard(request):
    
-    agent_bookings = Bookings.objects.filter(package__agency=request.user).order_by('-id')
-    date_requests = [] 
+#     agent_bookings = Bookings.objects.filter(package__agency=request.user).order_by('-id')
+#     date_requests = [] 
     
-    context = {
-        'bookings': agent_bookings,
-        'date_requests': date_requests,
-    }
-    return render(request, 'stakeholder/stakeholder_dashboard.html', context)
+#     context = {
+#         'bookings': agent_bookings,
+#         'date_requests': date_requests,
+#     }
+#     return render(request, 'stakeholder/stakeholder_dashboard.html', context)
 
 @login_required(login_url='/auth/login/')
 def stakeholder_dashboard(request):

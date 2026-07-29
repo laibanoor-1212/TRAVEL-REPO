@@ -27,4 +27,8 @@ urlpatterns = [
     path('payments/<int:payment_id>/release/', views.admin_release_payment, name='release_payment'),
     path('payments/<int:payment_id>/cancel/', views.admin_cancel_payment, name='cancel_payment'),
     path('payments/<int:payment_id>/refund/', views.admin_refund_payment, name='refund_payment'),
+    path('package-types/add/', views.add_package_type, name='add_package_type'),
+    path('package-types/delete/<int:pk>/', views.delete_package_type, name='delete_package_type'),
+    path('admin-dashboard/commission-setting/', views.set_commission, name='set_commission'),
+
 ]

@@ -1,0 +1,263 @@
+{% extends 'adminpanel/admin_layout.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    /* Green & White Theme Styles */
+    :root {
+        --primary-green: #059669;
+        --primary-hover: #047857;
+        --bg-light-green: #f0fdf4;
+        --text-dark: #0f172a;
+        --border-color: #e2e8f0;
+    }
+
+    .pkg-container {
+        padding: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+        font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    .page-header {
+        margin-bottom: 25px;
+    }
+
+    .page-header h2 {
+        color: var(--text-dark);
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    /* Add Form Box */
+    .add-card-box {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        border: 1px solid var(--border-color);
+        margin-bottom: 35px;
+    }
+
+    .add-card-box h3 {
+        margin-top: 0;
+        color: var(--primary-green);
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .full-width {
+        grid-column: span 2;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #334155;
+        font-size: 14px;
+    }
+
+    .form-group input, .form-group textarea {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 14px;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+
+    .form-group input:focus, .form-group textarea:focus {
+        border-color: var(--primary-green);
+        box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+    }
+
+    .btn-submit {
+        background: var(--primary-green);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .btn-submit:hover {
+        background: var(--primary-hover);
+    }
+
+    /* Package Cards Grid */
+    .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 25px;
+    }
+
+    .pkg-card {
+        background: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .pkg-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+    }
+
+    .pkg-card-img {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+        background: var(--bg-light-green);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-green);
+    }
+
+    .pkg-card-body {
+        padding: 20px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .pkg-card-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin: 0 0 8px 0;
+    }
+
+    .pkg-card-desc {
+        color: #64748b;
+        font-size: 13px;
+        line-height: 1.5;
+        margin-bottom: 20px;
+        flex: 1;
+    }
+
+    .pkg-card-actions {
+        display: flex;
+        justify-content: flex-end;
+        border-top: 1px solid var(--border-color);
+        padding-top: 12px;
+    }
+
+    .btn-delete {
+        color: #ef4444;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 6px;
+        transition: background 0.2s;
+    }
+
+    .btn-delete:hover {
+        background: #fef2f2;
+    }
+
+    .alert-msg {
+        padding: 12px 16px;
+        background: var(--bg-light-green);
+        color: var(--primary-green);
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-weight: 500;
+        border: 1px solid #bbf7d0;
+    }
+</style>
+
+<div class="pkg-container">
+    <div class="page-header">
+        <h2>Manage Package Types</h2>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert-msg">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- ADD NEW PACKAGE TYPE FORM -->
+    <div class="add-card-box">
+        <h3>+ Add New Package Type</h3>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Package Type Name *</label>
+                    <input type="text" name="name" placeholder="e.g. Umrah, Hajj, Ziyarat, Iran Ziyarat" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Type Image / Banner</label>
+                    <input type="file" name="image" accept="image/*">
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Description (Optional)</label>
+                    <textarea name="description" rows="2" placeholder="Briefly describe this package category..."></textarea>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px; text-align: right;">
+                <button type="submit" class="btn-submit">Save Package Type</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- PACKAGE TYPES CARDS LIST -->
+    <h3 style="color: var(--text-dark); margin-bottom: 20px;">All Package Types</h3>
+    
+    <div class="cards-grid">
+        {% for type in package_types %}
+            <div class="pkg-card">
+                {% if type.image %}
+                    <img src="{{ type.image.url }}" alt="{{ type.name }}" class="pkg-card-img">
+                {% else %}
+                    <div class="pkg-card-img">
+                        <i class="fas fa-kaaba fa-3x"></i> <!-- Fallback Icon -->
+                    </div>
+                {% endif %}
+
+                <div class="pkg-card-body">
+                    <h4 class="pkg-card-title">{{ type.name }}</h4>
+                    <p class="pkg-card-desc">
+                        {% if type.description %}
+                            {{ type.description }}
+                        {% else %}
+                            No description added for this package type.
+                        {% endif %}
+                    </p>
+
+                    <div class="pkg-card-actions">
+                        <a href="{% url 'adminpanel:delete_package_type' type.id %}" onclick="return confirm('Are you sure you want to delete this package type?')" class="btn-delete">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div style="grid-column: span 3; text-align: center; padding: 40px; background: white; border-radius: 12px; color: #64748b;">
+                <p>No package types added yet. Add your first package type above!</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

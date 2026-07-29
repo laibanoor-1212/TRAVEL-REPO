@@ -9,6 +9,7 @@ class PackageType(models.Model):
     slug = models.SlugField(unique=True, blank=True)
     description = models.TextField(blank=True)
     is_active = models.BooleanField(default=True)
+    image = models.ImageField(upload_to='package_types/', blank=True, null=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:

@@ -9,12 +9,13 @@ from django.core.mail import send_mail
 from stakeholder.models import AgentKYC
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from packages.models import Package
+from packages.models import Package,PackageType
 from customers.models import CustomerProfile 
 from bookings.models import Bookings, BookingStatusHistory
 from django.contrib.auth.decorators import user_passes_test
 from notifications.models import Notification
 from .models import Complaint
+from payments.models import CommissionSetting
 from payments.models import Payment, PaymentProof, PaymentStatusLog
 from payments import services
 User = get_user_model()
@@ -436,3 +437,49 @@ def admin_refund_payment(request, payment_id):
             messages.error(request, f"Refund nahi hua: {e}")
 
     return redirect('adminpanel:payment_detail', payment_id=payment.id)
+
+
+
+def add_package_type(request):
+    if request.method == "POST":
+        name = request.POST.get('name', '').strip()
+        description = request.POST.get('description', '').strip()
+
+        if name:
+            pkg_type, created = PackageType.objects.get_or_create(
+                name=name,
+                defaults={'description': description}
+            )
+            if created:
+                messages.success(request, f"Package Type '{name}' add successfully")
+            else:
+                messages.warning(request, f"Package Type '{name}' is already available")
+            return redirect('adminpanel:add_package_type') 
+        else:
+            messages.error(request, "Package Type ka naam likhna zaroori hai.")
+    package_types = PackageType.objects.all().order_by('-id')
+    return render(request, 'adminpanel/package_type.html', {'package_types': package_types})
+
+def delete_package_type(request, pk):
+    package_type = get_object_or_404(PackageType, pk=pk)
+    type_name = package_type.name
+    package_type.delete()
+    messages.success(request, f"Package Type '{type_name}' successfully delete ho gaya hai.")
+    return redirect('adminpanel:add_package_type')
+
+
+
+def set_commission(request):
+    commission_setting, created = CommissionSetting.objects.get_or_create(id=1)
+
+    if request.method == "POST":
+        rate = request.POST.get('commission_percentage')
+        if rate:
+            commission_setting.commission_percentage = rate
+            commission_setting.save()
+            messages.success(request, f"Admin commission updated successfully to {rate}%!")
+            return redirect('adminpanel:set_commission')
+
+    return render(request, 'adminpanel/set_commision.html', {
+        'commission_setting': commission_setting
+    })
