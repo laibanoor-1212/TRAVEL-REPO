@@ -1,0 +1,77 @@
+html {
+  font-family: 'Poppins', sans-serif;
+  }
+.header-pill {
+    background:#064e3b;/* green */
+    color:#fff;
+    padding:15px 30px;
+    font-size:20px;
+    font-weight:600;
+}
+
+
+.booking-area {
+    display:flex;
+    justify-content:center;
+    padding:40px 20px;
+}
+
+.booking-box {
+    width:700px;
+    background:#fff;
+    padding:30px;
+    border-radius:14px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+
+
+.booking-box h2, .method-box h3 {
+    color:#064e3b;
+    margin-bottom:15px;
+}
+
+.payment-methods label {
+    display:block;
+    padding:10px;
+    border:1px solid #064e3b;
+    border-radius:8px;
+    margin-bottom:10px;
+    cursor:pointer;
+}
+
+.method-box {
+    display:none;
+    margin-top:15px;
+}
+
+.method-box input {
+    width:100%;
+    padding:10px;
+    margin-bottom:10px;
+    border-radius:8px;
+    border:1px solid #064e3b;
+}
+
+
+.primary-btn {
+    width:100%;
+    margin-top:20px;
+    padding:14px;
+    background:#064e3b;
+    color:#fff;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.primary-btn:hover {
+    background:#064e3b;
+}
+
+
+.summary-box {
+    background:#f0fdf4; /* light greenish */
+    padding:20px;
+    border-radius:12px;
+}

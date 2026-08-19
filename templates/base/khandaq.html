@@ -1,0 +1,86 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/khandaq.css' %}">
+
+<div class="page-container">
+    <div class="breadcrumb">
+        <a href="/">Home</a> /
+        <a href="/ziyarat">Ziyarat</a> /
+        <span>Masjid al-Khandaq</span>
+    </div>
+
+    <div class="content-wrapper">
+        <main class="main-content">
+            <img src="{% static 'images/khandaq.png' %}">
+
+            <div class="title-box">
+                <h3>Masjid al-Khandaq</h3>
+            </div>
+
+            <p>
+                Masjid al-Khandaq is situated at the foot of Mount Sela in Madinah. It is a modern, large mosque built on the site where the Battle of the Trench (Ghazwat al-Khandaq) took place in the fifth year of Hijra.
+            </p>
+
+            <p>
+                The site is historically significant for the strategy suggested by Salman al-Farsi (RA), where a deep trench was dug to defend the city against an invading confederacy. This area originally housed several small mosques representing the command posts of the Prophet Muhammad ﷺ and his companions.
+            </p>
+
+            <p>
+                Today, the large central Masjid al-Khandaq accommodates thousands of worshippers. The surrounding area still preserves the essence of the historical battlefield, serving as a powerful reminder of the unity, strategy, and divine help granted to the early Muslims.
+            </p>
+
+            <div class="title-box">
+                <h4>Visiting Guidelines</h4>
+            </div>
+
+            <ul class="guidelines">
+                <li>Visit the site during the day to appreciate the geographical layout of the battlefield.</li>
+                <li>Perform your obligatory or voluntary prayers in the spacious main hall.</li>
+                <li>Observe the remaining smaller historical mosques nearby from a distance.</li>
+                <li>Reflect on the strategic patience and hardships faced during the siege of Madinah.</li>
+            </ul>
+
+            <div class="ziyarat-container">
+                <div class="title-box">
+                    HISTORICAL CONTEXT <br>
+                    <span>OF THE SEVEN MOSQUES</span>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-card">
+                        <h3>Strategy</h3>
+                        <span class="label">The Great Trench</span>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Victory</h3>
+                        <span class="label">End of the Siege</span>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Mount Sela</h3>
+                        <span class="label">Strategic Height</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="navigation-box">
+                <h2>Navigation</h2>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Hajj & Umrah Guide</a></li>
+                    <li><a href="#">Planning & Preparation</a></li>
+                    <li><a href="#">Umrah</a></li>
+                    <li><a href="#">Hajj</a></li>
+                    <li><a href="#">Madinah</a></li>
+                    <li><a href="#">Makkah</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock content %}

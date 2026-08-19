@@ -1,0 +1,247 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Tawaf Guide{% endblock %}
+
+{% block content %}
+
+
+<div class="ahram-hero">
+    <div class="text-section">
+        <div class="toggle-buttons">  
+            <span class="active">Overview</span>
+            <span>Step-by-step Guide</span>
+        </div>
+
+        <h1 class="main-title">Tawaf Guide</h1>
+        <p class="subtitle">Learn how to perform the sacred Tawaf around the Kaaba.</p>
+    </div>
+
+    <div class="image-collage">
+        <img src="{% static 'images/hajr-e-aswad.jpeg' %}" class="img1">
+        <img src="{% static 'images/tawaf5.jpeg' %}" class="img2">
+        <img src="{% static 'images/zamzamkhajoor.jpeg' %}" class="img3">
+    </div>
+</div>
+
+
+<div class="bottom-nav">
+    <div class="nav-box active" data-target="content-overview">
+        <i class="fa-solid fa-book"></i> Overview
+    </div>
+
+    <div class="nav-box" data-target="content-rules">
+        <i class="fa-solid fa-info-circle"></i> Rules of Tawaf
+    </div>
+
+    <div class="nav-box" data-target="content-steps">
+        <i class="fa-solid fa-arrows-spin"></i> How to Perform Tawaf
+    </div>
+
+    <div class="nav-box" data-target="content-duas">
+        <i class="fa-solid fa-mosque"></i> Duas & Dhikr
+    </div>
+
+    <div class="nav-box" data-target="content-violations">
+        <i class="fa-solid fa-triangle-exclamation"></i> Invalidating Tawaf
+    </div>
+</div>
+
+
+<div class="content-area">
+
+   
+    <div id="content-overview" class="content-section active">
+        <h2>What is Tawaf?</h2>
+        <p>
+            Tawaf is one of the most important rituals of Umrah and Hajj. 
+            It consists of walking around the Kaaba seven times, starting from the Black Stone (Hajr-e-Aswad).
+
+        </p>
+        <p class="arabic">
+
+             وَطَهِّرْ بَيْتِيَ لِلطَّائِفِينَ وَالْقَائِمِينَ وَالرُّكَّعِ السُّجُودِ
+        </p>
+<p><strong>Translation:</strong> "And purify My House for those who perform Tawaf, stand in prayer, bow and prostrate." (Surah Al-Baqarah 2:125)</p>
+        <img src="{% static 'images/kabbacircle.jpeg' %}" class="imgtawaf">
+
+      
+        <h3>1. Tawaf al-Umrah</h3>
+      <h4>What this Tawaf means</h4>
+
+        <p>This is the main Tawaf of Umrah. Without this, a person has not completed Umrah. 
+            It is performed immediately after entering Masjid al-Haram while in Ihram.
+        </p>
+
+        <h4>When it is done</h4>
+
+        <p>Right after entering Masjid al-Haram for Umrah.
+            Before performing Sai between Safa and Marwah.
+        </p>
+
+        <h4>How to perform it (simple step-by-step)</h4>
+
+       <li> Make intention in your heart: “I am performing Tawaf of Umrah for the sake of Allah.”</li>
+
+       <li>Start at the Black Stone (also where the green lights are).</li> 
+
+       <li> Raise your hand and say Bismillah, Allahu Akbar — point towards the Black Stone.</li>
+
+       <li> Walk counterclockwise around the Kaaba 7 circles.</li>
+
+        <li>Keep Kaaba on your left side always.</li>
+
+       <li> Men do raml (fast walk) in the first 3 rounds if possible.</li>
+
+      <li>  After the 7th round, move behind Maqam Ibrahim and pray 2 rak’ah.</li>
+       <li> Drink Zamzam.</li>
+
+      <li>  Continue your Umrah by doing Sa’i.</li>
+
+
+      <h3> Qur'an Ayat</h3>
+        <p class="arabic">
+                 وطهر بيتي للطائفين والقائمين والركع السجود
+        </p>
+        <p><strong>Translation:</strong> “And purify My House for those who perform Tawaf and stand for prayer.” (Surah Al-Hajj 22:26)</p>
+
+
+        <h3> Hadith</h3>
+        <p class="arabic">
+            «الطَّوَافُ بِالْبَيْتِ صَلَاةٌ إِلَّا أَنَّ اللَّهَ أَحَلَّ فِيهِ الْكَلَام
+        </p>
+        <p><strong>Translation:</strong> “Tawaf around the Kaaba is like prayer, except that Allah has allowed speaking in it.” (Tirmidhi)</p>
+        
+    </div>
+
+   
+    <div id="content-rules" class="content-section">
+        <h2>Rules of Tawaf</h2>
+        <p>
+            These rules ensure your Tawaf is valid and accepted.
+        </p>
+
+        <h3>Fard (Mandatory) Rules</h3>
+        <h6>1. Intention (Niyyah)</h6>
+        <p>You must intend the specific Tawaf you are performing.</p>
+
+        <h6>2. Seven Complete Circuits</h6>
+        <p>Every round must start and end at the Black Stone.</p>
+
+        <h6>3. Kaaba on Your Left</h6>
+        <p>You must walk counter-clockwise.</p>
+
+        <h6>4. Purity (Wudu)</h6>
+        <p>You must have wudu throughout Tawaf.</p>
+
+        <h3>Sunnah Actions</h3>
+        <h6>Idtiba</h6>
+        <p>Men uncover their right shoulder during Tawaf.</p>
+
+        <h6>Ramal</h6>
+        <p>Men walk briskly in the first three rounds.</p>
+
+        <h6>Kissing / Touching the Black Stone</h6>
+        <p>If possible without harming others.</p>
+    </div>
+
+    
+    <div id="content-steps" class="content-section">
+        <h2>How to Perform Tawaf</h2>
+
+        <h3>Before Starting Tawaf</h3>
+        <h6>Step 1: Make Wudu</h6>
+        <p>Tawaf requires a state of cleanliness.</p>
+
+        <h6>Step 2: Go to Hajr-e-Aswad</h6>
+        <p>Stand facing the Black Stone with the Kaaba on your left.</p>
+
+        <h3>The 7 Circuits</h3>
+        <h6>Step 3: Make Intention</h6>
+        <p>“O Allah, I intend to perform Tawaf for Your sake.”</p>
+
+        <h6>Step 4: Start from the Black Stone</h6>
+        <p>Raise your hands and say:</p>
+        <p><strong>Bismillah, Allahu Akbar</strong></p>
+
+        <h6>Step 5: Walk counter-clockwise</h6>
+        <p>Complete seven full circuits.</p>
+
+        <h6>Step 6 (Men Only): Ramal in first 3 rounds</h6>
+        <p>Walk fast with short steps.</p>
+
+        <h6>Step 7: Perform Idtiba</h6>
+        <p>Right shoulder exposed throughout Tawaf (men).</p>
+
+        <h6>Step 8: End at Black Stone</h6>
+        <p>Complete your 7th round by reaching Hajr-e-Aswad again.</p>
+
+        <h3>After Tawaf</h3>
+        <h6>Step 9: Pray 2 Rakats at Maqam Ibrahim</h6>
+        <p>Or anywhere inside the Masjid if crowded.</p>
+
+        <h6>Step 10: Drink Zamzam</h6>
+        <p>Make dua—your duas are accepted here.</p>
+    </div>
+
+    
+    <div id="content-duas" class="content-section">
+        <h2>Duas During Tawaf</h2>
+        <p>
+            There is no fixed dua for each round.  
+            You may recite Quran, dhikr, or any supplication from your heart.
+        </p>
+
+        <h3>Between Yemeni Corner & Black Stone</h3>
+
+        <p style="direction: rtl; text-align: right; font-size: 1.4rem;">
+             رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً، وَفِي الْآخِرَةِ حَسَنَةً، وَقِنَا عَذَابَ النَّارِ
+        </p>
+
+        <p><strong>Rabbana atina fid-dunya hasanah wa fil akhirati hasanah wa qina adhaban-naar.</strong></p>
+
+        <h3>Dua at Maqam Ibrahim</h3>
+
+        <p><strong>Surah Al-Kafirun (1st rakah)</strong></p>
+        <p><strong>Surah Al-Ikhlas (2nd rakah)</strong></p>
+    </div>
+
+   
+    <div id="content-violations" class="content-section">
+        <h2>What Invalidates Tawaf?</h2>
+
+        <h6>1. Losing Wudu</h6>
+        <p>You must renew it and continue from where you stopped.</p>
+
+        <h6>2. Missing a Round</h6>
+        <p>You must complete all 7 circuits fully.</p>
+
+        <h6>3. Walking Clockwise</h6>
+        <p>This makes the circuit invalid.</p>
+
+        <h6>4. Skipping part of the Kaaba by taking shortcuts</h6>
+        <p>Your round becomes incomplete.</p>
+    </div>
+
+</div>
+
+
+<script>
+    document.querySelectorAll('.nav-box').forEach(box => {
+        box.addEventListener('click', () => {
+
+            document.querySelectorAll('.nav-box').forEach(b => b.classList.remove('active'));
+            box.classList.add('active');
+
+            let target = box.getAttribute('data-target');
+
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            document.getElementById(target).classList.add('active');
+        });
+    });
+</script>
+
+{% endblock content %}

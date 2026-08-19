@@ -1,0 +1,12 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content %}  
+   <link rel="stylesheet" href="{% static 'css/no-acess.css' %}">
+   <div class="lock-wrapper">
+  <div class="lock"></div>
+<div class="message">
+  <h1>Access to this page is restricted</h1>
+  <p>Please check with the site admin if you believe this is a mistake.</p>
+</div>
+   </div>
+{% endblock content %}

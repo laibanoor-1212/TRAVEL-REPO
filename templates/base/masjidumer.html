@@ -1,0 +1,86 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/masjidumer.css' %}">
+
+<div class="page-container">
+    <div class="breadcrumb">
+        <a href="/">Home</a> /
+        <a href="/ziyarat">Ziyarat</a> /
+        <span>Masjid Umar bin Khattab</span>
+    </div>
+
+    <div class="content-wrapper">
+        <main class="main-content">
+            <img src="{% static 'images/masjid umer bin khatab.jpg' %}" alt="Masjid Umar bin Khattab">
+
+            <div class="title-box">
+                <h3>Masjid Umar bin Khattab</h3>
+            </div>
+
+            <p>
+                Masjid Umar bin Khattab is one of the historic mosques in Madinah Munawwarah. It is named after Hazrat Umar Farooq (RA), the second Caliph of Islam, known for his justice and leadership.
+            </p>
+
+            <p>
+                This mosque marks the location where Prophet Muhammad ﷺ offered Eid prayers. Hazrat Umar (RA) also led the congregational prayers here during his caliphate, following the Sunnah of the Prophet ﷺ.
+            </p>
+
+            <p>
+                The mosque serves as a reminder of the expansion of the Islamic state and the contributions of the Sahaba. Its architecture reflects the various historical periods of Madinah's development.
+            </p>
+
+            <div class="title-box">
+                <h4>Visiting Guidelines</h4>
+            </div>
+
+            <ul class="guidelines">
+                <li>Approach the mosque with a sense of peace and humility.</li>
+                <li>Utilize the time for prayer and personal supplication.</li>
+                <li>Stay aware of the site's historical and spiritual value.</li>
+                <li>Follow the instructions of the local authorities.</li>
+            </ul>
+
+            <div class="ziyarat-container">
+                <div class="title-box">
+                    HISTORICAL LEGACY <br>
+                    <span>OF HAZRAT UMAR (RA)</span>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-card">
+                        <h3>Sunnah Site</h3>
+                        <span class="label">Eid Tradition</span>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Second Caliph</h3>
+                        <span class="label">Justice & Al-Farooq</span>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Structure</h3>
+                        <span class="label">Preserved History</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="navigation-box">
+                <h2>Navigation</h2>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Hajj & Umrah Guide</a></li>
+                    <li><a href="#">Planning & Preparation</a></li>
+                    <li><a href="#">Umrah</a></li>
+                    <li><a href="#">Hajj</a></li>
+                    <li><a href="#">Madinah</a></li>
+                    <li><a href="#">Makkah</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock content %}

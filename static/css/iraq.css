@@ -1,0 +1,120 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+.iraq-container {
+ max-width: 1400px;
+ margin: 100px auto 30px auto;
+ padding: 0 20px;
+}
+.iraq-hero {
+  height: 50vh;
+  position: relative;
+  border-radius: 12px;
+}
+.iraq-hero .overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background:rgb(45, 95, 56);
+}
+
+.hero-content {
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+  color: white;
+}
+
+.hero-content h1 {
+  font-size: 45px;
+}
+
+.iraq-intro {
+  display: flex;
+  gap: 40px;
+  padding: 60px 7%;
+}
+
+.intro-left {
+  flex: 1;
+}
+
+.intro-left h2 {
+  font-size: 30px;
+  color: #065f46;
+}
+
+.intro-right {
+  flex: 1;
+  display: flex;
+  gap: 10px;
+}
+
+.intro-right img {
+  width: 50%;
+  border-radius: 15px;
+}
+
+.iraq-shrines {
+  padding: 60px 7%;
+  text-align: center;
+}
+
+.shrines-grid {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 20px;
+}
+
+.shrine-card {
+  position: relative;
+  height: 230px;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.shrine-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.overlay-card {
+  position: absolute;
+  bottom: 0;
+  padding: 15px;
+  width: 100%;
+  background: linear-gradient(transparent, black);
+  color: white;
+}
+.iraq-timeline {
+  padding: 60px 7%;
+  background: #f7faf9;
+  text-align: center;
+}
+.timeline {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 20px;
+}
+.timeline-item {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+.iraq-dua {
+  padding: 60px 7%;
+  text-align: center;
+}
+.dua-card {
+  background: white;
+  padding: 25px;
+  margin: 20px auto;
+  max-width: 600px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}

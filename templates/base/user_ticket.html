@@ -1,0 +1,91 @@
+{% extends 'base/user_layout.html' %}
+{% load static %}
+
+{% block title %}Visa & Ticket Status - Safar-e-Haram{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/visa_ticket.css' %}">
+
+<div class="travel-wrapper">
+    <div class="page-header">
+        <h2 style="color: #2c3e50; margin: 0;">Travel Documents</h2>
+        <p style="color: #7f8c8d; font-size: 14px;">Track your Visa processing and E-Ticket status.</p>
+    </div>
+
+    <div class="travel-grid">
+        
+        <div class="status-card">
+            <div class="card-head">
+                <div class="icon-box visa-icon"><i class="fa-solid fa-passport"></i></div>
+                <div>
+                    <h4 style="margin:0;">Visa Processing</h4>
+                    <small>Status: <b style="color: #e67e22;">In Progress</b></small>
+                </div>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-step completed">
+                    <div class="dot"></div>
+                    <span>Documents Submitted</span>
+                </div>
+                <div class="progress-step active">
+                    <div class="dot"></div>
+                    <span>Sent to Embassy</span>
+                </div>
+                <div class="progress-step">
+                    <div class="dot"></div>
+                    <span>Visa Stamping</span>
+                </div>
+                <div class="progress-step">
+                    <div class="dot"></div>
+                    <span>Visa Ready</span>
+                </div>
+            </div>
+
+            <div class="doc-preview">
+                <p style="font-size: 12px; color: #666;"><i class="fa-solid fa-circle-info"></i> Visa copy will be available for download once "Visa Ready" status is reached.</p>
+                <button class="btn-download disabled" disabled><i class="fa-solid fa-download"></i> Download E-Visa</button>
+            </div>
+        </div>
+
+        <div class="status-card">
+            <div class="card-head">
+                <div class="icon-box ticket-icon"><i class="fa-solid fa-plane-departure"></i></div>
+                <div>
+                    <h4 style="margin:0;">Flight E-Ticket</h4>
+                    <small>Status: <b style="color: #27ae60;">Confirmed</b></small>
+                </div>
+            </div>
+
+            <div class="ticket-details">
+                <div class="ticket-info-row">
+                    <span>Airline:</span>
+                    <b>Saudi Arabian Airlines (SV)</b>
+                </div>
+                <div class="ticket-info-row">
+                    <span>Flight No:</span>
+                    <b>SV-734</b>
+                </div>
+                <div class="ticket-info-row">
+                    <span>Departure:</span>
+                    <b>15 Oct 2026 - Lahore (LHE)</b>
+                </div>
+                <div class="ticket-info-row">
+                    <span>Arrival:</span>
+                    <b>15 Oct 2026 - Jeddah (JED)</b>
+                </div>
+                <div class="ticket-info-row">
+                    <span>PNR:</span>
+                    <b style="color: #1e429f; letter-spacing: 1px;">SJH8829</b>
+                </div>
+            </div>
+
+            <div class="doc-preview" style="background: #f0fff4; border: 1px solid #c6f6d5;">
+                <p style="font-size: 12px; color: #166534;"><i class="fa-solid fa-check-circle"></i> Your ticket has been issued. You can download it now.</p>
+                <a href="#" class="btn-download active"><i class="fa-solid fa-file-pdf"></i> Download E-Ticket</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

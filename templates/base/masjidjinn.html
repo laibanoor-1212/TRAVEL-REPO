@@ -1,0 +1,85 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/masjidjinn.css' %}">
+
+<div class="page-container">
+    <div class="breadcrumb">
+        <a href="#">Home</a> /
+        <a href="#">Ziyarat</a> /
+        <span>Masjid al-Jinn</span>
+    </div>
+
+    <div class="content-wrapper">
+        <main class="main-content">
+            <img src="{% static 'images/masjidjinn.png' %}" alt="Masjid al-Jinn">
+
+            <div class="title-box">
+                <h3>Masjid al-Jinn</h3>
+            </div>
+
+            <p>
+                Masjid al-Jinn is one of the most historic mosques in Makkah. It is located near the 
+                Jannat al-Mu'alla cemetery. The mosque is built on the spot where a group of Jinn 
+                listened to the Prophet Muhammad (PBUH) reciting the Holy Quran.
+            </p>
+
+            <p>
+                After hearing the divine words, they embraced Islam and pledged their allegiance 
+                to the Prophet (PBUH). This event is significantly mentioned in <strong>Surah Al-Jinn</strong> of the Quran.
+            </p>
+
+            <div class="title-box">
+                <h4>Historical Significance</h4>
+            </div>
+
+            <ul class="guidelines">
+                <li>Site where the Jinn pledged their <em>Bay'ah</em> (allegiance).</li>
+                <li>Located at the spot where the Prophet (PBUH) drew a line for Abdullah bin Mas'ud (RA).</li>
+                <li>Frequently visited by pilgrims during Ziyarat in Makkah.</li>
+                <li>A testament to the universal message of Islam for both Humans and Jinn.</li>
+            </ul>
+
+            <div class="ziyarat-container">
+                <div class="title-box">
+                    LOCATION & KEY DETAILS
+                </div>
+
+                <div class="graves-row">
+                    <div class="grave">
+                        <h3>City</h3>
+                        <span class="label">Makkah Mukarramah</span>
+                    </div>
+
+                    <div class="grave">
+                        <h3>Alternative Name</h3>
+                        <span class="label">Masjid al-Haras</span>
+                    </div>
+
+                    <div class="grave">
+                        <h3>Nearby Site</h3>
+                        <span class="label">Jannat al-Mu'alla</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="navigation-box">
+                <h2>Navigation</h2>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Hajj & Umrah Guide</a></li>
+                    <li><a href="#">Planning & Preparation</a></li>
+                    <li><a href="#">Umrah</a></li>
+                    <li><a href="#">Hajj</a></li>
+                    <li><a href="#">Madinah</a></li>
+                    <li><a href="#">Makkah</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</div>
+
+{% endblock content %}

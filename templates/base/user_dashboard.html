@@ -1,0 +1,179 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safar-e-Haram | Professional User Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/user_dashboard.css'%}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo-section">
+                <h2 class="brand-name">SAFAR-E-HARAM</h2>
+            </div>
+            
+            
+
+            <nav class="side-nav">
+                <button class="nav-item active" onclick="switchTab(event, 'overview')">
+                    <i class="fa-solid fa-gauge-high"></i> Overview
+                </button>
+                <button class="nav-item" onclick="switchTab(event, 'bookings')">
+                    <i class="fa-solid fa-kaaba"></i> My Bookings
+                </button>
+                <button class="nav-item" onclick="switchTab(event, 'payments')">
+                    <i class="fa-solid fa-credit-card"></i> Payments
+                </button>
+                <button class="nav-item" onclick="switchTab(event, 'profile')">
+                    <i class="fa-solid fa-user-pen"></i> Profile Setup
+                </button>
+                <button class="nav-item" onclick="switchTab(event, 'tickets')">
+                    <i class="fa-solid fa-ticket"></i> Ticket
+                </button>
+                <a href="#" class="logout-btn" onclick="confirmLogout()"><i class="fa-solid fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </aside>
+
+        <main class="content-area">
+            
+            <section id="overview" class="tab-content active">
+               
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="label">Recent Booking Status</span>
+                        <div class="status-badge hold">On Hold</div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="label">Total Payment</span>
+                        <h3>PKR 7,50000</h3>
+                    </div>
+                    <div class="stat-card">
+                        <span class="label">Selected Package</span>
+                        <h3>Premium Ramadan</h3>
+                    </div>
+                </div>
+
+                <h3 class="gallery-title">Sacred Destinations</h3>
+                <div class="image-gallery">
+                    <div class="img-card">
+                        <img src="https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=600" alt="Makkah">
+                        <div class="img-overlay"><h4>Premium Umrah</h4><p>Madinah</p></div>
+                    </div>
+                    <div class="img-card">
+                        <img src="images/1.jpg">
+                        <div class="img-overlay"><h4>Economy Hajj</h4><p>Makkah</p></div>
+                    </div>
+                    <div class="img-card">
+                        <img src="https://images.unsplash.com/photo-1580418827493-f2b22c0a76cb?q=80&w=600" alt="Ziyarat">
+                        <div class="img-overlay"><h4>Holy Places</h4><p>Ziyarat</p></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="bookings" class="tab-content">
+                <h2>Monitor Your Bookings</h2>
+                <div class="white-panel">
+                    <table class="dashboard-table">
+                        <thead>
+                            <tr><th>Package Name</th><th>Date</th><th>Status</th><th>Action</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Premium Ramadan Umrah</td>
+                                <td>24-12-2025</td>
+                                <td><span class="status-badge hold">On Hold</span></td>
+                                <td><button class="action-btn gold" onclick="notifyAdmin()">Confirm to Admin</button></td>
+                            </tr>
+                            <tr>
+                                <td>Premium Ramadan Umrah</td>
+                                <td>25-12-2025</td>
+                                <td><span class="status-badge hold">Awaiting</span></td>
+                                <td><button class="action-btn gold" onclick="notifyAdmin()">Not Confirmed</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="payments" class="tab-content">
+                <h2>Payment & Agent Status</h2>
+                <div class="white-panel">
+                    <div class="payment-note">
+                        <p><strong>Status:</strong> <span class="status-badge released">Released to Agent</span></p>
+                        <p class="sub-text">Payment has been released to Travel Agent Karvan-e-Royal.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="profile" class="tab-content">
+                <h2>Manage Your Profile</h2>
+                <div class="white-panel">
+                    <form id="profileForm" class="edit-profile-form">
+                        <div class="input-field">
+                            <label>Full Name</label>
+                            <input type="text" id="userNameInput" value="Ali">
+                        </div>
+                        <div class="input-field">
+                            <label>Email Address</label>
+                            <input type="email" value="ali@example.com">
+                        </div>
+                        <div class="input-field">
+                            <label>Phone Number</label>
+                            <input type="text" value="+92 300 1234567">
+                        </div>
+                        <button type="button" class="save-btn" onclick="performSaveAction()">Save Changes</button>
+                    </form>
+                </div>
+            </section>
+
+        </main>
+    </div>
+    <script>
+       
+        function switchTab(evt, tabName) {
+            var i, tabcontent, navitems;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) { tabcontent[i].classList.remove("active"); }
+            navitems = document.getElementsByClassName("nav-item");
+            for (i = 0; i < navitems.length; i++) { navitems[i].classList.remove("active"); }
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+     
+        function performSaveAction() {
+            const inputName = document.getElementById('userNameInput').value;
+            if(inputName.trim() === "") {
+                alert("Please enter a name.");
+                return;
+            }
+          
+            document.getElementById('sidebar-user-name').innerText = inputName;
+            document.getElementById('welcome-user-name').innerText = inputName + '!';
+            
+            alert("Success! Your profile has been updated.");
+        }
+
+       
+        function notifyAdmin() {
+            alert("Admin has been notified. They will verify and update your booking status soon.");
+        }
+
+        function confirmLogout() {
+            if(confirm("Are you sure you want to logout?")) {
+                window.location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
+
+</body>
+</html>

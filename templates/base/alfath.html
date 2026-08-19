@@ -1,0 +1,86 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/alfath.css' %}">
+
+<div class="page-container">
+    <div class="breadcrumb">
+        <a href="/">Home</a> /
+        <a href="/ziyarat">Ziyarat</a> /
+        <span>Masjid al-Fath</span>
+    </div>
+
+    <div class="content-wrapper">
+        <main class="main-content">
+            <img src="{% static 'images/alfath.png' %}">
+
+            <div class="title-box">
+                <h3>Masjid al-Fath</h3>
+            </div>
+
+            <p>
+                Masjid al-Fath is located on the western slope of Mount Sela in Madinah. Its name, which means "The Mosque of Victory," commemorates the site where Allah granted victory to the Prophet Muhammad ﷺ and the Muslims during the siege of the Battle of the Trench.
+            </p>
+
+            <p>
+                History records that the Prophet ﷺ spent three days praying at this specific location, asking for Divine assistance against the confederate armies. On the third day, the Angel Jibreel (AS) brought the news that the enemy forces would be dispersed by a powerful wind, ending the siege.
+            </p>
+
+            <p>
+                The mosque is part of the historic group known as the "Seven Mosques." While the original structure was small, it has been rebuilt several times, standing as a testament to the power of sincere prayer and the ultimate victory promised to the believers.
+            </p>
+
+            <div class="title-box">
+                <h4>Visiting Guidelines</h4>
+            </div>
+
+            <ul class="guidelines">
+                <li>Offer a prayer of gratitude (Shukr) at this historic location of victory.</li>
+                <li>Reflect on the importance of Dua (supplication) during times of hardship.</li>
+                <li>Observe the panoramic view of the Trench battlefield from the mountain slope.</li>
+                <li>Respect the sacred nature of the site and maintain quietness for other visitors.</li>
+            </ul>
+
+            <div class="ziyarat-container">
+                <div class="title-box">
+                    HISTORICAL SIGNIFICANCE <br>
+                    <span>OF THE DIVINE VICTORY</span>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-card">
+                        <h3>Victory</h3>
+                        <span class="label">Glad Tidings</span>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Supplication</h3>
+                        <span class="label">Site of Three-Day Dua</span>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Mount Sela</h3>
+                        <span class="label">Strategic Command</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="navigation-box">
+                <h2>Navigation</h2>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Hajj & Umrah Guide</a></li>
+                    <li><a href="#">Planning & Preparation</a></li>
+                    <li><a href="#">Umrah</a></li>
+                    <li><a href="#">Hajj</a></li>
+                    <li><a href="#">Madinah</a></li>
+                    <li><a href="#">Makkah</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock content %}

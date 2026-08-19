@@ -1,0 +1,87 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/safamarwah.css' %}">
+
+<div class="page-container">
+    <div class="breadcrumb">
+        <a href="#">Home</a> / 
+        <a href="#">Ziyarat</a> /
+        <span>Safa and Marwah</span>
+    </div>
+
+    <div class="content-wrapper">
+        <main class="main-content">
+            <img src="{% static 'images/safamarwah.jpg' %}">
+
+            <div class="title-box">
+                <h3>Safa and Marwah</h3>
+            </div>
+
+            <p>
+                Safa and Marwah are two small hills now enclosed within the Grand Mosque. The distance between them is approximately 450 meters. Performing Sa'i (walking seven times between these hills) is a mandatory ritual that honors the devotion of Hazrat Hajra (AS).
+            </p>
+
+            <p>
+                According to Islamic tradition, Hazrat Hajra (AS) ran between these two hills seven times in search of water for her infant son, Prophet Ismail (AS). In response to her patience and struggle, Allah caused the miraculous spring of Zamzam to gush forth from the desert sand.
+            </p>
+
+            <p>
+                Today, the path (Mas'aa) is fully air-conditioned and spans multiple levels to accommodate the millions of pilgrims who perform this ritual day and night.
+            </p>
+
+            <div class="title-box">
+                <h3>The Ritual of Sa'i</h3>
+            </div>
+
+            <ul class="guidelines">
+                <li><strong>Start Point:</strong> The ritual always begins at Mount Safa.</li>
+                <li><strong>Seven Circuits:</strong> A walk from Safa to Marwah is one circuit, and Marwah back to Safa is the second.</li>
+                <li><strong>Green Lights:</strong> Men are encouraged to run at a medium pace between the sets of green fluorescent lights.</li>
+                <li><strong>Supplication:</strong> It is Sunnah to face the Kaaba and make prolonged Duas while standing on the hills of Safa and Marwah.</li>
+            </ul>
+
+            <div class="ziyarat-container">
+                <div class="title-box">
+                    <h3>SPIRITUAL LESSONS</h3>
+                </div>
+
+                <div class="graves-row">
+                    <div class="grave">
+                        <h4>Patience (Sabr)</h4>
+                        <p>The ritual reminds us of the unwavering trust Hazrat Hajra (AS) had in Allah's plan during a time of extreme hardship.</p>
+                        <span class="label">SYMBOL OF FAITH</span>
+                    </div>
+
+                    <div class="grave">
+                        <h4>Divine Reward</h4>
+                        <p>Just as the Zamzam spring appeared after the struggle, Sa'i teaches us that relief follows effort and sincere prayer.</p>
+                    </div>
+
+                    <div class="grave">
+                        <h4>Universal Equality</h4>
+                        <p>Kings and commoners alike walk this path, highlighting the equality of all believers before their Creator.</p>
+                        <span class="label">UNITY</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="navigation-box">
+                <h2>Navigation</h2>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Hajj & Umrah Guide</a></li>
+                    <li><a href="#">Planning & Preparation</a></li>
+                    <li><a href="#">Umrah</a></li>
+                    <li><a href="#">Hajj</a></li>
+                    <li><a href="#">Madinah</a></li>
+                    <li><a href="#">Makkah</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock content %}

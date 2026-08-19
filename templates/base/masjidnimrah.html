@@ -1,0 +1,76 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/masjidnimrah.css' %}">
+
+<div class="page-container">
+    <div class="breadcrumb">
+        <a href="/">Home</a> / 
+        <a href="/ziyarat/">Ziyarat</a> /
+        <span>Masjid al-Nimrah</span>
+    </div>
+
+    <div class="content-wrapper">
+        <main class="main-content">
+            <div class="image-holder">
+                <img src="{% static 'images/masjid nimrah.jpg' %}" alt="Masjid al-Nimrah">
+            </div>
+
+            <div class="title-box">
+                <h3>Masjid al-Nimrah</h3>
+            </div>
+
+            <div class="description-text">
+                <p>
+                    Masjid al-Nimrah is located on the plain of Arafat. It was at this site that Prophet Muhammad ﷺ stayed and delivered his historic Farewell Sermon before leading the prayers on the day of Hajj.
+                </p>
+                <p>
+                    On the 9th of Dhul Hijjah, millions of pilgrims gather here to listen to the Hajj sermon. It is a Sunnah to combine the Dhuhr and Asr prayers at this mosque during the afternoon of Arafat.
+                </p>
+            </div>
+
+            <div class="title-box">
+                <h3>Key Features & Etiquette</h3>
+            </div>
+
+            <ul class="guidelines">
+                <li><strong>The Sermon:</strong> The Grand Mufti delivers the global Hajj message from here.</li>
+                <li><strong>Capacity:</strong> One of the largest mosques, holding over 350,000 pilgrims.</li>
+                <li><strong>Boundary:</strong> Part of the mosque is inside Arafat and part is outside.</li>
+            </ul>
+
+            <div class="ziyarat-container">
+                <div class="graves-row">
+                    <div class="grave">
+                        <h4>Prophetic Legacy</h4>
+                        <p>This is where the Prophet ﷺ camped before the Wuquf.</p>
+                    </div>
+                    <div class="grave">
+                        <h4>Unity</h4>
+                        <p>The sermon is translated into multiple languages globally.</p>
+                    </div>
+                    <div class="grave">
+                        <h4>Important</h4>
+                        <p>Staying in the Wadi Urana section does not count as Wuquf-e-Arafat.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <aside class="sidebar">
+            <div class="navigation-box">
+                <h2>Navigation</h2>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Hajj & Umrah Guide</a></li>
+                    <li><a href="#">Planning & Preparation</a></li>
+                    <li><a href="#">Umrah</a></li>
+                    <li><a href="#">Hajj</a></li>
+                    <li><a href="#">Madinah</a></li>
+                    <li><a href="#">Makkah</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock content %}

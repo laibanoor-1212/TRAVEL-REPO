@@ -1,0 +1,162 @@
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+.page-container{
+max-width:1400px;
+margin:100px auto 30px auto;
+padding:0 20px;
+}
+
+.breadcrumb{
+margin-bottom:20px;
+font-size:14px;
+color:#777;
+}
+
+.breadcrumb a{
+color:#0f5132;
+text-decoration:none;
+font-weight:500;
+margin-right:5px;
+}
+
+.breadcrumb span{
+color:#444;
+}
+.content-wrapper{
+display:flex;
+align-items:flex-start;
+flex-wrap:nowrap;
+gap:40px;
+}
+.main-content{
+flex:3;
+padding:25px;
+border-radius:12px;
+}
+.main-content img{
+width:60%;
+height:auto;
+border-radius:10px;
+margin-bottom:20px;
+}
+
+.title-box{
+background:#0f5132;
+color:white;
+text-align:center;
+padding:8px 20px;
+font-size:20px;
+font-weight:bold;
+border-radius:6px;
+width:fit-content;
+margin:20px auto;
+}
+
+.main-content p{
+line-height:1.7;
+font-size:16px;
+color:#333;
+margin-bottom:18px;
+}
+
+.guidelines{
+padding-left:20px;
+margin-bottom:25px;
+}
+
+.guidelines li{
+margin-bottom:10px;
+font-size:15px;
+}
+.ziyarat-container{
+padding:25px;
+border-radius:12px;
+margin-top:30px;
+}
+.graves-row{
+display:flex;
+justify-content:space-between;
+gap:20px;
+flex-wrap:wrap;
+}
+.grave{
+flex:1 1 30%;
+background:#aacfbe; 
+color:white;
+text-align:center;
+padding:25px;
+border-radius:20px;
+position:relative;
+transition:0.3s;
+}
+.grave:hover{
+transform:translateY(-6px);
+}
+.grave h4{
+margin-bottom:10px;
+font-size:18px;
+}
+.label{
+font-size:13px;
+font-weight: bold;
+color:rgb(58, 55, 55);
+position:absolute;
+bottom:10px;
+left:50%;
+transform:translateX(-50%);
+}
+.sidebar{
+flex:1;
+min-width:260px;
+position:sticky;
+top:20px;
+}
+.navigation-box{
+padding:25px;
+border-radius:12px;
+box-shadow:0 10px 20px rgba(0,0,0,0.08);
+}
+.navigation-box h2{
+margin-bottom:20px;
+color:#0f5132;
+font-size:32px;
+}
+.navigation-box ul{
+list-style:none;
+}
+.navigation-box li{
+padding:12px 0;
+border-bottom:1px solid #eee;
+}
+.navigation-box a{
+text-decoration:none;
+color:#555;
+font-weight:500;
+display:block;
+transition:0.3s;
+}
+.navigation-box a:hover{
+color:#0f5132;
+padding-left:5px;
+}
+
+@media (max-width:768px){
+.content-wrapper{
+flex-direction:column;
+}
+}
+.main-content{
+width:100%;
+}
+.sidebar{
+width:100%;
+position:relative;
+}
+.graves-row{
+flex-direction:column;
+}

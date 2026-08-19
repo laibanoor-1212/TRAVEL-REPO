@@ -1,0 +1,273 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<style>
+   
+.hero-text-overlay{
+    position:absolute;
+    left:80px;
+    /* bottom:80px; */
+    max-width:600px;
+}
+
+.hero-text-overlay h1{
+    font-size:3rem;
+    font-weight:700;
+    color:#fff;
+}
+
+.hero-text-overlay p{
+    font-size:1.1rem;
+    color:#fff;
+    opacity:.95;
+}
+
+:root{
+    --green:#1f7a4f;
+    --green-dark:#165c3b;
+    --light-green:#f3fff8;
+    --gray:#6b7280;
+}
+
+
+.stakeholder-hero{
+    background:
+        linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.55)),
+        url("{% static 'images/hajjpackages.jpeg' %}") center/cover no-repeat;
+    padding:200px 0;
+    color:#fff;
+    position:relative;
+}
+
+.stakeholder-hero h1{
+    font-size:3rem;
+    font-weight:700;
+}
+
+.stakeholder-hero p{
+    max-width:600px;
+    font-size:1.1rem;
+    opacity:.95;
+}
+
+.hero-home-btn{
+    position:absolute;
+    top:30px;
+    left:30px;
+}
+
+.hero-home-btn a{
+    background:#fff;
+    color:var(--green);
+    padding:10px 18px;
+    border-radius:30px;
+    font-weight:600;
+    text-decoration:none;
+    box-shadow:0 6px 18px rgba(0,0,0,.2);
+}
+
+.hero-home-btn a:hover{
+    background:var(--light-green);
+}
+
+
+.stakeholder-section{
+    background:#fff;
+    padding:50px 0;
+}
+
+.provider-card{
+    margin-left: 30px;
+    margin-right: 30px;
+    border:1px solid #e5e7eb;
+    border-radius:18px;
+    padding:20px 18px;
+    text-align:center;
+    background:#fff;
+    transition:.3s;
+    height:100%;
+}
+
+.provider-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 20px 40px rgba(0,0,0,.08);
+}
+
+.provider-card img{
+    max-height:120px;
+    
+    margin-bottom:20px;
+    object-fit:contain;
+}
+
+.provider-card h5{
+    font-weight:600;
+    font-size:1.1rem;
+    color:#111827;
+}
+
+.provider-card p{
+    font-size:.95rem;
+    color:var(--gray);
+}
+
+.provider-card a{
+    display:inline-block;
+    margin-top:15px;
+    background:var(--green);
+    color:#fff;
+    padding:10px 22px;
+    border-radius:30px;
+    font-size:.9rem;
+    font-weight:600;
+    text-decoration:none;
+}
+
+.provider-card a:hover{
+    background:var(--green-dark);
+}
+
+
+.site-footer{
+    background:var(--green-dark);
+    color:#fff;
+    padding:50px 0 25px;
+}
+
+.site-footer h6{
+    font-weight:600;
+    margin-bottom:15px;
+}
+
+.site-footer a{
+    color:#e5f5ec;
+    text-decoration:none;
+    font-size:.95rem;
+}
+
+.site-footer a:hover{
+    text-decoration:underline;
+}
+
+.footer-bottom{
+    border-top:1px solid rgba(255,255,255,.15);
+    margin-top:30px;
+    padding-top:15px;
+    text-align:center;
+    font-size:.9rem;
+    opacity:.9;
+}
+.stakeholder-section{
+    padding-left:8px;
+    padding-right:8px;
+}
+
+</style>
+
+
+<section class="stakeholder-hero">
+    <div class="hero-home-btn">
+        <a href="{% url 'base:home' %}">← Home</a>
+    </div>
+
+    
+     <div class="hero-text-overlay">
+        <h1>Authorized Service Providers</h1>
+        <!-- <p>
+            Browse verified Hajj & Umrah stakeholders approved to offer
+            trusted pilgrimage services for pilgrims worldwide.
+        </p> -->
+    </div>
+    </div>
+</section>
+
+
+<section class="stakeholder-section">
+ 
+        <div class="row g-4"> 
+
+            
+            <div class="col-lg-4 col-md-6"> 
+                <div class="provider-card">
+                    <img src="{% static 'images/agency2.png' %}" alt="">
+                    <h5>Abdul Lateef Jameel</h5>
+                    <p>Real Estate & Pilgrim Services Provider</p>
+                    <a href="#">View Profile</a>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="provider-card">
+                    <img src="{% static 'images/agency2.png' %}" alt="">
+                    <h5>Al Bait Guests</h5>
+                    <p>Comprehensive Hajj & Umrah Management</p>
+                    <a href="#">View Profile</a>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="provider-card">
+                    <img src="{% static 'images/agency2.png' %}" alt="">
+                    <h5>Al Rajhi Likhidmat</h5>
+                    <p>Licensed Hajj Operations Company</p>
+                    <a href="#">View Profile</a>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="provider-card">
+                    <img src="{% static 'images/agency2.png' %}" alt="">
+                    <h5>Dur Hospitality</h5>
+                    <p>Hospitality & Accommodation Services</p>
+                    <a href="#">View Profile</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+
+<footer class="site-footer">
+    
+        <div class="row">
+
+            <div class="col-md-4">
+                <h6>Safar-e-Haram</h6>
+                <p class="small">
+                    A trusted platform connecting pilgrims with
+                    verified Hajj & Umrah service providers.
+                </p>
+            </div>
+
+            <div class="col-md-4">
+                <h6>Quick Links</h6>
+                <ul class="list-unstyled">
+                    <li><a href="{% url 'base:home' %}">Home</a></li>
+                    <li><a href="#">Packages</a></li>
+                    <li><a href="#">Stakeholders</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-4">
+                <h6>Support</h6>
+                <ul class="list-unstyled">
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms & Conditions</a></li>
+                    <li><a href="#">Help Center</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            © {{ now|date:"Y" }} Safar-e-Haram. All Rights Reserved.
+        </div>
+    </div>
+</footer>
+
+{% endblock %}

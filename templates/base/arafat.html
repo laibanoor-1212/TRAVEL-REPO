@@ -1,0 +1,87 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/arafat.css' %}">
+
+<div class="page-container">
+    <div class="breadcrumb">
+        <a href="#">Home</a> / 
+        <a href="#">Hajj Guide</a> /
+        <span>Mount Arafat</span>
+    </div>
+
+    <div class="content-wrapper">
+        <main class="main-content">
+            <img src="{% static 'images/Arafat.jpg' %}" alt="Mount Arafat">
+
+            <div class="title-box">
+                <h3>Mount Arafat (Jabal al-Rahmah)</h3>
+            </div>
+
+            <p>
+                Mount Arafat, also known as Jabal al-Rahmah (The Mountain of Mercy), is a granite hill east of Makkah in the plain of Arafat. It is the most significant site during the Hajj pilgrimage, as the "Standing at Arafat" (Wuquf) is the fundamental rite of Hajj.
+            </p>
+
+            <p>
+                On the 9th of Dhul Hijjah, millions of pilgrims gather on this plain from Dhuhr until sunset. It is a day of deep spiritual reflection, intense prayer, and seeking forgiveness from Allah. It is believed that on this day, the mercy of Allah descends in abundance.
+            </p>
+
+            <p>
+                This is also the location where Prophet Muhammad ﷺ delivered his famous Last Sermon (Khutbah al-Wada) to the thousands of companions who had accompanied him for Hajj.
+            </p>
+
+            <div class="title-box">
+                <h3>Rituals & Significance</h3>
+            </div>
+
+            <ul class="guidelines">
+                <li><strong>Wuquf-e-Arafat:</strong> The mandatory stay on the plains of Arafat from noon to sunset.</li>
+                <li><strong>Combined Prayers:</strong> Dhuhr and Asr prayers are combined and shortened (Qasr) here.</li>
+                <li><strong>Supplication:</strong> Pilgrims spend their time standing in prayer, facing the Qibla, and asking for mercy.</li>
+                <li><strong>Khutbah:</strong> Listening to the Hajj sermon delivered from Masjid Nimrah.</li>
+            </ul>
+
+            <div class="ziyarat-container">
+                <div class="title-box">
+                    <h3>KEY LANDMARKS</h3>
+                </div>
+
+                <div class="graves-row">
+                    <div class="grave">
+                        <h4>Masjid Nimrah</h4>
+                        <p>A large mosque located on the edge of Arafat where the Hajj sermon is delivered and prayers are led.</p>
+                        <span class="label">HISTORIC MOSQUE</span>
+                    </div>
+
+                    <div class="grave">
+                        <h4>Jabal al-Rahmah</h4>
+                        <p>The small hill where the Prophet ﷺ stood and prayed during his Farewell Pilgrimage.</p>
+                    </div>
+
+                    <div class="grave">
+                        <h4>The Last Sermon</h4>
+                        <p>The site where universal principles of human rights and equality were established in Islam.</p>
+                        <span class="label">HISTORIC SITE</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="navigation-box">
+                <h2>Navigation</h2>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Hajj & Umrah Guide</a></li>
+                    <li><a href="#">Planning & Preparation</a></li>
+                    <li><a href="#">Umrah</a></li>
+                    <li><a href="#">Hajj</a></li>
+                    <li><a href="#">Madinah</a></li>
+                    <li><a href="#">Makkah</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock content %}

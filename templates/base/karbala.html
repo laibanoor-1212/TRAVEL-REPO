@@ -1,0 +1,83 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/karbala.css' %}">
+
+<div class="page-container">
+
+    <div class="breadcrumb">
+        <a href="#">Home</a> /
+        <a href="#">Ziyarat</a> /
+        <span>Karbala</span>
+    </div>
+
+    <div class="main-content">
+
+        <img src="{% static 'images/karbala.png' %}">
+
+        <div class="title-box">
+            <h3>Karbala Ziyarat Guide</h3>
+        </div>
+
+        <p>
+            Karbala is one of the most sacred cities in Islam, located in Iraq. 
+            It is the land where Imam Hussain (A.S), the grandson of Prophet Muhammad (PBUH), 
+            sacrificed his life for truth and justice in the historic battle of Karbala.
+        </p>
+
+        <p>
+            Millions of pilgrims visit Karbala every year, especially during Arbaeen, 
+            to pay tribute and seek spiritual connection with the Ahlulbayt (A.S).
+        </p>
+
+        <div class="title-box">
+            <h4>Spiritual Significance</h4>
+        </div>
+
+        <ul class="guidelines">
+            <li>Resting place of Imam Hussain (A.S).</li>
+            <li>Burial site of Hazrat Abbas (A.S).</li>
+            <li>Center of the historic Battle of Karbala.</li>
+            <li>Symbol of sacrifice, patience, and justice in Islam.</li>
+        </ul>
+
+        <div class="title-box">
+            <h4>Important Ziyarat Sites</h4>
+        </div>
+
+        <ul class="guidelines">
+            <li>Imam Hussain Shrine – The heart of Karbala.</li>
+            <li>Hazrat Abbas Shrine – Known for loyalty and bravery.</li>
+            <li>Bayn al-Haramayn – The area between the two shrines.</li>
+            <li>Khaimah Gah – Campsite of Imam Hussain’s family.</li>
+        </ul>
+
+        <div class="ziyarat-container">
+            <div class="title-box">
+                LOCATION & KEY DETAILS
+            </div>
+
+            <div class="graves-row">
+                <div class="grave">
+                    <h3>City</h3>
+                    <span class="label">Karbala, Iraq</span>
+                </div>
+
+                <div class="grave">
+                    <h3>Main Figures</h3>
+                    <span class="label">Imam Hussain (A.S), Hazrat Abbas (A.S)</span>
+                </div>
+
+                <div class="grave">
+                    <h3>Significance</h3>
+                    <span class="label">Battle of Karbala</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

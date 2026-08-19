@@ -1,0 +1,87 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/zamzam.css' %}">
+
+<div class="page-container">
+    <div class="breadcrumb">
+        <a href="#">Home</a> / 
+        <a href="#">Ziyarat</a> /
+        <span>Zamzam Well</span>
+    </div>
+
+    <div class="content-wrapper">
+        <main class="main-content">
+            <img src="{% static 'images/zamzam.jpg' %}" alt="Zamzam Water Distribution">
+
+            <div class="title-box">
+                <h3>The Well of Zamzam</h3>
+            </div>
+
+            <p>
+                The Zamzam Well is a miraculous source of water that sprang from the desert under the feet of Prophet Ismail (AS) while his mother, Hazrat Hajra (AS), searched for water between the hills of Safa and Marwah. 
+            </p>
+
+            <p>
+                For thousands of years, this well has provided an endless supply of water to millions of pilgrims. Despite being only about 30 meters deep, it produces up to 8,000 liters of water per second during peak times, a feat that continues to baffle modern scientists and geologists.
+            </p>
+
+            <p>
+                Prophet Muhammad ﷺ said: "The water of Zamzam is for whatever purpose it is drunk for." It is known for its unique mineral composition, high calcium and magnesium content, and its ability to satisfy both hunger and thirst while providing healing properties.
+            </p>
+
+            <div class="title-box">
+                <h3>Facts & Virtues</h3>
+            </div>
+
+            <ul class="guidelines">
+                <li><strong>Mineral Rich:</strong> Unlike regular water, Zamzam is rich in fluoride, which prevents the growth of algae and bacteria.</li>
+                <li><strong>Endless Supply:</strong> The well has never dried up, even during periods of extreme drought in the Arabian Peninsula.</li>
+                <li><strong>Distribution:</strong> Today, the water is pumped, filtered, and chilled through advanced systems to thousands of taps throughout the Grand Mosque.</li>
+                <li><strong>Etiquette:</strong> It is recommended to face the Qibla, stand while drinking, and make a sincere Dua before consuming the water.</li>
+            </ul>
+
+            <div class="ziyarat-container">
+                <div class="title-box">
+                    <h3>SPIRITUAL HIGHLIGHTS</h3>
+                </div>
+
+                <div class="graves-row">
+                    <div class="grave">
+                        <h4>Shifa (Healing)</h4>
+                        <p>Millions believe in the medicinal and spiritual healing properties of this blessed water.</p>
+                        <span class="label">BLESSED CURE</span>
+                    </div>
+
+                    <div class="grave">
+                        <h4>A Living Miracle</h4>
+                        <p>The well's location in a valley of solid rock and its continuous flow is considered a sign of Allah's power.</p>
+                    </div>
+
+                    <div class="grave">
+                        <h4>Gift for Pilgrims</h4>
+                        <p>Taking Zamzam water back to one's home country is a cherished tradition for every Hajj and Umrah traveler.</p>
+                        <span class="label">SACRED SOUVENIR</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="navigation-box">
+                <h2>Navigation</h2>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Hajj & Umrah Guide</a></li>
+                    <li><a href="#">Planning & Preparation</a></li>
+                    <li><a href="#">Umrah</a></li>
+                    <li><a href="#">Hajj</a></li>
+                    <li><a href="#">Madinah</a></li>
+                    <li><a href="#">Makkah</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock content %}

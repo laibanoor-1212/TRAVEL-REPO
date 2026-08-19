@@ -1,0 +1,143 @@
+
+html {
+  font-family: 'Poppins', sans-serif;
+  }
+
+
+.hero{ 
+  position: relative;
+  height: 70vh; }
+.hero img{ 
+  width: 100vw;
+  height: 100%;
+  object-fit: cover; }
+.hero-overlay{ 
+  position: absolute;
+  top: 0;
+  left:0;
+  width: 100%;
+  height: 100%; 
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  text-align: center; 
+}
+.hero-overlay h1{
+  font-size: 3rem;
+  margin:0; 
+}
+.hero-overlay p{ 
+  font-size: 1.2rem;
+}
+
+/*button ko filter karna hai*/
+.days-filter, .category-filter{ 
+  display: flex;
+  justify-content: center;
+  gap:10px;
+  margin: 20px 0;
+  flex-wrap: wrap; 
+}
+.day-btn, .cat-btn{
+  padding:10px 20px;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+  background:#ddd;
+  transition:0.3s;
+ }
+.day-btn.active, .cat-btn.active{ 
+  background:#065f46;
+  color:#fff;
+  }
+
+.packages-wrapper{
+  padding:20px; 
+}
+.packages-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:20px; }
+
+.package-card 
+{ 
+ background:#fff; 
+ border-radius:10px;
+overflow:hidden;
+box-shadow: 0 2px 8px rgba(0,0,0,0.2); 
+transition:0.3s; 
+}
+.package-card:hover{
+  transform: translateY(-5px);
+}
+.package-image { 
+  position:relative;
+
+}
+.package-image img{
+  width:100%;
+  height:200px;
+  object-fit:cover;
+}
+.badge{
+  position: absolute;
+  top:10px;
+  left:10px;
+  background:#065f46;
+  color:#fff;
+  padding:5px 10px;
+  border-radius:5px;
+  font-size:0.8rem;
+}
+
+
+.package-info{
+  padding:15px;
+}
+.package-info h3{
+  margin:0 0 5px 0; 
+  font-size:1.2rem;
+ }
+.package-info p{ 
+  margin:5px 0; 
+}
+.package-details{
+  list-style:none;
+  padding:0; margin:5px 0; 
+  font-size:0.9rem; }
+.package-details li{
+  margin-bottom:3px;
+}
+.price{
+  font-weight:bold;
+  margin-top:10px; 
+}
+
+
+@media (max-width: 768px) {
+  .hero-overlay h1{
+    font-size: 2rem;
+   }
+  .hero-overlay p{
+    font-size: 1rem;
+   }
+}
+.booking-btn{
+  list-style-type: none;
+  text-decoration: none;
+  padding: 12px;
+  color:white;
+  background-color:#065f46;
+  border-radius: 10px;
+}
+.guide-btn{
+  list-style-type: none;
+  text-decoration: none;
+  padding: 12px;
+  color:white;
+  background-color:#065f46;
+  border-radius: 10px;
+}
+.package-btns{
+  margin-top: 20px;
+  display:inline-block;
+}

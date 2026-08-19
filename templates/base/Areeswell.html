@@ -1,0 +1,86 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/Areeswell.css' %}">
+
+<div class="page-container">
+    <div class="breadcrumb">
+        <a href="/">Home</a> /
+        <a href="/ziyarat">Ziyarat</a> /
+        <span>Arees Well</span>
+    </div>
+
+    <div class="content-wrapper">
+        <main class="main-content">
+            <img src="{% static 'images/arees well.jpg' %}" alt="Arees Well">
+
+            <div class="title-box">
+                <h3>Arees Well (Well of the Ring)</h3>
+            </div>
+
+            <p>
+                The Arees Well is located near Masjid Quba in Madinah. It is historically famous as the site where the silver ring of the Prophet Muhammad ﷺ fell and was lost forever during the caliphate of Hazrat Usman (RA).
+            </p>
+
+            <p>
+                This ring was used by the Prophet ﷺ to seal official letters and was inherited by the first three Caliphs. Despite an intensive three-day search led by Hazrat Usman (RA) and his companions, the ring was never recovered, marking a symbolic turning point in Islamic history.
+            </p>
+
+            <p>
+                The well and its surrounding gardens were a place where the Prophet ﷺ used to sit and relax. It serves as a poignant reminder of the personal life of the Prophet ﷺ and the deep emotional connection the Sahaba had with his blessed belongings.
+            </p>
+
+            <div class="title-box">
+                <h4>Visiting Guidelines</h4>
+            </div>
+
+            <ul class="guidelines">
+                <li>Visit the site with a heart full of reflection on the Prophet's ﷺ life.</li>
+                <li>Learn about the history of the Prophetic seal and its significance in statehood.</li>
+                <li>Ensure you follow local regulations regarding access to the historical well area.</li>
+                <li>Respect the heritage sites nearby, including the neighboring gardens of Quba.</li>
+            </ul>
+
+            <div class="ziyarat-container">
+                <div class="title-box">
+                    HISTORICAL LEGACY <br>
+                    <span>OF THE PROPHETIC RING</span>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-card">
+                        <h3>Prophetic Seal</h3>
+                        <span class="label">Lost Heritage</span>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Bir al-Arees</h3>
+                        <span class="label">The Sacred Well</span>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Caliphate</h3>
+                        <span class="label">Historical Era</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="navigation-box">
+                <h2>Navigation</h2>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Hajj & Umrah Guide</a></li>
+                    <li><a href="#">Planning & Preparation</a></li>
+                    <li><a href="#">Umrah</a></li>
+                    <li><a href="#">Hajj</a></li>
+                    <li><a href="#">Madinah</a></li>
+                    <li><a href="#">Makkah</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock content %}

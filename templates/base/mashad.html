@@ -1,0 +1,71 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/mashad.css' %}">
+
+<div class="page-container">
+
+    <div class="breadcrumb">
+        <a href="#">Home</a> /
+        <a href="#">Ziyarat</a> /
+        <span>Mashhad - Imam Raza Shrine</span>
+    </div>
+
+    <div class="main-content">
+
+        <img src="{% static 'images/mashad.png' %}">
+
+        <div class="title-box">
+            <h3>Imam Raza Shrine (Mashhad)</h3>
+        </div>
+
+        <p>
+            The shrine of Imam Raza (A.S) in Mashhad is one of the most sacred pilgrimage sites in Iran.
+            It is the resting place of Imam Ali ibn Musa al-Rida (A.S), the 8th Imam of Islam.
+        </p>
+
+        <p>
+            Millions of pilgrims visit every year to seek blessings, spiritual peace, and connection
+            with the Ahlulbayt (A.S).
+        </p>
+
+        <div class="title-box">
+            <h4>Spiritual Significance</h4>
+        </div>
+
+        <ul class="guidelines">
+            <li>Burial place of Imam Raza (A.S).</li>
+            <li>One of the largest shrine complexes in the world.</li>
+            <li>A center of Islamic learning and spirituality.</li>
+            <li>Visited by millions annually.</li>
+        </ul>
+
+        <div class="ziyarat-container">
+            <div class="title-box">
+                LOCATION & KEY DETAILS
+            </div>
+
+            <div class="graves-row">
+                <div class="grave">
+                    <h3>City</h3>
+                    <span class="label">Mashhad, Iran</span>
+                </div>
+
+                <div class="grave">
+                    <h3>Imam</h3>
+                    <span class="label">Imam Ali al-Raza (A.S)</span>
+                </div>
+
+                <div class="grave">
+                    <h3>Significance</h3>
+                    <span class="label">Major Pilgrimage Site</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

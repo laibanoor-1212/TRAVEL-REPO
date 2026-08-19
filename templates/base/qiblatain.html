@@ -1,0 +1,86 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/qiblatain.css' %}">
+
+<div class="page-container">
+    <div class="breadcrumb">
+        <a href="/">Home</a> /
+        <a href="/ziyarat">Ziyarat</a> /
+        <span>Masjid al-Qiblatain</span>
+    </div>
+
+    <div class="content-wrapper">
+        <main class="main-content">
+            <img src="{% static 'images/qiblatain.png' %}">
+
+            <div class="title-box">
+                <h3>Masjid al-Qiblatain</h3>
+            </div>
+
+            <p>
+                Masjid al-Qiblatain is uniquely famous as the mosque where the command from Allah was received to change the direction of the Qibla. This significant event occurred in the second year of Hijra while the Prophet Muhammad ﷺ was leading the congregation in prayer.
+            </p>
+
+            <p>
+                Originally, Muslims faced Masjid al-Aqsa in Jerusalem during their prayers. During a midday prayer at this site, the Prophet ﷺ received the divine revelation to turn toward the Kaaba in Makkah. He and the entire congregation turned 180 degrees mid-prayer to face the new direction.
+            </p>
+
+            <p>
+                The mosque today is a beautiful architectural landmark, featuring two distinct domes and minarets. It serves as a symbol of obedience to Allah’s commands and a reminder of the historical transition that unified the Muslim Ummah toward a single direction.
+            </p>
+
+            <div class="title-box">
+                <h4>Visiting Guidelines</h4>
+            </div>
+
+            <ul class="guidelines">
+                <li>Offer two rakats of Tahiyat-ul-Masjid upon entering this historic site.</li>
+                <li>Observe the interior architecture which marks the original and current Qibla directions.</li>
+                <li>Take time to reflect on the historical significance of the change in Qibla.</li>
+                <li>Maintain a quiet and respectful atmosphere for those performing their daily prayers.</li>
+            </ul>
+
+            <div class="ziyarat-container">
+                <div class="title-box">
+                    HISTORICAL SIGNIFICANCE <br>
+                    <span>OF THE TWO QIBLAS</span>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-card">
+                        <h3>Divine Order</h3>
+                        <span class="label">Change of Qibla</span>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Jerusalem</h3>
+                        <span class="label">The First Qibla</span>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Makkah</h3>
+                        <span class="label">The Final Qibla</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="navigation-box">
+                <h2>Navigation</h2>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Hajj & Umrah Guide</a></li>
+                    <li><a href="#">Planning & Preparation</a></li>
+                    <li><a href="#">Umrah</a></li>
+                    <li><a href="#">Hajj</a></li>
+                    <li><a href="#">Madinah</a></li>
+                    <li><a href="#">Makkah</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock content %}

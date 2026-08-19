@@ -1,0 +1,86 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/uhad.css' %}">
+
+<div class="page-container">
+    <div class="breadcrumb">
+        <a href="/">Home</a> /
+        <a href="/ziyarat">Ziyarat</a> /
+        <span>Mount Uhud</span>
+    </div>
+
+    <div class="content-wrapper">
+        <main class="main-content">
+            <img src="{% static 'images/uhad 2.jpg' %}" alt="Mount Uhud">
+
+            <div class="title-box">
+                <h3>Mount Uhud</h3>
+            </div>
+
+            <p>
+                Mount Uhud is a majestic mountain range located north of Madinah. It is famous for being the site of the second major battle in Islamic history, the Battle of Uhud, which took place in the third year of Hijra.
+            </p>
+
+            <p>
+                Prophet Muhammad ﷺ once said about this mountain, "Uhud is a mountain which loves us and which we love." It serves as a reminder of the sacrifices made by the early Muslims and the Archery Hill (Jabal al-Rumaat) where the archers were stationed during the battle.
+            </p>
+
+            <p>
+                At the foot of the mountain lies the Martyrs' Cemetery, where seventy companions of the Prophet ﷺ are buried, including his beloved uncle, Hazrat Hamza (RA). Pilgrims visit this site to pay their respects and reflect on the lessons of steadfastness and obedience.
+            </p>
+
+            <div class="title-box">
+                <h4>Visiting Guidelines</h4>
+            </div>
+
+            <ul class="guidelines">
+                <li>Offer Salam to the Martyrs of Uhud at the designated cemetery area.</li>
+                <li>Climb the Archery Hill carefully to get a view of the entire battlefield.</li>
+                <li>Reflect on the historical events and lessons of the Battle of Uhud.</li>
+                <li>Avoid littering and maintain the sanctity of this historical graveyard.</li>
+            </ul>
+
+            <div class="ziyarat-container">
+                <div class="title-box">
+                    HISTORICAL LANDMARKS <br>
+                    <span>OF MOUNT UHUD</span>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-card">
+                        <h3>Martyrs' Grave</h3>
+                        <span class="label">70 Companions</span>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Archery Hill</h3>
+                        <span class="label">Jabal al-Rumaat</span>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Prophetic Love</h3>
+                        <span class="label">Sacred Connection</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="navigation-box">
+                <h2>Navigation</h2>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Hajj & Umrah Guide</a></li>
+                    <li><a href="#">Planning & Preparation</a></li>
+                    <li><a href="#">Umrah</a></li>
+                    <li><a href="#">Hajj</a></li>
+                    <li><a href="#">Madinah</a></li>
+                    <li><a href="#">Makkah</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock content %}

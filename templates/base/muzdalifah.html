@@ -1,0 +1,87 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/muzdalifah.css' %}">
+
+<div class="page-container">
+    <div class="breadcrumb">
+        <a href="#">Home</a> / 
+        <a href="#">Hajj Guide</a> /
+        <span>Muzdalifah</span>
+    </div>
+
+    <div class="content-wrapper">
+        <main class="main-content">
+            <img src="{% static 'images/Muzdalifah.jpg' %}">
+
+            <div class="title-box">
+                <h3>Muzdalifah</h3>
+            </div>
+
+            <p>
+                Muzdalifah is an open, level area near Makkah in the Hejaz region of Saudi Arabia. It is situated between Mount Arafat and Mina and is a crucial location for pilgrims performing the Hajj.
+            </p>
+
+            <p>
+                Pilgrims arrive here after sunset on the 9th of Dhul Hijjah from the plain of Arafat. Staying at Muzdalifah (Wuquf) is a mandatory part of Hajj. It is here that pilgrims perform the combined Maghrib and Isha prayers and spend the night under the open sky.
+            </p>
+
+            <p>
+                A significant ritual performed at Muzdalifah is the collection of pebbles. Pilgrims gather small stones here to be used for the "Stoning of the Jamarat" (Rami) in Mina over the following days.
+            </p>
+
+            <div class="title-box">
+                <h3>Hajj Rituals at Muzdalifah</h3>
+            </div>
+
+            <ul class="guidelines">
+                <li>Perform combined Maghrib and Isha prayers upon arrival.</li>
+                <li>Spend the night in prayer or rest under the open sky (Sunnah).</li>
+                <li>Collect at least 49 to 70 small pebbles for the Rami ritual in Mina.</li>
+                <li>Depart for Mina after the Fajr prayer on the 10th of Dhul Hijjah.</li>
+            </ul>
+
+            <div class="ziyarat-container">
+                <div class="title-box">
+                    <h3>SPIRITUAL SIGNIFICANCE</h3>
+                </div>
+
+                <div class="graves-row">
+                    <div class="grave">
+                        <h4>Mash'ar al-Haram</h4>
+                        <p>A sacred site within Muzdalifah where the Prophet ﷺ stayed and made extensive supplications.</p>
+                        <span class="label">SACRED MONUMENT</span>
+                    </div>
+
+                    <div class="grave">
+                        <h4>Night of Reflection</h4>
+                        <p>The peaceful night spent here allows pilgrims to reflect on their journey before the final rites.</p>
+                    </div>
+
+                    <div class="grave">
+                        <h4>Unity & Equality</h4>
+                        <p>Millions of pilgrims sleep on the ground side-by-side, symbolizing total equality before Allah.</p>
+                        <span class="label">SYMBOLISM</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="navigation-box">
+                <h2>Navigation</h2>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Hajj & Umrah Guide</a></li>
+                    <li><a href="#">Planning & Preparation</a></li>
+                    <li><a href="#">Umrah</a></li>
+                    <li><a href="#">Hajj</a></li>
+                    <li><a href="#">Madinah</a></li>
+                    <li><a href="#">Makkah</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock content %}

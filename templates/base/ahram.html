@@ -1,0 +1,235 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}ahram guide{% endblock %}
+
+{% block content %}
+<div class="ahram-hero">
+    <div class="text-section">
+        <div class="toggle-buttons">  
+            <span class="active">Overview</span>
+            <span>Step-by-step Guide</span>
+        </div>
+
+        <h1 class="main-title">Ahram Guide</h1>
+        <p class="subtitle">Learn how to enter the sacred state of Ihram properly.</p>
+
+    </div>
+
+    <div class="image-collage">
+        <img src="{% static 'images/ahramchild.jpeg' %}" class="img1">
+        <img src="{% static 'images/ahramcloth.jpeg' %}" class="img2">
+        <img src="{% static 'images/manahram.jpeg' %}" class="img3">
+    </div>
+</div>
+
+<div class="bottom-nav">
+    <div class="nav-box active" data-target="content-overview">
+        <i class="fa-solid fa-book"></i> Overview
+    </div>
+
+    <div class="nav-box" data-target="content-rules">
+        <i class="fa-solid fa-ban"></i> Rules of Ahram
+    </div>
+
+    <div class="nav-box" data-target="content-steps">
+        <i class="fa-solid fa-person-walking"></i> How to Wear Ihram
+    </div>
+
+    <div class="nav-box" data-target="content-duas">
+        <i class="fa-solid fa-mosque"></i> Important Duas
+    </div>
+
+    <div class="nav-box" data-target="content-violations">
+        <i class="fa-solid fa-triangle-exclamation"></i> Violations
+    </div>
+</div>
+<!-- ===== CONTENT SECTIONS ===== -->
+<div class="content-area">
+
+    <div id="content-overview" class="content-section active">
+        <h2>What is Ihram?</h2>
+        <p>
+           The term "Ihram" (also spelled Ahram) primarily refers to the sacred state a Muslim pilgrim
+            must enter to perform the rituals of Hajj or Umrah.
+            It involves both a specific state of mind and body, as well as prescribed attire.
+        </p>
+       <h2>The Two Aspects of Ihram:</h2> 
+       
+        <h4>The Sacred State:</h4>
+        <p>This is a state of mind and being where a person makes a formal intention (Niyyah) to perform the pilgrimage and commits to a specific set of rules.
+            This state requires mental and physical purification, including performing a full-body wash (Ghusl) and taking care of personal hygiene (trimming nails and hair) beforehand.
+            Once in this state, certain everyday activities become forbidden (haram), such as using perfumes or scented products, cutting hair or nails, engaging in sexual activity, hunting, or quarreling.
+        </p>
+        <h4>The Clothing</h4> 
+        <p>The term Ihram also refers to the specific, simple clothing worn during this state.
+            <h6>For Men:</h6> It consists of two seamless, unstitched white cloths. One piece is wrapped around the waist (the Izar), and the other is draped over the upper body (the Ridaa). Men must not cover their heads or wear regular stitched clothing or footwear that covers the ankles.
+            <h6>For Women:</h6> Women do not have a specific uniform but must wear normal, modest Islamic clothing that covers their entire body. They are permitted to wear stitched clothes but must not cover their faces or hands while in the state of Ihram.
+        </p>
+           <h3> How to Enter Ihram</h3>
+        <p>Before entering the Ihram state, you should know how to prepare yourself with proper measures.
+            Ihram requires a specific style of clothing for both men and women. No scents should be applied as 
+            it will break your Ihram state. Even if such an event occurs,  you have to change the clothes to a new one. 
+        </p>
+        <p>Steps of entering the Ihram states are to be followed when you decide to perform Hajj or Umrah.  
+            During the Ihram, some rules are different for men and women. However, before entering the Ihram state,
+            you must follow some basic steps.
+        </p>
+        <h4>For Women:</h4>
+        <p>
+            Cut off the nails and clean-up.<br>
+            Taking a purifying bath.<br>
+            Wearing Ihram clothes.<br>
+           Performing the prayer.<br>
+        </p>
+        <h4>For Man:</h4>
+        <p>Cutting the nails and beard.<br>
+            Shaping the mustache.<br>
+            Taking a purifying bath.<br>
+            Wearing Ihram clothes.<br>
+            Performing the prayer.<br>
+        </p>
+    </div>
+
+    <div id="content-rules" class="content-section">
+        <h2>Ahram Rules</h2>
+        <p>
+            During Ihram, both men and women must adhere to general prohibitions like avoiding perfume, cutting hair or nails
+            , sexual activity, hunting, and engaging in arguments.
+            Specific clothing rules include men wearing two unstitched white cloths and women wearing modest,
+            non-fragrant clothing that covers the head, while avoiding niqabs and face coverings.
+            Women must also avoid gloves and heavy makeup. 
+        </p>
+       <h3>General rules for both men and women</h3> 
+        <h6> Prohibited actions:</h6> Sexual relations and all related activity, hunting/killing animals or insects (with exceptions for self-defense), and any form of fighting or quarreling.
+        <h6>Grooming: </h6>Do not cut or trim any hair or nails.
+        <h6>Scented products:</h6> Do not use any perfumes, scented lotions, or other fragrant products.
+        <h6>Marriage:</h6> Do not get married or propose to anyone. 
+
+       <h3> Specific rules for men</h3>
+        <h6>Clothing:</h6> Wear two unstitched, white cloths (Ihram garments) and avoid wearing any stitched clothing, such as shirts, pants, or underwear.
+        <h6>Head covering:</h6> Do not cover your head with a cap or anything similar.
+        <h6>Footwear:</h6> You can wear sandals, but they should not have any covering on the top of the feet.
+       <h3> Specific rules for women</h3>
+        <h6>Clothing:</h6> Wear any modest, non-fragrant clothing that covers the entire body except for the face and hands.
+        <h6>Head covering</h6> You must cover your head with a hijab or scarf, but you are not allowed to cover your face.
+        <h6>Face covering:</h6> Do not wear a niqab, burqa, or any other face-covering veil.
+        <h6>Gloves:</h6> Do not wear gloves.
+        <h6>Makeup: </h6>Avoid using makeup.
+        <h6>Jewelry: </h6>Avoid wearing jewelry.  
+    </div>
+
+    <div id="content-steps" class="content-section">
+        <h2>How to Wear the Ihram</h2>
+        <p>
+            To wear Ihram for Umrah, a man must perform ritual purification, don two white unstitched cloths (Izar and Rida), ensure specific parts of the body are covered/uncovered, and make the intention at the Miqat. 
+<h3>Preparations (Before Wearing the Garments)</h3>
+<p>Before putting on the Ihram clothing, it is highly recommended (Sunnah) to perform the following acts of cleanliness: </p>
+<h6>Ghusl:</h6> Take a full ritual bath with the intention of purification for Ihram. If a bath is not possible, perform Wudu (ablution).
+<h6>Grooming:</h6> Trim your nails, remove unwanted body hair (armpits and pubic area), and trim your mustache/beard.
+<h6>Apply Fragrance (Men Only):</h6> Apply non-scented perfume or attar to your body (hair, beard, chest), but not to the Ihram garments themselves. 
+<h3>Wearing the Ihram Garments </h3>
+The male Ihram consists of two white, unstitched pieces of cloth. No underwear or other stitched clothing is permitted. 
+<h6>Lower Garment (Izar):</h6> Wrap one of the cloths around your waist to cover the area from your navel to below your ankles.
+Secure it by rolling the top edge inward several times or using an unstitched Ihram belt/pouch to keep it in place. Do not use safety pins or buttons.
+Ensure it is tight enough to be secure but loose enough for comfortable movement.
+<h6>Upper Garment (Rida):</h6> Drape the second cloth over your upper body like a shawl, covering both shoulders, chest, and back.
+Both shoulders must be covered at all times, except during the Tawaf (circumambulation of the Kaaba), when you perform Idtiba' (exposing the right shoulder). After completing Tawaf, cover the right shoulder again.
+<h6>Footwear: </h6>Wear sandals or flip-flops that leave the top of your feet and your ankles exposed. 
+
+        </p>
+    </div>
+
+    <div id="content-duas" class="content-section">
+        <h2>Duas Before Entering Ihram</h2>
+
+        <p>It is recommended that one recites tasbeeh, 
+            tahleel and takbeer.
+        </p>
+
+
+        <p style="direction: rtl; font-size: 1.6rem; text-align: right;">
+         سُبْحَانَ اللّٰهِ ، لَا إِلٰهَ إِلَّا اللّٰهُ ، اَللّٰهُ أَكْبَرُ
+        </p>
+
+
+        <p><strong>Subhan Allah, La ilaha ill Allah,
+             Allahu Akbar.</strong></p>
+
+        <h2 id="umrah-intention-heading">Du’a for Making the Intention for Performing Umrah</h2>
+
+        <p>Once you have entered the state of Ihram, perform two rakahs of Sunnat-ul Ihram. Then, make the intention of performing Umrah in the following words:</p>
+        <p style="direction: rtl; text-align: right; font-size: 1.5rem; margin-top: 0.8rem;">
+         اللَّهُمَّ إِنِّيْ أُرِيْدُ الْعُمْرَةَ فَيَسِّرْهَا لِيْ وَتَقَبَّلْهَا مِنِّيْ
+         </p>
+
+  
+        <p style="margin-top: 0.4rem;">
+        <strong>Allahumma innee uridul umrah; fayassir haa li wa taqabbalahaa minnee.</strong>
+        </p>
+        <p style="margin-top: 0.4rem;">
+        “O Allah! I intend to perform Umrah. Make it easy for me and accept it in Your books.”
+        </p>
+
+        <h2 id="talbiyah-heading">Talbiyah (لَبَّيْكَ)</h2>
+
+ 
+        <p style="direction: rtl; text-align: right; font-size: 1.6rem; margin-top: 0.6rem;">
+         لَبَّيْكَ اللهُمَّ لَبَّيْكَ، لَبَّيْكَ لَا شَرِيْكَ لَكَ لَبَّيْك، إِنَّ الْحَمْدَ وَالنِّعْمَةَ لَكَ وَالْمُلْكَ، لَا شَرِيْكَ لَكَ
+        </p>
+
+  
+        <p style="margin-top: 0.5rem;">
+        <strong>Labbayka Allahumma Labbayk. Labbayka La Sharika Laka Labbayk. Innal Hamda Wan-ni’mata laka Wal-mulk. La Sharika Lak.</strong>
+        </p>
+
+  
+        <p style="margin-top: 0.4rem; color: #444;">
+         “Here I am at your service, O Allah, Here I am at Your service. Here I am at Your service, You have no partner, here I am at Your service. Truly all praise and blessings belong to You, and so does sovereignty. You have no partner.”
+        </p>
+
+        <h2 id="enter-masjid-heading">Dua as you enter the Masjid Al-Haram</h2>
+
+        <p>When you enter Masjid Al-Haram to perform Umrah, place your right foot first and recite the following dua.</p>
+
+ 
+        <p style="direction: rtl; text-align: right; font-size: 1.4rem; margin-top: 0.6rem;">
+          بِسْمِ اللَّهِ وَالْحَمْدُ لِلَّهِ وَالصَّلَاةُ عَلَىٰ رَسُولِ اللَّهِ ۚ اللَّهُمَّ اغْفِرْ لِي ذُنُوبِي وَافْتَحْ لِي أَبْوَابَ رَحْمَتِكَ
+        </p>
+
+ 
+        <p style="margin-top: 0.4rem;">
+            <strong>Bismillahi wal hamdulillahi wassalatu a’laa Rasulillah, Allahummaghfirlee zunoobee wa iftahlee abwaaba rahmatik.</strong>
+        </p>
+
+ 
+        <p style="margin-top: 0.4rem;">
+         “I begin in the name of Allah, all praise be to Him, and blessings be upon the Prophet of Allah; O Allah, forgive my sins and open for me the gates of Your mercy.”
+        </p>
+    </div>
+
+    <div id="content-violations" class="content-section">
+        <h2>Ihram Violations & Penalties</h2>
+        <p>Learn what breaks the Ihram state and what penalties are required.</p>
+    </div>
+
+</div>
+
+
+
+<script>
+ document.querySelectorAll('.nav-box').forEach(box=>{
+    box.addEventListener('click',()=> {
+    document.querySelectorAll('.nav-box').forEach(b=>
+        b.classList.remove('active'));
+        box.classList.add('active');
+    let target=box.getAttribute('data-target');
+    document.querySelectorAll('.content-section').forEach(section=>{
+        section.classList.remove('active');
+    });
+    document.getElementById(target).classList.add('active');
+    });
+ });
+ 
+</script>
+{% endblock content %}

@@ -1,0 +1,94 @@
+{% extends "base/base.html" %}
+{% block content %}
+{% load static %}
+
+
+<div class="ahram-hero">
+    <div class="text-section">
+        <div class="toggle-buttons">  
+            <span class="active">Overview</span>
+            <span>Step-by-step Guide</span>
+        </div>
+
+        <h1 class="main-title">Tawaf Guide</h1>
+        <p class="subtitle">Learn how to perform the sacred Tawaf around the Kaaba.</p>
+    </div>
+
+    <div class="image-collage">
+        <img src="{% static 'images/hajr-e-aswad.jpeg' %}" class="img1">
+        <img src="{% static 'images/tawaf5.jpeg' %}" class="img2">
+        <img src="{% static 'images/zamzamkhajoor.jpeg' %}" class="img3">
+    </div>
+</div>
+<div class="bottom-nav">
+    <div class="nav-box active" data-target="content-overview">
+        <i class="fa-solid fa-book"></i> halq&taqser 
+    </div>
+
+    <div class="nav-box" data-target="content-rules">
+        <i class="fa-solid fa-info-circle"></i> Rules of halq&taqser
+    </div>
+
+    <div class="nav-box" data-target="content-steps">
+        <i class="fa-solid fa-arrows-spin"></i> for Men
+    </div>
+
+    <div class="nav-box" data-target="content-duas">
+        <i class="fa-solid fa-mosque"></i> for Women
+    </div>
+
+   
+</div>
+<div class="content-area">
+
+   
+    <div id="content-overview" class="content-section active">
+        
+    
+    </div>
+
+   
+    <div id="content-rules" class="content-section">
+        
+    </div>
+
+    
+    <div id="content-steps" class="content-section">
+       
+    </div>
+
+    
+    <div id="content-duas" class="content-section">
+        
+
+       
+
+        
+    </div>
+
+   
+   
+
+</div>
+
+
+<script>
+    document.querySelectorAll('.nav-box').forEach(box => {
+        box.addEventListener('click', () => {
+
+            document.querySelectorAll('.nav-box').forEach(b => b.classList.remove('active'));
+            box.classList.add('active');
+
+            let target = box.getAttribute('data-target');
+
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            document.getElementById(target).classList.add('active');
+        });
+    });
+</script>
+
+
+{% endblock %}

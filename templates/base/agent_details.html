@@ -1,0 +1,165 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content %} 
+  
+    <link rel="stylesheet" href="{% static 'css/agent_details.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> 
+    <div class="page-wrapper">
+    <section class="hero-section">
+        <div class="hero-image">
+          
+            <img src="{% static 'images/makkah.png'%}">
+        </div>
+        <div class="hero-content">
+            <h1>KARVAN-E-ROYAL</h1>
+            <p>
+            Karvan-e-Royal is on a mission to redefine your Hajj & Umrah experience. 
+            Our commitment is to prioritize customer satisfaction by delivering 
+            high-quality and cost-effective air travel services that meet your 
+            needs and exceed your expectations.
+            </p>
+            <p class="quran-quote">
+                “Indeed, the first House established for mankind was that at Makkah.”
+            </p>
+        </div>
+    </section>
+    
+        <section class="services-container">
+    <div class="cards-wrapper">
+        <div class="service-card">
+            <img src="{% static 'images/k1.jpg'%}">
+        </div>
+        <div class="service-card">
+            <img src="{% static 'images/k2.jpg'%}">
+        </div>
+        <div class="service-card">
+             <img src="{% static 'images/k3.jpg'%}">
+        </div>
+        <div class="service-card">
+            <img src="{% static 'images/k4.jpg'%}">
+        </div>
+    </div>
+</section>
+    <section class="info-section">
+        <h2>Our Hajj & Umrah Services</h2>
+        <div class="info-grid">
+
+            <div class="info-box">
+                <i class="fa-solid fa-kaaba"></i>
+                <h4>Complete Guidance</h4>
+                <p>Step-by-step guidance for all rituals of Hajj and Umrah.</p>
+            </div>
+
+            <div class="info-box">
+                <i class="fa-solid fa-hotel"></i>
+                <h4>Premium Hotels</h4>
+                <p>Stay in top hotels near Haram with comfortable facilities.</p>
+            </div>
+
+            <div class="info-box">
+                <i class="fa-solid fa-bus"></i>
+                <h4>Transport Services</h4>
+                <p>Reliable transport for Ziyarat and travel.</p>
+            </div>
+
+            <div class="info-box">
+                <i class="fa-solid fa-headset"></i>
+                <h4>24/7 Support</h4>
+                <p>Our team is available anytime to assist pilgrims.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="hotels-section">
+        <h2>Top Hotels Near Haram</h2>
+        <div class="hotel-grid">
+
+            <div class="hotel-card">
+                <img src="{% static 'images/swissotel.jpg' %}">
+                <h4>Swissotel Makkah</h4>
+                <p>Luxury stay just steps from Masjid al-Haram.</p>
+            </div>
+
+            <div class="hotel-card">
+                <img src="{% static 'images/pullman.jpg' %}">
+                <h4>Pullman ZamZam</h4>
+                <p>Comfortable rooms with Haram view.</p>
+            </div>
+
+            <div class="hotel-card">
+                <img src="{% static 'images/Anwar.jpg' %}">
+                <h4>Anwar Al Madinah</h4>
+                <p>Premium hotel near Masjid Nabawi.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="royal-card-container">
+    <div class="royal-card">
+        <h3 class="gold-text">CONTACT INFO</h3>
+        <div class="info-list">
+            <div class="info-item">
+                <i class="fa-solid fa-location-dot gold-icon"></i>
+                <p>Plot # 4-c, Jami Commercial, Main Khayaban-e-Ittehad, Phase-7, D.H.A., Karachi, Pakistan.</p>
+            </div>
+<div class="info-item">
+    <i class="fa-solid fa-phone gold-icon"></i>
+    <p>UAN : (021) 111 786 666</p>
+    </div>
+<div class="info-item">
+    <i class="fa-solid fa-envelope gold-icon"></i>
+    <p>hajj@royalgroup.com.pk</p>
+    </div>
+    </div>
+    </div>
+</div>
+</div>
+        <section class="reviews-section">
+    <div class="page-wrapper">
+        <h2 class="section-heading">What Our Pilgrims Say</h2>
+        <div class="reviews-grid">
+            
+        <div class="review-item">
+            <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
+            <p class="review-text">Karvan-e-Royal made my Umrah journey so peaceful. Their management and choice of hotels are excellent.</p>
+            <div class="reviewer-info">
+            <img src="https://ui-avatars.com/api/?name=Zahid+Khan&background=1a4d2e&color=fff">
+        <div>
+            <h4>Zahid Khan</h4>
+            <span>Umrah 2024</span>
+            </div>
+            </div>
+            </div>
+
+    <div class="review-item">
+        <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
+        <p class="review-text">Highly professional team. They fulfill every promise they make. Best experience for Hajj with family.</p>
+        <div class="reviewer-info">
+        <img src="https://ui-avatars.com/api/?name=Maryam+Bibi&background=1a4d2e&color=fff">
+        <div>
+            <h4>Maryam Bibi</h4>
+            <span>Hajj 2023</span>
+            </div>
+            </div>
+            </div>
+
+        <div class="review-item">
+            <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
+            <p class="review-text">Excellent services and very cooperative staff. All ziyarat were properly guided.</p>
+            <div class="reviewer-info">
+            <img src="https://ui-avatars.com/api/?name=Irfan+Ali&background=1a4d2e&color=fff">
+            <div>
+            <h4>Irfan Ali</h4>
+            <span>Umrah 2025</span>
+            </div>
+            </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+{% endblock content %}

@@ -1,0 +1,87 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/jablerehmat.css' %}">
+
+<div class="page-container">
+    <div class="breadcrumb">
+        <a href="#">Home</a> / 
+        <a href="#">Ziyarat</a> /
+        <span>Jabal-e-Rehmat</span>
+    </div>
+
+    <div class="content-wrapper">
+        <main class="main-content">
+            <img src="{% static 'images/jablerehmat.png' %}">
+
+            <div class="title-box">
+                <h3>Jabal-e-Rehmat (Mount of Mercy)</h3>
+            </div>
+
+            <p>
+                Jabal-e-Rehmat is a small hill located in the center of the Plain of Arafat. It is famously known as the place where Prophet Muhammad ﷺ stood and delivered the Farewell Sermon to over 100,000 companions. This sermon established the core principles of human rights, equality, and justice in Islam.
+            </p>
+
+            <p>
+                Historical traditions also suggest that this was the place where Hazrat Adam (AS) and Hazrat Hawa (AS) were reunited on Earth after being sent down from Paradise. Therefore, it is a symbol of forgiveness, mercy, and the reunion of humanity with their Creator.
+            </p>
+
+            <p>
+                During the day of Arafat (9th Dhul Hijjah), pilgrims gather around this hill to engage in intense prayer and supplication. While it is not a mandatory requirement to climb the hill, many pilgrims do so to reflect on the Prophet's ﷺ final message.
+            </p>
+
+            <div class="title-box">
+                <h3>Historical Significance</h3>
+            </div>
+
+            <ul class="guidelines">
+                <li><strong>The Farewell Sermon:</strong> The site where the Prophet ﷺ declared: "No Arab has superiority over a non-Arab, nor a white over a black, except by piety."</li>
+                <li><strong>Prayer at Arafat:</strong> Spending the day here (Wuquf) is the most essential part of Hajj; without it, the Hajj is considered incomplete.</li>
+                <li><strong>Pillar of Remembrance:</strong> A white stone pillar stands at the top of the hill to mark the location.</li>
+                <li><strong>Atmosphere:</strong> On the day of Hajj, the entire hill and the surrounding plains turn white as millions of pilgrims in Ihram gather for prayer.</li>
+            </ul>
+
+            <div class="ziyarat-container">
+                <div class="title-box">
+                    <h3>SPIRITUAL REFLECTIONS</h3>
+                </div>
+
+                <div class="graves-row">
+                    <div class="grave">
+                        <h4>Divine Forgiveness</h4>
+                        <p>It is believed that on the Day of Arafat, Allah forgives more people than on any other day of the year.</p>
+                        <span class="label">DAY OF MERCY</span>
+                    </div>
+
+                    <div class="grave">
+                        <h4>Universal Brotherhood</h4>
+                        <p>The sermon delivered here remains a timeless manifesto for human equality and the protection of women's rights.</p>
+                    </div>
+
+                    <div class="grave">
+                        <h4>The Climax of Hajj</h4>
+                        <p>Standing at the foot of Jabal-e-Rehmat symbolizes the gathering of all mankind on the Day of Judgment.</p>
+                        <span class="label">SPIRITUAL PEAK</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="navigation-box">
+                <h2>Navigation</h2>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Hajj & Umrah Guide</a></li>
+                    <li><a href="#">Planning & Preparation</a></li>
+                    <li><a href="#">Umrah</a></li>
+                    <li><a href="#">Hajj</a></li>
+                    <li><a href="#">Madinah</a></li>
+                    <li><a href="#">Makkah</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock content %}

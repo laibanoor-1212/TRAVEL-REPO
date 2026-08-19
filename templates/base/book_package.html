@@ -1,0 +1,32 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/booking.css' %}">
+
+{% block content %}
+<div class="booking-container">
+    <h2>Book Package: {{ package.name }}</h2>
+
+    <div class="package-details">
+        <div class="stakeholder-info">
+            <img src="{{ package.stakeholder.logo.url }}" alt="{{ package.stakeholder.name }}">
+            <h3>{{ package.stakeholder.name }}</h3>
+        </div>
+
+        <ul class="details-list">
+            <li><strong>Category:</strong> {{ package.category }}</li>
+            <li><strong>Price:</strong> USD {{ package.price }}</li>
+            <li><strong>Duration:</strong> {{ package.duration }} Days</li>
+            <li><strong>Hotels:</strong> {{ package.hotels }}</li>
+            <li><strong>Meals:</strong> {{ package.meals }}</li>
+            <li><strong>Transport:</strong> {{ package.transport }}</li>
+        </ul>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="book-btn">Confirm Booking</button>
+        <a href="{% url 'base:user_package_list' %}" class="cancel-btn">Cancel</a>
+    </form>
+</div>
+{% endblock %}

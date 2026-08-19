@@ -1,0 +1,87 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/birthplace.css' %}">
+
+<div class="page-container">
+    <div class="breadcrumb">
+        <a href="#">Home</a> / 
+        <a href="#">Ziyarat</a> /
+        <span>Birthplace of the Prophet ﷺ</span>
+    </div>
+
+    <div class="content-wrapper">
+        <main class="main-content">
+            <img src="{% static 'images/Birthplace.png' %}" alt="Birthplace of Prophet Muhammad ﷺ">
+
+            <div class="title-box">
+                <h3>Birthplace of Prophet Muhammad ﷺ</h3>
+            </div>
+
+            <p>
+                The birthplace of Prophet Muhammad ﷺ is located in the Suq al-Layl area of Makkah, very close to the Masjid al-Haram. It is traditionally believed to be the exact spot where the Prophet ﷺ was born in the Year of the Elephant (570 CE).
+            </p>
+
+            <p>
+                The site originally belonged to the Hashim clan. After the migration to Madinah, the house changed hands several times. In the 20th century, to preserve the location while preventing unauthorized rituals, the building was converted into a library known as <strong>Maktabat Makkah al-Mukarramah</strong>.
+            </p>
+
+            <p>
+                While the structure seen today is not the original house from the 6th century, the location remains a focal point for pilgrims who wish to reflect on the humble beginnings of the final Messenger of Allah.
+            </p>
+
+            <div class="title-box">
+                <h3>Historical Context</h3>
+            </div>
+
+            <ul class="guidelines">
+                <li><strong>Location:</strong> Situated in the valley of She'eb Abi Talib, east of the Grand Mosque.</li>
+                <li><strong>The Library:</strong> Established in 1951 to protect the site and serve as a center for Islamic knowledge.</li>
+                <li><strong>Access:</strong> Visitors can view the building from the outside while walking between the mosque and the nearby hotels.</li>
+                <li><strong>Significance:</strong> It marks the start of the life of the man who transformed world history.</li>
+            </ul>
+
+            <div class="ziyarat-container">
+                <div class="title-box">
+                    <h3>SPIRITUAL REFLECTIONS</h3>
+                </div>
+
+                <div class="graves-row">
+                    <div class="grave">
+                        <h4>A Humble Beginning</h4>
+                        <p>The Prophet ﷺ was born into the noble Banu Hashim clan but as an orphan, teaching us that greatness comes from character, not wealth.</p>
+                        <span class="label">MERCY TO MANKIND</span>
+                    </div>
+
+                    <div class="grave">
+                        <h4>Makkah Library</h4>
+                        <p>The site now preserves thousands of books and rare manuscripts, symbolizing the first revelation: "Read!"</p>
+                    </div>
+
+                    <div class="grave">
+                        <h4>Proximity to Haram</h4>
+                        <p>Being so close to the Kaaba, the Prophet's ﷺ life was intertwined with the House of Allah from his very first breath.</p>
+                        <span class="label">HISTORIC SITE</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="navigation-box">
+                <h2>Navigation</h2>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Hajj & Umrah Guide</a></li>
+                    <li><a href="#">Planning & Preparation</a></li>
+                    <li><a href="#">Umrah</a></li>
+                    <li><a href="#">Hajj</a></li>
+                    <li><a href="#">Madinah</a></li>
+                    <li><a href="#">Makkah</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock content %}

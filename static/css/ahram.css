@@ -1,0 +1,101 @@
+html {
+  font-family: 'Poppins', sans-serif;
+  }
+.ahram-hero {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 50px 7%;
+    gap:70px;
+} 
+
+.text-section .main-title {
+    font-size: 55px;
+    font-weight: 700;
+    color:#064e3b;
+}
+
+.text-section .subtitle {
+    font-size: 22px;
+    margin-top: 10px;
+    color:#064e3b;
+}
+
+.toggle-buttons span {
+    font-size: 18px;
+    margin-right: 20px;
+    cursor: pointer;
+    color:#064e3b;
+}
+
+.toggle-buttons .active {
+    background: #e9e4ff;
+    padding: 8px 20px;
+    border-radius: 20px;
+}
+
+.share-icons {
+    margin-top: 25px;
+    font-size: 22px;
+}
+
+.share-icons i {
+    margin-left: 15px;
+    cursor: pointer;
+}
+
+
+.image-collage img {
+    border-radius: 18px;
+    width: 210px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+.img1 { transform: translateY(-30px); }
+.img2 { transform: translateX(-40px); }
+.img3 { transform: translateY(-20px)  }
+
+.content-area {
+    padding: 30px 7%;
+    margin-top: 30px;
+}
+
+.content-section { display: none; }
+.content-section.active { display: block; }
+
+
+.bottom-nav {
+    display: flex;
+    justify-content: space-around;
+    padding: 15px 7%;
+    background: white;
+    border-top: 1px solid #eee;
+    position: sticky;
+    bottom: 0;
+}
+
+.nav-box {
+    background: #f4f1ff;
+    padding: 12px 22px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    transition: 0.3s;
+}
+
+.nav-box:hover {
+    background: #e6e0ff;
+}
+
+.nav-box.active {
+    background:#064e3b;
+    color: white;
+}
+
+
+.imgtawaf{
+    margin-left:220px;
+}

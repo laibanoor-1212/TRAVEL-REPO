@@ -1,0 +1,72 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/tehran.css' %}">
+
+<div class="page-container">
+
+    <div class="breadcrumb">
+        <a href="#">Home</a> /
+        <a href="#">Ziyarat</a> /
+        <span>Tehran</span>
+    </div>
+
+    <div class="main-content">
+
+        <img src="{% static 'images/tehran.png' %}">
+
+        <div class="title-box">
+            <h3>Tehran Ziyarat Guide</h3>
+        </div>
+
+        <p>
+            Tehran, the capital of Iran, is home to several important Islamic shrines 
+            and historical religious sites. While it is not as famous as Mashhad or Qom, 
+            it still holds deep spiritual and historical significance for pilgrims.
+        </p>
+
+        <p>
+            Pilgrims visiting Tehran can explore sacred shrines, historic mosques, and 
+            spiritual centers connected with Ahlulbayt (A.S) and Islamic history.
+        </p>
+
+        <div class="title-box">
+            <h4>Famous Ziyarat Places in Tehran</h4>
+        </div>
+
+        <ul class="guidelines">
+            <li>Imam Khomeini Shrine – One of the largest religious complexes in Iran.</li>
+            <li>Shah Abdol Azim Shrine – A major pilgrimage site in Rey.</li>
+            <li>Imamzadeh Saleh Shrine – Located in Tajrish, very popular among visitors.</li>
+            <li>Historic mosques and Imamzadeh sites across the city.</li>
+        </ul>
+
+        <div class="ziyarat-container">
+            <div class="title-box">
+                LOCATION & KEY DETAILS
+            </div>
+
+            <div class="graves-row">
+                <div class="grave">
+                    <h3>City</h3>
+                    <span class="label">Tehran, Iran</span>
+                </div>
+
+                <div class="grave">
+                    <h3>Main Sites</h3>
+                    <span class="label">Multiple Shrines</span>
+                </div>
+
+                <div class="grave">
+                    <h3>Importance</h3>
+                    <span class="label">Historic & Spiritual</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

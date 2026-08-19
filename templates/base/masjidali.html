@@ -1,0 +1,86 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/masjidali.css' %}">
+
+<div class="page-container">
+    <div class="breadcrumb">
+        <a href="/">Home</a> /
+        <a href="/ziyarat">Ziyarat</a> /
+        <span>Masjid Ali ibn Talib</span>
+    </div>
+
+    <div class="content-wrapper">
+        <main class="main-content">
+            <img src="{% static 'images/masjid ali.png' %}" alt="Masjid Ali ibn Talib">
+
+            <div class="title-box">
+                <h3>Masjid al-Imam Ali ibn Talib</h3>
+            </div>
+
+            <p>
+                Masjid al-Imam Ali ibn Talib is located within the central area of Madinah. It is named after the cousin and son-in-law of the Prophet Muhammad ﷺ, the fourth Caliph of Islam.
+            </p>
+
+            <p>
+                Historical records indicate that the Prophet Muhammad ﷺ performed Eid prayers at this site. Later, Hazrat Ali (RA) continued this noble practice during his reign as Caliph, maintaining the sanctity of the location.
+            </p>
+
+            <p>
+                The mosque is a beautiful representation of Islamic heritage. Many pilgrims visit this site to reflect on the bravery and wisdom of Imam Ali (RA) and his role in early Islamic history.
+            </p>
+
+            <div class="title-box">
+                <h4>Visiting Guidelines</h4>
+            </div>
+
+            <ul class="guidelines">
+                <li>Ensure you are in a state of Wudu before entering.</li>
+                <li>Offer voluntary prayers and engage in Dhikr.</li>
+                <li>Respect the historical structure and its surroundings.</li>
+                <li>Refrain from loud conversations within the premises.</li>
+            </ul>
+
+            <div class="ziyarat-container">
+                <div class="title-box">
+                    HISTORICAL LEGACY <br>
+                    <span>OF IMAM ALI (RA)</span>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-card">
+                        <h3>Sacred Site</h3>
+                        <span class="label">Eid Salah Point</span>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Fourth Caliph</h3>
+                        <span class="label">Bravery & Wisdom</span>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Heritage</h3>
+                        <span class="label">Islamic Architecture</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="navigation-box">
+                <h2>Navigation</h2>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Hajj & Umrah Guide</a></li>
+                    <li><a href="#">Planning & Preparation</a></li>
+                    <li><a href="#">Umrah</a></li>
+                    <li><a href="#">Hajj</a></li>
+                    <li><a href="#">Madinah</a></li>
+                    <li><a href="#">Makkah</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock content %}

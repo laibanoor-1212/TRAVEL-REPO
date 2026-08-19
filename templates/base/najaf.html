@@ -1,0 +1,70 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/najaf.css' %}">
+
+<div class="page-container">
+
+    <div class="breadcrumb">
+        <a href="#">Home</a> /
+        <a href="#">Ziyarat</a> /
+        <span>Najaf</span>
+    </div>
+
+    <div class="main-content">
+
+        <img src="{% static 'images/najaf.png' %}">
+
+        <div class="title-box">
+            <h3>Najaf Ziyarat Guide</h3>
+        </div>
+
+        <p>
+            Najaf is one of the holiest cities in Islam, located in Iraq. 
+            It is the resting place of Imam Ali ibn Abi Talib (A.S), the first Imam and 
+            cousin of Prophet Muhammad (PBUH).
+        </p>
+
+        <p>
+            Pilgrims from around the world visit Najaf to seek blessings and spiritual peace 
+            at the shrine of Imam Ali (A.S).
+        </p>
+
+        <div class="title-box">
+            <h4>Spiritual Significance</h4>
+        </div>
+
+        <ul class="guidelines">
+            <li>Burial place of Imam Ali (A.S).</li>
+            <li>One of the most sacred cities in Islam.</li>
+            <li>Center of Islamic scholarship and learning.</li>
+            <li>Nearby Wadi-us-Salaam (largest cemetery in the world).</li>
+        </ul>
+
+        <div class="ziyarat-container">
+            <div class="title-box">LOCATION & KEY DETAILS</div>
+
+            <div class="graves-row">
+                <div class="grave">
+                    <h3>City</h3>
+                    <span class="label">Najaf, Iraq</span>
+                </div>
+
+                <div class="grave">
+                    <h3>Imam</h3>
+                    <span class="label">Imam Ali (A.S)</span>
+                </div>
+
+                <div class="grave">
+                    <h3>Significance</h3>
+                    <span class="label">Major Pilgrimage Site</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

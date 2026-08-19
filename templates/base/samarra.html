@@ -1,0 +1,69 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/samarra.css' %}">
+
+<div class="page-container">
+
+    <div class="breadcrumb">
+        <a href="#">Home</a> /
+        <a href="#">Ziyarat</a> /
+        <span>Samarra</span>
+    </div>
+
+    <div class="main-content">
+
+        <img src="{% static 'images/samarra.png' %}">
+
+        <div class="title-box">
+            <h3>Samarra Ziyarat Guide</h3>
+        </div>
+
+        <p>
+            Samarra is a historic city in Iraq and home to the shrine of 
+            Imam Ali al-Hadi (A.S) and Imam Hasan al-Askari (A.S).
+        </p>
+
+        <p>
+            It is also associated with the occultation of Imam Mahdi (A.J), 
+            making it a deeply significant place for pilgrims.
+        </p>
+
+        <div class="title-box">
+            <h4>Spiritual Significance</h4>
+        </div>
+
+        <ul class="guidelines">
+            <li>Burial place of Imam Ali al-Hadi (A.S).</li>
+            <li>Burial place of Imam Hasan al-Askari (A.S).</li>
+            <li>Associated with Imam Mahdi (A.J).</li>
+            <li>Historic and sacred Islamic site.</li>
+        </ul>
+
+        <div class="ziyarat-container">
+            <div class="title-box">LOCATION & KEY DETAILS</div>
+
+            <div class="graves-row">
+                <div class="grave">
+                    <h3>City</h3>
+                    <span class="label">Samarra, Iraq</span>
+                </div>
+
+                <div class="grave">
+                    <h3>Imams</h3>
+                    <span class="label">Imam Hadi (A.S), Imam Askari (A.S)</span>
+                </div>
+
+                <div class="grave">
+                    <h3>Significance</h3>
+                    <span class="label">Sacred Shrine</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

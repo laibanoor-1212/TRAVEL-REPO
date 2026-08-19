@@ -1,0 +1,86 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/masjidjummah.css' %}">
+
+<div class="page-container">
+    <div class="breadcrumb">
+        <a href="/">Home</a> /
+        <a href="/ziyarat">Ziyarat</a> /
+        <span>Masjid al-Jummah</span>
+    </div>
+
+    <div class="content-wrapper">
+        <main class="main-content">
+            <img src="{% static 'images/al-jummah.png' %}">
+
+            <div class="title-box">
+                <h3>Masjid al-Jummah</h3>
+            </div>
+
+            <p>
+                Masjid al-Jummah holds a prestigious place in Islamic history as the site where the Prophet Muhammad ﷺ performed the first-ever congregational Friday prayer. This event took place while he was traveling from Quba to the heart of Madinah.
+            </p>
+
+            <p>
+                The tribe of Bani Amr bin Auf had hosted the Prophet ﷺ in Quba for several days. As he departed for the city on a Friday, the time for prayer arrived while he was in the valley of Ranuna. There, he delivered the first Khutbah (sermon) and led approximately one hundred companions in prayer.
+            </p>
+
+            <p>
+                The mosque is also known by other names such as Masjid al-Wadi and Masjid Atikah. The modern structure is beautifully designed with a large central dome and several smaller ones, serving as a reminder of the institutionalization of Jummah as a weekly day of gathering for Muslims.
+            </p>
+
+            <div class="title-box">
+                <h4>Visiting Guidelines</h4>
+            </div>
+
+            <ul class="guidelines">
+                <li>If possible, visit on a Friday to experience the spirit of the first congregation.</li>
+                <li>Offer two rakats of prayer and reflect on the first Khutbah delivered by the Prophet ﷺ.</li>
+                <li>Observe the unique architectural blend of traditional and modern Islamic styles.</li>
+                <li>Ensure you do not disturb those engaged in worship or recitation of the Quran.</li>
+            </ul>
+
+            <div class="ziyarat-container">
+                <div class="title-box">
+                    HISTORICAL SIGNIFICANCE <br>
+                    <span>OF THE FIRST CONGREGATION</span>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-card">
+                        <h3>First Khutbah</h3>
+                        <span class="label">Historical Sermon</span>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Wadi Ranuna</h3>
+                        <span class="label">Sacred Valley</span>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Unity</h3>
+                        <span class="label">First Gathering</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="navigation-box">
+                <h2>Navigation</h2>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Hajj & Umrah Guide</a></li>
+                    <li><a href="#">Planning & Preparation</a></li>
+                    <li><a href="#">Umrah</a></li>
+                    <li><a href="#">Hajj</a></li>
+                    <li><a href="#">Madinah</a></li>
+                    <li><a href="#">Makkah</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock content %}

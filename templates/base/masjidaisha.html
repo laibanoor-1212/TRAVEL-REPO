@@ -1,0 +1,87 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/masjidaisha.css' %}">
+
+<div class="page-container">
+    <div class="breadcrumb">
+        <a href="#">Home</a> / 
+        <a href="#">Ziyarat</a> /
+        <span>Masjid Aisha</span>
+    </div>
+
+    <div class="content-wrapper">
+        <main class="main-content">
+            <img src="{% static 'images/masjid%20aisha.png' %}" alt="Masjid Aisha">
+
+            <div class="title-box">
+                <h3>Masjid Aisha (RA)</h3>
+            </div>
+
+            <p>
+                Masjid Aisha, also known as Masjid-e-Taneem, is located approximately 7 km away from the Holy Kaaba. This mosque serves as a "Miqat" (boundary point) for those residing in Makkah who intend to perform an additional Umrah.
+            </p>
+
+            <p>
+                The mosque is named after Umm-ul-Mu'mineen Hazrat Aisha (RA). During the Farewell Pilgrimage, when Hazrat Aisha (RA) expressed her desire to perform Umrah, Prophet Muhammad ﷺ instructed her brother to take her to this very spot to enter the state of Ihram.
+            </p>
+
+            <p>
+                The mosque is quite spacious and equipped with excellent facilities for bathing (Ghusal) and ablution (Wudu), allowing pilgrims to comfortably change into their Ihram and offer voluntary prayers before starting their Umrah.
+            </p>
+
+            <div class="title-box">
+                <h3>Visiting Guidelines</h3>
+            </div>
+
+            <ul class="guidelines">
+                <li>Ensure you perform Wudu or Ghusal before wearing the Ihram.</li>
+                <li>Offer two Rakat of Nafl prayer inside the mosque.</li>
+                <li>Make the formal intention (Niyyah) for Umrah and begin reciting the Talbiyah after the prayer.</li>
+                <li>Transport services (Taxis/Buses) are available 24/7 for the convenience of pilgrims.</li>
+            </ul>
+
+            <div class="ziyarat-container">
+                <div class="title-box">
+                    <h3>KEY INFORMATION FOR PILGRIMS</h3>
+                </div>
+
+                <div class="graves-row">
+                    <div class="grave">
+                        <h4>Miqat Point</h4>
+                        <p>Residing pilgrims or visitors intending for a second Umrah enter Ihram from here.</p>
+                        <span class="label">LOCATION: TANEEM</span>
+                    </div>
+
+                    <div class="grave">
+                        <h4>Historical Event</h4>
+                        <p>Hazrat Aisha (RA) started her Umrah from this location upon the Prophet's ﷺ command.</p>
+                    </div>
+
+                    <div class="grave">
+                        <h4>Facilities</h4>
+                        <p>Spacious areas for wudu, showers, and nearby stalls for purchasing Ihram are available.</p>
+                        <span class="label">OPEN 24/7</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="navigation-box">
+                <h2>Navigation</h2>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Hajj & Umrah Guide</a></li>
+                    <li><a href="#">Planning & Preparation</a></li>
+                    <li><a href="#">Umrah</a></li>
+                    <li><a href="#">Hajj</a></li>
+                    <li><a href="#">Madinah</a></li>
+                    <li><a href="#">Makkah</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,87 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/mina.css' %}">
+
+<div class="page-container">
+    <div class="breadcrumb">
+        <a href="#">Home</a> / 
+        <a href="#">Hajj Guide</a> /
+        <span>Mina</span>
+    </div>
+
+    <div class="content-wrapper">
+        <main class="main-content">
+            <img src="{% static 'images/mina.png' %}" >
+
+            <div class="title-box">
+                <h3>Mina: The City of Tents</h3>
+            </div>
+
+            <p>
+                Mina is a desert valley situated approximately 7 kilometers east of the Masjid al-Haram. It is famously known as the "City of Tents" because it houses more than 100,000 air-conditioned tents that provide temporary accommodation to millions of visiting pilgrims during Hajj.
+            </p>
+
+            <p>
+                The stay in Mina is a Sunnah of Prophet Muhammad ﷺ. Pilgrims arrive here on the 8th of Dhul Hijjah (Yawm at-Tarwiyah) and return after the stay in Arafat and Muzdalifah to perform the ritual of stoning the devil (Rami) and celebrating Eid al-Adha.
+            </p>
+
+            <p>
+                Within Mina lies the Jamarat Bridge, a multi-level structure where pilgrims perform the symbolic stoning of the three pillars (Jamarat) representing the temptations of the devil.
+            </p>
+
+            <div class="title-box">
+                <h3>Important Rituals in Mina</h3>
+            </div>
+
+            <ul class="guidelines">
+                <li><strong>Arrival (8th Dhul Hijjah):</strong> Pilgrims pray Dhuhr, Asr, Maghrib, Isha, and Fajr prayers here.</li>
+                <li><strong>Rami (Stoning):</strong> Casting pebbles at the Jamarat pillars over several days.</li>
+                <li><strong>Hadi (Sacrifice):</strong> Performing the animal sacrifice following the first stoning.</li>
+                <li><strong>Taqsir/Halq:</strong> Trimming or shaving the hair after the sacrifice to partially exit the state of Ihram.</li>
+            </ul>
+
+            <div class="ziyarat-container">
+                <div class="title-box">
+                    <h3>HISTORICAL LANDMARKS</h3>
+                </div>
+
+                <div class="graves-row">
+                    <div class="grave">
+                        <h4>Masjid al-Khayf</h4>
+                        <p>Located at the foot of a mountain in Mina, it is said that seventy Prophets prayed in this mosque.</p>
+                        <span class="label">HISTORIC MOSQUE</span>
+                    </div>
+
+                    <div class="grave">
+                        <h4>Jamarat Pillars</h4>
+                        <p>The three pillars (Small, Medium, and Large) where the ritual of stoning is performed.</p>
+                    </div>
+
+                    <div class="grave">
+                        <h4>Al-Aqaba</h4>
+                        <p>The site where the historic pledges (Bay'ah) were made between the Prophet ﷺ and the people of Madinah.</p>
+                        <span class="label">PLEDGE SITE</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="navigation-box">
+                <h2>Navigation</h2>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Hajj & Umrah Guide</a></li>
+                    <li><a href="#">Planning & Preparation</a></li>
+                    <li><a href="#">Umrah</a></li>
+                    <li><a href="#">Hajj</a></li>
+                    <li><a href="#">Madinah</a></li>
+                    <li><a href="#">Makkah</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock content %}

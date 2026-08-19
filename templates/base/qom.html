@@ -1,0 +1,72 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/qom.css' %}">
+
+<div class="page-container">
+
+    <div class="breadcrumb">
+        <a href="#">Home</a> /
+        <a href="#">Ziyarat</a> /
+        <span>Qom - Bibi Masooma Shrine</span>
+    </div>
+
+    <div class="main-content">
+
+        <img src="{% static 'images/qom.png' %}" alt="Bibi Masooma Shrine">
+
+        <div class="title-box">
+            <h3>Bibi Masooma Shrine (Qom)</h3>
+        </div>
+
+        <p>
+            The shrine of Hazrat Fatima Masooma (A.S) in Qom is one of the most revered
+            religious sites in Iran. She was the sister of Imam Ali al-Raza (A.S) and
+            is highly respected for her knowledge, piety, and devotion.
+        </p>
+
+        <p>
+            The city of Qom is considered the spiritual center of Iran and a major hub
+            of Islamic scholarship, attracting thousands of pilgrims and students every year.
+        </p>
+
+        <div class="title-box">
+            <h4>Spiritual Significance</h4>
+        </div>
+
+        <ul class="guidelines">
+            <li>Resting place of Hazrat Fatima Masooma (A.S).</li>
+            <li>Sister of Imam Ali al-Raza (A.S).</li>
+            <li>Qom is a major center of Islamic education and scholarship.</li>
+            <li>Highly recommended ziyarat for pilgrims visiting Iran.</li>
+        </ul>
+
+        <div class="ziyarat-container">
+            <div class="title-box">
+                LOCATION & KEY DETAILS
+            </div>
+
+            <div class="graves-row">
+                <div class="grave">
+                    <h3>City</h3>
+                    <span class="label">Qom, Iran</span>
+                </div>
+
+                <div class="grave">
+                    <h3>Personality</h3>
+                    <span class="label">Hazrat Fatima Masooma (A.S)</span>
+                </div>
+
+                <div class="grave">
+                    <h3>Significance</h3>
+                    <span class="label">Major Ziyarat Site</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

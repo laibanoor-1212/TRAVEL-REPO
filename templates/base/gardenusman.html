@@ -1,0 +1,93 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/gardenusman.css' %}">
+
+<div class="page-container">
+    <div class="breadcrumb">
+        <a href="#">Home</a> / 
+        <a href="#">Ziyarat</a> /
+        <span>Garden of Usman bin Affan</span>
+    </div>
+
+    <div class="content-wrapper">
+        <main class="main-content">
+            <img src="{% static 'images/gardenusman.png' %}" alt="Garden of Usman">
+
+            <div class="title-box">
+                <h3>Garden of Usman bin Affan (RA)</h3>
+            </div>
+
+            <p>
+                The Garden of Hazrat Usman bin Affan (RA) is located in the northern part of Madinah. It is centered around the famous Well of Roma (Bir Uthman), which holds a unique place in Islamic history as an everlasting charity (Sadaqah Jariyah).
+            </p>
+
+            <p>
+                During a time of severe drought in Madinah, the Muslims were in desperate need of water. Hazrat Usman (RA), the third Caliph of Islam, purchased the well from a local owner and dedicated it to the Muslim community for free use, earning the glad tidings of Paradise from Prophet Muhammad ﷺ.
+            </p>
+
+            <p>
+                To this day, the garden surrounding the well is lush and productive. It is managed by the Ministry of Agriculture, and remarkably, an endowment fund in Hazrat Usman's name still exists, with the proceeds used for charitable causes in the holy city.
+            </p>
+
+            <div class="title-box">
+                <h3>Visiting Guidelines</h3>
+            </div>
+
+            <ul class="guidelines">
+                <li>Observe the well and the surrounding date palm groves with reflection.</li>
+                <li>Learn about the concept of Waqf (Endowment) through this historical site.</li>
+                <li>Maintain the cleanliness of the garden and respect the private sections.</li>
+                <li>Avoid making noise so as not to disturb the peaceful environment.</li>
+            </ul>
+
+            <div class="ziyarat-container">
+                <div class="title-box">
+                    <h3>HISTORICAL LEGACY OF THE THIRD CALIPH</h3>
+                </div>
+
+                <div class="graves-row">
+                    <div class="grave">
+                        <h4>Bir Uthman</h4>
+                        <p>
+                            The sacred well purchased by Hazrat Usman (RA) to provide free water to the people of Madinah.
+                        </p>
+                        <span class="label">SACRED WELL →</span>
+                    </div>
+
+                    <div class="grave">
+                        <h4>Date Palm Groves</h4>
+                        <p>
+                            Lush trees that have been providing fruit for centuries as part of the ongoing charity.
+                        </p>
+                    </div>
+
+                    <div class="grave">
+                        <h4>Endowment Fund</h4>
+                        <p>
+                            A remarkable Islamic financial legacy that continues to fund charitable work even today.
+                        </p>
+                        <span class="label">SADAQAH JARIYAH →</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="navigation-box">
+                <h2>Navigation</h2>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Hajj & Umrah Guide</a></li>
+                    <li><a href="#">Planning & Preparation</a></li>
+                    <li><a href="#">Umrah</a></li>
+                    <li><a href="#">Hajj</a></li>
+                    <li><a href="#">Madinah</a></li>
+                    <li><a href="#">Makkah</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock content %}

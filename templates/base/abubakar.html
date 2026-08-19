@@ -1,0 +1,86 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/abubakar.css' %}">
+
+<div class="page-container">
+    <div class="breadcrumb">
+        <a href="/">Home</a> /
+        <a href="/ziyarat">Ziyarat</a> /
+        <span>Masjid Abu Bakar</span>
+    </div>
+
+    <div class="content-wrapper">
+        <main class="main-content">
+            <img src="{% static 'images/masjid abu bakar.png' %}" alt="Masjid Abu Bakar">
+
+            <div class="title-box">
+                <h3>Masjid Abu Bakar Siddiq</h3>
+            </div>
+
+            <p>
+                Masjid Abu Bakar Siddiq is a historically significant mosque in Madinah, located near the south-west side of Masjid an-Nabawi. It stands on the site where the Prophet Muhammad ﷺ used to perform Eid prayers.
+            </p>
+
+            <p>
+                Following the passing of the Prophet ﷺ, Hazrat Abu Bakar Siddiq (RA), the first Caliph of Islam, continued this tradition of leading the Eid congregational prayers at this very location.
+            </p>
+
+            <p>
+                The mosque is named in honor of Hazrat Abu Bakar (RA) to commemorate his leadership and his dedication to preserving the Sunnah. Its architecture and serene atmosphere make it a vital stop for pilgrims.
+            </p>
+
+            <div class="title-box">
+                <h4>Visiting Guidelines</h4>
+            </div>
+
+            <ul class="guidelines">
+                <li>Enter the mosque with respect and maintain silence.</li>
+                <li>Perform two rakats of Tahiyat-ul-Masjid upon entry.</li>
+                <li>Read about the life of the first Caliph to appreciate the history.</li>
+                <li>Avoid blocking pathways for other worshippers.</li>
+            </ul>
+
+            <div class="ziyarat-container">
+                <div class="title-box">
+                    HISTORICAL SIGNIFICANCE <br>
+                    <span>OF THE MOSQUE</span>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-card">
+                        <h3>Eid Prayers</h3>
+                        <span class="label">Prophetic Tradition</span>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>First Caliph</h3>
+                        <span class="label">Legacy of Abu Bakar</span>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Proximity</h3>
+                        <span class="label">Near Al-Ghamama</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="navigation-box">
+                <h2>Navigation</h2>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Hajj & Umrah Guide</a></li>
+                    <li><a href="#">Planning & Preparation</a></li>
+                    <li><a href="#">Umrah</a></li>
+                    <li><a href="#">Hajj</a></li>
+                    <li><a href="#">Madinah</a></li>
+                    <li><a href="#">Makkah</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock content %}

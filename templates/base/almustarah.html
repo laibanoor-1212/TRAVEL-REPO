@@ -1,0 +1,72 @@
+{% extends 'base/base.html' %}
+{% block content %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/almustarah.css' %}">
+
+<div class="page-container">
+    <div class="breadcrumb">
+        <a href="#">Home/</a> 
+        <a href="#">Ziyarat/</a>
+        <span>Masjid al Mustarah</span>
+    </div>
+
+<div class="content-wrapper">
+<main class="main-content">
+<div class="image-card">
+
+<img src="{% static 'images/almustarah.png' %}">
+</div>
+<div class="section-card">
+<h2>Masjid al Mustarah</h2>
+<p>
+Masjid al-Mustarah is a historic mosque in Madinah where the Prophet Muhammad ﷺ rested 
+after the Battle of Uhud. The name means “place of rest”, reflecting its significance.
+It is also known as Masjid Bani Haritha.
+</p>
+<p>
+The mosque holds spiritual importance for visitors who reflect on the events of Uhud 
+and the sacrifices of the companions. It remains a peaceful ziyarat location.
+</p>
+
+            <div class="title-box">
+                <h4>Visiting Guidelines</h4>
+</div>
+
+<div class="section-card">
+    <h3>Visiting Guidelines</h3>
+    <ul class="info-list">
+        <li>Offer Tahiyyatul Masjid upon entering</li>
+        <li>Recite duas and remember Allah</li>
+        <li>Maintain respect and silence</li>
+        <li>Reflect on the history of Uhud</li>
+    </ul>
+</div>
+
+<div class="section-card">
+    <h3>Nearby Places</h3>
+    <ul class="info-list">
+    <li>Battle of Uhud site</li>
+    <li>Masjid al-Nabawi</li>
+    <li>Madinah city center</li>
+</ul>
+</div>
+</main>
+<aside class="sidebar">
+    <div class="navigation-box">
+     <h2>Navigation</h2>
+    <ul>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Hajj & Umrah Guide</a></li>
+    <li><a href="#">Planning & Preparation</a></li>
+    <li><a href="#">Umrah</a></li>
+    <li><a href="#">Hajj</a></li>
+    <li><a href="#">Madinah</a></li>
+    <li><a href="#">Makkah</a></li>
+</ul>
+</div>
+</aside>
+</div>
+</div>
+
+{% endblock content %}

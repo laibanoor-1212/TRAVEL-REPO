@@ -1,0 +1,104 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+.page-container {
+    max-width: 1400px;
+    margin: 100px auto 30px auto;
+    padding: 0 20px;
+}
+
+.breadcrumb {
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #777;
+}
+
+.breadcrumb a {
+    color: #0d7436;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.main-content img {
+    width: 80%;
+    border-radius: 12px;
+    margin-bottom: 25px;
+}
+
+.title-box {
+    background: #0d7436;
+    color: white;
+    padding: 10px 25px;
+    border-radius: 8px;
+    display: inline-block;
+    margin: 20px 0;
+}
+
+.main-content p {
+    line-height: 1.7;
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 18px;
+    text-align: justify;
+}
+
+.guidelines {
+    margin-top: 10px;
+}
+
+.guidelines li {
+    margin-bottom: 10px;
+    font-size: 15px;
+    list-style: none;
+    position: relative;
+    padding-left: 20px;
+}
+
+.guidelines li::before {
+    content: "•";
+    color: gold;
+    position: absolute;
+    left: 0;
+}
+
+.ziyarat-container {
+    margin-top: 30px;
+}
+
+.graves-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.grave {
+    flex: 1;
+    min-width: 200px;
+    background: #0d7436;
+    color: white;
+    padding: 25px;
+    border-radius: 20px;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.grave:hover {
+    transform: translateY(-5px);
+}
+
+.label {
+    color: gold;
+    font-size: 13px;
+    display: block;
+    margin-top: 8px;
+}
+
+@media (max-width: 768px) {
+    .graves-row {
+        flex-direction: column;
+    }
+}

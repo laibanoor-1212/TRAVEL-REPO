@@ -1,0 +1,92 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/almualla.css' %}">
+
+<div class="page-container">
+    <div class="breadcrumb">
+        <a href="#">Home</a> / 
+        <a href="#">Ziyarat</a> /
+        <span>Jannat al-Mu'alla</span>
+    </div>
+
+    <div class="content-wrapper">
+        <main class="main-content">
+            <img src="{% static 'images/almualla.jpg' %}" alt="Jannat al-Mu'alla">
+
+            <div class="title-box">
+                <h3>Jannat al-Mu'alla</h3>
+            </div>
+
+            <p>
+                Jannat al-Mu'alla is the oldest and most historic cemetery in Makkah, located near the Masjid al-Haram. Also known as "Al-Hajun," this graveyard existed even before the advent of Islam and holds immense religious significance today.
+            </p>
+
+            <p>
+                This sacred ground is the resting place of many prominent members of Prophet Muhammad's ﷺ family and several Sahaba (companions). Hazrat Khadija (RA), the first wife of the Prophet ﷺ and the "Mother of the Believers," is buried here.
+            </p>
+
+            <p>
+                Millions of pilgrims visiting for Hajj and Umrah come here to pay their respects and offer prayers for the noble souls who played a pivotal role in the early days of Islam.
+            </p>
+
+            <div class="title-box">
+                <h3>Visiting Guidelines</h3>
+            </div>
+
+            <ul class="guidelines">
+                <li>Recite the prescribed supplication (Dua) when entering the cemetery.</li>
+                <li>Maintain silence and a high level of respect at all times.</li>
+                <li>Avoid placing flowers or lighting candles on the graves.</li>
+                <li>Reflect upon life after death and the history of Islam while visiting.</li>
+            </ul>
+
+            <div class="ziyarat-container">
+                <div class="title-box">
+                    <h3>HISTORICAL FIGURES BURIED HERE</h3>
+                </div>
+
+                <div class="graves-row">
+                    <div class="grave">
+                        <h4>Hazrat Khadija (RA)</h4>
+                        <p>The first and most beloved wife of the Prophet ﷺ, who was the first to embrace Islam.</p>
+                        <span class="label">UMM-UL-MU'MINEEN</span>
+                    </div>
+
+                    <div class="grave">
+                        <h4>Hazrat Abu Talib</h4>
+                        <p>The uncle of the Prophet ﷺ who protected and supported him during difficult times.</p>
+                    </div>
+
+                    <div class="grave">
+                        <h4>Abdul Muttalib</h4>
+                        <p>The grandfather of the Prophet ﷺ and a highly influential leader of the Quraish.</p>
+                    </div>
+
+                    <div class="grave">
+                        <h4>Asma bint Abi Bakr</h4>
+                        <p>The daughter of Hazrat Abu Bakr (RA), known for her immense bravery and generosity.</p>
+                        <span class="label">SAHABIYA</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="navigation-box">
+                <h2>Navigation</h2>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Hajj & Umrah Guide</a></li>
+                    <li><a href="#">Planning & Preparation</a></li>
+                    <li><a href="#">Umrah</a></li>
+                    <li><a href="#">Hajj</a></li>
+                    <li><a href="#">Madinah</a></li>
+                    <li><a href="#">Makkah</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock content %}

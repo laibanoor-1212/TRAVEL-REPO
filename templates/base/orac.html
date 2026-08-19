@@ -1,0 +1,121 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content %}
+
+
+<div class="container" id="container"> 
+    <div class="form-container sign-up">
+        <img src="{% static 'images/fullscreen.jpg' %}" class="kabba-img"> 
+        <div class="ayat-box">
+            <p class="arabic"></p>
+        </div>
+    </div>
+
+    <div class="form-container part" id="registerForm">
+        <form method="POST" >
+            {% csrf_token %}
+            <h5 style=" font-size:20px;" class="form-heading">Create Account</h5>
+<div class="role-tabs">
+    <div class="role-tab active" data-role="user">User</div>
+    <div class="role-tab" data-role="stakeholder">Stakeholder</div>
+   
+</div>
+<input type="hidden" name="role" id="selectedRole" value="user">            
+           
+         <!-- <input type="text" name="username" class="input" required placeholder="Enter username"> -->
+         <label>{{form.email.label}}</label>
+            {{form.email}}
+          
+             <label>{{form.password1.label}}</label>
+             {{form.password1}}
+           
+             <label>{{form.password2.label}}</label>
+             {{form.password2}}
+          
+            
+            <!-- <label>{{ form.role.label }}</label>
+                 {{ form.role }} -->
+
+            <button type="submit">Register</button>
+            <p class="login-text" color:white;>Already have an account? 
+    <a href="{% url 'base:login' %}">Login</a>
+</p>
+           
+        </form>
+    </div>
+
+    <div class="toogle-container">
+        <div class="toggle"> 
+            <div class="toggle-panel toogle-left">
+                <img src="{% static 'images/logo.jpg'%}" class="logo-img">
+                <h5>Welcome to Safar e Haram</h5>
+                <p>Enter your personal details to use all the features of this web app and learn many things</p>
+                <audio id="audio" src="{% static 'audio/audio1.mp3' %}"></audio>
+                <button class="hidden" id="login" onclick="showForm();playAudio()">WELCOME PAGE</button>
+            </div>
+
+            <div class="toggle-panel toogle-right">
+                <img src="{% static 'images/logo.jpg'%}" class="logo-img">
+                <h5>Welcome to Safar e Haram</h5>
+                <h3 lang="ar" dir="rtl">رحلة مباركة إلى بيت الله.</h3>
+                <p lang="en">"A blessed journey to the House of Allah."</p>
+                <p>Enter your personal details to use all the features of this web app and learn many things</p>
+                <audio id="audio2" src="{% static 'audio/tekbiri.mp3' %}"></audio>
+                <button class="hidden" id="register" onclick="playAudio2()">REGISTER</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="footer-wrapper">
+ 
+  <div class="footer-top-curve">
+    <svg viewBox="0 0 1440 150" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      
+      <path fill="#ffff" d="M0,64 C360,160 1080,0 1440,96 L1440,0 L0,0 Z"></path>
+    </svg>
+  </div>
+
+
+  <div class="footer-content">
+    <div class="footer-columns">
+      <div>
+        <h3>About Safar-e-Haram</h3>
+        <p>Safar-e-Haram guides you on a blessed journey — helping pilgrims explore routes, maps, and essential Hajj & Umrah information in one place.</p>
+      </div>
+
+      <div>
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Guides</a></li>
+          <li><a href="#">Maps</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3>Support</h3>
+        <ul>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms & Conditions</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-social">
+      <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+      <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+      <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2025 Safar-e-Haram. All Rights Reserved.</p>
+    </div>
+  </div>
+</footer>
+
+
+{% endblock content %}

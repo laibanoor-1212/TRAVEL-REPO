@@ -1,0 +1,86 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/masjidquba.css' %}">
+
+<div class="page-container">
+    <div class="breadcrumb">
+        <a href="/">Home</a> /
+        <a href="/ziyarat">Ziyarat</a> /
+        <span>Masjid Quba</span>
+    </div>
+
+    <div class="content-wrapper">
+        <main class="main-content">
+            <img src="{% static 'images/quba.png' %}">
+
+            <div class="title-box">
+                <h3>Masjid Quba</h3>
+            </div>
+
+            <p>
+                Masjid Quba is the first mosque built by Prophet Muhammad ﷺ upon his arrival in Madinah during the Hijra. It is located on the outskirts of the city and holds a unique status as the oldest mosque in the world.
+            </p>
+
+            <p>
+                The Prophet ﷺ himself participated in the construction of this mosque, carrying stones and sand alongside his companions. He highly encouraged visiting it, stating that anyone who purifies themselves at home and offers prayer in Masjid Quba will receive a reward equal to performing an Umrah.
+            </p>
+
+            <p>
+                The mosque has been expanded several times throughout history and now features a stunning white facade with four minarets and several domes. It remains one of the most visited sites in Madinah for pilgrims seeking spiritual blessings.
+            </p>
+
+            <div class="title-box">
+                <h4>Visiting Guidelines</h4>
+            </div>
+
+            <ul class="guidelines">
+                <li>Perform Wudu at your place of stay before heading to the mosque.</li>
+                <li>Offer two rakats of prayer to attain the reward of an Umrah.</li>
+                <li>Visit on a Saturday if possible, following the Sunnah of the Prophet ﷺ.</li>
+                <li>Respect the quiet environment intended for prayer and reflection.</li>
+            </ul>
+
+            <div class="ziyarat-container">
+                <div class="title-box">
+                    HISTORICAL SIGNIFICANCE <br>
+                    <span>OF THE FIRST MOSQUE</span>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-card">
+                        <h3>First Mosque</h3>
+                        <span class="label">Established 622 AD</span>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Umrah Reward</h3>
+                        <span class="label">Prophetic Promise</span>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Sunnah Visit</h3>
+                        <span class="label">Saturday Tradition</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="navigation-box">
+                <h2>Navigation</h2>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Hajj & Umrah Guide</a></li>
+                    <li><a href="#">Planning & Preparation</a></li>
+                    <li><a href="#">Umrah</a></li>
+                    <li><a href="#">Hajj</a></li>
+                    <li><a href="#">Madinah</a></li>
+                    <li><a href="#">Makkah</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock content %}

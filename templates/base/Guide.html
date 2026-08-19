@@ -1,236 +1,552 @@
 {% extends "base/base.html" %}
 {% load static %}
+
 {% block content %}
+
 <link rel="stylesheet" href="{% static 'css/guide.css' %}">
-<div class="guide-container">
 
-  <!-- Hero Section -->
-  <section class="hero-section1">
-    <div class="overlay"></div>
-    <div class="hero-text">
-      <h1>Umrah Guide</h1>
-      <p>Your step-by-step companion for performing Umrah with devotion and ease.<br>
-         Learn about every ritual, from Miqat to Halq & Taqseer, and fulfill your journey perfectly.</p>
-    </div>
-  </section>
+<div class="guide-page">
 
-  <!-- Card Grid -->
-  <section class="card-grid">
+    <!-- ================= HERO SECTION ================= -->
+    <section class="guide-hero">
 
-    <div class="guide-card">
-      <img src="{% static 'images/miqat.jpg' %}" alt="Miqat">
-      <div class="card-overlay">
-        <h3>Miqat</h3>
-        <div class="card-buttons">
-    <a href="{% url 'base:miqat' %}" class="explore-btn">Listen</a>
-    <a href="{% url 'base:miqat' %}" class="explore-btn">Read</a>
+        <div class="guide-hero-overlay"></div>
+
+        <div class="guide-hero-content">
+
+            <span class="hero-badge">
+                <i class="fas fa-kaaba"></i>
+                YOUR UMRAH COMPANION
+            </span>
+
+            <h1>
+                Complete <span>Umrah Guide</span>
+            </h1>
+
+            <div class="arabic-text">
+                لَبَّيْكَ اللَّهُمَّ لَبَّيْكَ
+            </div>
+
+            <p>
+                A simple and reliable step-by-step guide to help you
+                understand every stage of your Umrah journey with
+                confidence, devotion and ease.
+            </p>
+
+            <a href="#journey" class="hero-btn">
+                Start Your Journey
+                <i class="fas fa-arrow-down"></i>
+            </a>
+
+        </div>
+
+        <div class="hero-decoration hero-decoration-one"></div>
+        <div class="hero-decoration hero-decoration-two"></div>
+
+    </section>
+
+
+    <!-- ================= INTRODUCTION ================= -->
+    <section class="guide-intro">
+
+        <div class="intro-icon">
+            <i class="fas fa-mosque"></i>
+        </div>
+
+        <div class="intro-content">
+
+            <span class="section-label">UMRAH MADE SIMPLE</span>
+
+            <h2>
+                Your Journey to the
+                <span>House of Allah</span>
+            </h2>
+
+            <p>
+                Performing Umrah is a deeply spiritual journey. Safar-e-Haram
+                provides clear and easy-to-follow guidance for each important
+                step, from entering Ihram to completing Halq or Taqseer.
+            </p>
+
+            <p>
+                Explore each stage through detailed reading material and
+                listening options so you can prepare yourself before and
+                during your sacred journey.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= JOURNEY SECTION ================= -->
+    <section class="journey-section" id="journey">
+
+        <div class="section-heading">
+
+            <span class="section-label">STEP BY STEP</span>
+
+            <h2>
+                Explore Your
+                <span>Umrah Journey</span>
+            </h2>
+
+            <p>
+                Follow each step in order and learn everything you need
+                to know for a smooth and meaningful Umrah.
+            </p>
+
+        </div>
+
+
+        <div class="card-grid">
+
+
+            <!-- MIQAT -->
+            <div class="guide-card">
+
+                <div class="card-image">
+                    <img src="{% static 'images/miqat.jpg' %}" alt="Miqat">
+
+                    <span class="step-number">01</span>
+
+                    <div class="image-gradient"></div>
+                </div>
+
+                <div class="card-content">
+
+                    <span class="card-label">STEP 01</span>
+
+                    <h3>Miqat</h3>
+
+                    <p>
+                        Learn about the sacred boundaries and what
+                        pilgrims need to do before entering Ihram.
+                    </p>
+
+                    <div class="card-buttons">
+
+                        <a href="{% url 'base:miqat' %}" class="read-btn">
+                            <i class="fas fa-book-open"></i>
+                            Read
+                        </a>
+
+                        <a href="{% url 'base:miqat' %}" class="listen-btn">
+                            <i class="fas fa-headphones"></i>
+                            Listen
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- IHRAM -->
+            <div class="guide-card">
+
+                <div class="card-image">
+
+                    <img src="{% static 'images/ihram.jpeg' %}" alt="Ihram">
+
+                    <span class="step-number">02</span>
+
+                    <div class="image-gradient"></div>
+
+                </div>
+
+                <div class="card-content">
+
+                    <span class="card-label">STEP 02</span>
+
+                    <h3>Ihram</h3>
+
+                    <p>
+                        Understand the preparation, intention and
+                        important rules of entering Ihram.
+                    </p>
+
+                    <div class="card-buttons">
+
+                        <a href="{% url 'base:ahram' %}" class="read-btn">
+                            <i class="fas fa-book-open"></i>
+                            Read
+                        </a>
+
+                        <a href="{% url 'base:ahram' %}" class="listen-btn">
+                            <i class="fas fa-headphones"></i>
+                            Listen
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- TAWAF -->
+            <div class="guide-card">
+
+                <div class="card-image">
+
+                    <img src="{% static 'images/tawaf3.jpeg' %}" alt="Tawaf">
+
+                    <span class="step-number">03</span>
+
+                    <div class="image-gradient"></div>
+
+                </div>
+
+                <div class="card-content">
+
+                    <span class="card-label">STEP 03</span>
+
+                    <h3>Tawaf</h3>
+
+                    <p>
+                        Learn the correct method of performing Tawaf
+                        around the Holy Kaaba.
+                    </p>
+
+                    <div class="card-buttons">
+
+                        <a href="{% url 'base:tawaf' %}" class="read-btn">
+                            <i class="fas fa-book-open"></i>
+                            Read
+                        </a>
+
+                        <a href="{% url 'base:tawaf' %}" class="listen-btn">
+                            <i class="fas fa-headphones"></i>
+                            Listen
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- SAI -->
+            <div class="guide-card">
+
+                <div class="card-image">
+
+                    <img src="{% static 'images/umrah.jpeg' %}" alt="Sa'i">
+
+                    <span class="step-number">04</span>
+
+                    <div class="image-gradient"></div>
+
+                </div>
+
+                <div class="card-content">
+
+                    <span class="card-label">STEP 04</span>
+
+                    <h3>Sa'i</h3>
+
+                    <p>
+                        Discover the significance and correct method
+                        of walking between Safa and Marwah.
+                    </p>
+
+                    <div class="card-buttons">
+
+                        <a href="{% url 'base:Sai' %}" class="read-btn">
+                            <i class="fas fa-book-open"></i>
+                            Read
+                        </a>
+
+                        <a href="{% url 'base:Sai' %}" class="listen-btn">
+                            <i class="fas fa-headphones"></i>
+                            Listen
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- HALQ -->
+            <div class="guide-card">
+
+                <div class="card-image">
+
+                    <img src="{% static 'images/umrah.png' %}" alt="Halq and Taqseer">
+
+                    <span class="step-number">05</span>
+
+                    <div class="image-gradient"></div>
+
+                </div>
+
+                <div class="card-content">
+
+                    <span class="card-label">STEP 05</span>
+
+                    <h3>Halq & Taqseer</h3>
+
+                    <p>
+                        Learn about shaving or shortening the hair
+                        and completing your Umrah.
+                    </p>
+
+                    <div class="card-buttons">
+
+                        <a href="{% url 'base:halaq' %}" class="read-btn">
+                            <i class="fas fa-book-open"></i>
+                            Read
+                        </a>
+
+                        <a href="#" class="listen-btn">
+                            <i class="fas fa-headphones"></i>
+                            Listen
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- VIOLATIONS -->
+            <div class="guide-card">
+
+                <div class="card-image">
+
+                    <img src="{% static 'images/flights.png' %}" alt="Violations and Penalties">
+
+                    <span class="step-number">06</span>
+
+                    <div class="image-gradient"></div>
+
+                </div>
+
+                <div class="card-content">
+
+                    <span class="card-label">IMPORTANT</span>
+
+                    <h3>Violations & Penalties</h3>
+
+                    <p>
+                        Understand important restrictions and penalties
+                        that pilgrims should be aware of during Umrah.
+                    </p>
+
+                    <div class="card-buttons">
+
+                        <a href="#" class="read-btn">
+                            <i class="fas fa-book-open"></i>
+                            Read
+                        </a>
+
+                        <a href="#" class="listen-btn">
+                            <i class="fas fa-headphones"></i>
+                            Listen
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= HOW IT WORKS ================= -->
+    <section class="guide-help">
+
+        <div class="section-heading">
+
+            <span class="section-label">HOW IT WORKS</span>
+
+            <h2>
+                Learn. Prepare.
+                <span>Perform.</span>
+            </h2>
+
+        </div>
+
+
+        <div class="help-grid">
+
+            <div class="help-card">
+
+                <div class="help-number">01</div>
+
+                <div class="help-icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
+
+                <h3>Read the Guide</h3>
+
+                <p>
+                    Explore detailed information about every stage
+                    of your Umrah journey.
+                </p>
+
+            </div>
+
+
+            <div class="help-card">
+
+                <div class="help-number">02</div>
+
+                <div class="help-icon">
+                    <i class="fas fa-headphones"></i>
+                </div>
+
+                <h3>Listen & Learn</h3>
+
+                <p>
+                    Use the listening option to learn important
+                    instructions while travelling.
+                </p>
+
+            </div>
+
+
+            <div class="help-card">
+
+                <div class="help-number">03</div>
+
+                <div class="help-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+
+                <h3>Perform with Confidence</h3>
+
+                <p>
+                    Prepare yourself properly and focus on your
+                    spiritual journey.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= FINAL CTA ================= -->
+    <section class="guide-cta">
+
+        <div class="cta-content">
+
+            <span class="section-label">SAFAR-E-HARAM</span>
+
+            <h2>
+                May Your Umrah Be
+                <span>Accepted & Blessed</span>
+            </h2>
+
+            <p>
+                Prepare yourself, follow the guidance and begin your
+                sacred journey with peace of mind.
+            </p>
+
+            <a href="#journey" class="cta-btn">
+                Explore Guide
+                <i class="fas fa-arrow-right"></i>
+            </a>
+
+        </div>
+
+    </section>
+
 </div>
 
-      </div>
-    </div>
 
-    <div class="guide-card">
-      <img src="{% static 'images/ihram.jpeg' %}" alt="Ihram">
-      <div class="card-overlay">
-        <h3>Ihram</h3>
-        <div class="card-buttons">
-        <a href="{% url 'base:ahram' %}" class="explore-btn">Listen</a>
-    <a href="{% url 'base:ahram' %}" class="explore-btn">Read</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="guide-card">
-      <img src="{% static 'images/tawaf3.jpeg' %}" alt="Tawaf">
-      <div class="card-overlay">
-        <h3>Tawaf</h3>
-        <div class="card-buttons">
-          <button class="btn-listen"> <a href="{% url 'base:tawaf' %}" class="explore-btn">Read</a></button>
-          <button class="btn-read">Listen</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="guide-card">
-      <img src="{% static 'images/umrah.jpeg' %}" alt="Sa’i">
-      <div class="card-overlay">
-        <h3>Sa’i</h3>
-        <div class="card-buttons">
-          <button class="btn-listen">Listen</button>
-          <button class="btn-read"><a href="{% url 'base:Sai' %}" class="explore-btn">Read</a></button>
-        </div>
-      </div>
-    </div>
-
-    <div class="guide-card">
-      <img src="{% static 'images/umrah.png' %}" alt="Halq & Taqseer">
-      <div class="card-overlay">
-        <h3>Halq & Taqseer</h3>
-        <div class="card-buttons">
-          <button class="btn-listen">Listen</button>
-          <button class="btn-read"><a href="{% url 'base:halaq' %}">Read</a></button>
-        </div>
-      </div>
-    </div>
-
-    <div class="guide-card">
-      <img src="{% static 'images/flights.png' %}" alt="Violations & Penalties">
-      <div class="card-overlay">
-        <h3>Violations & Penalties</h3>
-        <div class="card-buttons">
-          <button class="btn-listen">Listen</button>
-          <button class="btn-read">Read</button>
-        </div>
-      </div>
-    </div>
-
-  </section>
-</div>
-
+<!-- ================= FOOTER ================= -->
 
 <footer class="footer-wrapper">
- 
-  <div class="footer-top-curve">
-    <svg viewBox="0 0 1440 150" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-      
-      <path fill="#ffff" d="M0,64 C360,160 1080,0 1440,96 L1440,0 L0,0 Z"></path>
-    </svg>
-  </div>
 
+    <div class="footer-top-curve">
 
-  <div class="footer-content">
-    <div class="footer-columns">
-      <div>
-        <h3>About Safar-e-Haram</h3>
-        <p>Safar-e-Haram guides you on a blessed journey — helping pilgrims explore routes, maps, and essential Hajj & Umrah information in one place.</p>
-      </div>
+        <svg viewBox="0 0 1440 150"
+             xmlns="http://www.w3.org/2000/svg"
+             preserveAspectRatio="none">
 
-      <div>
-        <h3>Quick Links</h3>
-        <ul>
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Guides</a></li>
-          <li><a href="#">Maps</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-      </div>
+            <path fill="#ffff"
+                  d="M0,64 C360,160 1080,0 1440,96 L1440,0 L0,0 Z">
+            </path>
 
-      <div>
-        <h3>Support</h3>
-        <ul>
-          <li><a href="#">FAQ</a></li>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Terms & Conditions</a></li>
-        </ul>
-      </div>
+        </svg>
+
     </div>
 
-    <div class="footer-social">
-      <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-      <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-      <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-      <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
-    </div>
 
-    <div class="footer-bottom">
-      <p>© 2025 Safar-e-Haram. All Rights Reserved.</p>
-    </div>
-  </div>
-</footer>
+    <div class="footer-content">
 
-{% endblock %}
+        <div class="footer-columns">
 
+            <div>
+                <h3>About Safar-e-Haram</h3>
 
-
-
-
-
-
-<!-- <section class="guide-hero">
-  
-  <div class="hero-text1">
-    <h1>About Guide</h1>
-     <h3 lang="ar" dir="rtl">رحلة مباركة إلى بيت الله.</h3>
-  <pre lang="en">"A blessed journey to the House of Allah."</pre>
-    <p>A complete step by step guide about the your hajj and umrah journey
-      with written details and also video links through you can listen all 
-      steps of ahram,tawaf,umrah ,hajj
-    </p>
-  </div>
-   <div class="about-image">
-    <img src="{% static '/images/labbaik.png' %}" alt="Kaaba">
-  </div>
-  <div class="custom-shape-divider-bottom">
-  <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-    <path d="M321.39,56.44C161.58,87.21,0,30,0,30V120H1200V0C1000,60,600,20,321.39,56.44Z" class="shape-fill"></path>
-  </svg>
-  </div>
-</section> -->
-
-<!-- ========== GUIDE SECTIONS ========== -->
-   <!-- <h2 class="slider-title">Explore Your Journey</h2>
-<section class="travel-slider-section">
-  <div class="container">
-
-    <div class="swiper mySwiper">
-      <div class="swiper-wrapper">
-
-        <!-- Slide 1 -->
-        <!-- <div class="swiper-slide">
-          <div class="travel-card">
-            <img src="{% static 'images/miqat.jpg' %}" alt="Miqat Places">
-            <div class="card-content">
-              <h3>Miqat Places</h3>
-              <p>Learn about sacred boundaries before Ihram.</p>
-              <a href="#" class="btn-view">View More</a>
+                <p>
+                    Safar-e-Haram guides you on a blessed journey —
+                    helping pilgrims explore routes, maps, and essential
+                    Hajj & Umrah information in one place.
+                </p>
             </div>
-          </div>
-        </div> -->
 
-        <!-- Slide 2 -->
-        <!-- <div class="swiper-slide">
-          <div class="travel-card">
-            <img src="{% static 'images/ahram.jpg' %}" alt="Ahram Guide">
-            <div class="card-content">
-              <h3>Ahram Guide</h3>
-              <p>Rules and preparation for Ihram.</p>
-              <a href="#" class="btn-view"></a>
-            </div>
-          </div>
-        </div> -->
+            <div>
+                <h3>Quick Links</h3>
 
-        <!-- Slide 3 -->
-        <!-- <div class="swiper-slide">
-          <div class="travel-card">
-            <img src="{% static 'images/makkah.jpg' %}" alt="Umrah Guide">
-            <div class="card-content">
-              <h3>Umrah Guide</h3>
-              <p>Step-by-step Umrah rituals made simple.</p>
-              <a href="#" class="btn-view">Read</a>
-              <a href="#" class="btn-view">listen</a>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Guides</a></li>
+                    <li><a href="#">Maps</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
             </div>
-          </div>
-        </div> -->
 
-        <!-- Slide 4 -->
-        <!-- <div class="swiper-slide">
-          <div class="travel-card">
-            <img src="{% static 'images/unnamed.jpg' %}" alt="Hajj Guide">
-            <div class="card-content">
-              <h3>Hajj Guide</h3>
-              <p>Detailed guidance for Hajj journey.</p>
-              <a href="#" class="btn-view">Read</a>
-              <a href="#" class="btn-view">Listen</a>
+            <div>
+                <h3>Support</h3>
+
+                <ul>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms & Conditions</a></li>
+                </ul>
             </div>
-          </div>
+
         </div>
-      </div> -->
 
-      <!-- Arrows -->
-      <!-- <div class="swiper-button-next"></div>
-      <div class="swiper-button-prev"></div>
+        <div class="footer-social">
+
+            <a href="#" aria-label="Facebook">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+
+            <a href="#" aria-label="Instagram">
+                <i class="fab fa-instagram"></i>
+            </a>
+
+            <a href="#" aria-label="YouTube">
+                <i class="fab fa-youtube"></i>
+            </a>
+
+            <a href="#" aria-label="Twitter">
+                <i class="fab fa-x-twitter"></i>
+            </a>
+
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2025 Safar-e-Haram. All Rights Reserved.</p>
+        </div>
+
     </div>
-  </div>
-</section> -->
 
-
+</footer>
+{% endblock content %}

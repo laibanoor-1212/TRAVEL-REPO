@@ -1,0 +1,163 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Sa'i Guide{% endblock %}
+
+{% block content %}
+
+
+<div class="ahram-hero">
+    <div class="text-section">
+        <div class="toggle-buttons">  
+            <span class="active">Overview</span>
+            <span>Step-by-step Guide</span>
+        </div>
+
+        <h1 class="main-title">Sa'i Guide</h1>
+        <p class="subtitle">Learn how to perform Sa'i between Safa and Marwah.</p>
+    </div>
+
+    <div class="image-collage">
+        <img src="{% static 'images/safa.jpeg' %}" class="img1">
+        <img src="{% static 'images/Marwah.jpeg' %}" class="img2">
+        <img src="{% static 'images/sai2.jpeg' %}" class="img3">
+    </div>
+</div>
+
+
+<div class="bottom-nav">
+    <div class="nav-box active" data-target="content-overview">
+        <i class="fa-solid fa-book"></i> Overview
+    </div>
+
+    <div class="nav-box" data-target="content-rules">
+        <i class="fa-solid fa-info-circle"></i> Rules of Sa'i
+    </div>
+
+    <div class="nav-box" data-target="content-steps">
+        <i class="fa-solid fa-person-walking"></i> How to Perform Sa'i
+    </div>
+
+    <div class="nav-box" data-target="content-duas">
+        <i class="fa-solid fa-mosque"></i> Duas & Dhikr
+    </div>
+</div>
+
+
+<div class="content-area">
+
+   
+    <div id="content-overview" class="content-section active">
+        <h2>What is Sa'i?</h2>
+        <p>
+            Sa'i is walking between the hills of Safa and Marwah seven times. It commemorates the struggle of Hajar (AS) as she searched for water for baby Ismail (AS).
+        </p>
+
+        <p class="arabic">
+            إِنَّ الصَّفَا وَالْمَرْوَةَ مِنْ شَعَائِرِ اللَّهِ
+        </p>
+        <p><strong>Translation:</strong> "Indeed, Safa and Marwah are among the symbols of Allah." (Surah Al-Baqarah 2:158)</p>
+
+        <img src="{% static 'images/sai-path.jpeg' %}" class="imgtawaf">
+
+        <h3>Purpose of Sa'i</h3>
+        <p>
+            Sa'i represents patience, trust in Allah, and effort. It is a pillar of Umrah and must be completed after Tawaf.
+        </p>
+
+    </div>
+
+   
+    <div id="content-rules" class="content-section">
+        <h2>Rules of Sa'i</h2>
+        <p>These rules ensure your Sa'i is valid.</p>
+
+        <h3>Fard (Mandatory) Rules</h3>
+
+        <h6>1. Sa'i after Tawaf</h6>
+        <p>Sa'i is only valid after completing Tawaf.</p>
+
+        <h6>2. Start at Safa and end at Marwah</h6>
+        <p>Seven complete laps: Safa → Marwah is 1 lap, Marwah → Safa is 2, and so on.</p>
+
+        <h6>3. Walking the correct path</h6>
+        <p>You must stay in the Sa'i corridor.</p>
+
+        <h3>Sunnah Actions</h3>
+        <h6>Dhikr and Dua</h6>
+        <p>Recite duas and dhikr throughout.</p>
+
+        <h6>Ramal (Men)</h6>
+        <p>Men jog between the green lights.</p>
+    </div>
+
+   
+    <div id="content-steps" class="content-section">
+        <h2>How to Perform Sa'i</h2>
+
+        <h3>Before Starting Sa'i</h3>
+        <h6>Step 1: Complete Tawaf</h6>
+        <p>Sa'i begins only after Tawaf.</p>
+
+        <h6>Step 2: Go to Safa</h6>
+        <p>Face the Kaaba and make dua.</p>
+
+        <h3>The 7 Rounds</h3>
+        <h6>Step 3: Make intention</h6>
+        <p>“O Allah, I am performing Sa'i for Your sake.”</p>
+
+        <h6>Step 4: Start walking Safa → Marwah</h6>
+        <p>This counts as your first lap.</p>
+
+        <h6>Step 5: Men jog between the green lights</h6>
+        <p>This is Sunnah for men only.</p>
+
+        <h6>Step 6: Reach Marwah</h6>
+        <p>Make dua, then return toward Safa.</p>
+
+        <h6>Step 7: Continue until you complete 7 laps</h6>
+        <p>Finish at Marwah.</p>
+    </div>
+
+    
+    <div id="content-duas" class="content-section">
+        <h2>Duas During Sa'i</h2>
+
+        <h3>Dua at Safa</h3>
+        <p class="arabic" style="direction: rtl; text-align:right; font-size:1.4rem;">
+            الله أكبر، الله أكبر، الله أكبر، لا إله إلا الله وحده لا شريك له، له الملك وله الحمد وهو على كل شيء قدير
+        </p>
+
+        <h3>Dua at Marwah</h3>
+        <p class="arabic" style="direction: rtl; text-align:right; font-size:1.4rem;">
+            رب اغفر وارحم إنك أنت الأعز الأكرم
+        </p>
+
+        <h3>General Dua</h3>
+        <p>
+            You may recite Quran, dhikr, or any dua from your heart.
+        </p>
+    </div>
+
+</div>
+
+
+<script>
+    document.querySelectorAll('.nav-box').forEach(box => {
+        box.addEventListener('click', () => {
+
+            document.querySelectorAll('.nav-box').forEach(b => b.classList.remove('active'));
+            box.classList.add('active');
+
+            let target = box.getAttribute('data-target');
+
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            document.getElementById(target).classList.add('active');
+        });
+    });
+</script>
+
+{% endblock content %}

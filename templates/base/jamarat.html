@@ -1,0 +1,90 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/jamarat.css' %}">
+
+<div class="page-container">
+
+    <div class="breadcrumb">
+        <a href="#">Home</a> / 
+        <a href="#">ziyarat</a> /
+        <span>Jamarat</span>
+    </div>
+
+    <div class="content-wrapper">
+
+        <main class="main-content">
+
+            <img src="{% static 'images/jamarat.jpg' %}" alt="Jamarat">
+
+            <div class="title-box">
+                <h3>Jamarat (Stoning of the Devil)</h3>
+            </div>
+
+            <p>
+                Jamarat is one of the most important rituals of Hajj performed in Mina, near Makkah. Pilgrims symbolically throw pebbles at three pillars representing Shaytan (the devil), following the Sunnah of Prophet Ibrahim (AS) who rejected Satan’s temptations.
+            </p>
+
+            <p>
+                This ritual symbolizes the rejection of evil, purification of the soul, and complete submission to Allah. It takes place over three days of Hajj (11th, 12th, and 13th Dhul Hijjah).
+            </p>
+
+            <div class="title-box">
+                <h3>Religious Significance</h3>
+            </div>
+
+            <ul class="guidelines">
+                <li><strong>Following Ibrahim (AS):</strong> Re-enactment of Prophet Ibrahim’s rejection of Shaytan.</li>
+                <li><strong>Spiritual Cleansing:</strong> Represents removal of sins and evil thoughts.</li>
+                <li><strong>Obedience to Allah:</strong> Demonstrates complete submission to divine command.</li>
+                <li><strong>Hajj Ritual:</strong> Essential part of the completion of Hajj pilgrimage.</li>
+            </ul>
+
+            <div class="ziyarat-container">
+
+                <div class="title-box">
+                    <h3>SPIRITUAL LESSONS</h3>
+                </div>
+
+                <div class="graves-row">
+
+                    <div class="grave">
+                        <h4>Reject Evil</h4>
+                        <p>Symbolically rejecting Shaytan and all forms of temptation in life.</p>
+                        <span class="label">FAITH</span>
+                    </div>
+
+                    <div class="grave">
+                        <h4>Obedience</h4>
+                        <p>Showing complete obedience to Allah’s commands without hesitation.</p>
+                    </div>
+
+                    <div class="grave">
+                        <h4>Inner Strength</h4>
+                        <p>Building spiritual strength to resist sins and worldly distractions.</p>
+                        <span class="label">PURIFICATION</span>
+                    </div>
+
+                </div>
+            </div>
+
+        </main>
+
+        <aside class="sidebar">
+            <div class="navigation-box">
+                <h2>Navigation</h2>
+                <ul>
+                    <li><a href="#">About Hajj</a></li>
+                    <li><a href="#">Mina</a></li>
+                    <li><a href="#">Arafat</a></li>
+                    <li><a href="#">Makkah</a></li>
+                    <li><a href="#">Madinah</a></li>
+                    <li><a href="#">Ziyarat Places</a></li>
+                </ul>
+            </div>
+        </aside>
+
+    </div>
+</div>
+{% endblock content %}

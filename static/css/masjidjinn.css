@@ -1,0 +1,160 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+.page-container {
+    max-width: 1400px;
+    margin: 100px auto 30px auto; 
+    padding: 0 20px;
+}
+
+.breadcrumb {
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #777;
+}
+
+.breadcrumb a {
+    color: #0f5132;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.content-wrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 40px;
+}
+
+.main-content {
+    flex: 3;
+    padding: 0;
+}
+
+.main-content img {
+    width: 65%;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.title-box {
+    background: #0f5132;
+    color: white;
+    text-align: center;
+    padding: 8px 25px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 6px;
+    width: fit-content;
+    margin: 20px 0;
+}
+
+.main-content p {
+    line-height: 1.7;
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 18px;
+    text-align: justify;
+}
+
+.guidelines li {
+    margin-bottom: 10px;
+    font-size: 15px;
+    list-style-type: none;
+    position: relative;
+    padding-left: 20px;
+}
+
+.guidelines li::before {
+    content: "•";
+    color: #ffd700;
+    font-weight: bold;
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
+}
+
+.ziyarat-container {
+    margin-top: 30px;
+}
+
+.graves-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.grave {
+    flex: 1 1 30%;
+    background: #0f5132;
+    color: white;
+    text-align: center;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+
+.label {
+    font-size: 13px;
+    color: #ffd700;
+    display: block;
+    margin-top: 10px;
+}
+
+.sidebar {
+    flex: 1;
+    min-width: 260px;
+}
+
+.navigation-box {
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+    background: #fff;
+}
+
+.navigation-box h2 {
+    color: #0f5132;
+    font-size: 32px;
+    margin-bottom: 15px;
+}
+
+.navigation-box ul {
+    list-style: none;
+}
+
+.navigation-box li {
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.navigation-box a {
+    text-decoration: none;
+    color: #555;
+    font-weight: 500;
+    display: block;
+    transition: 0.3s;
+}
+
+.navigation-box a:hover {
+    color: #0f5132;
+    padding-left: 5px;
+}
+
+@media (max-width: 768px) {
+    .content-wrapper {
+        flex-direction: column;
+    }
+    .main-content img {
+        width: 100%;
+    }
+    .graves-row {
+        flex-direction: column;
+    }
+}

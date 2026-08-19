@@ -1,0 +1,87 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/cavehira.css' %}">
+
+<div class="page-container">
+    <div class="breadcrumb">
+        <a href="#">Home</a> / 
+        <a href="#">Ziyarat</a> /
+        <span>Cave Hira</span>
+    </div>
+
+    <div class="content-wrapper">
+        <main class="main-content">
+            <img src="{% static 'images/cave%20hira.jpg' %}" alt="Cave Hira">
+
+            <div class="title-box">
+                <h3>Cave Hira (Ghar-e-Hira)</h3>
+            </div>
+
+            <p>
+                Cave Hira is a small cave located near the top of Jabal al-Nour (The Mountain of Light). It is situated about 3 km from Makkah and is the site where Prophet Muhammad ﷺ spent long periods in meditation and prayer.
+            </p>
+
+            <p>
+                This location holds supreme importance in Islamic history because it was here in 610 CE that the Angel Jibrail (AS) brought the first revelation. The opening verses of Surah Al-Alaq ("Iqra") were revealed at this very spot.
+            </p>
+
+            <p>
+                The interior of the cave is small, fitting only a few people at a time. Interestingly, the cave faces the Holy Kaaba, which can be seen from the mountain peak.
+            </p>
+
+            <div class="title-box">
+                <h3>Climbing & Visiting Tips</h3>
+            </div>
+
+            <ul class="guidelines">
+                <li>The climb takes approximately 45 to 90 minutes; wear comfortable walking shoes.</li>
+                <li>Carry a water bottle to stay hydrated during the steep trek.</li>
+                <li>It is best to climb during the early morning or evening to avoid the intense heat.</li>
+                <li>Be cautious on the rocky path and stay focused on the trail.</li>
+            </ul>
+
+            <div class="ziyarat-container">
+                <div class="title-box">
+                    <h3>SPIRITUAL SIGNIFICANCE</h3>
+                </div>
+
+                <div class="graves-row">
+                    <div class="grave">
+                        <h4>First Revelation</h4>
+                        <p>The exact spot where the new era of humanity began with the word "Iqra" (Read).</p>
+                        <span class="label">BIRTH OF ISLAM</span>
+                    </div>
+
+                    <div class="grave">
+                        <h4>Jabal al-Nour</h4>
+                        <p>"The Mountain of Light" - its name reflects its spiritual importance in history.</p>
+                    </div>
+
+                    <div class="grave">
+                        <h4>Solitude</h4>
+                        <p>Following the Sunnah, this place was used for worshiping Allah in complete solitude.</p>
+                        <span class="label">REFLECTION</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="navigation-box">
+                <h2>Navigation</h2>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Hajj & Umrah Guide</a></li>
+                    <li><a href="#">Planning & Preparation</a></li>
+                    <li><a href="#">Umrah</a></li>
+                    <li><a href="#">Hajj</a></li>
+                    <li><a href="#">Madinah</a></li>
+                    <li><a href="#">Makkah</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock content %}

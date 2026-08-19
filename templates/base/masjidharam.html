@@ -1,0 +1,83 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/masjidharam.css' %}">
+
+<div class="page-container">
+    <div class="breadcrumb">
+        <a href="#">Home</a> / 
+        <a href="#">Ziyarat</a> /
+        <span>Masjid al-Haram</span>
+    </div>
+
+    <div class="content-wrapper">
+        <main class="main-content">
+            <img src="{% static 'images/masjid%20haram.jpeg' %}" alt="Masjid al-Haram">
+
+            <div class="title-box">
+                <h3>Masjid al-Haram</h3>
+            </div>
+
+            <p>
+                Masjid al-Haram, located in the heart of Makkah, is the holiest and largest mosque in the world. At its center lies the "Holy Kaaba," the house of Allah toward which Muslims across the globe turn in prayer.
+            </p>
+
+            <p>
+                The mosque has undergone continuous expansion over centuries to accommodate millions of pilgrims. The reward for praying here is manifold compared to any other place on Earth.
+            </p>
+
+            <div class="title-box">
+                <h3>Sacred Landmarks</h3>
+            </div>
+
+            <ul class="guidelines">
+                <li><strong>The Holy Kaaba:</strong> The Qibla for all Muslims and the first house of worship built for mankind.</li>
+                <li><strong>Maqam-e-Ibrahim:</strong> The stone on which Hazrat Ibrahim (AS) stood while constructing the Kaaba.</li>
+                <li><strong>Hajr-e-Aswad:</strong> The Black Stone from Paradise; it is Sunnah to kiss it or point toward it.</li>
+                <li><strong>Safa & Marwa:</strong> The two hills where Hazrat Hajra (AS) ran in search of water for her son.</li>
+            </ul>
+
+            <div class="ziyarat-container">
+                <div class="title-box">
+                    <h3>SPIRITUAL HIGHLIGHTS</h3>
+                </div>
+
+                <div class="graves-row">
+                    <div class="grave">
+                        <h4>Mataf Area</h4>
+                        <p>The vast courtyard surrounding the Kaaba where pilgrims perform Tawaf 24/7.</p>
+                        <span class="label">TAWAF AREA</span>
+                    </div>
+
+                    <div class="grave">
+                        <h4>Zamzam Well</h4>
+                        <p>The blessed water of Shifa that has been flowing continuously for thousands of years.</p>
+                    </div>
+
+                    <div class="grave">
+                        <h4>Multazam</h4>
+                        <p>The area between the Black Stone and the Kaaba door where supplications are accepted.</p>
+                        <span class="label">PLACE OF DUA</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="navigation-box">
+                <h2>Navigation</h2>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Hajj & Umrah Guide</a></li>
+                    <li><a href="#">Planning & Preparation</a></li>
+                    <li><a href="#">Umrah</a></li>
+                    <li><a href="#">Hajj</a></li>
+                    <li><a href="#">Madinah</a></li>
+                    <li><a href="#">Makkah</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock content %}
