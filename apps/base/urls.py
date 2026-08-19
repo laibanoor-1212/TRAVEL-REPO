@@ -10,6 +10,8 @@ urlpatterns = [
     path('guide/', views.Guide, name='Guide'),
     path('hajj-guide/', views.hajj_guide, name='hajj-guide'),
     path('ziyarat/', views.ziyarat, name='ziyarat'),
-]
+    path('about/', views.about, name='about'),
+
+
     path('hajj_packages/', views.hajj_packages, name='hajj_packages'),
 ]

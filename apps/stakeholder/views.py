@@ -15,6 +15,8 @@ from payments import services
 from django.db.models import Sum, F
 from payments.models import Payment
 from django.shortcuts import redirect, get_object_or_404
+from django.core.exceptions import PermissionDenied
+from base.decorators import role_required,kyc_approved_required
 
 
 
@@ -121,7 +123,7 @@ def approved_agent(request):
 def agent_details(request):
     agentkyc = AgentKYC.objects.filter(user=request.user).first()
 
-    return render(request, 'stakeholder/agent_details.html', {
+    return render(request, 'stakeholder/view_profile.html', {
         'agentkyc': agentkyc
     })
 @login_required(login_url='/accounts/login/')
@@ -133,107 +135,107 @@ def account_locked(request):
     })
 
 
-def create_packages(request):
-    package_types = PackageType.objects.filter(is_active=True)
+# def create_packages(request):
+#     package_types = PackageType.objects.filter(is_active=True)
 
-    if request.method == "POST":
-        duration_val = request.POST.get('duration') or request.POST.get('duration_days')
-        if not duration_val:
-            duration_val = 15  
-        Package.objects.create(
-            agency=request.user,
-            name=request.POST.get('name'),
-            package_type_id=request.POST.get('package_type'),
-            tier=request.POST.get('tier', 'standard'),
-            country=request.POST.get('country', 'Saudi Arabia'),
-            city=request.POST.get('city', 'Makkah'),
-            price=request.POST.get('price') or 100000,
-            total_seats=request.POST.get('total_seats') or 50,
-            departure_date=request.POST.get('departure_date') or None,
-            application_deadline=request.POST.get('application_deadline') or None,
+#     if request.method == "POST":
+#         duration_val = request.POST.get('duration') or request.POST.get('duration_days')
+#         if not duration_val:
+#             duration_val = 15  
+#         Package.objects.create(
+#             agency=request.user,
+#             name=request.POST.get('name'),
+#             package_type_id=request.POST.get('package_type'),
+#             tier=request.POST.get('tier', 'standard'),
+#             country=request.POST.get('country', 'Saudi Arabia'),
+#             city=request.POST.get('city', 'Makkah'),
+#             price=request.POST.get('price') or 100000,
+#             total_seats=request.POST.get('total_seats') or 50,
+#             departure_date=request.POST.get('departure_date') or None,
+#             application_deadline=request.POST.get('application_deadline') or None,
             
-            # Duration & Accommodation Specifications
-            duration_days=duration_val,
-            makkah_hotel=request.POST.get('makkah_hotel', 'Standard Hotel'),
-            madinah_hotel=request.POST.get('madinah_hotel', 'Standard Hotel'),
+#             # Duration & Accommodation Specifications
+#             duration_days=duration_val,
+#             makkah_hotel=request.POST.get('makkah_hotel', 'Standard Hotel'),
+#             madinah_hotel=request.POST.get('madinah_hotel', 'Standard Hotel'),
             
-            # Checkbox values extraction (True/False checks)
-            visa=request.POST.get('visa') == 'on',
-            ticket=request.POST.get('ticket') == 'on',
-            transport=request.POST.get('transport') == 'on',
-            ziyarat=request.POST.get('ziyarat') == 'on',
+#             # Checkbox values extraction (True/False checks)
+#             visa=request.POST.get('visa') == 'on',
+#             ticket=request.POST.get('ticket') == 'on',
+#             transport=request.POST.get('transport') == 'on',
+#             ziyarat=request.POST.get('ziyarat') == 'on',
             
-            description=request.POST.get('description', 'Package details coming soon...'),
-            banner=request.FILES.get('banner') if request.FILES.get('banner') else 'package_banners/default.jpg',
-            status=request.POST.get('status', 'active'),
-        )
+#             description=request.POST.get('description', 'Package details coming soon...'),
+#             banner=request.FILES.get('banner') if request.FILES.get('banner') else 'package_banners/default.jpg',
+#             status=request.POST.get('status', 'active'),
+#         )
 
-        messages.success(request, "Package created successfully.")
-        return redirect('stakeholder:manage_packages')
+#         messages.success(request, "Package created successfully.")
+#         return redirect('stakeholder:manage_packages')
 
-    return render(
-        request,
-        'stakeholder/create_packages.html',
-        {'package_types': package_types}
-    )
+#     return render(
+#         request,
+#         'stakeholder/create_packages.html',
+#         {'package_types': package_types}
+#     )
 
-def update_package(request, pk):
-    package = get_object_or_404(Package, pk=pk)
-    package_types = PackageType.objects.all() 
+# def update_package(request, pk):
+#     package = get_object_or_404(Package, pk=pk)
+#     package_types = PackageType.objects.all() 
 
-    if request.method == 'POST':
-        package.name = request.POST.get('name')
-        type_id = request.POST.get('package_type')
-        if type_id:
-            package.package_type_id = type_id
+#     if request.method == 'POST':
+#         package.name = request.POST.get('name')
+#         type_id = request.POST.get('package_type')
+#         if type_id:
+#             package.package_type_id = type_id
             
-        package.tier = request.POST.get('tier')
-        package.country = request.POST.get('country')
-        package.city = request.POST.get('city')
-        package.price = request.POST.get('price')
-        package.total_seats = request.POST.get('total_seats')
-        package.duration_days = request.POST.get('duration_days')
-        package.departure_date = request.POST.get('departure_date')
-        package.application_deadline = request.POST.get('application_deadline')
-        package.makkah_hotel = request.POST.get('makkah_hotel')
-        package.madinah_hotel = request.POST.get('madinah_hotel')
-        package.visa = 'visa' in request.POST
-        package.ticket = 'ticket' in request.POST
-        package.transport = 'transport' in request.POST
-        package.ziyarat = 'ziyarat' in request.POST
+#         package.tier = request.POST.get('tier')
+#         package.country = request.POST.get('country')
+#         package.city = request.POST.get('city')
+#         package.price = request.POST.get('price')
+#         package.total_seats = request.POST.get('total_seats')
+#         package.duration_days = request.POST.get('duration_days')
+#         package.departure_date = request.POST.get('departure_date')
+#         package.application_deadline = request.POST.get('application_deadline')
+#         package.makkah_hotel = request.POST.get('makkah_hotel')
+#         package.madinah_hotel = request.POST.get('madinah_hotel')
+#         package.visa = 'visa' in request.POST
+#         package.ticket = 'ticket' in request.POST
+#         package.transport = 'transport' in request.POST
+#         package.ziyarat = 'ziyarat' in request.POST
 
-        if request.FILES.get('banner'):
-            package.banner = request.FILES['banner']
+#         if request.FILES.get('banner'):
+#             package.banner = request.FILES['banner']
 
-        package.save()
-        return redirect('stakeholder:manage-packages') 
+#         package.save()
+#         return redirect('stakeholder:manage-packages') 
 
   
-    context = {
-        'package': package,
-        'package_types': package_types,
-    }
+#     context = {
+#         'package': package,
+#         'package_types': package_types,
+#     }
     
-    return render(request, 'stakeholder/edit_package.html', context)
-def delete_package(request, pk):
-    package = get_object_or_404(Package, pk=pk)  
-    package.delete()
-    messages.success(request, "Package deleted successfully!")
-    return redirect('packages:manage_packages')
+#     return render(request, 'stakeholder/edit_package.html', context)
+# def delete_package(request, pk):
+#     package = get_object_or_404(Package, pk=pk)  
+#     package.delete()
+#     messages.success(request, "Package deleted successfully!")
+#     return redirect('packages:manage_packages')
 
-def manage_packages(request):
+# def manage_packages(request):
    
-    active_packages = Package.objects.filter(status='active').order_by('-created_at')
-    inactive_packages = Package.objects.exclude(status='active').order_by('-created_at')
+#     active_packages = Package.objects.filter(status='active').order_by('-created_at')
+#     inactive_packages = Package.objects.exclude(status='active').order_by('-created_at')
 
-    return render(
-        request,
-        'stakeholder/manage_packages.html',
-        {
-            'active_packages': active_packages,
-            'inactive_packages': inactive_packages,
-        }
-    )
+#     return render(
+#         request,
+#         'stakeholder/manage_packages.html',
+#         {
+#             'active_packages': active_packages,
+#             'inactive_packages': inactive_packages,
+#         }
+#     )
 
 # @login_required(login_url='/auth/login/')
 # def stakeholder_dashboard(request):
@@ -247,8 +249,13 @@ def manage_packages(request):
 #     }
 #     return render(request, 'stakeholder/stakeholder_dashboard.html', context)
 
+
+@role_required('stakeholder')
+@kyc_approved_required
 @login_required(login_url='/auth/login/')
 def stakeholder_dashboard(request):
+    if request.user.role != 'stakeholder':
+        raise PermissionDenied
 
     agent_bookings = Bookings.objects.filter(package__agency=request.user).order_by('-id')
     date_requests = [] 
@@ -259,7 +266,6 @@ def stakeholder_dashboard(request):
     context = {
         'bookings': agent_bookings,
         'date_requests': date_requests,
-        
         'notifications': notifications,
         'unread_count': unread_count,
     }

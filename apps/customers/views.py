@@ -9,6 +9,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
 from django.utils import timezone
 from payments import services
+from django.core.exceptions import PermissionDenied
+from base.decorators import role_required
 
 
 @login_required(login_url='/auth/login/')
@@ -115,15 +117,19 @@ def user_bookings(request):
     }
     return render(request, 'customer/user_booking.html', context)
 
+
+@role_required('customer')
 @login_required(login_url='/auth/login/')
 def user_dashboard(request):
+    if request.user.role != 'customer':
+        raise PermissionDenied
+
     notifications = request.user.notifications.filter(is_deleted=False)[:10]
     unread_count = request.user.notifications.filter(is_read=False, is_deleted=False).count()
 
     context = {
         'notifications': notifications,
         'unread_count': unread_count,
-    
     }
     return render(request, 'customer/user_layout.html', context)
 
