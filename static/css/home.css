@@ -317,8 +317,8 @@ html,body {
     margin-left: auto;
     margin-right: 15px;
     gap: 15px;
-  }
-  .menu {
+  } 
+   .menu {
     position: absolute;
     top: 70px;
     left: -100%;
@@ -521,7 +521,7 @@ html,body {
 }
 .transparent-box {
   position: absolute;
-  bottom: -250px;
+  bottom: -150px;
   left: 50%;
   transform: translateX(-50%);
   width: 85%;
@@ -555,7 +555,7 @@ html,body {
 }
 .hero-search1 {
   position: absolute;
-  top: 50%;
+  top: 45%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 90%;
@@ -711,7 +711,7 @@ html,body {
   color: #f8f9fa;
   margin-bottom: 10px;
 }
-.destinations{
+/* .destinations{
     width:100%;
     padding:80px 20px;
     background:#f8f9fa;
@@ -748,6 +748,136 @@ html,body {
     width:100%;
     height:220px;
     object-fit:cover;
+} */
+
+.destinations-section {
+  padding: 80px 5%;
+  background: #f8faf9;
+  text-align: center;
+}
+
+.dest-container {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.dest-header-tag {
+  color: #0d9488;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: inline-block;
+}
+
+.dest-main-title {
+  font-size: clamp(28px, 4vw, 38px);
+  font-weight: 800;
+  color: #065f46;
+  margin-bottom: 12px;
+}
+
+.dest-subtitle {
+  font-size: 15px;
+  color: #666;
+  max-width: 600px;
+  margin: 0 auto 40px auto;
+}
+
+.dest-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
+}
+
+.dest-card {
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.dest-img-wrapper {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.dest-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.dest-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(5, 150, 105, 0.9);
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.dest-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.dest-card-title {
+  font-size: 19px;
+  font-weight: 700;
+  color: #065f46;
+  margin-bottom: 8px;
+}
+
+.dest-card-desc {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.5;
+  margin-bottom: 16px;
+  flex-grow: 1;
+}
+
+.dest-card-footer {
+  padding-top: 10px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.dest-btn {
+  color: #059669;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+  transition: color 0.2s ease, transform 0.2s ease;
+  display: inline-block;
+}
+
+/* Hover State */
+.dest-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px rgba(5, 150, 105, 0.12);
+}
+
+.dest-card:hover .dest-img-wrapper img {
+  transform: scale(1.08);
+}
+
+.dest-card:hover .dest-btn {
+  color: #047857;
+  transform: translateX(4px);
 }
 
 .card-content{

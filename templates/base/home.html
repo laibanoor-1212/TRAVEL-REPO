@@ -6,7 +6,7 @@
   
    <div class="video-wrapper">
   <video autoplay muted loop id="bg-video">
-    <source src="{% static 'videos/kabba.mp4' %}" type="video/mp4">
+    <source src="{% static 'videos/kabbaview.mp4' %}" type="video/mp4">
   </video>
 
   <div class="overlay2"></div>
@@ -39,7 +39,7 @@
         
         <a href="{% url 'stakeholder:create_profile' %}" class="btn-agent">Register as Agent</a>
       </div>
-     
+      
 </div>
 </div>
    
@@ -102,55 +102,59 @@
   <div class="custom-shape-divider-bottom">
      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
    
-    <path d="M0,40 C150,0 400,120 1200,100 L1200,120 L0,120 Z" class="shape-fill"></path>
+    <path d="M0,40 C150,0 400,120 1200,100 L1200,120 L0,120 Z" class="shape-fill"></path>   
 
   </svg>
   </div>
 </section>
 
-<section class="destinations">
-    <div class="container1">
-        <h1>Popular Destinations</h1>
+<!-- Updated Dynamic Destinations Section -->
+<!-- Admin-Driven Dynamic Destinations Section -->
+<section class="destinations-section">
+  <div class="dest-container">
+    <span class="dest-header-tag">Sacred Places & Categories</span>
+    <h2 class="dest-main-title">Popular Destinations</h2>
+    <p class="dest-subtitle">Explore holy destinations and verified package categories curated by admin.</p>
 
-        <div class="destination-cards">
+    <div class="dest-grid">
+      {% for type in package_types %}
+        <div class="dest-card">
+          <div class="dest-img-wrapper">
+            {% if type.image %}
+              <!-- Admin dwara uploaded image yahan render ho gi -->
+              <img src="{{ type.image.url }}" alt="{{ type.name }}">
+            {% else %}
+              <!-- Fallback Image agar Admin ne image na di ho -->
+              <img src="{% static 'images/kabbaview.jpeg' %}" alt="{{ type.name }}">
+            {% endif %}
+            <span class="dest-badge">Verified</span>
+          </div>
 
-            <div class="destination-card">
-                <img src="{% static 'images/makkah.jpg' %}" alt="Makkah">
-                <div class="card-content">
-                    <h3>Makkah</h3>
-                    <p>The holiest city in Islam and home to the Kaaba.</p>
-                </div>
+          <div class="dest-content">
+            <h3 class="dest-card-title">{{ type.name }}</h3>
+            <p class="dest-card-desc">
+              {% if type.description %}
+                {{ type.description|truncatewords:14 }}
+              {% else %}
+                Explore sacred places and customized pilgrimage options tailored for you.
+              {% endif %}
+            </p>
+            
+            <div class="dest-card-footer">
+              <a href="{% url 'base:packages' %}?type={{ type.id }}" class="dest-btn">
+                Explore Packages &rarr;
+              </a>
             </div>
-
-            <div class="destination-card">
-                <img src="{% static 'images/Masjid nabvi.png' %}" alt="Madinah">
-                <div class="card-content">
-                    <h3>Madinah</h3>
-                    <p>The blessed city of Masjid an-Nabawi.</p>
-                </div>
-            </div>
-
-            <div class="destination-card">
-                <img src="{% static 'images/iran.png' %}" alt="Iran">
-                <div class="card-content">
-                    <h3>Iran</h3>
-                    <p>Visit the holy shrines and rich Islamic heritage.</p>
-                </div>
-            </div>
-
-            <div class="destination-card">
-                <img src="{% static 'images/iraq.png' %}" alt="Iraq">
-                <div class="card-content">
-                    <h3>Iraq</h3>
-                    <p>Explore Karbala, Najaf and other sacred places.</p>
-                </div>
-            </div>
-
+          </div>
         </div>
+      {% empty %}
+        <div class="dest-empty-state">
+          <p>No package types added yet by Admin.</p>
+        </div>
+      {% endfor %}
     </div>
+  </div>
 </section>
-
-
 <section class="packages">
     <div class="container1">
 
@@ -441,7 +445,7 @@
     </div>
 </section>
 
-
+<footer>
   <div class="footer-content">
     <img src="{% static 'images/logo.png'%}" alt="">
     <div class="footer-columns">
@@ -483,12 +487,11 @@
   </div>
 </footer>
 
-
 <script>
     // Optional JS if you want interactive "Read More" button
-    document.querySelector('.read-more').addEventListener('click', () => {
+    document.querySelector('.read-more')?.addEventListener('click', () => {
         alert('Redirect to more info page');
     });
 </script>
 
- {% endblock %}
+{% endblock %}

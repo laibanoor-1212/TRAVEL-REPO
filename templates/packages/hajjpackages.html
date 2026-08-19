@@ -452,7 +452,7 @@
                     </ul>
 
                     <div class="card-footer-actions">
-                        <a href="#" class="btn-theme-outline">Details</a>
+                        <a href="{% url 'packages:packages_detail' package.id %}" class="btn-theme-outline">Details</a>
                         <a href="{% url 'bookings:book_package' package.id %}" class="btn-theme-fill">Book Now</a>
                     </div>
                 </div>
