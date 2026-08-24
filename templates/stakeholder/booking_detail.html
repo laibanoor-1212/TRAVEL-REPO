@@ -1,325 +1,415 @@
 {% extends 'stakeholder/dashboard_layout2.html' %}
+{% load static %}
+
 {% block content %}
 <style>
-    .detail-container {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        max-width: 1100px;
-        margin: 0 auto;
-        padding: 20px;
-    }
-    
-    .back-btn {
-        background: transparent;
-        border: 1px solid #e2e8f0;
-        color: #1e293b;
-        padding: 10px 18px;
-        border-radius: 12px;
-        text-decoration: none;
-        font-size: 14px;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 25px;
-        font-weight: 600;
-        transition: 0.3s;
-    }
-    .back-btn:hover {
-        background: #f1f5f9;
-    }
+  :root {
+    --primary-green: #064e3b;
+    --accent-green: #047857;
+    --light-green: #ecfdf5;
+    --border-color: #e2e8f0;
+    --text-dark: #0f172a;
+  }
 
-    /* Top Summary Cards */
-    .info-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 25px;
-        margin-bottom: 30px;
-    }
-
-    .panel-card {
-        background: white;
-        padding: 30px;
-        border-radius: 20px;
-        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
-        border: 1px solid #e2e8f0;
-    }
-
-    .panel-header {
-        border-bottom: 2px solid #f1f5f9;
-        padding-bottom: 15px;
-        margin-bottom: 20px;
-        color: #0f172a;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-    .panel-header h3 { margin: 0; font-size: 18px; font-weight: 800; }
-
-    .data-group {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-    }
-
-    .info-box {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        background: #f8fafc;
-        padding: 12px 15px;
-        border-radius: 12px;
-        border: 1px solid #e2e8f0;
-    }
-
-    .info-label {
-        font-size: 11px;
-        font-weight: 800;
-        color: #64748b;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .info-value {
-        font-size: 14px;
-        color: #0f172a;
-        font-weight: 700;
-    }
-
-    /* --- Travelers Section Heading --- */
-    .section-title {
-        font-size: 20px;
-        font-weight: 800;
-        color: #0f172a;
-        margin: 40px 0 20px 0;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    /* Traveler Dynamic Card Styling */
-    .traveler-master-card {
-        background: white;
-        border-radius: 24px;
-        padding: 30px;
-        border: 1px solid #e2e8f0;
-        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.02);
-        margin-bottom: 25px;
-    }
-
-    .traveler-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 20px;
-        border-bottom: 1px dashed #e2e8f0;
-        padding-bottom: 15px;
-    }
-
-    .t-badge {
-        background: var(--primary-green, #0f5132);
-        color: white;
-        width: 35px;
-        height: 35px;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 800;
-        font-size: 14px;
-    }
-
-    /* Documents Attachment Download/View Layout */
-    .doc-attachment-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 15px;
-        margin-top: 20px;
-        background: #f8fafc;
-        padding: 15px;
-        border-radius: 16px;
-        border: 1px solid #e2e8f0;
-    }
-
-    .doc-item {
-        background: white;
-        border: 1px solid #e2e8f0;
-        padding: 12px;
-        border-radius: 10px;
-        text-align: center;
-    }
-
-    .doc-item span {
-        font-size: 11px;
-        font-weight: 700;
-        color: #475569;
-        display: block;
-        margin-bottom: 8px;
-        text-transform: uppercase;
-    }
-
-    .btn-view-doc {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        font-size: 12px;
-        color: white;
-        background: #0f172a;
-        text-decoration: none;
-        padding: 6px 12px;
-        border-radius: 6px;
-        font-weight: 600;
-        transition: 0.2s;
-    }
-    .btn-view-doc:hover { background: #1e293b; }
-
-    @media (max-width: 900px) {
-        .doc-attachment-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width: 600px) {
-        .info-grid, .data-group, .doc-attachment-grid { grid-template-columns: 1fr; }
-    }
+  .bk-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(6, 78, 59, 0.05);
+    border: 1px solid var(--border-color);
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .bk-header {
+    background: linear-gradient(135deg, var(--primary-green), var(--accent-green));
+    color: #ffffff;
+    padding: 18px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .bk-body {
+    padding: 24px;
+  }
+  .bk-status-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .st-approved { background-color: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+  .st-rollback { background-color: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+  .st-rejected { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+  .st-resubmitted { background-color: #e0e7ff; color: #3730a3; border: 1px solid #c7d2fe; }
+  .st-pending  { background-color: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+  
+  .verification-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+  }
+  .field-verify-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 16px;
+    transition: all 0.2s ease;
+  }
+  .field-verify-card:hover {
+    border-color: var(--accent-green);
+    box-shadow: 0 4px 12px rgba(4, 120, 87, 0.08);
+  }
+  .field-title {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    color: #64748b;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .field-val {
+    font-size: 0.98rem;
+    color: var(--text-dark);
+    font-weight: 600;
+    margin-bottom: 12px;
+    word-break: break-all;
+  }
+  .control-group {
+    background: var(--light-green);
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid #a7f3d0;
+  }
+  .section-heading {
+    color: var(--primary-green);
+    font-weight: 700;
+    border-bottom: 2px solid var(--light-green);
+    padding-bottom: 8px;
+    margin-bottom: 20px;
+  }
+  .btn-green-submit {
+    background: var(--primary-green);
+    color: #ffffff;
+    font-weight: 600;
+    padding: 10px 24px;
+    border-radius: 8px;
+    border: none;
+    transition: background 0.2s;
+  }
+  .btn-green-submit:hover {
+    background: var(--accent-green);
+    color: #ffffff;
+  }
+  
+  /* Back Button Styling */
+  .btn-back-link {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .btn-back-link:hover {
+    background: #ffffff;
+    color: var(--primary-green);
+    border-color: #ffffff;
+  }
 </style>
 
-<div class="detail-container">
-    
-    <a href="{% url 'stakeholder:manage_booking' %}" class="back-btn">
-        <i class="fas fa-arrow-left"></i> Back to Bookings Table
-    </a>
+<div class="container-fluid py-4" style="background-color: #f8fafc;">
 
-    <div class="info-grid">
-        <div class="panel-card">
-            <div class="panel-header">
-                <h3><i class="fa-solid fa-file-invoice-dollar" style="color: #6366f1;"></i> Booking Overview</h3>
-            </div>
-            <div class="data-group">
-                <div class="info-box">
-                    <span class="info-label">Main Account Holder</span>
-                    <span class="info-value">{{ booking.user.get_full_name|default:booking.user.username }}</span>
-                </div>
-                <div class="info-box">
-                    <span class="info-label">Total Amount</span>
-                    <span class="info-value" style="color: #10b981;">Rs. {{ booking.total_amount }}</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="panel-card">
-            <div class="panel-header">
-                <h3><i class="fa-solid fa-umbrella-beach" style="color: #6366f1;"></i> Selected Package</h3>
-            </div>
-            <div class="data-group">
-                <div class="info-box">
-                    <span class="info-label">Package Name</span>
-                    <span class="info-value">{{ booking.package.name }}</span>
-                </div>
-                <div class="info-box">
-                    <span class="info-label">Total Registered Seats</span>
-                    <span class="info-value">{{ booking.total_persons }} Persons</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="section-title">
-        <i class="fa-solid fa-users" style="color: #6366f1;"></i>
-        <span>Registered Travelers Details (Form Input)</span>
-    </div>
-
-    {% for traveler in travelers %}
-    <div class="traveler-master-card">
-        
-        <div class="traveler-header">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <div class="t-badge">{{ forloop.counter }}</div>
-                <h4 style="margin:0; font-size: 16px; font-weight: 800; color: #1e293b;">Traveler Specifications</h4>
-            </div>
-            <span style="font-size: 11px; font-weight: 700; color: #64748b; background: #f1f5f9; padding: 4px 10px; border-radius: 20px;">
-                ID: #{{ traveler.id }}
-            </span>
-        </div>
-
-        <div class="data-group">
-            <div class="info-box">
-                <span class="info-label">Full Name</span>
-                <span class="info-value">{{ traveler.full_name }}</span>
-            </div>
-            <div class="info-box">
-                <span class="info-label">Mobile Number</span>
-                <span class="info-value">{{ traveler.phone_number }}</span>
-            </div>
-            <div class="info-box">
-                <span class="info-label">CNIC Identity Card</span>
-                <span class="info-value">{{ traveler.cnic }}</span>
-            </div>
-            <div class="info-box">
-                <span class="info-label">Email Address</span>
-                <span class="info-value">{{ traveler.email|default:"Not provided" }}</span>
-            </div>
-        </div>
-        
-        <div class="info-box" style="margin-top: 15px; width: 100%;">
-            <span class="info-label">Residential Address</span>
-            <span class="info-value" style="font-weight: 500;">{{ traveler.address|default:"Not provided" }}</span>
-        </div>
-
-        {% if traveler.passport_number %}
-        <div class="data-group" style="margin-top: 15px; background: #fff1f2; padding: 12px; border-radius: 12px; border: 1px solid #ffe4e6;">
-            <div>
-                <span class="info-label" style="color: #9f1239;">Passport Number</span>
-                <span class="info-value" style="color: #9f1239;">{{ traveler.passport_number }}</span>
-            </div>
-            <div>
-                <span class="info-label" style="color: #9f1239;">Passport Expiry Date</span>
-                <span class="info-value" style="color: #9f1239;">{{ traveler.passport_expiry|date:"d M, Y"|default:"N/A" }}</span>
-            </div>
-        </div>
-        {% endif %}
-
-        <div class="doc-attachment-grid">
-            
-            <div class="doc-item">
-                <span>CNIC Front</span>
-                {% if traveler.cnic_front %}
-                    <a href="{{ traveler.cnic_front.url }}" target="_blank" class="btn-view-doc"><i class="fa-solid fa-eye"></i> View</a>
-                {% else %}
-                    <small style="color: #ef4444; font-weight: 600;">Missing</small>
-                {% endif %}
-            </div>
-
-            <div class="doc-item">
-                <span>CNIC Back</span>
-                {% if traveler.cnic_back %}
-                    <a href="{{ traveler.cnic_back.url }}" target="_blank" class="btn-view-doc"><i class="fa-solid fa-eye"></i> View</a>
-                {% else %}
-                    <small style="color: #ef4444; font-weight: 600;">Missing</small>
-                {% endif %}
-            </div>
-
-            <div class="doc-item">
-                <span>Passport Scan</span>
-                {% if traveler.passport_scan %}
-                    <a href="{{ traveler.passport_scan.url }}" target="_blank" class="btn-view-doc"><i class="fa-solid fa-eye"></i> View</a>
-                {% else %}
-                    <small style="color: #64748b; font-weight: 600;">N/A</small>
-                {% endif %}
-            </div>
-
-            <div class="doc-item">
-                <span>Passport Photo</span>
-                {% if traveler.passport_photo %}
-                    <a href="{{ traveler.passport_photo.url }}" target="_blank" class="btn-view-doc"><i class="fa-solid fa-eye"></i> View</a>
-                {% else %}
-                    <small style="color: #64748b; font-weight: 600;">N/A</small>
-                {% endif %}
-            </div>
-
-        </div>
-
-    </div>
-    {% empty %}
-    <div class="panel-card" style="text-align: center; color: #64748b; font-style: italic;">
-        No specific travelers breakdown found for this booking instance.
-    </div>
+  <!-- Message Alerts -->
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-4 shadow-sm" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
     {% endfor %}
+  {% endif %}
+
+  <!-- Booking Summary Header with Back Button -->
+  <div class="bk-card">
+    <div class="bk-header">
+      <div class="d-flex align-items-center gap-3">
+        <!-- Back Button -->
+        <a href="{% url 'stakeholder:manage_booking' %}" class="btn-back-link">
+          <i class="bi bi-arrow-left me-1"></i> Back to Bookings
+        </a>
+        <div>
+          <h4 class="mb-0 text-white fw-bold">Booking Reference #{{ booking.booking_id|default:booking.id }}</h4>
+          <small class="text-white-50">Package: {{ booking.package.title|default:booking.package.name }}</small>
+        </div>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <span class="bk-status-badge bg-white text-dark shadow-sm">
+          Booking Status: {{ booking.get_status_display|default:booking.status|title }}
+        </span>
+        <span class="bk-status-badge text-white" style="background: rgba(255,255,255,0.2);">
+          Escrow: {{ payment.escrow_status|default:"Unpaid" }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <h4 class="mb-3 text-dark fw-bold" style="color: var(--primary-green);">Travelers Document Verification Panel</h4>
+
+  {% for customer in customers %}
+  <form method="POST" action="{% url 'stakeholder:verify_booking_doc' customer.id %}">
+    {% csrf_token %}
+    
+    <div class="bk-card">
+      <div class="bk-header" style="background: #0f172a;">
+        <div>
+          <h5 class="mb-0 text-white font-semibold">{{ customer.full_name }}</h5>
+          <small style="color: #94a3b8;">Passenger #{{ forloop.counter }}</small>
+        </div>
+        <div>
+          {% if customer.verification_status == 'resubmitted' %}
+            <span class="bk-status-badge st-resubmitted"><i class="bi bi-arrow-repeat me-1"></i> Data Resubmitted</span>
+          {% elif customer.verification_status == 'approved' %}
+            <span class="bk-status-badge st-approved"><i class="bi bi-check-circle me-1"></i> Approved</span>
+          {% elif customer.verification_status == 'rollback' %}
+            <span class="bk-status-badge st-rollback"><i class="bi bi-arrow-counterclockwise me-1"></i> Rollback Pending</span>
+          {% elif customer.verification_status == 'rejected' %}
+            <span class="bk-status-badge st-rejected"><i class="bi bi-x-circle me-1"></i> Rejected</span>
+          {% else %}
+            <span class="bk-status-badge st-pending"><i class="bi bi-clock me-1"></i> Pending Verification</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="bk-body">
+        
+        <!-- SECTION 1: PERSONAL INFORMATION FIELDS -->
+        <h6 class="section-heading"><i class="bi bi-person-vcard me-2"></i>Personal Data Fields & Verification</h6>
+        <div class="verification-grid mb-4">
+          
+          <!-- Full Name Field -->
+          <div class="field-verify-card">
+            <div class="field-title">Full Name</div>
+            <div class="field-val">{{ customer.full_name }}</div>
+            <div class="control-group">
+              <select name="field_status_full_name" class="form-select form-select-sm mb-2 field-status-select">
+                <option value="approved" {% if customer.field_statuses.full_name == 'approved' or not customer.field_statuses.full_name %}selected{% endif %}>✅ Approve</option>
+                <option value="rejected" {% if customer.field_statuses.full_name == 'rejected' %}selected{% endif %}>❌ Reject / Request Rollback</option>
+              </select>
+              <input type="text" name="remark_full_name" class="form-control form-control-sm" placeholder="Reason if rejected..." value="{{ customer.rollback_remarks.full_name|default:'' }}">
+            </div>
+          </div>
+
+          <!-- Phone Number Field -->
+          <div class="field-verify-card">
+            <div class="field-title">Phone Number</div>
+            <div class="field-val">{{ customer.phone_number|default:"N/A" }}</div>
+            <div class="control-group">
+              <select name="field_status_phone_number" class="form-select form-select-sm mb-2 field-status-select">
+                <option value="approved" {% if customer.field_statuses.phone_number == 'approved' or not customer.field_statuses.phone_number %}selected{% endif %}>✅ Approve</option>
+                <option value="rejected" {% if customer.field_statuses.phone_number == 'rejected' %}selected{% endif %}>❌ Reject / Request Rollback</option>
+              </select>
+              <input type="text" name="remark_phone_number" class="form-control form-control-sm" placeholder="Reason if rejected..." value="{{ customer.rollback_remarks.phone_number|default:'' }}">
+            </div>
+          </div>
+
+          <!-- Email Field -->
+          <div class="field-verify-card">
+            <div class="field-title">Email Address</div>
+            <div class="field-val">{{ customer.email|default:"N/A" }}</div>
+            <div class="control-group">
+              <select name="field_status_email" class="form-select form-select-sm mb-2 field-status-select">
+                <option value="approved" {% if customer.field_statuses.email == 'approved' or not customer.field_statuses.email %}selected{% endif %}>✅ Approve</option>
+                <option value="rejected" {% if customer.field_statuses.email == 'rejected' %}selected{% endif %}>❌ Reject / Request Rollback</option>
+              </select>
+              <input type="text" name="remark_email" class="form-control form-control-sm" placeholder="Reason if rejected..." value="{{ customer.rollback_remarks.email|default:'' }}">
+            </div>
+          </div>
+
+          <!-- CNIC Field -->
+          <div class="field-verify-card">
+            <div class="field-title">CNIC / ID Number</div>
+            <div class="field-val">{{ customer.cnic|default:"N/A" }}</div>
+            <div class="control-group">
+              <select name="field_status_cnic" class="form-select form-select-sm mb-2 field-status-select">
+                <option value="approved" {% if customer.field_statuses.cnic == 'approved' or not customer.field_statuses.cnic %}selected{% endif %}>✅ Approve</option>
+                <option value="rejected" {% if customer.field_statuses.cnic == 'rejected' %}selected{% endif %}>❌ Reject / Request Rollback</option>
+              </select>
+              <input type="text" name="remark_cnic" class="form-control form-control-sm" placeholder="Reason if rejected..." value="{{ customer.rollback_remarks.cnic|default:'' }}">
+            </div>
+          </div>
+
+          <!-- Passport Number Field -->
+          <div class="field-verify-card">
+            <div class="field-title">Passport Number</div>
+            <div class="field-val">{{ customer.passport_number|default:"N/A" }}</div>
+            <div class="control-group">
+              <select name="field_status_passport_number" class="form-select form-select-sm mb-2 field-status-select">
+                <option value="approved" {% if customer.field_statuses.passport_number == 'approved' or not customer.field_statuses.passport_number %}selected{% endif %}>✅ Approve</option>
+                <option value="rejected" {% if customer.field_statuses.passport_number == 'rejected' %}selected{% endif %}>❌ Reject / Request Rollback</option>
+              </select>
+              <input type="text" name="remark_passport_number" class="form-control form-control-sm" placeholder="Reason if rejected..." value="{{ customer.rollback_remarks.passport_number|default:'' }}">
+            </div>
+          </div>
+
+          <!-- Passport Expiry Field -->
+          <div class="field-verify-card">
+            <div class="field-title">Passport Expiry Date</div>
+            <div class="field-val">{{ customer.passport_expiry|default:"N/A" }}</div>
+            <div class="control-group">
+              <select name="field_status_passport_expiry" class="form-select form-select-sm mb-2 field-status-select">
+                <option value="approved" {% if customer.field_statuses.passport_expiry == 'approved' or not customer.field_statuses.passport_expiry %}selected{% endif %}>✅ Approve</option>
+                <option value="rejected" {% if customer.field_statuses.passport_expiry == 'rejected' %}selected{% endif %}>❌ Reject / Request Rollback</option>
+              </select>
+              <input type="text" name="remark_passport_expiry" class="form-control form-control-sm" placeholder="Reason if rejected..." value="{{ customer.rollback_remarks.passport_expiry|default:'' }}">
+            </div>
+          </div>
+
+        </div>
+
+        <!-- SECTION 2: UPLOADED DOCUMENTS -->
+        <h6 class="section-heading"><i class="bi bi-file-earmark-medical me-2"></i>Uploaded Documents Verification</h6>
+        <div class="verification-grid mb-4">
+
+          <!-- Passport Scan Doc -->
+          <div class="field-verify-card">
+            <div class="field-title">Passport Scan</div>
+            <div class="field-val">
+              {% if customer.passport_scan %}
+                <a href="{{ customer.passport_scan.url }}" target="_blank" class="btn btn-sm btn-outline-success w-100 mb-2">
+                  <i class="bi bi-eye me-1"></i> View Document Scan
+                </a>
+              {% else %}
+                <span class="badge bg-secondary mb-2 d-inline-block">Not Uploaded</span>
+              {% endif %}
+            </div>
+            <div class="control-group">
+              <select name="field_status_passport_scan" class="form-select form-select-sm mb-2 field-status-select">
+                <option value="approved" {% if customer.field_statuses.passport_scan == 'approved' or not customer.field_statuses.passport_scan %}selected{% endif %}>✅ Approve Document</option>
+                <option value="rejected" {% if customer.field_statuses.passport_scan == 'rejected' %}selected{% endif %}>❌ Reject / Re-upload Required</option>
+              </select>
+              <input type="text" name="remark_passport_scan" class="form-control form-control-sm" placeholder="Reason if rejected..." value="{{ customer.rollback_remarks.passport_scan|default:'' }}">
+            </div>
+          </div>
+
+          <!-- Passport Photo Doc -->
+          <div class="field-verify-card">
+            <div class="field-title">Passport Photo</div>
+            <div class="field-val">
+              {% if customer.passport_photo %}
+                <a href="{{ customer.passport_photo.url }}" target="_blank" class="btn btn-sm btn-outline-success w-100 mb-2">
+                  <i class="bi bi-eye me-1"></i> View Passport Photo
+                </a>
+              {% else %}
+                <span class="badge bg-secondary mb-2 d-inline-block">Not Uploaded</span>
+              {% endif %}
+            </div>
+            <div class="control-group">
+              <select name="field_status_passport_photo" class="form-select form-select-sm mb-2 field-status-select">
+                <option value="approved" {% if customer.field_statuses.passport_photo == 'approved' or not customer.field_statuses.passport_photo %}selected{% endif %}>✅ Approve Document</option>
+                <option value="rejected" {% if customer.field_statuses.passport_photo == 'rejected' %}selected{% endif %}>❌ Reject / Re-upload Required</option>
+              </select>
+              <input type="text" name="remark_passport_photo" class="form-control form-control-sm" placeholder="Reason if rejected..." value="{{ customer.rollback_remarks.passport_photo|default:'' }}">
+            </div>
+          </div>
+
+          <!-- CNIC Front Doc -->
+          <div class="field-verify-card">
+            <div class="field-title">CNIC Front</div>
+            <div class="field-val">
+              {% if customer.cnic_front %}
+                <a href="{{ customer.cnic_front.url }}" target="_blank" class="btn btn-sm btn-outline-success w-100 mb-2">
+                  <i class="bi bi-eye me-1"></i> View CNIC Front
+                </a>
+              {% else %}
+                <span class="badge bg-secondary mb-2 d-inline-block">Not Uploaded</span>
+              {% endif %}
+            </div>
+            <div class="control-group">
+              <select name="field_status_cnic_front" class="form-select form-select-sm mb-2 field-status-select">
+                <option value="approved" {% if customer.field_statuses.cnic_front == 'approved' or not customer.field_statuses.cnic_front %}selected{% endif %}>✅ Approve Document</option>
+                <option value="rejected" {% if customer.field_statuses.cnic_front == 'rejected' %}selected{% endif %}>❌ Reject / Re-upload Required</option>
+              </select>
+              <input type="text" name="remark_cnic_front" class="form-control form-control-sm" placeholder="Reason if rejected..." value="{{ customer.rollback_remarks.cnic_front|default:'' }}">
+            </div>
+          </div>
+
+          <!-- CNIC Back Doc -->
+          <div class="field-verify-card">
+            <div class="field-title">CNIC Back</div>
+            <div class="field-val">
+              {% if customer.cnic_back %}
+                <a href="{{ customer.cnic_back.url }}" target="_blank" class="btn btn-sm btn-outline-success w-100 mb-2">
+                  <i class="bi bi-eye me-1"></i> View CNIC Back
+                </a>
+              {% else %}
+                <span class="badge bg-secondary mb-2 d-inline-block">Not Uploaded</span>
+              {% endif %}
+            </div>
+            <div class="control-group">
+              <select name="field_status_cnic_back" class="form-select form-select-sm mb-2 field-status-select">
+                <option value="approved" {% if customer.field_statuses.cnic_back == 'approved' or not customer.field_statuses.cnic_back %}selected{% endif %}>✅ Approve Document</option>
+                <option value="rejected" {% if customer.field_statuses.cnic_back == 'rejected' %}selected{% endif %}>❌ Reject / Re-upload Required</option>
+              </select>
+              <input type="text" name="remark_cnic_back" class="form-control form-control-sm" placeholder="Reason if rejected..." value="{{ customer.rollback_remarks.cnic_back|default:'' }}">
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Submit Review Button -->
+        <div class="d-flex justify-content-end align-items-center gap-3 pt-3 border-top">
+          <button type="submit" class="btn btn-green-submit">
+            <i class="bi bi-shield-check me-2"></i> Save Field Review Decisions
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </form>
+  {% empty %}
+    <div class="bk-card p-4 text-center text-muted">
+      No traveler details were attached to this booking.
+    </div>
+  {% endfor %}
+
+  <!-- SECTION 3: E-TICKET MANAGEMENT -->
+  <div class="bk-card">
+    <div class="bk-header">
+      <h5 class="mb-0 text-white font-bold"><i class="bi bi-ticket-perforated me-2"></i>e-Ticket Management</h5>
+    </div>
+    <div class="bk-body">
+      {% if ticket %}
+        <div class="alert alert-success d-flex align-items-center justify-content-between mb-0 border-0" style="background: var(--light-green); color: var(--primary-green);">
+          <div>
+            <i class="bi bi-file-earmark-check-fill fs-4 me-2"></i>
+            <strong>e-Ticket Uploaded!</strong>
+            <p class="mb-0"><small>Notes: {{ ticket.notes|default:"No extra notes provided." }}</small></p>
+          </div>
+          <a href="{{ ticket.ticket_file.url }}" target="_blank" class="btn btn-sm btn-green-submit">
+            Download Ticket
+          </a>
+        </div>
+      {% else %}
+        <p class="text-muted mb-3">Upload e-Ticket once passenger details & documents are verified.</p>
+        <form method="POST" action="{% url 'stakeholder:update_booking_status' booking.id %}" enctype="multipart/form-data" class="row g-3 align-items-center">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="upload_ticket">
+          <div class="col-md-5">
+            <input type="file" name="ticket_file" class="form-control" required>
+          </div>
+          <div class="col-md-4">
+            <input type="text" name="notes" class="form-control" placeholder="Flight / PNR notes (Optional)">
+          </div>
+          <div class="col-md-3">
+            <button type="submit" class="btn btn-green-submit w-100">Upload Ticket & Notify</button>
+          </div>
+        </form>
+      {% endif %}
+    </div>
+  </div>
 
 </div>
 {% endblock %}

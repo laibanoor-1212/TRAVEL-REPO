@@ -3,6 +3,7 @@ from . import views
 
 app_name = 'bookings'
 urlpatterns = [
+    
  path('booking/package/<int:package_id>/', views.book_package, name='book_package'),
  path('<int:booking_id>/choose-payment/', views.choose_payment_method, name='choose_payment_method'),
 path('<int:booking_id>/stripe-checkout/', views.stripe_checkout_page, name='stripe_checkout'),

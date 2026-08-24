@@ -35,7 +35,7 @@
         </form>
       </div>
       <div class="hero-action-buttons">
-        <a href="{% url 'base:packages' %}" class="btn-customer">Find a Package</a>
+        <a href="{% url 'base:hajj_packages' %}" class="btn-customer">Find a Package</a>
         
         <a href="{% url 'stakeholder:create_profile' %}" class="btn-agent">Register as Agent</a>
       </div>
@@ -141,7 +141,7 @@
             </p>
             
             <div class="dest-card-footer">
-              <a href="{% url 'base:packages' %}?type={{ type.id }}" class="dest-btn">
+              <a href="{% url 'base:hajj_packages' %}?type={{ type.id }}" class="dest-btn">
                 Explore Packages &rarr;
               </a>
             </div>
@@ -247,7 +247,7 @@
                     </div>
                     
                     <div class="action-area">
-                        <a href="{% url 'base:packages' %}" class="btn-safar-gold">Explore Agent Packages</a>
+                        <a href="{% url 'base:hajj_packages' %}" class="btn-safar-gold">Explore Agent Packages</a>
                     </div>
                 </div>
             </div>
@@ -307,7 +307,7 @@
 
     <div class="hero-btns" style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 25px;">
         <button class="learn-btn" style="border: 2px solid var(--color);">
-            <a href="{% url 'base:hajjpackages' %}" style="color: var(--color); text-decoration:none;">EXPLORE PACKAGES</a>
+            <a href="{% url 'base:hajj_packages' %}" style="color: var(--color); text-decoration:none;">EXPLORE PACKAGES</a>
         </button>
         
         <button class="learn-btn" style="background: transparent;border: 2px solid var(--color);color: var(--color);">
@@ -403,7 +403,7 @@
         <div class="info">
         <h3>Packages</h3>
           <p>hajj and umrah packages form different travel agents</p>
-           <button class="view"><a href="{% url 'base:hajjpackages'%}">Veiw More</a></button>
+           <button class="view"><a href="{% url 'base:hajj_packages'%}">Veiw More</a></button>
         </div>
       </div>
     </div>
@@ -428,7 +428,7 @@
                 <li><i class="fas fa-check"></i> Step-by-Step Ritual Guides</li>
                 <li><i class="fas fa-check"></i> Secure Payment Protection</li>
             </ul>
-            <a href="{% url 'base:hajjpackages' %}" class="portal-btn">Find a Package</a>
+            <a href="{% url 'base:hajj_packages' %}" class="portal-btn">Find a Package</a>
         </div>
 
         <div class="portal-card agent-card">

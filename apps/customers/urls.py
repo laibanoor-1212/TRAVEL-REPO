@@ -14,5 +14,9 @@ urlpatterns = [
       path('my-tickets/', views.user_ticket, name='user_ticket'),
 path('booking/<int:booking_id>/approve-ticket/', views.approve_ticket, name='approve_ticket'),
 path('booking/<int:booking_id>/reject-ticket/', views.reject_ticket_view, name='reject_ticket'),
+
+    path('detail/<int:booking_id>/', views.booking_detail, name='booking_detail'),
+    path('request/<int:booking_id>/', views.manage_booking_request, name='manage_booking_request'),
+  path('my-booking/<int:booking_id>/update-docs/', views.update_booking_docs, name='update_booking_docs'),
     
 ]

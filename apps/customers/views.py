@@ -11,6 +11,7 @@ from django.utils import timezone
 from payments import services
 from django.core.exceptions import PermissionDenied
 from base.decorators import role_required
+from bookings.models import BookingCustomers, BookingStatusHistory
 
 
 @login_required(login_url='/auth/login/')
@@ -118,20 +119,20 @@ def user_bookings(request):
     return render(request, 'customer/user_booking.html', context)
 
 
-@role_required('customer')
+@role_required('user')
 @login_required(login_url='/auth/login/')
 def user_dashboard(request):
-    if request.user.role != 'customer':
-        raise PermissionDenied
+    # if request.user.role != 'customer':
+    #     raise PermissionDenied
 
-    notifications = request.user.notifications.filter(is_deleted=False)[:10]
-    unread_count = request.user.notifications.filter(is_read=False, is_deleted=False).count()
+    # notifications = request.user.notifications.filter(is_deleted=False)[:10]
+    # unread_count = request.user.notifications.filter(is_read=False, is_deleted=False).count()
 
-    context = {
-        'notifications': notifications,
-        'unread_count': unread_count,
-    }
-    return render(request, 'customer/user_layout.html', context)
+    # context = {
+    #     'notifications': notifications,
+    #     'unread_count': unread_count,
+    # }
+    return render(request, 'customer/user_layout.html')
 
 
 def overview_user(request):
@@ -182,21 +183,19 @@ def user_ticket(request):
 
 def approve_ticket(request, booking_id):
     if request.method == "POST":
-        # Customer ke user account ke mutabiq booking get karein
         booking = get_object_or_404(Bookings, id=booking_id, user=request.user)
         
         try:
-            # Booking se linked ticket ko direct target karein
-            ticket = booking.ticket  # Yeh OneToOneField ki wajah se milega
+            ticket = booking.ticket 
             ticket.customer_approved = True
             ticket.customer_approved_at = timezone.now()
-            ticket.customer_rejection_reason = None  # Purani rejection clear karne ke liye
+            ticket.customer_rejection_reason = None 
             ticket.save()
             messages.success(request, "Ticket successfully approved!")
         except Ticket.DoesNotExist:
             messages.error(request, "Is booking ke liye abhi koi ticket upload nahi kiya gaya.")
             
-        return redirect('customers:user_ticket')  # Apne tickets page ka sahi url name dein
+        return redirect('customers:user_ticket')  
 
 def reject_ticket_view(request, booking_id):
     if request.method == "POST":
@@ -213,3 +212,108 @@ def reject_ticket_view(request, booking_id):
             messages.error(request, "Ticket record nahi mila.")
             
         return redirect('customers:user_ticket')
+
+
+
+@login_required(login_url='/auth/login/')
+def manage_booking_request(request, booking_id):
+    booking = get_object_or_404(Bookings, pk=booking_id, user=request.user)
+
+    if request.method == 'POST':
+        action_type = request.POST.get('action_type')
+        reason = request.POST.get('reason', '')
+
+        if action_type == 'cancel':
+            booking.status = 'cancelled'
+            booking.admin_note = f"Cancellation Reason: {reason}"
+            booking.save()
+            messages.success(request, "Booking cancellation request submitted.")
+
+        elif action_type == 'extend':
+            new_date = request.POST.get('new_date')
+            booking.admin_note = f"Extension Requested to {new_date}. Reason: {reason}"
+            booking.save()
+            messages.success(request, "Extension request submitted successfully.")
+
+    return redirect('bookings:my_bookings')
+
+@login_required(login_url='/auth/login/')
+def booking_detail(request, booking_id):
+    booking = get_object_or_404(Bookings, pk=booking_id, user=request.user)
+    customers = BookingCustomers.objects.filter(booking=booking)
+    
+    return render(request, 'customer/booking_detail.html', {
+        'booking': booking,
+        'customers': customers
+    })
+
+@login_required(login_url='/auth/login/')
+def update_booking_docs(request, booking_id):
+    booking = get_object_or_404(Bookings, id=booking_id, user=request.user)
+    customers = BookingCustomers.objects.filter(booking=booking)
+
+    if request.method == 'POST':
+        for customer in customers:
+            field_statuses = customer.field_statuses or {}
+
+            if field_statuses.get('full_name') == 'rejected':
+                customer.full_name = request.POST.get(f'full_name_{customer.id}', customer.full_name)
+                field_statuses['full_name'] = 'pending'
+
+            if field_statuses.get('phone_number') == 'rejected':
+                customer.phone_number = request.POST.get(f'phone_number_{customer.id}', customer.phone_number)
+                field_statuses['phone_number'] = 'pending'
+
+            if field_statuses.get('email') == 'rejected':
+                customer.email = request.POST.get(f'email_{customer.id}', customer.email)
+                field_statuses['email'] = 'pending'
+
+            if field_statuses.get('cnic') == 'rejected':
+                customer.cnic = request.POST.get(f'cnic_{customer.id}', customer.cnic)
+                field_statuses['cnic'] = 'pending'
+
+            if field_statuses.get('passport_number') == 'rejected':
+                customer.passport_number = request.POST.get(f'passport_number_{customer.id}', customer.passport_number)
+                field_statuses['passport_number'] = 'pending'
+
+            if field_statuses.get('passport_expiry') == 'rejected':
+                expiry_val = request.POST.get(f'passport_expiry_{customer.id}')
+                if expiry_val:
+                    customer.passport_expiry = expiry_val
+                    field_statuses['passport_expiry'] = 'pending'
+            if field_statuses.get('passport_scan') == 'rejected' and f'passport_scan_{customer.id}' in request.FILES:
+                customer.passport_scan = request.FILES[f'passport_scan_{customer.id}']
+                field_statuses['passport_scan'] = 'pending'
+
+            if field_statuses.get('passport_photo') == 'rejected' and f'passport_photo_{customer.id}' in request.FILES:
+                customer.passport_photo = request.FILES[f'passport_photo_{customer.id}']
+                field_statuses['passport_photo'] = 'pending'
+
+            if field_statuses.get('cnic_front') == 'rejected' and f'cnic_front_{customer.id}' in request.FILES:
+                customer.cnic_front = request.FILES[f'cnic_front_{customer.id}']
+                field_statuses['cnic_front'] = 'pending'
+
+            if field_statuses.get('cnic_back') == 'rejected' and f'cnic_back_{customer.id}' in request.FILES:
+                customer.cnic_back = request.FILES[f'cnic_back_{customer.id}']
+                field_statuses['cnic_back'] = 'pending'
+            customer.field_statuses = field_statuses
+            customer.verification_status = 'resubmitted'
+            customer.save()
+        old_status = booking.status
+        booking.status = 'under_review'
+        booking.save()
+        BookingStatusHistory.objects.create(
+            booking=booking,
+            old_status=old_status,
+            new_status='under_review',
+            changed_by=request.user,
+            comments="Customer re-submitted rejected documents/details for verification."
+        )
+
+        messages.success(request, "Corrections & updated documents re-submitted successfully!")
+        return redirect('customers:booking_detail', booking_id=booking.id)
+
+    return render(request, 'customer/update_docs.html', {
+        'booking': booking,
+        'customers': customers
+    })

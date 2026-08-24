@@ -31,6 +31,9 @@
     <link rel="stylesheet" href="{% static 'css/ziyarat.css' %}">
     <link rel="stylesheet" href="{% static 'css/book_package.css' %}">
     <link rel="stylesheet" href="{% static 'css/contactus.css' %}">
+    <link rel="stylesheet" href="{% static 'css/iran.css' %}">
+    <link rel="stylesheet" href="{% static 'css/iraq.css' %}">
+   
 </head>
 <body class="{% block body_class %}{% endblock %}">
 
@@ -63,10 +66,10 @@
                   <a href="#">Guide ▾</a>
                   <ul class="dropdown-menu">
                     <li><a href="{% url 'base:Guide' %}">Umrah guide</a></li>
-                    <li><a href="#">Hajj guide</a></li>
-                    <li><a href="#">Ahram guide</a></li>
-                    <li><a href="">User Dashboard</a></li>
-                    <li><a href="#">Admin Dashboard</a></li>
+                    <li><a href="{% url 'base:hajj-guide' %}">Hajj guide</a></li>
+                    <li><a href="{% url 'base:ahram' %}">Ahram guide</a></li>
+                    <li><a href="{% url 'base:iran' %}">Iran guide</a></li>
+                    <li><a href="{% url 'base:karbala' %}">Iraq guide</a></li>
                   </ul>
                 </li>
 
@@ -75,15 +78,15 @@
                   <ul class="dropdown-menu">
                     <li><a href="{% url 'base:hajj_packages' %}">Umrah packages</a></li>
                     <li><a href="">Package Details</a></li>
-                    <li><a href="#">Booking</a></li>
+                    <li><a href="">Booking</a></li>
                     <li><a href="#">Travel Agents List</a></li>
                     <li><a href="#">Agent Details</a></li>
                     <li><a href="#">Agent Dashboard</a></li>
                   </ul>
                 </li>
 
-                <li><a href="#">Ziyarat</a></li>
-                <li><a href="#">Contact Us</a></li>
+                <li><a href="{% url 'base:ziyarat'  %}">Ziyarat</a></li>
+                <li><a href="{% url 'base:contactus'  %}">Contact Us</a></li>
               </ul>
 
               <div class="nav-icons-group">

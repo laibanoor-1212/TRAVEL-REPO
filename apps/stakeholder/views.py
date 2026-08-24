@@ -17,6 +17,8 @@ from payments.models import Payment
 from django.shortcuts import redirect, get_object_or_404
 from django.core.exceptions import PermissionDenied
 from base.decorators import role_required,kyc_approved_required
+from bookings.models import BookingCustomers, Bookings, BookingStatusHistory
+from notifications.models import Notification 
 
 
 
@@ -135,121 +137,6 @@ def account_locked(request):
     })
 
 
-# def create_packages(request):
-#     package_types = PackageType.objects.filter(is_active=True)
-
-#     if request.method == "POST":
-#         duration_val = request.POST.get('duration') or request.POST.get('duration_days')
-#         if not duration_val:
-#             duration_val = 15  
-#         Package.objects.create(
-#             agency=request.user,
-#             name=request.POST.get('name'),
-#             package_type_id=request.POST.get('package_type'),
-#             tier=request.POST.get('tier', 'standard'),
-#             country=request.POST.get('country', 'Saudi Arabia'),
-#             city=request.POST.get('city', 'Makkah'),
-#             price=request.POST.get('price') or 100000,
-#             total_seats=request.POST.get('total_seats') or 50,
-#             departure_date=request.POST.get('departure_date') or None,
-#             application_deadline=request.POST.get('application_deadline') or None,
-            
-#             # Duration & Accommodation Specifications
-#             duration_days=duration_val,
-#             makkah_hotel=request.POST.get('makkah_hotel', 'Standard Hotel'),
-#             madinah_hotel=request.POST.get('madinah_hotel', 'Standard Hotel'),
-            
-#             # Checkbox values extraction (True/False checks)
-#             visa=request.POST.get('visa') == 'on',
-#             ticket=request.POST.get('ticket') == 'on',
-#             transport=request.POST.get('transport') == 'on',
-#             ziyarat=request.POST.get('ziyarat') == 'on',
-            
-#             description=request.POST.get('description', 'Package details coming soon...'),
-#             banner=request.FILES.get('banner') if request.FILES.get('banner') else 'package_banners/default.jpg',
-#             status=request.POST.get('status', 'active'),
-#         )
-
-#         messages.success(request, "Package created successfully.")
-#         return redirect('stakeholder:manage_packages')
-
-#     return render(
-#         request,
-#         'stakeholder/create_packages.html',
-#         {'package_types': package_types}
-#     )
-
-# def update_package(request, pk):
-#     package = get_object_or_404(Package, pk=pk)
-#     package_types = PackageType.objects.all() 
-
-#     if request.method == 'POST':
-#         package.name = request.POST.get('name')
-#         type_id = request.POST.get('package_type')
-#         if type_id:
-#             package.package_type_id = type_id
-            
-#         package.tier = request.POST.get('tier')
-#         package.country = request.POST.get('country')
-#         package.city = request.POST.get('city')
-#         package.price = request.POST.get('price')
-#         package.total_seats = request.POST.get('total_seats')
-#         package.duration_days = request.POST.get('duration_days')
-#         package.departure_date = request.POST.get('departure_date')
-#         package.application_deadline = request.POST.get('application_deadline')
-#         package.makkah_hotel = request.POST.get('makkah_hotel')
-#         package.madinah_hotel = request.POST.get('madinah_hotel')
-#         package.visa = 'visa' in request.POST
-#         package.ticket = 'ticket' in request.POST
-#         package.transport = 'transport' in request.POST
-#         package.ziyarat = 'ziyarat' in request.POST
-
-#         if request.FILES.get('banner'):
-#             package.banner = request.FILES['banner']
-
-#         package.save()
-#         return redirect('stakeholder:manage-packages') 
-
-  
-#     context = {
-#         'package': package,
-#         'package_types': package_types,
-#     }
-    
-#     return render(request, 'stakeholder/edit_package.html', context)
-# def delete_package(request, pk):
-#     package = get_object_or_404(Package, pk=pk)  
-#     package.delete()
-#     messages.success(request, "Package deleted successfully!")
-#     return redirect('packages:manage_packages')
-
-# def manage_packages(request):
-   
-#     active_packages = Package.objects.filter(status='active').order_by('-created_at')
-#     inactive_packages = Package.objects.exclude(status='active').order_by('-created_at')
-
-#     return render(
-#         request,
-#         'stakeholder/manage_packages.html',
-#         {
-#             'active_packages': active_packages,
-#             'inactive_packages': inactive_packages,
-#         }
-#     )
-
-# @login_required(login_url='/auth/login/')
-# def stakeholder_dashboard(request):
-   
-#     agent_bookings = Bookings.objects.filter(package__agency=request.user).order_by('-id')
-#     date_requests = [] 
-    
-#     context = {
-#         'bookings': agent_bookings,
-#         'date_requests': date_requests,
-#     }
-#     return render(request, 'stakeholder/stakeholder_dashboard.html', context)
-
-
 @role_required('stakeholder')
 @kyc_approved_required
 @login_required(login_url='/auth/login/')
@@ -270,36 +157,6 @@ def stakeholder_dashboard(request):
         'unread_count': unread_count,
     }
     return render(request, 'stakeholder/stakeholder_dashboard.html', context)
-
-
-@login_required(login_url='/auth/login/')
-def manage_booking(request):
-    all_bookings_count = Bookings.objects.count()
-    print(f"--- DEBUG: Total bookings in DB: {all_bookings_count} ---")
-    print(f"--- DEBUG: Logged in Travel Agent: {request.user.email} ---")
-    
-    
-    bookings = Bookings.objects.filter(package__agency=request.user).select_related('user', 'package').order_by('-id')
-    
-    print(f"--- DEBUG: Bookings found for this Agent: {bookings.count()} ---")
-
-    context = {
-        'bookings': bookings
-    }
-  
-    return render(request, 'stakeholder/manage_booking.html', context)
-@login_required(login_url='/auth/login/')
-def booking_detail_view(request, booking_id): 
-   
-    booking = get_object_or_404(Bookings, id=booking_id, package__agency=request.user)
-    
-    travelers = BookingCustomers.objects.filter(booking=booking)
-    
-    context = {
-        'booking': booking,
-        'travelers': travelers,
-    }
-    return render(request, 'stakeholder/booking_detail.html', context)
 
 
 def agent_complaints(request):
@@ -405,7 +262,6 @@ def escrow_status_overview(request):
 
 
 def earning_transaction(request):
-   
     agent_payments = Payment.objects.filter(
         booking__package__agency=request.user
     ).select_related('booking', 'booking__user', 'booking__package').order_by('-created_at')
@@ -422,3 +278,186 @@ def earning_transaction(request):
     }
     
     return render(request, 'stakeholder/earning_transaction.html', context)
+
+
+@login_required
+def booking_detail(request, booking_id):
+    booking = get_object_or_404(Bookings, pk=booking_id)
+    customers = BookingCustomers.objects.filter(booking=booking)
+    
+    return render(request, 'stakeholder/booking_detail.html', {
+        'booking': booking,
+        'customers': customers
+    })
+
+
+
+@login_required(login_url='/auth/login/')
+def manage_booking(request):
+    bookings_list = Bookings.objects.filter(
+        package__agency=request.user
+    ).select_related('package', 'user', 'payment').order_by('-created_at')
+    
+    status_filter = request.GET.get('status')
+    if status_filter:
+        bookings_list = bookings_list.filter(status=status_filter)
+        
+    search_query = request.GET.get('search')
+    if search_query:
+        bookings_list = bookings_list.filter(
+            id__icontains=search_query
+        ) | bookings_list.filter(
+            user__username__icontains=search_query
+        )
+        
+    all_bookings = Bookings.objects.filter(package__agency=request.user)
+    stats = {
+        'total': all_bookings.count(),
+        'pending': all_bookings.filter(status='pending').count(),
+        'action_required': all_bookings.filter(status='action_required').count(),
+        'visa_processing': all_bookings.filter(status='visa_processing').count(),
+        'ticket_issued': all_bookings.filter(status='ticket_issued').count(),
+        'completed': all_bookings.filter(status='completed').count(),
+        'cancelled': all_bookings.filter(status='cancelled').count(),
+    }
+
+    context = {
+        'bookings': bookings_list,
+        'stats': stats,
+        'current_status': status_filter or '',
+        'search_query': search_query or '',
+    }
+    return render(request, 'stakeholder/manage_booking.html', context)
+
+
+@login_required
+def verify_booking_doc(request, customer_id):
+    customer = get_object_or_404(BookingCustomers, id=customer_id)
+    booking = customer.booking
+
+    if request.method == 'POST':
+        review_fields = [
+            'full_name', 'phone_number', 'email', 'cnic', 
+            'passport_number', 'passport_expiry',
+            'passport_scan', 'passport_photo', 'cnic_front', 'cnic_back'
+        ]
+
+        field_statuses = {}
+        rollback_remarks = {}
+        has_rejection = False
+
+        for field in review_fields:
+            status_val = request.POST.get(f'field_status_{field}', 'approved')
+            remark_val = request.POST.get(f'remark_{field}', '').strip()
+
+            field_statuses[field] = status_val
+            if status_val == 'rejected':
+                has_rejection = True
+                if remark_val:
+                    rollback_remarks[field] = remark_val
+
+        customer.field_statuses = field_statuses
+        customer.rollback_remarks = rollback_remarks
+        old_status = booking.status
+
+        if has_rejection:
+            customer.verification_status = 'rollback'
+            booking.status = 'action_required'
+            booking.save()
+            notif_msg = f"Action required on documents for {customer.full_name} (Booking #{booking.id}). Please update rejected fields."
+            BookingStatusHistory.objects.create(
+                booking=booking,
+                old_status=old_status,
+                new_status='action_required',
+                changed_by=request.user,
+                comments=f"Documents rejected for {customer.full_name}. Corrections requested."
+            )
+        else:
+            customer.verification_status = 'approved'
+            all_customers = BookingCustomers.objects.filter(booking=booking)
+            
+            if all_customers.filter(verification_status='approved').count() == all_customers.count():
+                booking.status = 'docs_verified'
+                booking.save()
+                BookingStatusHistory.objects.create(
+                    booking=booking,
+                    old_status=old_status,
+                    new_status='docs_verified',
+                    changed_by=request.user,
+                    comments="All customer documents successfully verified."
+                )
+            
+            notif_msg = f"Documents for {customer.full_name} have been approved."
+
+        customer.save()
+        Notification.objects.create(
+            recipient=booking.user,
+            title="Document Verification Update",
+            message=notif_msg
+        )
+
+        messages.success(request, f"Verification decisions saved for {customer.full_name}.")
+        return redirect('stakeholder:booking_detail', booking_id=booking.id)
+
+
+@login_required(login_url="/auth/login/")
+def update_booking_status(request, booking_id):
+    booking = get_object_or_404(Bookings, pk=booking_id, package__agency=request.user)
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+
+        if action == "visa_processing":
+            old_status = booking.status
+            booking.status = "visa_processing"
+            booking.save()
+
+            BookingStatusHistory.objects.create(
+                booking=booking,
+                old_status=old_status,
+                new_status="visa_processing",
+                changed_by=request.user,
+                comments="Visa processing initiated by agent.",
+            )
+            Notification.objects.create(
+                recipient=booking.user,
+                title="Visa Processing Started",
+                message=f"Your visa processing for Booking #{booking.id} has been initiated."
+            )
+            messages.info(request, "Visa processing status is active.")
+
+        elif action == "upload_ticket":
+            ticket_file = request.FILES.get("ticket_file")
+            notes = request.POST.get("notes", "")
+
+            if ticket_file:
+                Ticket.objects.update_or_create(
+                    booking=booking,
+                    defaults={
+                        "agent": request.user,
+                        "ticket_file": ticket_file,
+                        "notes": notes,
+                    },
+                )
+
+                old_status = booking.status
+                booking.status = "ticket_issued"
+                booking.save()
+
+                BookingStatusHistory.objects.create(
+                    booking=booking,
+                    old_status=old_status,
+                    new_status="ticket_issued",
+                    changed_by=request.user,
+                    comments="e-Ticket uploaded by agent.",
+                )
+
+                # Customer Notification
+                Notification.objects.create(
+                    recipient=booking.user,
+                    title="Ticket Issued",
+                    message=f"Ticket uploaded for Booking #{booking.id}. Please review and approve in your dashboard."
+                )
+                messages.success(request, "Ticket uploaded")
+
+    return redirect("stakeholder:booking_detail", booking_id=booking.pk)

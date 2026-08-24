@@ -21,7 +21,10 @@ urlpatterns = [
    path('booking/<int:booking_id>/upload-ticket/', views.agent_upload_ticket, name='agent_upload_ticket'),
     path("agent_complaints/", views.agent_complaints, name="agent_complaints"),
     path("cancelled_booking/", views.cancelled_booking, name="cancelled_booking"),
-    path('booking/<int:booking_id>/details/', views.booking_detail_view, name='booking_detail'),
+   
+  path("booking/<int:booking_id>/", views.booking_detail, name="booking_detail"),
+    path("booking/<int:booking_id>/update-status/",views.update_booking_status,name="update_booking_status"),
+    path("customer/<int:customer_id>/verify-doc/",views.verify_booking_doc,name="verify_booking_doc"),
      
 
    
