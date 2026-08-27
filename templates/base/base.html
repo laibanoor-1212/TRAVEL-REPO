@@ -90,51 +90,51 @@
               </ul>
 
               <div class="nav-icons-group">
-                {% if user.is_authenticated %}
-                  <div class="user-profile-wrap" onclick="toggleUserMenu()">
-                    <i class="fas fa-user-plus user-minimal-icon"></i>
-                    <ul class="nav-dropdown" id="userMenu">
-                      <li class="user-meta">
-                        <strong>{{ user.email }}</strong>
-                        <span>{{ user.role }}</span>
-                      </li>
+  {% if user.is_authenticated %}
+    <div class="user-profile-wrap" onclick="toggleUserMenu()">
+      <i class="fas fa-user-plus user-minimal-icon"></i>
+      <ul class="nav-dropdown" id="userMenu">
+        <li class="user-meta">
+          <strong>{{ user.email }}</strong>
+          <span>{{ user.role|default:"User" }}</span>
+        </li>
 
-                      {% if user.role == 'stakeholder' %}
-                        {% if user.agent_kyc %}
-                          {% if user.agent_kyc.kyc_status == 'approved' %}
-                            <hr>
-                            <li><a href="{% url 'stakeholder:stakeholder_dashboard' %}">Agent Dashboard</a></li>
-                          {% elif user.agent_kyc.kyc_status == 'pending' %}
-                            <hr>
-                            <li><a href="{% url 'stakeholder:KYC' %}">KYC Pending</a></li>
-                          {% elif user.agent_kyc.kyc_status == 'rollback' %}
-                            <hr>
-                            <li><a href="{% url 'stakeholder:KYC' %}">Action Required (Rollback)</a></li>
-                          {% endif %}
-                        {% else %}
-                          <hr>
-                          <li><a href="{% url 'stakeholder:KYC' %}">Submit KYC</a></li>
-                        {% endif %}
+        {# 1. STAKEHOLDER / AGENT SECTION #}
+        {% if user.role|lower == 'stakeholder' or user.role|lower == 'agent' %}
+          <hr>
+          {% if user.agent_kyc and user.agent_kyc.kyc_status == 'approved' %}
+            <li><a href="{% url 'stakeholder:stakeholder_dashboard' %}">Agent Dashboard</a></li>
+          {% elif user.agent_kyc and user.agent_kyc.kyc_status == 'pending' %}
+            <li><a href="{% url 'stakeholder:KYC' %}">KYC Pending</a></li>
+          {% elif user.agent_kyc and user.agent_kyc.kyc_status == 'rollback' %}
+            <li><a href="{% url 'stakeholder:KYC' %}">Action Required (Rollback)</a></li>
+          {% else %}
+            <li><a href="{% url 'stakeholder:KYC' %}">Submit KYC</a></li>
+          {% endif %}
 
-                      {% elif user.role == 'admin' %}
-                        <hr>
-                        <li><a href="{% url 'adminpanel:admin_dashboard' %}">Admin Dashboard</a></li>
-                      {% else %}
-                        <hr>
-                        <li><a href="{% url 'customers:user_dashboard' %}">User Dashboard</a></li>
-                      {% endif %}
+        {# 2. ADMIN SECTION #}
+        {% elif user.role|lower == 'admin' or user.is_superuser or user.is_staff %}
+          <hr>
+          <li><a href="{% url 'adminpanel:admin_dashboard' %}">Admin Dashboard</a></li>
 
-                      <hr>
-                      <li><a href="{% url 'accounts:logout' %}" style="color: #d9534f !important;">Logout</a></li>
-                    </ul>
-                  </div>
-                {% else %}
-                  <div class="auth-buttons">
-                    <a href="{% url 'accounts:register' %}" class="signup-btn">Sign-Up</a>
-                    <a href="{% url 'accounts:login' %}" class="signup-btn">Login</a>
-                  </div>
-                {% endif %}
-              </div>
+        {# 3. CUSTOMER SECTION #}
+        {% else %}
+          <hr>
+          <li><a href="{% url 'customers:user_dashboard' %}">User Dashboard</a></li>
+        {% endif %}
+
+        <hr>
+        <li><a href="{% url 'accounts:logout' %}" style="color: #d9534f !important;">Logout</a></li>
+      </ul>
+    </div>
+  {% else %}
+    <div class="auth-buttons">
+      <a href="{% url 'accounts:register' %}" class="signup-btn">Sign-Up</a>
+      <a href="{% url 'accounts:login' %}" class="signup-btn">Login</a>
+    </div>
+  {% endif %}
+</div>
+               
             </div>
           </div>
 

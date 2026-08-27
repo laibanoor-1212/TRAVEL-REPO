@@ -127,35 +127,118 @@
 </style>
 
 <script>
-    function updateBookingFlow() {
-        const pkgName = document.getElementById('pkg_name').innerText.toLowerCase();
-        const count = document.getElementById('person_count').value;
-        const basePrice = parseInt(document.getElementById('base_price').value);
-        const container = document.getElementById('traveler_forms_container');
-        const template = document.getElementById('traveler_template').innerHTML;
-        
-        // Check if it's Iran or Iraq
-        const isZiyarat = pkgName.includes('iran') || pkgName.includes('iraq');
-        document.getElementById('journey_type').innerText = isZiyarat ? "Ziyarat Route (CNIC Based)" : "International Route (Passport Required)";
+   function updateBookingFlow() {
+    const pkgName = document.getElementById('pkg_name').innerText.toLowerCase();
+    const count = parseInt(document.getElementById('person_count').value);
+    const basePrice = parseInt(document.getElementById('base_price').value);
+    const container = document.getElementById('traveler_forms_container');
+    const template = document.getElementById('traveler_template').innerHTML;
+    
+    // Ziyarat Route Check
+    const isZiyarat = pkgName.includes('iran') || pkgName.includes('iraq');
+    document.getElementById('journey_type').innerText = isZiyarat ? "Ziyarat Route (CNIC Based)" : "International Route (Passport Required)";
 
-        container.innerHTML = '';
-        for (let i = 1; i <= count; i++) {
-            let formHtml = template.replace('<span class="t-num"></span>', i);
-            container.innerHTML += formHtml;
-        }
-
-        // Hide Passport options if Ziyarat
-        if (isZiyarat) {
-            const passportSections = document.querySelectorAll('.passport-section');
-            const passportUploads = document.querySelectorAll('.passport-upload');
-            passportSections.forEach(s => s.style.display = 'none');
-            passportUploads.forEach(u => u.style.display = 'none');
-        }
-
-        const total = basePrice * count;
-        document.getElementById('total_price').innerText = total.toLocaleString();
+    container.innerHTML = '';
+    for (let i = 1; i <= count; i++) {
+        let formHtml = template.replace('<span class="t-num"></span>', i);
+        container.innerHTML += formHtml;
     }
 
-    document.addEventListener('DOMContentLoaded', updateBookingFlow);
+    // Passport Sections hide karna agar Ziyarat ho
+    if (isZiyarat) {
+        document.querySelectorAll('.passport-section').forEach(s => s.style.display = 'none');
+        document.querySelectorAll('.passport-upload').forEach(u => u.style.display = 'none');
+    }
+
+    // Dynamic Price Calculation
+    const total = basePrice * count;
+    document.getElementById('total_price').innerText = total.toLocaleString();
+
+    // Attach Validation to dynamic elements
+    attachValidationRules(isZiyarat);
+}
+
+function attachValidationRules(isZiyarat) {
+    // 1. Phone Number Validation (Pakistani Format: 03001234567 ya 0300-1234567)
+    document.querySelectorAll('input[name="phone_[]"]').forEach(input => {
+        input.setAttribute('pattern', '^(03[0-9]{2}-?[0-9]{7})$');
+        input.setAttribute('title', 'Enter a valid Pakistani phone number (e.g., 03001234567)');
+        input.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '').slice(0, 11);
+        });
+    });
+
+    // 2. CNIC Validation (Format: 13 digits like 3520112345671)
+    document.querySelectorAll('input[name="cnic_[]"]').forEach(input => {
+        input.setAttribute('pattern', '^[0-9]{5}-?[0-9]{7}-?[0-9]{1}$');
+        input.setAttribute('title', 'Enter 13-digit CNIC number');
+        input.addEventListener('input', function() {
+            let val = this.value.replace(/\D/g, '');
+            if (val.length > 5 && val.length <= 12) {
+                val = val.slice(0, 5) + '-' + val.slice(5);
+            } else if (val.length > 12) {
+                val = val.slice(0, 5) + '-' + val.slice(5, 12) + '-' + val.slice(12, 13);
+            }
+            this.value = val;
+        });
+    });
+
+    // 3. Name Validation (Only Letters and Spaces, minimum 3 chars)
+    document.querySelectorAll('input[name="name_[]"]').forEach(input => {
+        input.addEventListener('input', function() {
+            this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
+        });
+    });
+
+    // 4. Passport & Expiry Validation (Only if non-Ziyarat)
+    if (!isZiyarat) {
+        // Minimum 6 months validity check on Passport Expiry
+        const minExpiryDate = new Date();
+        minExpiryDate.setMonth(minExpiryDate.getMonth() + 6);
+        const minDateStr = minExpiryDate.toISOString().split('T')[0];
+
+        document.querySelectorAll('input[name="expiry_[]"]').forEach(input => {
+            input.setAttribute('min', minDateStr);
+            input.setAttribute('required', 'required');
+        });
+
+        document.querySelectorAll('input[name="passport_[]"]').forEach(input => {
+            input.setAttribute('pattern', '^[A-Za-z]{1,2}[0-9]{7}$');
+            input.setAttribute('title', 'Valid Passport format (e.g., AB1234567)');
+            input.setAttribute('required', 'required');
+            input.addEventListener('input', function() {
+                this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 9);
+            });
+        });
+
+        // Mandatory Passport Uploads for International Routes
+        document.querySelectorAll('input[name="pass_file_[]"], input[name="photo_file_[]"]').forEach(input => {
+            input.setAttribute('required', 'required');
+            input.setAttribute('accept', 'image/jpeg,image/png,application/pdf');
+        });
+    }
+
+    // File input validations (Max size 5MB and allowed extensions)
+    document.querySelectorAll('input[type="file"]').forEach(fileInput => {
+        fileInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
+                if (!allowedTypes.includes(file.type)) {
+                    alert('Only JPG, PNG, and PDF files are allowed!');
+                    this.value = '';
+                    return;
+                }
+                if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                    alert('File size must be less than 5MB!');
+                    this.value = '';
+                    return;
+                }
+            }
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', updateBookingFlow);
 </script>
 {% endblock %}

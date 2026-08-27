@@ -82,8 +82,11 @@ ACCOUNT_SIGNUP_FIELDS = [
     'password2*',
 ]
 
-
-LOGIN_REDIRECT_URL = 'stakeholder_dashboard'
+ACCOUNT_ADAPTER = 'accounts.adapters.CustomAccountAdapter'
+SOCIALACCOUNT_ADAPTER = 'accounts.adapters.CustomSocialAccountAdapter'
+SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_EMAIL_VERIFICATION = "none"
 SITE_ID = 1
 ROOT_URLCONF = 'core.urls'
 

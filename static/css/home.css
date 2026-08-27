@@ -98,7 +98,7 @@ html,body {
 }
 
 .user-minimal-icon:hover {
-  color: var(--accent);
+  /* color: var(--accent); */
   transform: scale(1.1);
 }
 

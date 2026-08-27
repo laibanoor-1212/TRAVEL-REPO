@@ -1,58 +1,475 @@
 {% extends 'base/base.html' %}
+{% load static %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-7">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
+<style>
+    :root {
+        --primary-green: #0f5132;
+        --accent-green: #15803d;
+        --light-green: #f0fdf4;
+        --text-dark: #0f172a;
+        --text-muted: #64748b;
+        --border-color: #e2e8f0;
+    }
 
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">Raast Payment Instructions</h5>
+    .sh-checkout-wrapper {
+        width: 100%;
+        min-height: 100vh;
+        background-color: #f8fafc;
+        padding-top: 110px;
+        padding-bottom: 70px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .sh-container {
+        max-width: 1140px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* Checkout Stepper Progress */
+    .sh-stepper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 40px;
+    }
+
+    .sh-step {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--text-muted);
+    }
+
+    .sh-step.active {
+        color: var(--primary-green);
+    }
+
+    .sh-step-num {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #e2e8f0;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+    }
+
+    .sh-step.active .sh-step-num {
+        background: var(--primary-green);
+        color: #ffffff;
+    }
+
+    .sh-step-line {
+        width: 40px;
+        height: 2px;
+        background: #e2e8f0;
+    }
+
+    /* Main Grid Layout */
+    .sh-checkout-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 32px;
+        align-items: start;
+    }
+
+    /* Left Section - Form & Instructions */
+    .sh-card {
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 32px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.05);
+    }
+
+    .sh-card-header {
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .sh-card-title {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: var(--text-dark);
+        margin: 0 0 6px 0;
+    }
+
+    .sh-card-subtitle {
+        font-size: 0.88rem;
+        color: var(--text-muted);
+        margin: 0;
+    }
+
+    /* Raast Box Visual */
+    .sh-raast-box {
+        background: linear-gradient(135deg, #0f5132 0%, #166534 100%);
+        border-radius: 16px;
+        padding: 20px 24px;
+        color: #ffffff;
+        margin-bottom: 28px;
+        box-shadow: 0 8px 20px -6px rgba(15, 81, 50, 0.3);
+    }
+
+    .sh-raast-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .sh-raast-tag {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    .sh-raast-id-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 10px 16px;
+        border-radius: 12px;
+        border: 1px dashed rgba(255, 255, 255, 0.3);
+    }
+
+    .sh-raast-val {
+        font-family: monospace;
+        font-size: 1.2rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+    }
+
+    .sh-btn-copy-mini {
+        background: #ffffff;
+        color: var(--primary-green);
+        border: none;
+        padding: 6px 14px;
+        border-radius: 8px;
+        font-size: 0.78rem;
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .sh-btn-copy-mini:hover {
+        background: #f0fdf4;
+        transform: translateY(-1px);
+    }
+
+    /* Form Components */
+    .sh-form-group {
+        margin-bottom: 20px;
+    }
+
+    .sh-label {
+        display: block;
+        font-size: 0.83rem;
+        font-weight: 700;
+        color: #334155;
+        margin-bottom: 8px;
+    }
+
+    .sh-input-text {
+        width: 100%;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-size: 0.92rem;
+        color: var(--text-dark);
+        outline: none;
+        box-sizing: border-box;
+        transition: all 0.2s ease;
+    }
+
+    .sh-input-text:focus {
+        border-color: var(--primary-green);
+        box-shadow: 0 0 0 4px rgba(15, 81, 50, 0.1);
+    }
+
+    .sh-upload-area {
+        border: 2px dashed #cbd5e1;
+        background: #f8fafc;
+        border-radius: 14px;
+        padding: 24px;
+        text-align: center;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .sh-upload-area:hover {
+        border-color: var(--primary-green);
+        background: var(--light-green);
+    }
+
+    .sh-file-input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .sh-preview-img {
+        max-height: 140px;
+        border-radius: 8px;
+        margin-top: 12px;
+        display: none;
+        border: 1px solid #cbd5e1;
+    }
+
+    .sh-btn-submit {
+        width: 100%;
+        background: var(--primary-green);
+        color: #ffffff;
+        border: none;
+        padding: 15px;
+        border-radius: 12px;
+        font-size: 0.98rem;
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        box-shadow: 0 8px 16px -4px rgba(15, 81, 50, 0.3);
+    }
+
+    .sh-btn-submit:hover {
+        background: var(--accent-green);
+        transform: translateY(-2px);
+    }
+
+    /* Right Section - Booking Order Summary Card */
+    .sh-summary-card {
+        background: #ffffff;
+        border-radius: 20px;
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+        box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.05);
+        position: sticky;
+        top: 120px;
+    }
+
+    .sh-summary-head {
+        background: #f8fafc;
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--border-color);
+        font-weight: 800;
+        font-size: 1.05rem;
+        color: var(--text-dark);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .sh-summary-body {
+        padding: 24px;
+    }
+
+    .sh-item-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 14px;
+        font-size: 0.88rem;
+        color: #475569;
+    }
+
+    .sh-item-row.bold {
+        font-weight: 700;
+        color: var(--text-dark);
+    }
+
+    .sh-divider {
+        height: 1px;
+        background: #f1f5f9;
+        margin: 16px 0;
+    }
+
+    .sh-total-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: var(--light-green);
+        padding: 16px;
+        border-radius: 12px;
+        border: 1px solid #bbf7d0;
+    }
+
+    .sh-total-lbl {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--primary-green);
+    }
+
+    .sh-total-val {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: var(--primary-green);
+    }
+
+    .sh-trust-box {
+        margin-top: 20px;
+        padding: 14px;
+        background: #f8fafc;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 0.8rem;
+        color: #64748b;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+        .sh-checkout-grid {
+            grid-template-columns: 1fr;
+        }
+        .sh-summary-card {
+            position: relative;
+            top: 0;
+        }
+    }
+</style>
+
+<div class="sh-checkout-wrapper">
+    <div class="sh-container">
+
+        <!-- Stepper -->
+        <div class="sh-stepper">
+            <div class="sh-step">
+                <span class="sh-step-num"><i class="fa-solid fa-check"></i></span>
+                <span>Select Payment</span>
+            </div>
+            <div class="sh-step-line"></div>
+            <div class="sh-step active">
+                <span class="sh-step-num">2</span>
+                <span>Upload Proof</span>
+            </div>
+            <div class="sh-step-line"></div>
+            <div class="sh-step">
+                <span class="sh-step-num">3</span>
+                <span>Confirmation</span>
+            </div>
+        </div>
+
+        <div class="sh-checkout-grid">
+
+            <!-- Left Panel: Form -->
+            <div class="sh-card">
+                <div class="sh-card-header">
+                    <h2 class="sh-card-title">Raast Verification</h2>
+                    <p class="sh-card-subtitle">Transfer amount to the official Raast ID below and upload receipt.</p>
                 </div>
-                <div class="card-body">
-                    <p>Booking #{{ booking.id }} ke liye <strong>PKR {{ payment.amount }}</strong>transfer on the id written below</p>
 
-                    <div class="d-flex align-items-center justify-content-between bg-light border rounded p-3 mb-3">
+                <!-- Raast ID Box -->
+                <div class="sh-raast-box">
+                    <div class="sh-raast-head">
+                        <span class="sh-raast-tag"><i class="fa-solid fa-bolt"></i> Instant Raast Pay</span>
+                        <small style="opacity: 0.8;">Safar-e-Haram Admin</small>
+                    </div>
+                    <div class="sh-raast-id-row">
                         <div>
-                            <small class="text-muted d-block">Admin's Raast ID</small>
-                            <strong id="raast-id" class="fs-5">{{ admin_raast_id }}</strong>
+                            <small style="font-size: 0.7rem; opacity: 0.8; display: block; text-transform: uppercase;">Official Raast ID / Mobile</small>
+                            <span id="raast-num" class="sh-raast-val">{% if admin_raast_id %}{{ admin_raast_id }}{% else %}03001234567{% endif %}</span>
                         </div>
-                        <button class="btn btn-outline-secondary btn-sm" onclick="copyRaastId()">Copy</button>
+                        <button class="sh-btn-copy-mini" onclick="copyRaastNum()">
+                            <i class="fa-regular fa-copy"></i> Copy ID
+                        </button>
+                    </div>
+                </div>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-4" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- Form -->
+                <form id="raastPaymentForm" method="post" action="{% url 'bookings:upload_raast_proof' booking.id %}" enctype="multipart/form-data" onsubmit="return handleFormSubmit()">
+                    {% csrf_token %}
+
+                    <div class="sh-form-group">
+                        <label class="sh-label">Transaction Reference / Ref ID <span class="text-danger">*</span></label>
+                        <input type="text" name="transaction_reference" class="sh-input-text" placeholder="e.g. 100029384756" required>
                     </div>
 
-                    <ol class="small text-muted">
-                        <li>open your booking app or JazzCash raast id and sent <strong>PKR {{ payment.amount }}</strong> payment.</li>
-                        <li>after transaction completed ,copy transaction ID/reference number.</li>
-                        <li>write transaction ID in given from and upload transaction screenshot.</li>
-                        <li>Admin verify your payment  in 24 hours.</li>
-                    </ol>
-                </div>
+                    <div class="sh-form-group">
+                        <label class="sh-label">Payment Receipt Screenshot <span class="text-danger">*</span></label>
+                        <div class="sh-upload-area">
+                            <input type="file" name="screenshot" id="receiptInput" class="sh-file-input" accept="image/*" required onchange="handleFileSelect(event)">
+                            <i class="fa-solid fa-cloud-arrow-up text-success mb-2" style="font-size: 2.2rem;"></i>
+                            <p id="uploadTitle" style="font-size: 0.9rem; font-weight: 700; margin: 0; color: #1e293b;">Drop screenshot here or click to browse</p>
+                            <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 4px;">Supports JPG, PNG (Max size: 5MB)</p>
+                            <img id="receiptPreview" class="sh-preview-img mx-auto" alt="Receipt Preview">
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submitButton" class="sh-btn-submit">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>Confirm & Submit Payment Proof</span>
+                    </button>
+                </form>
             </div>
 
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <h6 class="mb-0">Upload Payment Proof</h6>
+            <!-- Right Panel: Order Summary -->
+            <div class="sh-summary-card">
+                <div class="sh-summary-head">
+                    <i class="fa-solid fa-receipt text-success"></i>
+                    <span>Booking Summary</span>
                 </div>
-                <div class="card-body">
-                    <form method="post" action="{% url 'bookings:upload_raast_proof' booking.id %}" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label class="form-label">Transaction ID / Reference Number</label>
-                            <input type="text" name="transaction_reference" class="form-control" required
-                                   placeholder="e.g. TRX123456789">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Payment Screenshot</label>
-                            <input type="file" name="screenshot" class="form-control" accept="image/*">
-                        </div>
-                        <button type="submit" class="btn btn-success w-100">Submit Proof</button>
-                    </form>
+                <div class="sh-summary-body">
+                    <div class="sh-item-row bold">
+                        <span>Booking ID</span>
+                        <span>#{{ booking.id }}</span>
+                    </div>
+                    {% if booking.package %}
+                    <div class="sh-item-row">
+                        <span>Package Title</span>
+                        <span style="font-weight: 600;">{{ booking.package.title }}</span>
+                    </div>
+                    {% endif %}
+                    <div class="sh-item-row">
+                        <span>Payment Method</span>
+                        <span>Raast P2P Transfer</span>
+                    </div>
+                    <div class="sh-item-row">
+                        <span>Payment Status</span>
+                        <span class="badge bg-warning text-dark">Pending Verification</span>
+                    </div>
+
+                    <div class="sh-divider"></div>
+
+                    <div class="sh-total-row">
+                        <span class="sh-total-lbl">Payable Amount</span>
+                        <span class="sh-total-val">PKR {{ payment.amount }}</span>
+                    </div>
+
+                    <div class="sh-trust-box">
+                        <i class="fa-solid fa-lock text-success" style="font-size: 1.2rem;"></i>
+                        <span>Your payment is held safely in <strong>Safar-e-Haram Escrow Protection</strong> until admin approval.</span>
+                    </div>
                 </div>
             </div>
 
@@ -61,10 +478,41 @@
 </div>
 
 <script>
-    function copyRaastId() {
-        const text = document.getElementById("raast-id").innerText;
-        navigator.clipboard.writeText(text);
-        alert("Raast ID copy ho gayi!");
+    function copyRaastNum() {
+        const text = document.getElementById("raast-num").innerText.trim();
+        navigator.clipboard.writeText(text).then(() => {
+            alert("Raast ID copied: " + text);
+        });
+    }
+
+    function handleFileSelect(e) {
+        const file = e.target.files[0];
+        const title = document.getElementById("uploadTitle");
+        const preview = document.getElementById("receiptPreview");
+
+        if (file) {
+            if (file.size > 5 * 1024 * 1024) {
+                alert("File is too large! Maximum limit is 5MB.");
+                e.target.value = "";
+                title.innerText = "Drop screenshot here or click to browse";
+                preview.style.display = "none";
+                return;
+            }
+            title.innerText = "Selected: " + file.name;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                preview.src = evt.target.result;
+                preview.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function handleFormSubmit() {
+        const btn = document.getElementById("submitButton");
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Submitting Verification...`;
+        return true;
     }
 </script>
 {% endblock %}

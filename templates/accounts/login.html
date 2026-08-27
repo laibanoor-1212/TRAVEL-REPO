@@ -1,14 +1,15 @@
 {% extends "base/base.html" %}
 {% load socialaccount %}
 {% load static %}
+
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/login.css' %}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/dist/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <div class="login-split-page">
     
     <div class="auth-bg-layer">
-        <img src="{% static 'images/fullscreen.jpg' %}" class="kabba-img">
+        <img src="{% static 'images/fullscreen.jpg' %}" alt="Background" class="kabba-img">
         <div class="dynamic-overlay"></div>
     </div>
 
@@ -17,7 +18,7 @@
         <div class="glass-login-box">
             <div class="auth-brand">
                 <a href="/">
-                    <img src="{% static 'images/logo.jpg' %}" class="login-brand-logo">
+                    <img src="{% static 'images/logo.jpg' %}" alt="Brand Logo" class="login-brand-logo">
                 </a>
                 <h2 lang="ar" dir="rtl" class="arabic-heading">سفر الحرم</h2>
                 <p class="welcome-msg">Welcome Back</p>
@@ -25,7 +26,7 @@
 
             {% if messages %}
                 {% for message in messages %}
-                    <div class="auth-alert">{{ message }}</div>
+                    <div class="auth-alert {{ message.tags }}">{{ message }}</div>
                 {% endfor %}
             {% endif %}
 
@@ -33,25 +34,25 @@
                 {% csrf_token %}
                 
                 <div class="input-set">
-                    <label>Email Address</label>
+                    <label for="login-email">Email Address</label>
                     <div class="input-with-icon">
                         <i class="fas fa-envelope"></i>
-                        <input type="text" name="username" placeholder="Enter your email" required>
+                        <input type="email" id="login-email" name="username" placeholder="Enter your email" required autofocus>
                     </div>
                 </div>
 
                 <div class="input-set">
-                    <label>Password</label>
+                    <label for="login-pass">Password</label>
                     <div class="input-with-icon">
                         <i class="fas fa-lock"></i>
                         <input type="password" name="password" id="login-pass" placeholder="••••••••" required>
-                        <i class="fas fa-eye-slash toggle-eye-btn" onclick="toggleAuthPass(this)"></i>
+                        <i class="fas fa-eye-slash toggle-eye-btn" role="button" aria-label="Toggle Password Visibility" onclick="toggleAuthPass(this)"></i>
                     </div>
                 </div>
 
                 <!-- Remember Me & Forgot Password Row -->
                 <div class="auth-options-row">
-                    <label class="remember-me-label">
+                    <label class="remember-me-label" for="remember-me-check">
                         <input type="checkbox" name="remember_me" id="remember-me-check">
                         <span class="custom-checkbox"></span>
                         <span class="checkbox-text">Remember me</span>
@@ -61,8 +62,8 @@
                     </div>
                 </div>
 
-                <button type="submit" class="emerald-action-btn">
-                    Sign In <i class="fas fa-sign-in-alt"></i>
+                <button type="submit" class="emerald-action-btn" id="submit-btn">
+                    <span>Sign In</span> <i class="fas fa-sign-in-alt"></i>
                 </button>
 
                 <!-- Professional 'OR' Divider -->

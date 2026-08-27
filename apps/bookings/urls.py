@@ -11,6 +11,7 @@ path('<int:booking_id>/confirm-stripe/', views.confirm_stripe_payment, name='con
 path('<int:booking_id>/raast-payment/', views.raast_payment_page, name='raast_payment'),
 path('<int:booking_id>/upload-proof/', views.upload_raast_proof, name='upload_raast_proof'),
 path('<int:booking_id>/payment_status/', views.payment_status, name='payment_status'),
+path('success/<slug:slug>/', views.booking_success, name='booking_success'),
 
 
 ]

@@ -1,0 +1,118 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+    /* Fixed Container with Top Padding to avoid Navbar overlapping */
+    .booking-success-wrapper {
+        width: 100%;
+        min-height: 100vh;
+        background: #f8fafc;
+        /* Navbar ke neeche proper clearance ke liye spacing */
+        padding-top: 110px; 
+        padding-bottom: 60px;
+        padding-left: 16px;
+        padding-right: 16px;
+        display: flex;
+        align-items: flex-start; /* Centering ki bajaye top alignment for better scrolling */
+        justify-content: center;
+        box-sizing: border-box;
+    }
+
+    .booking-card {
+        background: #ffffff;
+        border-radius: 24px;
+        padding: 36px 32px;
+        text-align: center;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+        width: 100%;
+        max-width: 620px;
+        box-sizing: border-box;
+    }
+
+    .btn-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    @media (max-width: 576px) {
+        .booking-success-wrapper {
+            padding-top: 90px;
+            padding-bottom: 40px;
+        }
+        .booking-card {
+            padding: 24px 20px;
+        }
+        .btn-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="booking-success-wrapper">
+    <div class="booking-card">
+        
+        <!-- Success Icon -->
+        <div style="width: 72px; height: 72px; background: #dcfce7; color: #15803d; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 16px auto;">
+            <i class="fa-solid fa-circle-check"></i>
+        </div>
+
+        <h1 style="font-size: 24px; font-weight: 800; color: #0f172a; margin: 0 0 8px 0; line-height: 1.2;">Booking Request Submitted!</h1>
+        <p style="color: #64748b; font-size: 14px; margin: 0; line-height: 1.5;">
+            Your booking request for <strong style="color: #0f172a;">{{ booking.package.title }}</strong> has been created.
+        </p>
+
+        <!-- Booking Summary Box -->
+        <div style="background: #f8fafc; border-radius: 16px; padding: 20px; margin: 24px 0; text-align: left; border: 1px dashed #cbd5e1;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px;">
+                <span style="color: #64748b; font-weight: 600;">Booking ID:</span>
+                <strong style="color: #0f172a;">{{ booking.booking_id }}</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px;">
+                <span style="color: #64748b; font-weight: 600;">Total Travelers:</span>
+                <strong style="color: #0f172a;">{{ booking.total_persons }} Person(s)</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px;">
+                <span style="color: #64748b; font-weight: 600;">Total Amount:</span>
+                <strong style="color: #15803d; font-size: 17px;">Rs. {{ booking.total_amount }}</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid #e2e8f0; font-size: 14px;">
+                <span style="color: #64748b; font-weight: 600;">Booking Status:</span>
+                <span style="background: #fef3c7; color: #d97706; padding: 4px 12px; border-radius: 50px; font-size: 11px; font-weight: 800; text-transform: uppercase;">
+                    <i class="fa-solid fa-clock-rotate-left"></i> {{ booking.get_status_display }}
+                </span>
+            </div>
+        </div>
+
+        <!-- Information Alert -->
+        <div style="background: #f0fdf4; border-left: 4px solid #15803d; padding: 14px; border-radius: 10px; text-align: left; margin-bottom: 24px;">
+            <p style="margin: 0; font-size: 13px; color: #166534; line-height: 1.5;">
+                <i class="fa-solid fa-circle-info" style="margin-right: 6px;"></i>
+                <strong>Payment Flexibility:</strong> You can proceed to payment right now, or skip and pay later from your dashboard after agency document verification.
+            </p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="btn-grid">
+            
+            <!-- Pay Later -->
+            <a href="{% url 'customers:user_dashboard' %}" style="display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; padding: 14px; background: #f1f5f9; color: #334155; border-radius: 12px; font-size: 14px; font-weight: 700; transition: 0.2s;">
+                <i class="fa-solid fa-clock"></i> Pay Later
+            </a>
+
+            <!-- Proceed to Choose Payment Method -->
+            <a href="{% url 'bookings:choose_payment_method' booking_id=booking.id %}" 
+               style="display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; padding: 14px; background: #15803d; color: white; border-radius: 12px; font-size: 14px; font-weight: 700; box-shadow: 0 8px 16px -4px rgba(21, 128, 61, 0.3); transition: 0.2s;">
+               Choose Payment <i class="fa-solid fa-arrow-right"></i>
+            </a>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}

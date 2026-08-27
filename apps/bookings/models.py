@@ -68,21 +68,18 @@ class BookingCustomers(models.Model):
     address = models.TextField(blank=True, null=True)
     passport_number = models.CharField(max_length=50, blank=True, null=True)
     passport_expiry = models.DateField(blank=True, null=True)
-
-    # Documents
     passport_scan = models.FileField(upload_to='booking/passports/', blank=True, null=True)
     passport_photo = models.ImageField(upload_to='booking/photos/', blank=True, null=True)
     cnic_front = models.ImageField(upload_to='booking/cnic/front/', blank=True, null=True)
     cnic_back = models.ImageField(upload_to='booking/cnic/back/', blank=True, null=True)
 
-    # Status & Field-Level Verification
     verification_status = models.CharField(
         max_length=20, 
         choices=VERIFICATION_STATUS_CHOICES, 
         default='pending'
     )
-    field_statuses = models.JSONField(default=dict, blank=True)   # e.g., {'cnic': 'rejected', 'passport_scan': 'approved'}
-    rollback_remarks = models.JSONField(default=dict, blank=True) # e.g., {'cnic': 'CNIC number mis-matched'}
+    field_statuses = models.JSONField(default=dict, blank=True)  
+    rollback_remarks = models.JSONField(default=dict, blank=True) 
     rejection_reason = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

@@ -23,9 +23,11 @@ class CustomUser(AbstractUser):
         app_label='accounts'
     def save(self,*args,**kwargs):
         if self.is_superuser:
-            self.role = 'ADMIN'
+            self.role = 'admin'
         super().save(*args,**kwargs)
-
+    @property
+    def is_stakeholder(self):
+        return self.role and self.role.lower() in ['stakeholder', 'agent']
     def __str__(self):
         return self.username
     
