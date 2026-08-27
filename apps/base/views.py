@@ -39,6 +39,23 @@ def muzdalifah(request):
     return render(request,'base/muzdalifah.html')
 def hajj_guide(request):
     return render(request, 'base/hajj-guide.html')
+def ihram(request):
+    return render(request, "base/ihram.html")
+def mina(request):
+    return render(request, "base/mina.html")
+def muzdalifah(request):
+    return render(request, "base/muzdalifah.html")
+def arafat(request):
+     return render(request, "base/arafat.html")
+def rami(request):
+    return render(request, "base/rami.html")
+def qurbani(request):
+    return render(request, "base/qurbani.html")
+def tawaf_ifada(request):
+    return render(request, "base/tawaf_ifada.html")
+def tawaf_wida(request):
+    return render(request, "base/tawaf_wida.html")
+
 def iran(request):
     return render(request, 'base/iran.html')
 def mashad(request):

@@ -1,0 +1,180 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    .rami-page {
+        width: 90%;
+        max-width: 1200px;
+        margin: 35px auto 70px;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .rami-hero {
+        height: 400px;
+        border-radius: 20px;
+        overflow: hidden;
+        position: relative;
+        background:
+            linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.45)),
+            url("{% static 'images/rami.jpg' %}") center/cover no-repeat;
+    }
+
+    .rami-hero-content {
+        position: absolute;
+        bottom: 45px;
+        left: 50px;
+        color: white;
+    }
+
+    .rami-hero-content span {
+        font-size: 13px;
+        letter-spacing: 2px;
+    }
+
+    .rami-hero-content h1 {
+        font-size: 48px;
+        margin: 8px 0;
+        font-weight: 800;
+    }
+
+    .rami-hero-content p {
+        font-size: 16px;
+        max-width: 700px;
+    }
+
+    .rami-content {
+        background: white;
+        margin-top: 35px;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 8px 28px rgba(0,0,0,.08);
+    }
+
+    .rami-content h2 {
+        color: #0d7436;
+        margin-top: 25px;
+    }
+
+    .rami-content h2:first-child {
+        margin-top: 0;
+    }
+
+    .rami-content p {
+        color: #555;
+        line-height: 1.8;
+        font-size: 16px;
+    }
+
+    .rami-box {
+        background: #f3faf6;
+        padding: 22px 28px;
+        border-left: 4px solid #0d7436;
+        border-radius: 10px;
+        margin: 25px 0;
+    }
+
+    .rami-box li {
+        color: #555;
+        margin: 10px 0;
+    }
+
+    .back-btn {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 11px 23px;
+        background: #0d7436;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+    }
+
+    @media(max-width:600px) {
+        .rami-page {
+            width: 94%;
+        }
+
+        .rami-hero {
+            height: 320px;
+        }
+
+        .rami-hero-content {
+            left: 25px;
+            bottom: 30px;
+        }
+
+        .rami-hero-content h1 {
+            font-size: 35px;
+        }
+
+        .rami-content {
+            padding: 25px;
+        }
+    }
+</style>
+
+
+<div class="rami-page">
+
+    <section class="rami-hero">
+
+        <div class="rami-hero-content">
+
+            <span>HAJJ RITUAL</span>
+
+            <h1>Rami</h1>
+
+            <p>
+                The ritual of stoning the Jamarat as part of the
+                sacred journey of Hajj.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="rami-content">
+
+        <h2>What is Rami?</h2>
+
+        <p>
+            Rami refers to the ritual of throwing pebbles at the
+            Jamarat pillars. It is an important ritual performed
+            during the days of Hajj.
+        </p>
+
+        <h2>The Jamarat</h2>
+
+        <p>
+            The Jamarat area contains the designated pillars where
+            pilgrims perform the stoning ritual according to the
+            prescribed Hajj schedule.
+        </p>
+
+        <div class="rami-box">
+            <ul>
+                <li>Use the required number of pebbles according to the ritual.</li>
+                <li>Follow the official Hajj schedule and instructions.</li>
+                <li>Remain patient and respectful around other pilgrims.</li>
+                <li>Keep safety and crowd-management instructions in mind.</li>
+            </ul>
+        </div>
+
+        <h2>Meaning of Rami</h2>
+
+        <p>
+            The ritual reminds pilgrims of obedience, faith and
+            rejection of evil while completing their sacred journey.
+        </p>
+
+        <a href="{% url 'hajj_guide' %}" class="back-btn">
+            ← Back to Hajj Guide
+        </a>
+
+    </section>
+
+</div>
+
+{% endblock %}

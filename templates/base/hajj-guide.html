@@ -1,198 +1,779 @@
 {% extends "base/base.html" %}
 {% load static %}
+
 {% block content %}
+
 <link rel="stylesheet" href="{% static 'css/hajj-guide.css' %}">
 
-<div class="guide-container1">
+<div class="guide-page">
 
-  
-  <section class="hero-section1">
-    <div class="overlay"></div>
-    <div class="hero-text">
-      <h1>Hajj Guide</h1>
-      <p>Your step-by-step companion for performing the sacred pilgrimage of Hajj.<br>
-         Learn every ritual from Ihram to Tawaf al-Wida and complete your journey with ease.</p>
-    </div>
-  </section>
+    <!-- ================= HERO SECTION ================= -->
 
- <section class="info-box-collage">
- 
-  <div class="collage">
-    <img src="{% static 'images/unnamed.jpg' %}" alt="" class="img-large img1">
-    <img src="{% static 'images/Muzdalifah.jpg' %}" alt="" class="img-small img3">
-     <img src="{% static 'images/manahram.jpeg' %}" alt="" class="img-small img2">
-    <img src="{% static 'images/mina.png' %}" alt="" class="img-large img4">
-   
-  </div>
+    <section class="guide-hero">
 
-  
-  <div class="collage-text">
-    <h2>What is Hajj?</h2>
-    <p>
-      Hajj is the annual pilgrimage to Makkah and one of the five pillars of Islam.
-      It is performed during Dhul Hijjah and includes sacred rituals such as Ihram,
-      standing at Arafat, Muzdalifah stay, Mina rituals, Rami Al-Jamarat, Qurbani,
-      and Tawaf Al-Ifada.
-    </p>
-    <p>
-      It represents devotion, unity, sacrifice, and submission to Allah, bringing millions
-      of Muslims from around the world together each year.
-    </p>
-  </div>
-</section>
+        <div class="guide-hero-overlay"></div>
 
+        <div class="guide-hero-content">
 
-  
-  <section class="card-grid">
+            <span class="hero-badge">
+                <i class="fas fa-kaaba"></i>
+                YOUR HAJJ COMPANION
+            </span>
 
-  
-    <div class="guide-card">
-      <img src="{% static 'images/ihram.jpeg' %}" alt="Ihram">
-      <div class="card-overlay">
-        <h3>Ihram</h3>
-        <div class="card-buttons">
-          <a href="" class="explore-btn">Listen</a>
-          <a href="{% url 'base:ahram' %}" class="explore-btn">Read</a>
+            <h1>
+                Complete <span>Hajj Guide</span>
+            </h1>
+
+            <div class="arabic-text">
+                لَبَّيْكَ اللَّهُمَّ لَبَّيْكَ
+            </div>
+
+            <p>
+                A simple and reliable step-by-step guide to help you
+                understand every stage of your Hajj journey with
+                confidence, devotion and ease.
+            </p>
+
+            <a href="#journey" class="hero-btn">
+                Start Your Journey
+                <i class="fas fa-arrow-down"></i>
+            </a>
+
         </div>
-      </div>
-    </div>
 
-   
-    <div class="guide-card">
-      <img src="{% static 'images/mina.jpeg' %}" alt="Mina">
-      <div class="card-overlay">
-        <h3>Mina (8th Dhul Hijjah)</h3>
-        <div class="card-buttons">
-          <a href="" class="explore-btn">Listen</a>
-          <a href="{% url 'base:mina' %}" class="explore-btn">Read</a>
+        <div class="hero-decoration hero-decoration-one"></div>
+        <div class="hero-decoration hero-decoration-two"></div>
+
+    </section>
+
+
+    <!-- ================= INTRODUCTION ================= -->
+
+    <section class="guide-intro">
+
+        <div class="intro-icon">
+            <i class="fas fa-kaaba"></i>
         </div>
-      </div>
-    </div>
 
-    
-    <div class="guide-card">
-      <img src="{% static 'images/arafat.jpg' %}" alt="Arafat">
-      <div class="card-overlay">
-        <h3>Arafat (Main Day of Hajj)</h3>
-        <div class="card-buttons">
-          <a href="" class="explore-btn">Listen</a>
-          <a href="{% url 'base:arafat' %}" class="explore-btn">Read</a>
+        <div class="intro-content">
+
+            <span class="section-label">
+                HAJJ MADE SIMPLE
+            </span>
+
+            <h2>
+                Your Journey to the
+                <span>House of Allah</span>
+            </h2>
+
+            <p>
+                Hajj is one of the greatest acts of worship and a deeply
+                spiritual journey. Safar-e-Haram provides clear and
+                easy-to-follow guidance for each important stage of Hajj.
+            </p>
+
+            <p>
+                Explore each stage through detailed reading material and
+                prepare yourself before beginning your sacred journey.
+            </p>
+
         </div>
-      </div>
-    </div>
 
-   
-    <div class="guide-card">
-      <img src="{% static 'images/Muzdalifah.png' %}" alt="Muzdalifah">
-      <div class="card-overlay">
-        <h3>Muzdalifah</h3>
-        <div class="card-buttons">
-          <a href="" class="explore-btn">Listen</a>
-          <a href="{% url 'base:muzdalifah' %}" class="explore-btn">Read</a>
+    </section>
+
+
+    <!-- ================= JOURNEY SECTION ================= -->
+
+    <section class="journey-section" id="journey">
+
+        <div class="section-heading">
+
+            <span class="section-label">
+                STEP BY STEP
+            </span>
+
+            <h2>
+                Explore Your
+                <span>Hajj Journey</span>
+            </h2>
+
+            <p>
+                Follow each step in order and learn everything you need
+                to know for a smooth and meaningful Hajj.
+            </p>
+
         </div>
-      </div>
-    </div>
 
-  
-    <div class="guide-card">
-      <img src="{% static 'images/rami.jpg' %}" alt="Rami">
-      <div class="card-overlay">
-        <h3>Rami (Stoning Pillars)</h3>
-        <div class="card-buttons">
-          <a href="" class="explore-btn">Listen</a>
-          <a href="" class="explore-btn">Read</a>
+
+        <!-- ================= CARDS ================= -->
+
+        <div class="card-grid">
+
+
+            <!-- ================= 01 IHRAM ================= -->
+
+            <div class="guide-card">
+
+                <div class="card-image">
+
+                    <img
+                        src="{% static 'images/ihram.jpeg' %}"
+                        alt="Ihram"
+                    >
+
+                    <div class="image-overlay"></div>
+
+                    <span class="step-number">
+                        01
+                    </span>
+
+                    <div class="card-content">
+
+                        <span class="card-label">
+                            STEP 01
+                        </span>
+
+                        <h3>
+                            Ihram
+                        </h3>
+
+                        <p>
+                            Learn about the preparation, intention and
+                            important rules of entering Ihram for Hajj.
+                        </p>
+
+                        <a
+                            href="{% url 'base:ahram' %}"
+                            class="read-btn"
+                        >
+                            <i class="fas fa-book-open"></i>
+                            Read
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= 02 MINA ================= -->
+
+            <div class="guide-card">
+
+                <div class="card-image">
+
+                    <img
+                        src="{% static 'images/mina.jpg' %}"
+                        alt="Mina"
+                    >
+
+                    <div class="image-overlay"></div>
+
+                    <span class="step-number">
+                        02
+                    </span>
+
+                    <div class="card-content">
+
+                        <span class="card-label">
+                            STEP 02
+                        </span>
+
+                        <h3>
+                            Mina
+                        </h3>
+
+                        <p>
+                            Learn about the stay in Mina and the important
+                            activities performed by pilgrims.
+                        </p>
+
+                        <a
+                            href="{% url 'base:mina' %}"
+                            class="read-btn"
+                        >
+                            <i class="fas fa-book-open"></i>
+                            Read
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= 03 ARAFAT ================= -->
+
+            <div class="guide-card">
+
+                <div class="card-image">
+
+                    <img
+                        src="{% static 'images/arafat.jpg' %}"
+                        alt="Arafat"
+                    >
+
+                    <div class="image-overlay"></div>
+
+                    <span class="step-number">
+                        03
+                    </span>
+
+                    <div class="card-content">
+
+                        <span class="card-label">
+                            STEP 03
+                        </span>
+
+                        <h3>
+                            Arafat
+                        </h3>
+
+                        <p>
+                            Understand the importance of the Day of Arafah
+                            and the essential acts performed there.
+                        </p>
+
+                        <a
+                            href="{% url 'base:arafat' %}"
+                            class="read-btn"
+                        >
+                            <i class="fas fa-book-open"></i>
+                            Read
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= 04 MUZDALIFAH ================= -->
+
+            <div class="guide-card">
+
+                <div class="card-image">
+
+                    <img
+                        src="{% static 'images/muzdalifah.jpg' %}"
+                        alt="Muzdalifah"
+                    >
+
+                    <div class="image-overlay"></div>
+
+                    <span class="step-number">
+                        04
+                    </span>
+
+                    <div class="card-content">
+
+                        <span class="card-label">
+                            STEP 04
+                        </span>
+
+                        <h3>
+                            Muzdalifah
+                        </h3>
+
+                        <p>
+                            Discover the significance of Muzdalifah,
+                            including the stay and collection of pebbles.
+                        </p>
+
+                        <a
+                            href="{% url 'base:muzdalifah' %}"
+                            class="read-btn"
+                        >
+                            <i class="fas fa-book-open"></i>
+                            Read
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= 05 RAMI ================= -->
+
+            <div class="guide-card">
+
+                <div class="card-image">
+
+                    <img
+                        src="{% static 'images/jamarat.jpg' %}"
+                        alt="Rami al Jamarat"
+                    >
+
+                    <div class="image-overlay"></div>
+
+                    <span class="step-number">
+                        05
+                    </span>
+
+                    <div class="card-content">
+
+                        <span class="card-label">
+                            STEP 05
+                        </span>
+
+                        <h3>
+                            Rami al-Jamarat
+                        </h3>
+
+                        <p>
+                            Learn about the stoning of the Jamarat and
+                            the correct method of performing Rami.
+                        </p>
+
+                        <a
+                            href="{% url 'base:rami' %}"
+                            class="read-btn"
+                        >
+                            <i class="fas fa-book-open"></i>
+                            Read
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= 06 QURBANI ================= -->
+
+            <div class="guide-card">
+
+                <div class="card-image">
+
+                    <img
+                        src="{% static 'images/qurbani.jpg' %}"
+                        alt="Qurbani"
+                    >
+
+                    <div class="image-overlay"></div>
+
+                    <span class="step-number">
+                        06
+                    </span>
+
+                    <div class="card-content">
+
+                        <span class="card-label">
+                            STEP 06
+                        </span>
+
+                        <h3>
+                            Qurbani
+                        </h3>
+
+                        <p>
+                            Learn about the significance and correct
+                            method of performing Qurbani.
+                        </p>
+
+                        <a
+                            href="{% url 'base:qurbani' %}"
+                            class="read-btn"
+                        >
+                            <i class="fas fa-book-open"></i>
+                            Read
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= 07 TAWAF IFADA ================= -->
+
+            <div class="guide-card">
+
+                <div class="card-image">
+
+                    <img
+                        src="{% static 'images/tawaf3.jpeg' %}"
+                        alt="Tawaf Ifada"
+                    >
+
+                    <div class="image-overlay"></div>
+
+                    <span class="step-number">
+                        07
+                    </span>
+
+                    <div class="card-content">
+
+                        <span class="card-label">
+                            STEP 07
+                        </span>
+
+                        <h3>
+                            Tawaf-Ifada
+                        </h3>
+
+                        <p>
+                            Learn the correct method and importance of
+                            performing Tawaf around the Holy Kaaba.
+                        </p>
+
+                        <a
+                            href="{% url 'base:tawaf_ifada' %}"
+                            class="read-btn"
+                        >
+                            <i class="fas fa-book-open"></i>
+                            Read
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= 08 TAWAF WIDA ================= -->
+
+            <div class="guide-card">
+
+                <div class="card-image">
+
+                    <img
+                        src="{% static 'images/umrah.jpeg' %}"
+                        alt="Tawaf Wida"
+                    >
+
+                    <div class="image-overlay"></div>
+
+                    <span class="step-number">
+                        08
+                    </span>
+
+                    <div class="card-content">
+
+                        <span class="card-label">
+                            STEP 08
+                        </span>
+
+                        <h3>
+                            Tawaf-Wida
+                        </h3>
+
+                        <p>
+                            Learn about the final circumambulation
+                            around the Holy Kaaba.
+                        </p>
+
+                        <a
+                            href="{% url 'base:tawaf_wida' %}"
+                            class="read-btn"
+                        >
+                            <i class="fas fa-book-open"></i>
+                            Read
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
         </div>
-      </div>
-    </div>
 
-  
-    <div class="guide-card">
-      <img src="{% static 'images/qurbani.png' %}" alt="Qurbani">
-      <div class="card-overlay">
-        <h3>Qurbani</h3>
-        <div class="card-buttons">
-          <a href="" class="explore-btn">Listen</a>
-          <a href="" class="explore-btn">Read</a>
+    </section>
+
+
+    <!-- ================= HOW IT WORKS ================= -->
+
+    <section class="guide-help">
+
+        <div class="section-heading">
+
+            <span class="section-label">
+                HOW IT WORKS
+            </span>
+
+            <h2>
+                Learn. Prepare.
+                <span>Perform.</span>
+            </h2>
+
         </div>
-      </div>
-    </div>
 
-    <div class="guide-card">
-      <img src="{% static 'images/tawafal-ifadah.jpeg' %}" alt="Tawaf al-Ifada">
-      <div class="card-overlay">
-        <h3>Tawaf al-Ifada</h3>
-        <div class="card-buttons">
-          <a href="" class="explore-btn">Listen</a>
-          <a href="" class="explore-btn">Read</a>
+
+        <div class="help-grid">
+
+
+            <!-- HELP CARD 01 -->
+
+            <div class="help-card">
+
+                <div class="help-number">
+                    01
+                </div>
+
+                <div class="help-icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
+
+                <h3>
+                    Read the Guide
+                </h3>
+
+                <p>
+                    Explore detailed information about every stage
+                    of your Hajj journey.
+                </p>
+
+            </div>
+
+
+            <!-- HELP CARD 02 -->
+
+            <div class="help-card">
+
+                <div class="help-number">
+                    02
+                </div>
+
+                <div class="help-icon">
+                    <i class="fas fa-route"></i>
+                </div>
+
+                <h3>
+                    Follow Each Step
+                </h3>
+
+                <p>
+                    Understand the sequence of important Hajj rituals
+                    and prepare yourself accordingly.
+                </p>
+
+            </div>
+
+
+            <!-- HELP CARD 03 -->
+
+            <div class="help-card">
+
+                <div class="help-number">
+                    03
+                </div>
+
+                <div class="help-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+
+                <h3>
+                    Perform with Confidence
+                </h3>
+
+                <p>
+                    Prepare yourself properly and focus on your
+                    spiritual journey.
+                </p>
+
+            </div>
+
         </div>
-      </div>
-    </div>
 
-    <div class="guide-card">
-      <img src="{% static 'images/tawaf al-wida.png' %}" alt="Tawaf al-Wida">
-      <div class="card-overlay">
-        <h3>Farewell Tawaf</h3>
-        <div class="card-buttons">
-          <a href="" class="explore-btn">Listen</a>
-          <a href="{% url 'base:tawaf' %}" class="explore-btn">Read</a>
+    </section>
+
+
+    <!-- ================= FINAL CTA ================= -->
+
+    <section class="guide-cta">
+
+        <div class="cta-content">
+
+            <span class="section-label">
+                SAFAR-E-HARAM
+            </span>
+
+            <h2>
+                May Your Hajj Be
+                <span>Accepted & Blessed</span>
+            </h2>
+
+            <p>
+                Prepare yourself, follow the guidance and begin your
+                sacred journey with peace of mind.
+            </p>
+
+            <a href="#journey" class="cta-btn">
+                Explore Guide
+                <i class="fas fa-arrow-right"></i>
+            </a>
+
         </div>
-      </div>
-    </div>
 
-  </section>
+    </section>
+
 </div>
 
+
+<!-- ================= FOOTER ================= -->
+
 <footer class="footer-wrapper">
- 
-  <div class="footer-top-curve">
-    <svg viewBox="0 0 1440 150" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-      
-      <path fill="#ffff" d="M0,64 C360,160 1080,0 1440,96 L1440,0 L0,0 Z"></path>
-    </svg>
-  </div>
 
+    <div class="footer-top-curve">
 
-  <div class="footer-content">
-    <div class="footer-columns">
-      <div>
-        <h3>About Safar-e-Haram</h3>
-        <p>Safar-e-Haram guides you on a blessed journey — helping pilgrims explore routes, maps, and essential Hajj & Umrah information in one place.</p>
-      </div>
+        <svg
+            viewBox="0 0 1440 150"
+            xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio="none"
+        >
 
-      <div>
-        <h3>Quick Links</h3>
-        <ul>
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Guides</a></li>
-          <li><a href="#">Maps</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-      </div>
+            <path
+                fill="#ffffff"
+                d="M0,64 C360,160 1080,0 1440,96 L1440,0 L0,0 Z"
+            ></path>
 
-      <div>
-        <h3>Support</h3>
-        <ul>
-          <li><a href="#">FAQ</a></li>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Terms & Conditions</a></li>
-        </ul>
-      </div>
+        </svg>
+
     </div>
 
-    <div class="footer-social">
-      <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-      <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-      <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-      <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+
+    <div class="footer-content">
+
+        <div class="footer-columns">
+
+
+            <!-- ABOUT -->
+
+            <div>
+
+                <h3>
+                    About Safar-e-Haram
+                </h3>
+
+                <p>
+                    Safar-e-Haram guides you on a blessed journey —
+                    helping pilgrims explore routes, maps, and essential
+                    Hajj & Umrah information in one place.
+                </p>
+
+            </div>
+
+
+            <!-- QUICK LINKS -->
+
+            <div>
+
+                <h3>
+                    Quick Links
+                </h3>
+
+                <ul>
+
+                    <li>
+                        <a href="#">
+                            Home
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#">
+                            Guides
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#">
+                            Maps
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#">
+                            Contact
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+            <!-- SUPPORT -->
+
+            <div>
+
+                <h3>
+                    Support
+                </h3>
+
+                <ul>
+
+                    <li>
+                        <a href="#">
+                            FAQ
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#">
+                            Privacy Policy
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#">
+                            Terms & Conditions
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+
+        <!-- SOCIAL -->
+
+        <div class="footer-social">
+
+            <a href="#" aria-label="Facebook">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+
+            <a href="#" aria-label="Instagram">
+                <i class="fab fa-instagram"></i>
+            </a>
+
+            <a href="#" aria-label="YouTube">
+                <i class="fab fa-youtube"></i>
+            </a>
+
+            <a href="#" aria-label="Twitter">
+                <i class="fab fa-x-twitter"></i>
+            </a>
+
+        </div>
+
+
+        <!-- COPYRIGHT -->
+
+        <div class="footer-bottom">
+
+            <p>
+                © 2025 Safar-e-Haram. All Rights Reserved.
+            </p>
+
+        </div>
+
     </div>
 
-    <div class="footer-bottom">
-      <p>© 2025 Safar-e-Haram. All Rights Reserved.</p>
-    </div>
-  </div>
 </footer>
 
 
-
-
-{% endblock %}
+{% endblock content %}
