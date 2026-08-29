@@ -185,6 +185,5 @@ class CommissionSetting(models.Model):
 
     @classmethod
     def get_commission_rate(cls):
-        """Helper method to get current active commission percentage"""
         setting = cls.objects.first()
         return setting.commission_percentage if setting else Decimal('10.00')

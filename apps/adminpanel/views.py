@@ -12,12 +12,17 @@ from django.contrib.auth.decorators import login_required
 from packages.models import Package,PackageType
 from customers.models import CustomerProfile 
 from bookings.models import Bookings, BookingStatusHistory
-from django.contrib.auth.decorators import user_passes_test
 from notifications.models import Notification
 from .models import Complaint
-from payments.models import CommissionSetting
+from django.db.models import Sum, Count
+from payments.models import CommissionSetting, PaymentRelease
 from payments.models import Payment, PaymentProof, PaymentStatusLog
 from payments import services
+from decimal import Decimal
+from django.contrib.auth.decorators import user_passes_test
+
+def is_admin_user(user):
+    return user.is_authenticated and (user.is_staff or user.is_superuser or getattr(user, 'role', '') == 'admin')
 User = get_user_model()
 
 def admin_login_view(request):
@@ -327,14 +332,18 @@ def update_booking_status(request, booking_id):
 
 
 def admin_complaints(request):
-    if request.method == "POST" and 'update_status' in request.POST:
-        complaint_id = request.POST.get('complaint_id')
-        new_status = request.POST.get('status')
-        complaint = get_object_or_404(Complaint, id=complaint_id)
-        complaint.status = new_status
-        complaint.save()
-        return redirect('adminpanel:admin_complaints')
-    complaints = Complaint.objects.all().order_by('-created_at')
+    if request.method == "POST":
+        complaint_id = request.POST.get("complaint_id")
+        new_status = request.POST.get("status")
+        
+        if complaint_id and new_status:
+            complaint = get_object_or_404(Complaint, id=complaint_id)
+            complaint.status = new_status
+            complaint.save()
+            messages.success(request, f"Complaint #SH-C-{complaint.id} status updated to '{complaint.get_status_display()}' successfully.")
+            return redirect('adminpanel:admin_complaints')  # Replace with your actual URL name
+
+    complaints = Complaint.objects.select_related('user').order_by('-created_at')
     return render(request, 'adminpanel/admin_complaint.html', {'complaints': complaints})
 def _is_admin(user):
     return user.is_authenticated and user.is_staff
@@ -396,6 +405,9 @@ def admin_reject_proof(request, proof_id):
     return redirect('adminpanel:payment_detail', payment_id=proof.payment_id)
 
 
+
+
+@user_passes_test(is_admin_user, login_url='adminpanel:admin_login')
 def admin_release_payment(request, payment_id):
     payment = get_object_or_404(Payment, pk=payment_id)
 
@@ -404,11 +416,10 @@ def admin_release_payment(request, payment_id):
         try:
             services.release_payment(payment, released_by_admin=request.user, release_notes=notes)
             messages.success(request, f"Payment #{payment.id} successfully release ho gayi.")
-        except (ValueError, PermissionError) as e:
+        except (ValueError, PermissionError, ValidationError) as e:
             messages.error(request, f"Payment release nahi hui: {e}")
 
     return redirect('adminpanel:payment_detail', payment_id=payment.id)
-
 @login_required(login_url='/auth/login/')
 @user_passes_test(_is_admin, login_url='/auth/login/')
 def admin_cancel_payment(request, payment_id):
@@ -469,17 +480,43 @@ def delete_package_type(request, pk):
 
 
 
+@user_passes_test(is_admin_user, login_url='adminpanel:admin_login')
 def set_commission(request):
-    commission_setting, created = CommissionSetting.objects.get_or_create(id=1)
+    commission_setting, _ = CommissionSetting.objects.get_or_create(id=1)
 
     if request.method == "POST":
         rate = request.POST.get('commission_percentage')
-        if rate:
-            commission_setting.commission_percentage = rate
-            commission_setting.save()
-            messages.success(request, f"Admin commission updated successfully to {rate}%!")
+        
+        if not rate:
+            messages.error(request, "Commission percentage field cannot be empty.")
             return redirect('adminpanel:set_commission')
 
-    return render(request, 'adminpanel/set_commision.html', {
-        'commission_setting': commission_setting
-    })
+        try:
+            rate_val = float(rate)
+            if 0 <= rate_val <= 100:
+                commission_setting.commission_percentage = rate_val
+                commission_setting.save()
+                messages.success(request, f"Commission rate updated successfully to {rate_val}%!")
+                return redirect('adminpanel:set_commission')
+            else:
+                messages.error(request, "Commission percentage must be between 0 and 100.")
+
+        except (ValueError, TypeError):
+            messages.error(request, "Please enter a valid numeric value.")
+
+    # Updated with correct field name: 'admin_commission_amount'
+    total_earnings_data = PaymentRelease.objects.aggregate(
+        total_admin_earnings=Sum('admin_commission_amount'),
+        total_released_count=Count('id')
+    )
+    
+    recent_releases = PaymentRelease.objects.select_related('payment', 'payment__agent').order_by('-released_at')[:10]
+
+    context = {
+        'commission_setting': commission_setting,
+        'total_admin_earnings': total_earnings_data['total_admin_earnings'] or Decimal('0.00'),
+        'total_released_count': total_earnings_data['total_released_count'] or 0,
+        'recent_releases': recent_releases,
+    }
+
+    return render(request, 'adminpanel/set_commision.html', context)

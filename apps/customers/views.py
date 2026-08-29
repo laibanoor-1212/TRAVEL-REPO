@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
- 
+from django.db.models import Count, Q
 from .models import CustomerProfile
 from adminpanel.models import Complaint
 from payments.models import Payment
@@ -11,6 +11,9 @@ from django.utils import timezone
 from payments import services
 from django.core.exceptions import PermissionDenied
 from base.decorators import role_required
+from django.db.models import Sum, Count, Q
+from bookings.models import Bookings
+from payments.models import Payment
 from bookings.models import BookingCustomers, BookingStatusHistory
 
 
@@ -135,33 +138,104 @@ def user_dashboard(request):
     return render(request, 'customer/user_layout.html')
 
 
+
+@login_required(login_url='/auth/login/')
 def overview_user(request):
-    return render(request,'customer/overview_user.html')
+    user = request.user
+
+    # Active Booking
+    active_booking = Bookings.objects.filter(
+        user=user
+    ).exclude(
+        status__in=['completed', 'cancelled']
+    ).select_related('package', 'package__agency').order_by('-created_at').first()
+
+    # Counters
+    user_bookings = Bookings.objects.filter(user=user)
+    total_bookings_count = user_bookings.count()
+    active_bookings_count = user_bookings.exclude(status__in=['completed', 'cancelled']).count()
+    completed_bookings_count = user_bookings.filter(status='completed').count()
+    tickets_count = user_bookings.filter(status__in=['confirmed', 'completed']).count()
+
+    # Payment Calculations
+    user_payments = Payment.objects.filter(customer=user)
+
+    # 1. Total Paid Amount
+    total_amount_paid = user_payments.aggregate(
+        total=Sum('amount')
+    )['total'] or 0.00
+
+    # 2. Escrow Hold Amount (Check status case-insensitively)
+    escrow_hold_amount = user_payments.filter(
+        Q(escrow_status__iexact='hold') | Q(escrow_status__iexact='in_escrow') | Q(escrow_status__iexact='escrow')
+    ).aggregate(
+        total=Sum('amount')
+    )['total'] or 0.00
+
+    # 3. Escrow Released Amount
+    escrow_released_amount = user_payments.filter(
+        Q(escrow_status__iexact='released') | Q(escrow_status__iexact='completed')
+    ).aggregate(
+        total=Sum('amount')
+    )['total'] or 0.00
+
+    context = {
+        'active_booking': active_booking,
+        'total_bookings_count': total_bookings_count,
+        'active_bookings_count': active_bookings_count,
+        'completed_bookings_count': completed_bookings_count,
+        'tickets_count': tickets_count,
+        'total_amount_paid': total_amount_paid,
+        'escrow_hold_amount': escrow_hold_amount,
+        'escrow_released_amount': escrow_released_amount,
+    }
+
+    return render(request, 'customer/overview_user.html', context)
+
+
+
 def customer_complaints(request):
+    COMPLAINT_TYPES = [
+        ('ticket', 'Ticket & Booking Issue'),
+        ('hotel', 'Hotel & Accommodation Issue'),
+        ('transport', 'Transport & Transfers'),
+        ('payment', 'Payment & Refund Query'),
+        ('visa', 'Visa Processing Issue'),
+        ('other', 'Other General Inquiry'),
+    ]
+
     if request.method == "POST":
-        complaint_type = request.POST.get('complaint_type')
-        subject = request.POST.get('subject')
-        description = request.POST.get('description')
+        complaint_type = request.POST.get("complaint_type")
+        subject = request.POST.get("subject")
+        description = request.POST.get("description")
+        
         Complaint.objects.create(
             user=request.user,
-            user_role='user',  
             complaint_type=complaint_type,
             subject=subject,
-            description=description
+            description=description,
+            status='pending'
         )
-        return redirect('customers:customer_complaints') 
-    customer_issues = [
-        ('no_ticket', 'Flight Ticket Not Received Yet'),
-        ('visa_delay', 'Visa Processing Delay / Document Issue'),
-        ('passport_issue', 'Passport Return Issue'),
-        ('wrong_billing', 'Incorrect Amount Charged'),
-        ('transport_missing', 'Transport/Bus Not Arrived'),
-        ('driver_behavior', 'Driver Misbehavior'),
-        ('hotel_not_booked', 'Hotel Booking Not Found at Check-in'),
-        ('room_quality', 'Room Quality/Amenities Not as Promised'),
-        ('other', 'Other Issues / Emergency Assistance'),
-    ]
-    return render(request, 'customer/customer_complaints.html', {'issues': customer_issues})
+        messages.success(request, "Aapki complaint successfully submit ho gayi hai!")
+        return redirect(request.path)
+
+    # Current logged-in user ki tamaam complaints
+    my_complaints = Complaint.objects.filter(user=request.user).order_by('-created_at')
+    
+    # Status Counts Dynamic Calculation
+    counts = my_complaints.aggregate(
+        total=Count('id'),
+        pending=Count('id', filter=Q(status='pending')),
+        in_progress=Count('id', filter=Q(status='in_progress')),
+        resolved=Count('id', filter=Q(status='resolved'))
+    )
+
+    context = {
+        'issues': COMPLAINT_TYPES,
+        'my_complaints': my_complaints,
+        'counts': counts,
+    }
+    return render(request, 'customer/customer_complaints.html', context)
 
 @login_required(login_url='/auth/login/')
 def escrow_status_overview(request):

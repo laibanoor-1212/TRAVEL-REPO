@@ -1,7 +1,7 @@
 from django.db import transaction
 from django.utils import timezone
 from django.core.exceptions import ValidationError
-
+from decimal import Decimal
 
 from .models import (
     Payment,
@@ -10,6 +10,7 @@ from .models import (
     PaymentRelease,
     PaymentStatusLog,
     PaymentStatus,
+    CommissionSetting,
 )
 
 
@@ -172,52 +173,76 @@ def mark_customer_approved(payment: Payment, customer_user):
                 notes="Customer approved the ticket.")
     return payment
 
+
+
+
 @transaction.atomic
 def release_payment(payment: Payment, released_by_admin, release_notes: str = ""):
     if not released_by_admin.is_staff:
-        raise PermissionError("only admin can release payment")
+        raise PermissionError("Only admin can release payment.")
 
     if payment.escrow_status != PaymentStatus.HELD_IN_ESCROW:
-        raise ValueError("Payment is not hold in escrow ,release is not possible")
+        raise ValueError("Payment is not held in escrow; release is not possible.")
 
-    # ✅ Fix: Check if ticket exists and if customer approved it
-    if not hasattr(payment.booking, 'ticket') or not payment.booking.ticket.customer_approved:
-        raise ValidationError("To release Payment ticket approve by the customer is mandatory")
+    # Ticket approval check (handles both direct booking field or ticket model relationship)
+    ticket_approved = (
+        getattr(payment.booking, 'customer_approved', False) or 
+        (hasattr(payment.booking, 'ticket') and getattr(payment.booking.ticket, 'customer_approved', False))
+    )
+    if not ticket_approved:
+        raise ValidationError("To release payment, ticket approval by the customer is mandatory.")
 
     if hasattr(payment, "release_record"):
-        raise ValueError("this payment already released")
+        raise ValueError("This payment has already been released.")
+
+    # 1. Fetch latest admin commission rate (Default to 10.00% if not set)
+    comm_setting = CommissionSetting.objects.first()
+    comm_rate = Decimal(str(comm_setting.commission_percentage)) if (comm_setting and comm_setting.commission_percentage is not None) else Decimal('10.00')
+
+    # 2. Calculate Admin Commission & Net Released Amount
+    gross_amount = Decimal(str(payment.amount))
+    admin_commission = (gross_amount * comm_rate) / Decimal('100.00')
+    net_released_amount = gross_amount - admin_commission
 
     raast_reference = ""
     if payment.payment_method == "raast":
-        raast_reference = payment.agent_raast_id or ""
+        raast_reference = getattr(payment, 'agent_raast_id', '') or ""
 
+    # 3. Create PaymentRelease Record with Commission Split
     PaymentRelease.objects.create(
         payment=payment,
         released_by=released_by_admin,
-        amount_released=payment.amount,
+        amount_released=net_released_amount,
+        admin_commission_amount=admin_commission,
         release_notes=release_notes,
         raast_payout_reference=raast_reference,
     )
 
+    # 4. Update Payment Escrow Status
     payment.escrow_status = PaymentStatus.RELEASED
     payment.released_at = timezone.now()
     payment.released_by = released_by_admin
     payment.save(update_fields=["escrow_status", "released_at", "released_by", "updated_at"])
 
-    escrow_txn = payment.escrow_transaction
-    escrow_txn.status = EscrowTransaction.Status.RELEASED
-    escrow_txn.save(update_fields=["status", "updated_at"])
+    # 5. Update Escrow Transaction Status
+    if hasattr(payment, "escrow_transaction"):
+        escrow_txn = payment.escrow_transaction
+        escrow_txn.status = EscrowTransaction.Status.RELEASED
+        escrow_txn.save(update_fields=["status", "updated_at"])
 
-    _set_status(payment, PaymentStatus.RELEASED, changed_by=released_by_admin,
-                notes=release_notes or "Payment released by admin.")
+    _set_status(
+        payment, 
+        PaymentStatus.RELEASED, 
+        changed_by=released_by_admin,
+        notes=release_notes or f"Payment released by admin. (Commission: PKR {admin_commission})"
+    )
 
+    # 6. Mark Booking as Completed
     booking = payment.booking
     booking.status = "completed"
     booking.save(update_fields=["status", "updated_at"])
 
     return payment
-
-
 def cancel_payment(payment: Payment, cancelled_by, reason: str = ""):
     if payment.payment_status == PaymentStatus.RELEASED:
         raise ValueError("Released payment is impossible to cancel.")

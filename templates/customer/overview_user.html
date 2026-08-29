@@ -4,112 +4,503 @@
 {% block title %}Dashboard Overview{% endblock %}
 
 {% block content %}
+<style>
+    .overview-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    /* Top Greeting Banner */
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #ffffff;
+        padding: 22px 26px;
+        border-radius: 12px;
+        border: 1px solid #eaedf0;
+    }
+
+    .btn-action-primary {
+        background: #155c3b;
+        color: #ffffff;
+        padding: 10px 18px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: background 0.2s;
+    }
+    .btn-action-primary:hover { background: #0f452c; }
+
+    .btn-action-secondary {
+        background: #f0f7f3;
+        color: #155c3b;
+        border: 1px solid #d4e8dd;
+        padding: 10px 18px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Stats Counter Grid */
+    .stats-counter-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+    }
+
+    .stat-card {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 18px 20px;
+        border: 1px solid #eaedf0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+
+    .stat-number {
+        font-size: 24px;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-top: 4px;
+    }
+
+    .stat-label {
+        font-size: 12px;
+        color: #708090;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .stat-icon-wrapper {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+    }
+
+    /* Active Booking Box */
+    .active-booking-card {
+        background: #ffffff;
+        border-radius: 12px;
+        border: 1px solid #eaedf0;
+        padding: 24px;
+        border-left: 5px solid #155c3b;
+    }
+
+    .booking-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #eaedf0;
+        padding-bottom: 14px;
+        margin-bottom: 18px;
+    }
+
+    .booking-details-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap: 16px;
+        background: #f8faf9;
+        padding: 18px;
+        border-radius: 8px;
+    }
+
+    .detail-item label {
+        display: block;
+        font-size: 11px;
+        color: #708090;
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .detail-item span {
+        font-size: 14px;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    /* Payment & Escrow Split Section */
+    .finance-split-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    .finance-card {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid #eaedf0;
+    }
+
+    .badge-status {
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+    .badge-success { background: #e8f5e9; color: #2e7d32; }
+    .badge-warning { background: #fff8e1; color: #f57f17; }
+    .badge-info { background: #e3f2fd; color: #1565c0; }
+
+    /* Highlights Section */
+    .cards-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+    }
+
+    .location-card {
+        background: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #eaedf0;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        transition: transform 0.2s ease;
+    }
+
+    .location-card:hover {
+        transform: translateY(-4px);
+    }
+
+    .image-box {
+        position: relative;
+        height: 150px;
+    }
+
+    .image-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .location-tag {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        color: #ffffff;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .card-body { padding: 18px; }
+
+    .check-list {
+        list-style: none;
+        padding: 0;
+        margin: 10px 0 0 0;
+    }
+
+    .check-list li {
+        font-size: 13px;
+        color: #555;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Support Banner */
+    .support-banner {
+        background: linear-gradient(135deg, #155c3b 0%, #0f452c 100%);
+        color: #ffffff;
+        border-radius: 12px;
+        padding: 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+</style>
+
 <div class="overview-wrapper">
     
+    <!-- Header Section -->
     <div class="dashboard-header">
         <div>
-            <h2 style="color: #2c3e50; font-weight: 600; margin: 0;">Assalam-o-Alaikum, {{ request.user.username }}!</h2>
-            <p style="color: #666; margin: 5px 0 0;">Safar-e-Haram: Tracking your spiritual journey.</p>
+            <h2 style="color: #2c3e50; font-weight: 600; margin: 0; font-size: 22px;">
+                Assalam-o-Alaikum, {{ request.user.first_name|default:request.user.username }}!
+            </h2>
+            <p style="color: #666; margin: 4px 0 0; font-size: 13px;">
+                Welcome to your Safar-e-Haram pilgrim portal.
+            </p>
         </div>
         
-    </div>
-
-    <div class="quick-status-grid">
-        <div class="status-card" id="doc-card">
-            <div class="status-icon" style="background: #fdf2f2; color: #c81e1e;">
-                <i class="fa-solid fa-passport"></i>
-            </div>
-            <div class="status-info">
-                <h4>Documents</h4>
-                <p>Passport <span class="badge bg-pending">Pending</span></p>
-            </div>
-        </div>
-
-        <div class="status-card" id="payment-card">
-            <div class="status-icon" style="background: #e1effe; color: #1e429f;">
-                <i class="fa-solid fa-vault"></i>
-            </div>
-            <div class="status-info">
-                <h4>Payment (Escrow)</h4>
-                <p>Hold <span class="badge bg-hold">Verified</span></p>
-            </div>
-        </div>
-
-        <div class="status-card" id="ticket-card">
-            <div class="status-icon" style="background: #f3faf7; color: #046c4e;">
-                <i class="fa-solid fa-plane-up"></i>
-            </div>
-            <div class="status-info">
-                <h4>Flight Status</h4>
-                <p>Confirmed <span class="badge bg-success">Ready</span></p>
-            </div>
+        <div style="display: flex; gap: 12px;">
+            <a href="/packages/" class="btn-action-primary">
+                <i class="fa-solid fa-magnifying-glass"></i> Browse Packages
+            </a>
+            <a href="{% url 'customers:user_bookings' %}" class="btn-action-secondary">
+                <i class="fa-solid fa-kaaba"></i> All Bookings
+            </a>
         </div>
     </div>
 
-    <div style="margin-bottom: 20px; font-weight: 600; display: flex; align-items: center; gap: 10px;">
-        <i class="fa-solid fa-map-location-dot"></i> Package Highlights
-    </div>
-
-    <div class="cards-container">
-        <div class="location-card">
-            <div class="image-box">
-                <img src="{% static '/images/umrah.jpeg' %}" alt="Makkah">
-                <span class="location-tag" style="background: #27ae60;">Makkah Mukarramah</span>
+    <!-- Overall Booking Statistics (Dynamic) -->
+    <div class="stats-counter-grid">
+        <div class="stat-card">
+            <div>
+                <div class="stat-label">Total Bookings</div>
+                <div class="stat-number">{{ total_bookings_count|default:0 }}</div>
             </div>
-            <div class="card-body">
-                <h4>Umrah Rituals</h4>
-                <ul class="check-list">
-                    <li><i class="fa-solid fa-check-circle" style="color: #27ae60;"></i> Tawaaf & Sa'ee</li>
-                    <li><i class="fa-solid fa-check-circle" style="color: #27ae60;"></i> Ziyarat-e-Maqamaat</li>
-                </ul>
+            <div class="stat-icon-wrapper" style="background: #eaf2ed; color: #155c3b;">
+                <i class="fa-solid fa-suitcase"></i>
             </div>
         </div>
 
-        <div class="location-card">
-            <div class="image-box">
-                <img src="{% static '/images/Masjid nabvi.png' %}" alt="Madinah">
-                <span class="location-tag" style="background: #e67e22;">Madinah Munawwarah</span>
+        <div class="stat-card">
+            <div>
+                <div class="stat-label">Active / Upcoming</div>
+                <div class="stat-number">{{ active_bookings_count|default:0 }}</div>
             </div>
-            <div class="card-body">
-                <h4>Masjid-an-Nabawi</h4>
-                <ul class="check-list">
-                    <li><i class="fa-solid fa-check-circle" style="color: #e67e22;"></i> Rowdah Rasool (S.A.W)</li>
-                    <li><i class="fa-solid fa-check-circle" style="color: #e67e22;"></i> Masjid Quba Visit</li>
-                </ul>
+            <div class="stat-icon-wrapper" style="background: #e3f2fd; color: #1976d2;">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div>
+                <div class="stat-label">Completed Trips</div>
+                <div class="stat-number">{{ completed_bookings_count|default:0 }}</div>
+            </div>
+            <div class="stat-icon-wrapper" style="background: #e8f5e9; color: #2e7d32;">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div>
+                <div class="stat-label">Tickets Issued</div>
+                <div class="stat-number">{{ tickets_count|default:0 }}</div>
+            </div>
+            <div class="stat-icon-wrapper" style="background: #fff3e0; color: #e67e22;">
+                <i class="fa-solid fa-ticket"></i>
             </div>
         </div>
     </div>
+
+    <!-- Dynamic Active Booking Block -->
+    {% if active_booking %}
+    <div class="active-booking-card">
+        <div class="booking-card-header">
+            <div>
+                <span class="badge-status badge-info">Active Booking</span>
+                <h3 style="margin: 6px 0 0; color: #2c3e50; font-size: 18px;">
+                    {{ active_booking.package.title|default:"Umrah Package" }}
+                </h3>
+            </div>
+            <a href="{% url 'customers:user_bookings' %}" style="color: #155c3b; font-size: 13px; font-weight: 600; text-decoration: none;">
+                View Booking <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="booking-details-grid">
+            <div class="detail-item">
+                <label>Booking Ref</label>
+                <span>#{{ active_booking.booking_reference|default:active_booking.id }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Travel Date</label>
+                <span>{{ active_booking.travel_date|date:"d M Y"|default:"TBD" }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Travel Agency</label>
+                <span>{{ active_booking.package.agency.agency_name|default:"Verified Partner" }}</span>
+            </div>
+            <div class="detail-item">
+                <label>Booking Status</label>
+                <span>
+                    <i class="fa-solid fa-circle-dot" style="color: #27ae60; font-size: 10px;"></i>
+                    {{ active_booking.get_status_display|default:active_booking.status|title }}
+                </span>
+            </div>
+            <div class="detail-item">
+                <label>Visa & Passport</label>
+                <span>
+                    {% if active_booking.visa_status == 'approved' %}
+                        <span style="color: #2e7d32;"><i class="fa-solid fa-check-double"></i> Approved</span>
+                    {% else %}
+                        <span style="color: #e67e22;"><i class="fa-solid fa-spinner"></i> {{ active_booking.visa_status|default:"In Progress"|title }}</span>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <!-- Empty State for Active Booking -->
+    <div class="active-booking-card" style="border-left-color: #95a5a6; text-align: center; padding: 32px 20px;">
+        <i class="fa-solid fa-kaaba" style="font-size: 36px; color: #bdc3c7; margin-bottom: 10px;"></i>
+        <h3 style="margin: 0; color: #2c3e50; font-size: 16px;">No Active Journey Right Now</h3>
+        <p style="color: #7f8c8d; font-size: 13px; margin: 6px 0 16px;">You don't have any ongoing or upcoming active Umrah or Ziyarat bookings.</p>
+        <a href="/packages/" class="btn-action-primary" style="display: inline-flex;">
+            <i class="fa-solid fa-magnifying-glass"></i> Explore Packages
+        </a>
+    </div>
+    {% endif %}
+
+    <!-- Escrow & Financial Overview Breakdown -->
+    <div>
+        <div style="margin-bottom: 14px; font-weight: 600; font-size: 16px; color: #2c3e50; display: flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-shield-halved" style="color: #155c3b;"></i> Escrow Payment Security Breakdown
+        </div>
+
+        <div class="finance-split-grid">
+            <!-- Total Paid Amount -->
+            <div class="finance-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 12px; font-weight: 600; color: #708090;">TOTAL PAYMENTS</span>
+                    <i class="fa-solid fa-wallet" style="color: #155c3b;"></i>
+                </div>
+                <div style="font-size: 22px; font-weight: 700; color: #2c3e50; margin-top: 8px;">
+                    PKR {{ total_amount_paid|default:"0.00" }}
+                </div>
+                <p style="font-size: 11px; color: #888; margin: 6px 0 0;">Total funds deposited across all bookings</p>
+            </div>
+
+            <!-- Escrow Hold Amount -->
+            <div class="finance-card" style="border-top: 3px solid #1e429f;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 12px; font-weight: 600; color: #1e429f;">ESCROW HOLD (SAFE)</span>
+                    <span class="badge-status badge-info">Protected</span>
+                </div>
+                <div style="font-size: 22px; font-weight: 700; color: #1e429f; margin-top: 8px;">
+                    PKR {{ escrow_hold_amount|default:"0.00" }}
+                </div>
+                <p style="font-size: 11px; color: #666; margin: 6px 0 0;">Held in escrow until travel verification</p>
+            </div>
+
+            <!-- Escrow Released Amount -->
+            <div class="finance-card" style="border-top: 3px solid #2e7d32;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 12px; font-weight: 600; color: #2e7d32;">RELEASED TO AGENCY</span>
+                    <span class="badge-status badge-success">Completed</span>
+                </div>
+                <div style="font-size: 22px; font-weight: 700; color: #2e7d32; margin-top: 8px;">
+                    PKR {{ escrow_released_amount|default:"0.00" }}
+                </div>
+                <p style="font-size: 11px; color: #666; margin: 6px 0 0;">Released after successful service delivery</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Package Destination Highlights -->
+    <div>
+        <div style="margin-bottom: 14px; font-weight: 600; font-size: 16px; color: #2c3e50; display: flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-map-location-dot" style="color: #155c3b;"></i> Sacred Destinations Covered
+        </div>
+
+        <div class="cards-container">
+            <!-- Makkah -->
+            <div class="location-card">
+                <div class="image-box">
+                    <img src="{% static '/images/umrah.jpeg' %}" alt="Makkah" onerror="this.src='https://images.unsplash.com/photo-1591604466107-ec97de577aff?auto=format&fit=crop&q=80&w=600'">
+                    <span class="location-tag" style="background: #27ae60;">Makkah Mukarramah</span>
+                </div>
+                <div class="card-body">
+                    <h4 style="margin: 0; color: #2c3e50; font-size: 15px;">Umrah Services</h4>
+                    <ul class="check-list">
+                        <li><i class="fa-solid fa-check-circle" style="color: #27ae60;"></i> Guided Tawaaf & Sa'ee</li>
+                        <li><i class="fa-solid fa-check-circle" style="color: #27ae60;"></i> Ziyarat Places Covered</li>
+                        <li><i class="fa-solid fa-check-circle" style="color: #27ae60;"></i> Hotel Transport Included</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Madinah -->
+            <div class="location-card">
+                <div class="image-box">
+                    <img src="{% static '/images/Masjid nabvi.png' %}" alt="Madinah" onerror="this.src='https://images.unsplash.com/photo-1565552070090-a3597d6a5405?auto=format&fit=crop&q=80&w=600'">
+                    <span class="location-tag" style="background: #155c3b;">Madinah Munawwarah</span>
+                </div>
+                <div class="card-body">
+                    <h4 style="margin: 0; color: #2c3e50; font-size: 15px;">Ziyarat & Stay</h4>
+                    <ul class="check-list">
+                        <li><i class="fa-solid fa-check-circle" style="color: #155c3b;"></i> Rowdah Visit Assistance</li>
+                        <li><i class="fa-solid fa-check-circle" style="color: #155c3b;"></i> Masjid Quba & Uhud Visit</li>
+                        <li><i class="fa-solid fa-check-circle" style="color: #155c3b;"></i> Close to Haram Accommodation</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Iraq Ziyarat -->
+            <div class="location-card">
+                <div class="image-box">
+                    <img src="{% static '/images/iraq_ziyarat.jpeg' %}" alt="Iraq Ziyarat" onerror="this.src='https://images.unsplash.com/photo-1548625149-fc4a29cf7092?auto=format&fit=crop&q=80&w=600'">
+                    <span class="location-tag" style="background: #e67e22;">Iraq Ziyarat</span>
+                </div>
+                <div class="card-body">
+                    <h4 style="margin: 0; color: #2c3e50; font-size: 15px;">Najaf & Karbala</h4>
+                    <ul class="check-list">
+                        <li><i class="fa-solid fa-check-circle" style="color: #e67e22;"></i> Imam Ali (A.S) Shrine - Najaf</li>
+                        <li><i class="fa-solid fa-check-circle" style="color: #e67e22;"></i> Imam Hussain (A.S) - Karbala</li>
+                        <li><i class="fa-solid fa-check-circle" style="color: #e67e22;"></i> Kufa & Kazmain Ziyarat</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Iran Ziyarat -->
+            <div class="location-card">
+                <div class="image-box">
+                    <img src="{% static '/images/iran_ziyarat.jpeg' %}" alt="Iran Ziyarat" onerror="this.src='https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&q=80&w=600'">
+                    <span class="location-tag" style="background: #8e44ad;">Iran Ziyarat</span>
+                </div>
+                <div class="card-body">
+                    <h4 style="margin: 0; color: #2c3e50; font-size: 15px;">Mashhad & Qom</h4>
+                    <ul class="check-list">
+                        <li><i class="fa-solid fa-check-circle" style="color: #8e44ad;"></i> Imam Reza (A.S) - Mashhad</li>
+                        <li><i class="fa-solid fa-check-circle" style="color: #8e44ad;"></i> Bibi Masooma (S.A) - Qom</li>
+                        <li><i class="fa-solid fa-check-circle" style="color: #8e44ad;"></i> Complete Bus / Flight Group</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Support Banner -->
+    <div class="support-banner">
+        <div>
+            <h3 style="margin: 0; font-size: 17px;">Have Questions About Your Booking or Payments?</h3>
+            <p style="margin: 4px 0 0; opacity: 0.9; font-size: 13px;">Our support and escrow protection team are here to help you anytime.</p>
+        </div>
+        <a href="{% url 'customers:customer_complaints' %}" style="background: #ffffff; color: #155c3b; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-headset"></i> Raise Support Ticket
+        </a>
+    </div>
+
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("Safar-e-Haram Dashboard: Initialized");
-
-    // 1. Entrance Animation for Cards
-    const animatedElements = document.querySelectorAll('.status-card, .location-card');
+    const animatedElements = document.querySelectorAll('.stat-card, .active-booking-card, .finance-card, .location-card');
     animatedElements.forEach((el, index) => {
         el.style.opacity = '0';
-        el.style.transform = 'translateY(20px)';
-        el.style.transition = 'all 0.5s ease-out';
+        el.style.transform = 'translateY(15px)';
+        el.style.transition = 'all 0.4s ease-out';
         
         setTimeout(() => {
             el.style.opacity = '1';
             el.style.transform = 'translateY(0)';
-        }, 100 * index);
-    });
-
-    // 2. Dynamic Status Logic (Example)
-    // Aap yahan backend se data la kar inko update kar sakte hain
-    const docStatus = "pending"; 
-    if(docStatus === "pending") {
-        document.getElementById('doc-card').style.borderLeft = "4px solid #c81e1e";
-    }
-
-    // 3. Simple Click Tracker for Report
-    const reportBtn = document.querySelector('.report-btn');
-    reportBtn.addEventListener('click', function(e) {
-        // e.preventDefault();
-        console.log("Generating travel report...");
+        }, 60 * index);
     });
 });
 </script>

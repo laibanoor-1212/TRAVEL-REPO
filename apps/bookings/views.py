@@ -13,9 +13,7 @@ from packages.models import Package
 from django.urls import reverse
 from payments.models import Payment, PaymentMethod
 from payments import services
-
 stripe.api_key = settings.STRIPE_SECRET_KEY
-
 
 
 @login_required
@@ -25,8 +23,6 @@ def book_package(request, package_id):
     if request.method == 'POST':
         person_count = int(request.POST.get('person_count', 1))
         calculated_total = package.price * person_count
-
-        # 1. Main Booking Record Create Karein
         booking = Bookings.objects.create(
             user=request.user,
             package=package,
@@ -35,8 +31,6 @@ def book_package(request, package_id):
             status='pending',
             customer_note=request.POST.get('customer_note', '')
         )
-
-        # 2. Travelers List Data Extract Karein
         names = request.POST.getlist('name_[]')
         phones = request.POST.getlist('phone_[]')
         cnics = request.POST.getlist('cnic_[]')
@@ -49,8 +43,6 @@ def book_package(request, package_id):
         photo_files = request.FILES.getlist('photo_file_[]')
         cnic_fronts = request.FILES.getlist('cnic_front_[]')
         cnic_backs = request.FILES.getlist('cnic_back_[]')
-
-        # 3. Create BookingCustomers Instances
         for i in range(len(names)):
             BookingCustomers.objects.create(
                 booking=booking,
@@ -69,7 +61,6 @@ def book_package(request, package_id):
             )
 
         messages.success(request, "Booking request submitted successfully!")
-        # Redirect using booking slug
         return redirect('bookings:booking_success', slug=booking.slug)
 
     return render(request, 'bookings/booking.html', {'package': package})
@@ -92,7 +83,7 @@ def manage_bookings(request):
 @login_required(login_url='/auth/login/')
 def choose_payment_method(request, booking_id):
     booking = get_object_or_404(Bookings, pk=booking_id, user=request.user)
-    if hasattr(booking, 'payment'):
+    if hasattr(booking, 'payment') and booking.payment.payment_status in ['completed', 'released', 'escrow']:
         return redirect('bookings:payment_status', booking_id=booking.id)
 
     if request.method == "POST":
@@ -101,14 +92,19 @@ def choose_payment_method(request, booking_id):
         if method not in (PaymentMethod.STRIPE, PaymentMethod.RAAST):
             messages.error(request, "Sahi payment method choose karein.")
             return redirect('bookings:choose_payment_method', booking_id=booking.id)
-
-        Payment.objects.create(
+        payment, created = Payment.objects.get_or_create(
             booking=booking,
-            customer=request.user,
-            agent=booking.package.agency,
-            payment_method=method,
-            amount=booking.package.price,
+            defaults={
+                'customer': request.user,
+                'agent': booking.package.agency,
+                'payment_method': method,
+                'amount': booking.total_amount, 
+            }
         )
+        if not created:
+            payment.payment_method = method
+            payment.amount = booking.total_amount
+            payment.save()
 
         if method == PaymentMethod.STRIPE:
             return redirect('bookings:stripe_checkout', booking_id=booking.id)
@@ -211,7 +207,6 @@ def payment_status(request, booking_id):
 
 @login_required(login_url='/auth/login/')
 def edit_booking_documents(request, booking_id):
-    """ Customer side view to update rejected customer details after rollback """
     booking = get_object_or_404(Bookings, pk=booking_id, user=request.user)
     customers = booking.CustomerProfile.all()
 

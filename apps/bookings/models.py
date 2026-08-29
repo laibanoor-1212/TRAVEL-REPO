@@ -156,3 +156,6 @@ class BookingDocument(models.Model):
 
     def __str__(self):
         return f"{self.booking.id} - {self.field_name}"
+
+
+

@@ -71,7 +71,6 @@
   .table-responsive {
     width: 100%;
     overflow-x: auto;
-    /* Clean overflow for dropdown visibility */
     padding-bottom: 50px; 
     margin-bottom: -50px;
   }
@@ -104,7 +103,6 @@
     position: relative;
   }
 
-  /* Status Badges */
   .status-badge {
     padding: 6px 12px;
     border-radius: 50px;
@@ -147,7 +145,6 @@
     100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
   }
 
-  /* Actions Layout */
   .action-container {
     display: flex;
     align-items: center;
@@ -171,7 +168,6 @@
   .btn-secondary { background-color: #f1f5f9; color: var(--text-dark); border: 1px solid #cbd5e1; }
   .btn-danger-fix { background-color: #dc2626; color: #ffffff; }
 
-  /* Dropdown Settings */
   .dropdown {
     position: relative;
     display: inline-block;
@@ -226,7 +222,6 @@
   .dropdown-item.text-danger { color: #dc2626; }
   .dropdown-item.text-danger:hover { background-color: #fef2f2; }
 
-  /* Modals */
   .modal-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -323,12 +318,22 @@
 
             <!-- Payment Status -->
             <td>
-              {% if booking.payment %}
-                <span class="status-badge {% if booking.payment.payment_status == 'released' or booking.payment.payment_status == 'completed' %}status-confirmed{% elif booking.payment.payment_status == 'cancelled' or booking.payment.payment_status == 'refunded' %}status-cancelled{% else %}status-pending{% endif %}">
-                  {{ booking.payment.get_payment_status_display }}
+              {% if not booking.payment %}
+                <span class="status-badge status-cancelled">
+                  <i class="fa-solid fa-circle-xmark"></i> Not Paid
+                </span>
+              {% elif booking.payment.payment_status == 'released' or booking.payment.payment_status == 'completed' %}
+                <span class="status-badge status-confirmed">
+                  <i class="fa-solid fa-circle-check"></i> Paid
+                </span>
+              {% elif booking.payment.payment_status == 'pending' %}
+                <span class="status-badge status-pending">
+                  <i class="fa-solid fa-clock"></i> Payment Pending
                 </span>
               {% else %}
-                <span class="status-badge status-cancelled">Not Paid</span>
+                <span class="status-badge status-cancelled">
+                  {{ booking.payment.get_payment_status_display }}
+                </span>
               {% endif %}
             </td>
 
@@ -351,7 +356,7 @@
                     <i class="fa-solid fa-ellipsis-vertical"></i>
                   </button>
                   <div id="dropdown-{{ booking.id }}" class="dropdown-menu">
-                    {% if not booking.payment %}
+                    {% if not booking.payment or booking.payment.payment_status == 'pending' or booking.payment.payment_status == 'failed' %}
                       <a href="{% url 'bookings:choose_payment_method' booking.id %}" class="dropdown-item">
                         <i class="fa-solid fa-credit-card" style="color: var(--primary-green);"></i> Pay Now
                       </a>
@@ -380,7 +385,7 @@
       </table>
     </div>
 
-    <!-- Modals Section (Outside Table for clean DOM rendering) -->
+    <!-- Modals Section -->
     {% for booking in bookings %}
     <div id="cancelModal-{{ booking.id }}" class="modal-overlay">
       <div class="modal-content">

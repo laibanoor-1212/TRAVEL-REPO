@@ -19,6 +19,11 @@ from django.core.exceptions import PermissionDenied
 from base.decorators import role_required,kyc_approved_required
 from bookings.models import BookingCustomers, Bookings, BookingStatusHistory
 from notifications.models import Notification 
+from decimal import Decimal
+
+
+from django.db.models import Count, Q
+ 
 
 
 
@@ -136,51 +141,109 @@ def account_locked(request):
         'agentkyc': agentkyc
     })
 
-
 @role_required('stakeholder')
 @kyc_approved_required
 @login_required(login_url='/auth/login/')
 def stakeholder_dashboard(request):
-    if request.user.role != 'stakeholder':
-        raise PermissionDenied
+    user = request.user
 
-    agent_bookings = Bookings.objects.filter(package__agency=request.user).order_by('-id')
-    date_requests = [] 
+    # 1. Packages Stats
+    user_packages = Package.objects.filter(agency=user)
+    total_packages_count = user_packages.count()
+    
+    # Draft, Pending, ya Inactive packages count karein
+    pending_packages_count = user_packages.filter(
+        Q(status='draft') | Q(status='pending') | Q(status='inactive')
+    ).count()
 
-    notifications = request.user.notifications.filter(is_deleted=False)[:10]
-    unread_count = request.user.notifications.filter(is_read=False, is_deleted=False).count()
+    # 2. Bookings Stats
+    agent_bookings = Bookings.objects.filter(package__agency=user)
+
+    # In tamam active statuses ko consider karein jo valid booking hain
+    active_statuses = [
+        'confirmed', 
+        'processing', 
+        'visa_processing', 
+        'ticket_issued', 
+        'completed'
+    ]
+    
+    active_bookings = agent_bookings.filter(status__in=active_statuses)
+    active_bookings_count = active_bookings.count()
+
+    # 3. Total Earnings (Total Amount Sum)
+    # Target values: total_amount ya paid_amount
+    total_earnings_query = active_bookings.aggregate(total=Sum('total_amount'))
+    total_earnings = total_earnings_query['total'] if total_earnings_query['total'] else 0
+
+    # 4. Recent Bookings (Top 5)
+    recent_bookings = agent_bookings.select_related('package', 'user').order_by('-created_at')[:5]
+
+    # 5. Notifications system
+    notifications = Notification.objects.filter(
+        recipient=user,
+        is_deleted=False
+    ).order_by('-created_at')[:5]
+
+    unread_notifications_count = Notification.objects.filter(
+        recipient=user,
+        is_read=False,
+        is_deleted=False
+    ).count()
 
     context = {
-        'bookings': agent_bookings,
-        'date_requests': date_requests,
+        'total_packages_count': total_packages_count,
+        'pending_packages_count': pending_packages_count,
+        'active_bookings_count': active_bookings_count,
+        'total_earnings': total_earnings,
+        'recent_bookings': recent_bookings,
         'notifications': notifications,
-        'unread_count': unread_count,
+        'unread_notifications_count': unread_notifications_count,
     }
+
     return render(request, 'stakeholder/stakeholder_dashboard.html', context)
 
 
+
+
 def agent_complaints(request):
+    COMPLAINT_TYPES = [
+        ('booking_issue', 'Booking & Ticket Issue'),
+        ('payment_escrow', 'Escrow & Payout Issue'),
+        ('hotel_partner', 'Hotel Partner Discrepancy'),
+        ('package_listing', 'Package Listing Query'),
+        ('tech_support', 'Technical / System Error'),
+        ('other', 'Other Grievance'),
+    ]
+
     if request.method == "POST":
-        complaint_type = request.POST.get('complaint_type')
-        subject = request.POST.get('subject')
-        description = request.POST.get('description')
+        complaint_type = request.POST.get("complaint_type")
+        subject = request.POST.get("subject")
+        description = request.POST.get("description")
+        
         Complaint.objects.create(
-            user=request.user,
-            user_role='stakeholder',  
+            user=request.user, 
             complaint_type=complaint_type,
             subject=subject,
-            description=description
+            description=description,
+            status='pending'
         )
-        return redirect('stakeholder:agent_complaints') 
- 
-    agent_issues = [
-        ('no_payment', 'Payment Pending / Commission Not Received'),
-        ('info_not_sent', 'Customer Data Not Forwarded to Supplier'),
-        ('portal_error', 'Web App Technical Error / System Crash'),
-        ('visa_delay', 'Visa Processing Issues for Group'),
-        ('other', 'Other Operational Issues'),
-    ]
-    return render(request, 'stakeholder/agent_complaints.html', {'issues': agent_issues})
+        messages.success(request, "Agency complaint submitted successfully. Support team will contact you shortly.")
+        return redirect(request.path)
+    agency_complaints = Complaint.objects.filter(user=request.user).order_by('-created_at')
+    counts = agency_complaints.aggregate(
+        total=Count('id'),
+        pending=Count('id', filter=Q(status='pending')),
+        in_progress=Count('id', filter=Q(status='in_progress')),
+        resolved=Count('id', filter=Q(status='resolved'))
+    )
+
+    context = {
+        'issues': COMPLAINT_TYPES,
+        'agency_complaints': agency_complaints,
+        'counts': counts,
+    }
+    return render(request, 'stakeholder/agent_complaints.html', context)
 
 def cancelled_booking(request):
     return render(request, 'stakeholder/cancelled_booking.html')
@@ -261,14 +324,36 @@ def escrow_status_overview(request):
 
 
 
+
+
+@login_required(login_url='/auth/login/')
 def earning_transaction(request):
+    # Select related release_record so we can fetch calculated release numbers directly
     agent_payments = Payment.objects.filter(
         booking__package__agency=request.user
-    ).select_related('booking', 'booking__user', 'booking__package').order_by('-created_at')
-    released_payments = agent_payments.filter(escrow_status='RELEASED')
-    total_earnings = released_payments.aggregate(total=Sum('amount'))['total'] or 0
-    commission_deducted = float(total_earnings) * 0.10
-    net_payable = float(total_earnings) - commission_deducted
+    ).select_related('booking', 'booking__user', 'booking__package', 'release_record').order_by('-created_at')
+    
+    # Case-insensitive status filter for released payments
+    released_payments = agent_payments.filter(escrow_status__iexact='released')
+    
+    # Total Gross Amount
+    total_earnings = released_payments.aggregate(total=Sum('amount'))['total'] or Decimal('0.00')
+    
+    # Dynamic Net Earning & Commission Calculation
+    net_payable = Decimal('0.00')
+    commission_deducted = Decimal('0.00')
+
+    for payment in released_payments:
+        if hasattr(payment, 'release_record') and payment.release_record:
+            # PaymentRelease table se exact system-calculated commission fetch karein
+            net_payable += payment.release_record.amount_released
+            commission_deducted += payment.release_record.admin_commission_amount
+        else:
+            # Fallback calculation (Agar PaymentRelease entry fail ho jaye)
+            comm_rate = Decimal('10.00') # 10%
+            comm = (payment.amount * comm_rate) / Decimal('100.00')
+            commission_deducted += comm
+            net_payable += (payment.amount - comm)
 
     context = {
         'payments': agent_payments,

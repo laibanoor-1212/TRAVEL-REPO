@@ -13,5 +13,4 @@ path('<int:booking_id>/upload-proof/', views.upload_raast_proof, name='upload_ra
 path('<int:booking_id>/payment_status/', views.payment_status, name='payment_status'),
 path('success/<slug:slug>/', views.booking_success, name='booking_success'),
 
-
 ]
