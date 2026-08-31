@@ -1,144 +1,499 @@
 {% extends "base/base.html" %}
 {% load static %}
+
+{% block title %}About Us | Safar-e-Haram{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/about.css' %}">
+{% endblock %}
+
 {% block content %}
 
-<div class="containera">
-  <section class="about-hero">
-    <div>
-      <h1>About Safar-e-Haram</h1>
-      <p class="lead">
-        Hajj and Umrah are important journeys for Muslims, but many people find it difficult to understand every step. Safar-e-Haram is a simple web platform that guides pilgrims with step-by-step instructions through text and videos. It also includes a verified marketplace where only licensed HGOs from Pakistan can list their travel packages, allowing users to compare and book safely.
-      </p>
-      <a href="#" class="btn">Explore More</a>
-    </div>
+<div class="seh-about-page">
 
-    <div class="hero-image">
-      <img src="{% static 'images/image 2.jpg' %}">
-      
-    </div>
-  </section>
+    <!-- Hero Section -->
+    <section class="seh-hero">
 
-  <section class="section">
-    <div class="card">
-      <div style="flex:1;">
-        <h2>Our Mission</h2>
-        <p>
-          To make Hajj and Umrah easier, well-organized, and spiritually focused by providing clear guidance, trusted travel packages, and essential location information for every pilgrim.
-        </p>
-      </div>
-      <div class="round-block">
-        
-        <img src="{% static 'images/pic 3.jpg' %}">
-      </div>
-    </div>
+        <div class="seh-hero-content">
 
-    <div class="card">
-      <div class="icon-square">🕋</div>
-      <div style="flex:1;">
-        <h2>Our Vision</h2>
-        <p>
-          To become the most reliable digital guide for pilgrims worldwide, ensuring every pilgrim feels supported and confident throughout the journey.
-        </p>
-      </div>
-    </div>
+            <span class="seh-small-title">
+                ABOUT SAFAR-E-HARAM
+            </span>
 
-    <div class="card full-width">
-      <h2>Our Goal</h2>
-      <p>
-        Our goal is to bring all licensed Hajj & Umrah companies onto one trusted platform. Safar-e-Haram gives these stakeholders a shared space where they can upload and manage their different travel packages, making it easier for pilgrims to view and compare everything in one place.
-      </p>
-      <h2>Companies</h2>
+            <h1>
+                Your Journey to Haram
+                <span>Starts With Trust.</span>
+            </h1>
 
-      <div class="logo-slider">
-        <div class="slide-track">
+            <p>
+                Safar-e-Haram is a dedicated platform designed to make
+                Hajj and Umrah planning easier, clearer and more reliable.
+                From step-by-step guidance to verified travel packages,
+                we bring everything a pilgrim needs together in one place.
+            </p>
 
-          <div class="slidea"><img src="{% static 'images/logo1.png' %}"></div>
-          <div class="slidea"><img src="{% static 'images/logo2.png' %}"></div>
-          <div class="slidea"><img src="{% static 'images/logo3.png' %}"></div>
-          <div class="slidea"><img src="{% static 'images/logo4.png' %}"></div>
-          <div class="slidea"><img src="{% static 'images/logo5.png' %}"></div>
-          <div class="slidea"><img src="{% static 'images/logo6.png' %}"></div>
+            <div class="seh-hero-buttons">
+                <a href="#seh-story" class="seh-btn-primary">
+                    Discover Our Story
+                    <span>→</span>
+                </a>
+
+                <a href="#seh-values" class="seh-btn-outline">
+                    Our Values
+                    <span>→</span>
+                </a>
+            </div>
 
         </div>
-      </div>
-    </div>
-  </section>
 
-  <section style="margin-top:28px;">
-    <div class="card">
-      <h2>Our Values</h2>
-
-      <div class="values">
-        <div class="value-item">
-          <h3><span class="diamond"></span>Trust</h3>
-          <p>We provide accurate and verified information.</p>
+        <div class="seh-hero-image">
+            <img src="{% static 'images/image 2.jpg' %}"
+                 alt="Hajj and Umrah">
         </div>
 
-        <div class="value-item">
-          <h3><span class="diamond"></span>Authenticity</h3>
-          <p>All packages come from officially licensed HGOs.</p>
+    </section>
+
+
+    <!-- Introduction -->
+    <section class="seh-intro" id="seh-story">
+
+        <div class="seh-section-heading">
+            <span>WHO WE ARE</span>
+            <h2>Making Your Sacred Journey Easier</h2>
+            <p>
+                We believe every pilgrim deserves a journey that is
+                organized, informed and peaceful.
+            </p>
         </div>
 
-        <div class="value-item">
-          <h3><span class="diamond"></span>Ease of Use</h3>
-          <p>A smooth and simple experience for all pilgrims.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+        <div class="seh-intro-grid">
 
+            <div class="seh-intro-text">
+
+                <p>
+                    Hajj and Umrah are deeply meaningful journeys, but
+                    planning them can sometimes feel complicated.
+                    Finding reliable information, understanding the
+                    different steps and choosing a trustworthy travel
+                    package can be challenging.
+                </p>
+
+                <p>
+                    Safar-e-Haram brings these essential services
+                    together on one platform. Our goal is to provide
+                    pilgrims with clear guidance, trusted information
+                    and a simple way to explore Hajj and Umrah travel
+                    options.
+                </p>
+
+                <div class="seh-highlight">
+                    <div class="seh-highlight-icon">
+                        ✓
+                    </div>
+
+                    <div>
+                        <h3>Built Around Pilgrims</h3>
+                        <p>
+                            Everything is designed to make the pilgrimage
+                            planning experience simpler and safer.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="seh-intro-image">
+                <img src="{% static 'images/pic 3.jpg' %}"
+                     alt="Safar-e-Haram">
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Mission Vision -->
+    <section class="seh-mission-section">
+
+        <div class="seh-section-heading seh-center">
+            <span>OUR PURPOSE</span>
+            <h2>What Drives Safar-e-Haram</h2>
+        </div>
+
+        <div class="seh-purpose-grid">
+
+            <!-- Mission -->
+            <div class="seh-purpose-card">
+
+                <div class="seh-purpose-icon">
+                    🎯
+                </div>
+
+                <div>
+                    <span class="seh-card-label">OUR MISSION</span>
+
+                    <h3>
+                        Making Hajj & Umrah Simple
+                    </h3>
+
+                    <p>
+                        To make Hajj and Umrah easier, well-organized
+                        and spiritually focused by providing clear
+                        guidance, trusted travel packages and essential
+                        location information for every pilgrim.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <!-- Vision -->
+            <div class="seh-purpose-card">
+
+                <div class="seh-purpose-icon">
+                    👁
+                </div>
+
+                <div>
+                    <span class="seh-card-label">OUR VISION</span>
+
+                    <h3>
+                        A Trusted Digital Companion
+                    </h3>
+
+                    <p>
+                        To become a reliable digital guide for pilgrims
+                        worldwide, ensuring every pilgrim feels supported
+                        and confident throughout their sacred journey.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Goal -->
+    <section class="seh-goal">
+
+        <div class="seh-goal-content">
+
+            <span class="seh-small-title">
+                OUR GOAL
+            </span>
+
+            <h2>
+                One Trusted Platform for
+                Pilgrims & Travel Companies
+            </h2>
+
+            <p>
+                Our goal is to bring licensed Hajj and Umrah companies
+                onto one trusted platform. Safar-e-Haram provides
+                stakeholders with a shared space where they can upload
+                and manage their travel packages, making it easier for
+                pilgrims to view, compare and choose suitable options.
+            </p>
+
+        </div>
+
+        <div class="seh-goal-stats">
+
+            <div>
+                <strong>01</strong>
+                <span>Trusted Platform</span>
+            </div>
+
+            <div>
+                <strong>02</strong>
+                <span>Verified Companies</span>
+            </div>
+
+            <div>
+                <strong>03</strong>
+                <span>Easy Comparison</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Companies -->
+    <section class="seh-companies">
+
+        <div class="seh-section-heading seh-center">
+
+            <span>OUR PARTNERS</span>
+
+            <h2>
+                Trusted Travel Companies
+            </h2>
+
+            <p>
+                Explore travel providers working towards a better
+                pilgrimage experience.
+            </p>
+
+        </div>
+
+
+        <!-- Slider - NOT REMOVED -->
+        <div class="seh-logo-slider">
+
+            <div class="seh-slide-track">
+
+                <div class="seh-logo-slide">
+                    <img src="{% static 'images/logo1.png' %}" alt="Company 1">
+                </div>
+
+                <div class="seh-logo-slide">
+                    <img src="{% static 'images/logo2.png' %}" alt="Company 2">
+                </div>
+
+                <div class="seh-logo-slide">
+                    <img src="{% static 'images/logo3.png' %}" alt="Company 3">
+                </div>
+
+                <div class="seh-logo-slide">
+                    <img src="{% static 'images/logo4.png' %}" alt="Company 4">
+                </div>
+
+                <div class="seh-logo-slide">
+                    <img src="{% static 'images/logo5.png' %}" alt="Company 5">
+                </div>
+
+                <div class="seh-logo-slide">
+                    <img src="{% static 'images/logo6.png' %}" alt="Company 6">
+                </div>
+
+
+                <!-- Duplicate for infinite slider -->
+
+                <div class="seh-logo-slide">
+                    <img src="{% static 'images/logo1.png' %}" alt="Company 1">
+                </div>
+
+                <div class="seh-logo-slide">
+                    <img src="{% static 'images/logo2.png' %}" alt="Company 2">
+                </div>
+
+                <div class="seh-logo-slide">
+                    <img src="{% static 'images/logo3.png' %}" alt="Company 3">
+                </div>
+
+                <div class="seh-logo-slide">
+                    <img src="{% static 'images/logo4.png' %}" alt="Company 4">
+                </div>
+
+                <div class="seh-logo-slide">
+                    <img src="{% static 'images/logo5.png' %}" alt="Company 5">
+                </div>
+
+                <div class="seh-logo-slide">
+                    <img src="{% static 'images/logo6.png' %}" alt="Company 6">
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Values -->
+    <section class="seh-values" id="seh-values">
+
+        <div class="seh-section-heading seh-center">
+
+            <span>WHAT WE STAND FOR</span>
+
+            <h2>
+                Our Core Values
+            </h2>
+
+        </div>
+
+
+        <div class="seh-values-grid">
+
+            <div class="seh-value-card">
+
+                <div class="seh-value-number">
+                    01
+                </div>
+
+                <h3>Trust</h3>
+
+                <p>
+                    We believe pilgrims should have access to
+                    reliable and accurate information.
+                </p>
+
+            </div>
+
+
+            <div class="seh-value-card">
+
+                <div class="seh-value-number">
+                    02
+                </div>
+
+                <h3>Authenticity</h3>
+
+                <p>
+                    We focus on verified information and
+                    officially licensed travel providers.
+                </p>
+
+            </div>
+
+
+            <div class="seh-value-card">
+
+                <div class="seh-value-number">
+                    03
+                </div>
+
+                <h3>Ease of Use</h3>
+
+                <p>
+                    We keep the experience simple, clear and
+                    accessible for every pilgrim.
+                </p>
+
+            </div>
+
+
+            <div class="seh-value-card">
+
+                <div class="seh-value-number">
+                    04
+                </div>
+
+                <h3>Reliability</h3>
+
+                <p>
+                    We aim to provide useful resources pilgrims
+                    can depend on throughout their journey.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- CTA -->
+    <section class="seh-cta">
+
+        <div>
+
+            <span>
+                READY TO BEGIN?
+            </span>
+
+            <h2>
+                Let Your Sacred Journey
+                Begin With Confidence.
+            </h2>
+
+            <p>
+                Explore our guides, discover trusted packages and
+                prepare for your Hajj or Umrah journey with ease.
+            </p>
+
+            <a href="#" class="seh-cta-btn">
+                Explore Safar-e-Haram →
+            </a>
+
+        </div>
+
+    </section>
 
 </div>
-
 <footer class="footer-wrapper">
- 
-  <div class="footer-top-curve">
-    <svg viewBox="0 0 1440 150" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-      
-      <path fill="#ffff" d="M0,64 C360,160 1080,0 1440,96 L1440,0 L0,0 Z"></path>
-    </svg>
-  </div>
 
+    <div class="footer-top-curve">
+        <svg viewBox="0 0 1440 150"
+             xmlns="http://www.w3.org/2000/svg"
+             preserveAspectRatio="none">
 
-  <div class="footer-content">
-    <div class="footer-columns">
-      <div>
-        <h3>About Safar-e-Haram</h3>
-        <p>Safar-e-Haram guides you on a blessed journey — helping pilgrims explore routes, maps, and essential Hajj & Umrah information in one place.</p>
-      </div>
+            <path
+                fill="#ffff"
+                d="M0,64 C360,160 1080,0 1440,96 L1440,0 L0,0 Z">
+            </path>
 
-      <div>
-        <h3>Quick Links</h3>
-        <ul>
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Guides</a></li>
-          <li><a href="#">Maps</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-      </div>
-
-      <div>
-        <h3>Support</h3>
-        <ul>
-          <li><a href="#">FAQ</a></li>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Terms & Conditions</a></li>
-        </ul>
-      </div>
+        </svg>
     </div>
 
-    <div class="footer-social">
-      <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-      <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-      <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-      <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+    <div class="footer-content">
+        <img src="{% static 'images/logo.png' %}" alt="">
+
+        <div class="footer-columns">
+
+            <div>
+                <h3> Safar-e-Haram</h3>
+
+                <p>
+                    Safar-e-Haram guides you on a blessed journey —
+                    helping pilgrims explore routes, maps, and essential
+                    Hajj & Umrah information in one place.
+                </p>
+            </div>
+
+            <div>
+                <h3>Quick Links</h3>
+
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Guides</a></li>
+                    <li><a href="#">Maps</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h3>Support</h3>
+
+                <ul>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms & Conditions</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="footer-social">
+
+            <a href="#" aria-label="Facebook">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+
+            <a href="#" aria-label="Instagram">
+                <i class="fab fa-instagram"></i>
+            </a>
+
+            <a href="#" aria-label="YouTube">
+                <i class="fab fa-youtube"></i>
+            </a>
+
+            <a href="#" aria-label="Twitter">
+                <i class="fab fa-x-twitter"></i>
+            </a>
+
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2025 Safar-e-Haram. All Rights Reserved.</p>
+        </div>
+
     </div>
 
-    <div class="footer-bottom">
-      <p>© 2025 Safar-e-Haram. All Rights Reserved.</p>
-    </div>
-  </div>
 </footer>
 
-
-{% endblock content %}
+{% endblock %}
