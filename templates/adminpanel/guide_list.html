@@ -1,0 +1,160 @@
+{% extends 'adminpanel/admin_layout.html' %}
+
+{% block content %}
+<style>
+  :root {
+    --brand-green: #0d6efd;
+    --theme-green: #198754;
+    --theme-green-dark: #146c43;
+    --theme-green-light: #e8f5e9;
+    --theme-green-border: #c8e6c9;
+  }
+  
+  .page-header-title {
+    color: #1b4332;
+    font-weight: 700;
+  }
+
+  .custom-table-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    overflow: hidden;
+  }
+
+  .table-green-head {
+    background-color: var(--theme-green-light) !important;
+    border-bottom: 2px solid var(--theme-green-border);
+  }
+
+  .table-green-head th {
+    color: #2d6a4f !important;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.82rem;
+    letter-spacing: 0.5px;
+  }
+
+  .badge-active {
+    background-color: #d8f3dc;
+    color: #1b4332;
+    border: 1px solid #b7e4c7;
+    font-weight: 600;
+  }
+
+  .badge-draft {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+    font-weight: 600;
+  }
+
+  .btn-green-edit {
+    background-color: var(--theme-green);
+    color: #ffffff;
+    border: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .btn-green-edit:hover {
+    background-color: var(--theme-green-dark);
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(25, 135, 84, 0.3);
+  }
+
+  .btn-outline-danger-custom {
+    color: #dc3545;
+    border: 1px solid #f8d7da;
+    background-color: #fff5f5;
+    transition: all 0.2s ease;
+  }
+
+  .btn-outline-danger-custom:hover {
+    background-color: #dc3545;
+    color: #ffffff;
+  }
+
+  code.slug-code {
+    background-color: #f1f8f5;
+    color: #2d6a4f;
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 1px solid #d8f3dc;
+  }
+</style>
+
+<div class="container-fluid py-4">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="page-header-title mb-1">Manage Dynamic Guide Pages</h2>
+            <p class="text-muted mb-0">Manage content, visibility, and settings for all guide pages.</p>
+        </div>
+    </div>
+
+    <!-- Alert Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show border-0 shadow-sm" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Table Card -->
+    <div class="custom-table-card">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-green-head">
+                    <tr>
+                        <th class="ps-4 py-3">Page Title</th>
+                        <th class="py-3">Page Slug</th>
+                        <th class="py-3">Status</th>
+                        <th class="text-end pe-4 py-3">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for guide in guides %}
+                    <tr>
+                        <td class="ps-4 fw-semibold text-dark">{{ guide.title }}</td>
+                        <td><code class="slug-code">{{ guide.page_slug }}</code></td>
+                        <td>
+                            {% if guide.is_published %}
+                                <span class="badge badge-active px-3 py-2 rounded-pill">Active</span>
+                            {% else %}
+                                <span class="badge badge-draft px-3 py-2 rounded-pill">Draft</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end pe-4">
+                            <div class="d-inline-flex gap-2">
+                                <!-- Fixed Live Edit Button -->
+                                <a href="/{{ guide.page_slug }}/" target="_blank" class="btn btn-sm btn-green-edit px-3">
+                                    <i class="fa-solid fa-pen-to-square me-1"></i> Live Edit
+                                </a>
+                                
+                                <!-- Delete Button -->
+                                <form action="{% url 'adminpanel:admin_guide_delete' guide.page_slug %}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete {{ guide.title }}?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-outline-danger-custom px-3">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center py-5 text-muted">
+                            <div class="py-3">
+                                <p class="mb-0 fs-6">No guide pages configured yet in the database.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

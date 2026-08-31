@@ -21,10 +21,16 @@ class CustomUser(AbstractUser):
    
     class Meta:
         app_label='accounts'
-    def save(self,*args,**kwargs):
+    def save(self, *args, **kwargs):
+      
         if self.is_superuser:
             self.role = 'admin'
-        super().save(*args,**kwargs)
+            self.is_approved = True
+            self.is_staff = True
+        elif self.role == 'admin':
+            self.is_staff = True
+            
+        super().save(*args, **kwargs)
     @property
     def is_stakeholder(self):
         return self.role and self.role.lower() in ['stakeholder', 'agent']

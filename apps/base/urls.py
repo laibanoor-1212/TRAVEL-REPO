@@ -10,7 +10,7 @@ urlpatterns = [
    
     path('guide/', views.Guide, name='Guide'),
     path('miqat/', views.miqat, name='miqat'),
-    path('ahram/', views.ahram, name='ahram'),
+   
     path('tawaf/', views.tawaf, name='tawaf'),
     path('Sai/', views.Sai, name='Sai'),
     path('halaq/', views.halaq, name='halaq'),
@@ -18,7 +18,7 @@ urlpatterns = [
       path('arafat/', views.arafat, name='arafat'),
        path('muzdalifah/', views.muzdalifah, name='muzdalifah'),
 path('hajj-guide/', views.hajj_guide, name='hajj-guide'),
-path("ihram/", views.ihram, name="ihram"),
+path("ahram/", views.ahram_guide, name="ahram"),
 path("mina/", views.mina, name="mina"),
 path("muzdalifah/", views.muzdalifah, name="muzdalifah"),
 path("arafat/", views.arafat, name="arafat"),

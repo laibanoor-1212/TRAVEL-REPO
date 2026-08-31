@@ -14,12 +14,21 @@ from customers.models import CustomerProfile
 from bookings.models import Bookings, BookingStatusHistory
 from notifications.models import Notification
 from .models import Complaint
+from payments.models import EscrowTransaction
+from accounts.models import CustomUser
+from .models import SystemSetting
+import json
+from django.views.decorators.http import require_POST
 from django.db.models import Sum, Count
 from payments.models import CommissionSetting, PaymentRelease
 from payments.models import Payment, PaymentProof, PaymentStatusLog
 from payments import services
 from decimal import Decimal
 from django.contrib.auth.decorators import user_passes_test
+from django.http import HttpResponse
+from django.core import serializers
+from .forms import SystemPreferenceForm
+from .models import GuidePage
 
 def is_admin_user(user):
     return user.is_authenticated and (user.is_staff or user.is_superuser or getattr(user, 'role', '') == 'admin')
@@ -125,26 +134,51 @@ def admin_reset_password_confirm(request, uidb64, token):
 
     return render(request, "adminpanel/forget_password_invalid.html")
 
+from payments.models import Payment, EscrowTransaction, PaymentStatus, EscrowTransaction
 
 
 def admin_dashboard(request):
-    notifications = request.user.notifications.filter(is_deleted=False)[:10]
-    unread_count = request.user.notifications.filter(is_read=False, is_deleted=False).count()
-    recent_activities = Notification.objects.filter(
-        recipient=request.user, 
-        is_deleted=False
-    ).order_by('-created_at')[:15] 
+    # 1. Stakeholders Stats (Role: 'stakeholder')
+    stakeholders_qs = CustomUser.objects.filter(role='stakeholder')
+    pending_agents = stakeholders_qs.filter(is_approved=False).count()
+    verified_agents = stakeholders_qs.filter(is_approved=True).count()
 
+    # 2. Total Pilgrims/Customers Stat
+    total_pilgrims = CustomUser.objects.filter(role='customer').count()
+
+    # 3. Active Packages Stat (CHANGED: 'is_active' -> 'status')
+    # Agar aap ke Package choices mein active/published ke liye 'active' or 'approved' use hota hai:
+    active_packages = Package.objects.filter(status='active').count()
+
+    # 4. Bookings Stats
+    pending_bookings = Bookings.objects.filter(status='pending').count()
+    completed_bookings = Bookings.objects.filter(status='completed').count()
+
+    # 5. Total Escrow Held Amount
+    escrow_agg = EscrowTransaction.objects.filter(
+        status=EscrowTransaction.Status.HELD
+    ).aggregate(Sum('held_amount'))
+    total_escrow = escrow_agg['held_amount__sum'] or 0
+
+    # 6. Total Revenue Released / Successful Payments
+    revenue_agg = Payment.objects.filter(
+        payment_status=PaymentStatus.RELEASED
+    ).aggregate(Sum('amount'))
+    total_revenue = revenue_agg['amount__sum'] or 0
+
+    # Context for Dashboard Template
     context = {
-       
-        'notifications': notifications,
-        'unread_count': unread_count,
-        
-        'recent_activities': recent_activities,
-        'pending_kyc_count': AgentKYC.objects.filter(kyc_status='pending').count(),
-        'total_packages_count': Package.objects.count(),
-        'total_bookings_count': Bookings.objects.count(),
+        'pending_agents': pending_agents,
+        'verified_agents': verified_agents,
+        'total_pilgrims': total_pilgrims,
+        'active_packages': active_packages,
+        'pending_bookings': pending_bookings,
+        'completed_bookings': completed_bookings,
+        'total_escrow': total_escrow,
+        'total_revenue': total_revenue,
+        'stakeholders_qs': stakeholders_qs,
     }
+
     return render(request, 'adminpanel/admin_dashboard.html', context)
 def agent_requests(request):
     pending_count = AgentKYC.objects.filter(
@@ -520,3 +554,130 @@ def set_commission(request):
     }
 
     return render(request, 'adminpanel/set_commision.html', context)
+
+
+
+
+
+
+
+def is_super_admin(user):
+    return user.is_authenticated and user.is_superuser
+
+@login_required
+@user_passes_test(is_super_admin)
+def admin_settings_view(request):
+    settings_obj = SystemSetting.load()
+
+    if request.method == 'POST':
+        action = request.POST.get('action_type')
+
+        # 1. Update Platform Preferences
+        if action == 'update_preferences':
+            pref_form = SystemPreferenceForm(request.POST, instance=settings_obj)
+            if pref_form.is_valid():
+                pref_form.save()
+                messages.success(request, "System preferences updated successfully!")
+                return redirect('admin_settings')
+
+        # 2. Toggle Maintenance Mode
+        elif action == 'toggle_maintenance':
+            settings_obj.maintenance_mode = not settings_obj.maintenance_mode
+            settings_obj.save()
+            status = "Enabled" if settings_obj.maintenance_mode else "Disabled"
+            messages.warning(request, f"System Maintenance mode is now {status}.")
+            return redirect('admin_settings')
+
+    pref_form = SystemPreferenceForm(instance=settings_obj)
+
+    context = {
+        'settings': settings_obj,
+        'pref_form': pref_form,
+    }
+    return render(request, 'adminpanel/admin_settings.html', context)
+
+@login_required
+@user_passes_test(is_super_admin)
+def download_db_backup(request):
+    data = serializers.serialize("json", SystemSetting.objects.all())
+    response = HttpResponse(data, content_type="application/json")
+    response['Content-Disposition'] = 'attachment; filename="safareharam_backup.json"'
+    return response
+
+
+
+
+
+
+
+
+def guide_list(request):
+    if request.user.is_staff:
+        guides = GuidePage.objects.all()
+    else:
+        guides = GuidePage.objects.filter(is_published=True)
+        
+    return render(request, 'adminpanel/guide_list.html', {'guides': guides})
+
+
+def admin_guide_edit(request, page_slug):
+    guide = get_object_or_404(GuidePage, page_slug=page_slug)
+
+    if request.method == "POST":
+        guide.title = request.POST.get("title")
+        guide.content = request.POST.get("content")
+        guide.is_published = request.POST.get("is_published") == "on"
+        guide.save()
+
+        messages.success(
+            request, f"'{guide.title}' guide content updated successfully!"
+        )
+        return redirect("adminpanel:admin_guide_list")
+
+    return render(request, "adminpanel/edit_guide.html", {"guide": guide})
+
+def delete_guide(request, page_slug):
+    if request.method == "POST":
+        guide = get_object_or_404(GuidePage, page_slug=page_slug)
+        guide.delete()
+        messages.success(request, "Guide page deleted successfully!")
+    return redirect("adminpanel:guide_list")
+
+@require_POST
+def api_save_guide(request, page_slug):
+    if not (request.user.is_authenticated and (
+        request.user.is_superuser or 
+        request.user.is_staff or 
+        getattr(request.user, 'role', '') == 'admin'
+    )):
+        return JsonResponse({
+            'status': 'error', 
+            'message': 'Unauthorized! Only Admins or Superusers can save changes.'
+        }, status=403)
+    
+    try:
+        data = json.loads(request.body)
+        content = data.get('content', '').strip()
+        title = data.get('title', page_slug.capitalize() + " Guide")
+
+        if not content:
+            return JsonResponse({'status': 'error', 'message': 'Content cannot be empty.'}, status=400)
+        guide, created = GuidePage.objects.get_or_create(
+            page_slug=page_slug, 
+            defaults={'title': title, 'content': content}
+        )
+        
+        if not created:
+            guide.content = content
+            guide.title = title
+            guide.save()
+
+        return JsonResponse({
+            'status': 'success', 
+            'message': 'Page updated successfully!'
+        }, status=200)
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)

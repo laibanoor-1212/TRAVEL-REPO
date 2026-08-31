@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'packages',
     'notifications',
     'payments',
+    'django_ckeditor_5',
     
     
 
