@@ -1,25 +1,33 @@
 {% extends 'stakeholder/dashboard_layout2.html' %}
+{% load static %}
+
 {% block content %}
 <style>
     .cancel-container {
-        background: white;
+        background: #ffffff;
         padding: 25px;
         border-radius: 12px;
-        box-shadow: var(--shadow);
+        box-shadow: var(--shadow, 0 4px 15px rgba(0,0,0,0.03));
+        border: 1px solid #e2e8f0;
     }
 
     .status-tag {
-        padding: 5px 12px;
-        border-radius: 4px;
-        font-size: 12px;
-        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 50px;
+        font-size: 11px;
+        font-weight: 700;
         text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
     }
 
-    /* Status Colors */
-    .tag-cancelled { background: #fee2e2; color: #dc2626; } /* Red */
-    .tag-refunded { background: #dcfce7; color: #166534; }  /* Green */
-    .tag-processing { background: #fef9c3; color: #854d0e; } /* Yellow */
+    /* Dynamic Status Colors */
+    .tag-refunded { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }      /* Green */
+    .tag-processing { background: #fef9c3; color: #a16207; border: 1px solid #fde047; }    /* Yellow */
+    .tag-cancelled { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }     /* Red */
+    .tag-default { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }       /* Gray */
 
     .cancel-table {
         width: 100%;
@@ -28,78 +36,177 @@
     }
 
     .cancel-table th {
-        background: #f8faf9;
-        color: var(--text-muted);
+        background: #f8fafc;
+        color: #64748b;
         text-align: left;
-        padding: 15px;
-        font-size: 13px;
-        border-bottom: 2px solid #eee;
+        padding: 14px 16px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #e2e8f0;
+        white-space: nowrap;
     }
 
     .cancel-table td {
-        padding: 15px;
-        border-bottom: 1px solid #eee;
-        font-size: 14px;
+        padding: 14px 16px;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 13px;
+        color: #0f172a;
+        vertical-align: middle;
     }
 
     .reason-text {
-        color: #666;
+        color: #64748b;
         font-style: italic;
         font-size: 13px;
-        max-width: 250px;
+        max-width: 280px;
         display: block;
+        word-wrap: break-word;
+    }
+
+    .btn-view-link {
+        color: var(--primary-green, #059669);
+        text-decoration: none;
+        font-weight: 700;
+        padding: 6px 12px;
+        background: #ecfdf5;
+        border: 1px solid #a7f3d0;
+        border-radius: 6px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 12px;
+        transition: background 0.2s;
+    }
+
+    .btn-view-link:hover {
+        background: #d1fae5;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #94a3b8;
+    }
+
+    .empty-state i {
+        font-size: 38px;
+        margin-bottom: 10px;
+        color: #cbd5e1;
     }
 </style>
 
 <div class="cancel-container">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <div>
-            <h2 style="color: var(--primary-green);">Cancelled Bookings</h2>
-            <p style="color: #666; font-size: 14px;">View all cancelled trips and refund processing status.</p>
+            <h2 style="color: var(--primary-green, #059669); margin: 0 0 5px 0; font-size: 20px; font-weight: 800;">
+                Cancelled Bookings
+            </h2>
+            <p style="color: #64748b; font-size: 13px; margin: 0;">
+                View customer cancellations, refund processing status, and penalty deductions.
+            </p>
         </div>
         <div style="text-align: right;">
-            <span style="font-size: 13px; color: var(--text-muted);">Total Cancellations: <strong>12</strong></span>
+            <span style="font-size: 13px; color: #64748b;">
+                Total Cancellations: <strong>{{ total_cancellations|default:0 }}</strong>
+            </span>
         </div>
     </div>
 
-    <table class="cancel-table">
-        <thead>
-            <tr>
-                <th>Booking ID</th>
-                <th>Customer Name</th>
-                <th>Cancellation Date</th>
-                <th>Reason for Cancellation</th>
-                <th>Refund Status</th>
-                <th>Deduction</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><strong>#SH-1024</strong></td>
-                <td>Ahmed Bin Bashir</td>
-                <td>24-Apr-2026</td>
-                <td><span class="reason-text">"Medical emergency in family, cannot travel this month."</span></td>
-                <td><span class="status-tag tag-processing">Refund Processing</span></td>
-                <td style="color: var(--danger); font-weight: 600;">- PKR 5,000</td>
-            </tr>
-            <tr>
-                <td><strong>#SH-0988</strong></td>
-                <td>Sajid Ali Khan</td>
-                <td>15-Apr-2026</td>
-                <td><span class="reason-text">"Passport renewal delayed by office."</span></td>
-                <td><span class="status-tag tag-refunded">Refunded</span></td>
-                <td style="color: var(--danger); font-weight: 600;">- PKR 5,000</td>
-            </tr>
-            <tr>
-                <td><strong>#SH-1102</strong></td>
-                <td>Fatima Zahra</td>
-                <td>10-Apr-2026</td>
-                <td><span class="reason-text">"Change of plans."</span></td>
-                <td><span class="status-tag tag-cancelled">Cancelled (No Refund)</span></td>
-                <td style="font-weight: 600;">PKR 0</td>
-            </tr>
-        </tbody>
-    </table>
+    {% if cancelled_booking %}
+    <div style="overflow-x: auto;">
+        <table class="cancel-table">
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Customer Name</th>
+                    <th>Package</th>
+                    <th>Cancellation Date</th>
+                    <th>Reason</th>
+                    <th>Refund Status</th>
+                    <th>Deduction / Fee</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in cancelled_booking %}
+                <tr>
+                    <td>
+                        <a href="{% url 'stakeholder:booking_detail' booking.id %}" style="color: var(--primary-green, #059669); font-weight: 800; text-decoration: none;">
+                            #{{ booking.booking_id|default:booking.id }}
+                        </a>
+                    </td>
+                    <td>
+                        <!-- Alignment Fix: Changed booking.customer to booking.user -->
+                        <strong>{{ booking.user.get_full_name|default:booking.user.username }}</strong>
+                        <br>
+                        <small style="color: #94a3b8;">{{ booking.user.email }}</small>
+                    </td>
+                    <td>
+                        <span style="color: var(--primary-green, #059669); font-weight: 600;">
+                            {{ booking.package.name|default:"N/A" }}
+                        </span>
+                    </td>
+                    <td>
+                        {{ booking.updated_at|date:"d M Y" }}
+                    </td>
+                    <td>
+                        <span class="reason-text">
+                            <!-- Alignment Fix: Checked customer_note field -->
+                            {% if booking.customer_note %}
+                                "{{ booking.customer_note }}"
+                            {% elif booking.cancellation_reason %}
+                                "{{ booking.cancellation_reason }}"
+                            {% else %}
+                                "No reason provided."
+                            {% endif %}
+                        </span>
+                    </td>
+                    <td>
+                        {% if booking.payment.refund_status == 'refunded' or booking.refund_status == 'refunded' %}
+                            <span class="status-tag tag-refunded">
+                                <i class="fa-solid fa-circle-check"></i> Refunded
+                            </span>
+                        {% elif booking.payment.refund_status == 'processing' or booking.refund_status == 'processing' %}
+                            <span class="status-tag tag-processing">
+                                <i class="fa-solid fa-clock"></i> Processing
+                            </span>
+                        {% elif booking.payment.refund_status == 'no_refund' or booking.refund_status == 'no_refund' %}
+                            <span class="status-tag tag-cancelled">
+                                <i class="fa-solid fa-ban"></i> No Refund
+                            </span>
+                        {% else %}
+                            <span class="status-tag tag-default">
+                                <i class="fa-solid fa-triangle-exclamation"></i> {{ booking.refund_status|default:"Cancelled"|title }}
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if booking.deduction_amount and booking.deduction_amount > 0 %}
+                            <span style="color: #dc2626; font-weight: 700;">- PKR {{ booking.deduction_amount }}</span>
+                        {% elif booking.cancellation_fee and booking.cancellation_fee > 0 %}
+                            <span style="color: #dc2626; font-weight: 700;">- PKR {{ booking.cancellation_fee }}</span>
+                        {% else %}
+                            <span style="font-weight: 600; color: #64748b;">PKR 0</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'stakeholder:booking_detail' booking.id %}" class="btn-view-link">
+                            <i class="fa-solid fa-eye"></i> View
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="fa-solid fa-calendar-xmark"></i>
+        <h3 style="margin: 0; font-size: 16px; color: #475569;">No Cancelled Bookings Found</h3>
+        <p style="margin-top: 4px; font-size: 13px;">Currently, there are no customer cancellation requests registered.</p>
+    </div>
+    {% endif %}
 </div>
-
 {% endblock %}

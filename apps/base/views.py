@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from packages.models import Package, PackageType 
 from adminpanel.models import GuidePage
+from .models import ContactMessage
 
 # Helper function to fetch page content dynamically
 def get_guide_context(page_slug, page_title):
@@ -18,8 +19,7 @@ def home(request):
 def about(request):
     return render(request, 'base/about.html')
 
-def contactus(request):
-    return render(request, 'base/contactus.html')
+
 
 # Dynamic Guide Views
 def Guide(request):
@@ -114,3 +114,22 @@ def uhad(request):
 def hajj_packages(request):
     active_packages = Package.objects.filter(status='active').order_by('-created_at')
     return render(request, 'packages/hajjpackages.html', {'packages': active_packages})
+
+
+def contactus(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        category = request.POST.get('category')
+        message = request.POST.get('message')
+        ContactMessage.objects.create(
+            name=name,
+            email=email,
+            category=category,
+            message=message
+        )
+
+        messages.success(request, "Your message has been sent successfully! Our team will contact you soon.")
+        return redirect('base:contactus')  
+
+    return render(request, 'base/contactus.html')

@@ -22,14 +22,14 @@
 
     .management-header h2 {
         font-size: 1.6rem;
-        color: #0f5132; /* Deep Forest Green */
+        color: #0f5132;
         margin: 0;
         font-weight: 600;
     }
 
     /* --- Primary Add Button --- */
     .btn-add {
-        background-color: #198754; /* Theme Green */
+        background-color: #198754;
         color: #ffffff !important;
         text-decoration: none;
         padding: 10px 20px;
@@ -70,11 +70,7 @@
         transition: all 0.3s ease;
     }
 
-    .tab-btn:hover {
-        color: #198754;
-    }
-
-    .tab-btn.active {
+    .tab-btn:hover, .tab-btn.active {
         color: #198754;
     }
 
@@ -135,13 +131,8 @@
         border-bottom: 2px solid #dee2e6;
     }
 
-    .custom-table thead tr.active-header th {
-        color: #155c3b;
-    }
-
-    .custom-table thead tr.expired-header th {
-        color: #d9534f;
-    }
+    .custom-table thead tr.active-header th { color: #155c3b; }
+    .custom-table thead tr.expired-header th { color: #d9534f; }
 
     .custom-table td {
         padding: 16px 20px;
@@ -236,11 +227,10 @@
         text-align: center;
         padding: 40px !important;
         color: #8c98a5;
-        font-style: italic;
     }
 
     .empty-row i {
-        font-size: 1.8rem;
+        font-size: 2rem;
         margin-bottom: 8px;
         display: block;
         color: #dee2e6;
@@ -266,13 +256,14 @@
 
     <div class="tabs-container">
         <button class="tab-btn active" onclick="showTab('active-pkgs', this)">
-            Active Packages
+            Active Packages ({{ active_packages|length|default:"0" }})
         </button>
         <button class="tab-btn" onclick="showTab('expired-pkgs', this)">
-            Expired / Inactive
+            Expired / Inactive ({{ inactive_packages|length|default:"0" }})
         </button>
     </div>
 
+    <!-- Active Packages Tab -->
     <div id="active-pkgs" class="package-section active">
         <div class="card">
             <div class="table-responsive">
@@ -294,20 +285,26 @@
                             <td>
                                 <span class="pkg-title">{{ package.name }}</span>
                             </td>
-                            <td>{{ package.package_type }}</td>
+                            <td>{{ package.package_type|default:"N/A" }}</td>
                             <td>
                                 <i class="fas fa-map-marker-alt" style="color: #6c757d; font-size: 0.85rem; margin-right: 4px;"></i> 
-                                {{ package.country }}
+                                {{ package.country|default:"N/A" }}
                             </td>
                             <td><span class="price-text">PKR {{ package.price }}</span></td>
                             <td>
                                 <i class="fas fa-user-friends" style="color: #6c757d; font-size: 0.85rem; margin-right: 4px;"></i>
-                                {{ package.seats_left }}
+                                {{ package.seats_left|default:"0" }}
                             </td>
                             <td>
                                 <span class="status-pill active-status">
                                     <i class="fas fa-circle" style="font-size: 0.5rem; margin-right: 6px; vertical-align: middle;"></i>
-                                    {{ package.get_status_display }}
+                                    {% if package.get_status_display %}
+                                        {{ package.get_status_display }}
+                                    {% elif package.status %}
+                                        {{ package.status }}
+                                    {% else %}
+                                        Active
+                                    {% endif %}
                                 </span>
                             </td>
                             <td>
@@ -336,6 +333,7 @@
         </div>
     </div>
 
+    <!-- Expired / Inactive Packages Tab -->
     <div id="expired-pkgs" class="package-section">
         <div class="card">
             <div class="table-responsive">
@@ -357,20 +355,26 @@
                             <td>
                                 <span class="pkg-title" style="color: #6c757d;">{{ package.name }}</span>
                             </td>
-                            <td>{{ package.package_type }}</td>
+                            <td>{{ package.package_type|default:"N/A" }}</td>
                             <td>
                                 <i class="fas fa-map-marker-alt" style="color: #9ea5ab; font-size: 0.85rem; margin-right: 4px;"></i> 
-                                {{ package.country }}
+                                {{ package.country|default:"N/A" }}
                             </td>
                             <td><span class="price-text" style="color: #6c757d;">PKR {{ package.price }}</span></td>
                             <td>
                                 <i class="fas fa-user-friends" style="color: #9ea5ab; font-size: 0.85rem; margin-right: 4px;"></i>
-                                {{ package.seats_left }}
+                                {{ package.seats_left|default:"0" }}
                             </td>
                             <td>
                                 <span class="status-pill expired-status">
                                     <i class="fas fa-circle" style="font-size: 0.5rem; margin-right: 6px; vertical-align: middle;"></i>
-                                    {{ package.get_status_display }}
+                                    {% if package.get_status_display %}
+                                        {{ package.get_status_display }}
+                                    {% elif package.status %}
+                                        {{ package.status }}
+                                    {% else %}
+                                        Inactive
+                                    {% endif %}
                                 </span>
                             </td>
                             <td>

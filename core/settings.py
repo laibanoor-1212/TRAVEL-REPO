@@ -185,3 +185,25 @@ MEDIA_ROOT = BASE_DIR / 'media'
 STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
 
 STRIPE_PUBLISHABLE_KEY = config('STRIPE_PUBLISHABLE_KEY')
+
+
+
+# settings.py
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+# Safar-e-Haram Email
+EMAIL_HOST_USER = 'safareharam.offcial1212@gmail.com'  # Apna exact Gmail ID likhein
+
+# Google se mila hua 16-digit App Password
+EMAIL_HOST_PASSWORD = 'hzlcenwuboubfuls'  # Spaces ke bina paste karein
+
+DEFAULT_FROM_EMAIL = 'Safar-e-Haram Support <safareharam.offcial1212@gmail.com>'
+
+ADMIN_NOTIFICATION_EMAILS = [
+    'safareharam.offcial1212@gmail.com',  # Primary Admin Email
+    'noorlaiba1212@gmail.com',            # Admin / Superuser Email
+]

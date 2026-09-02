@@ -57,6 +57,9 @@ class Payment(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    @property
+    def is_customer_approved(self):
+        return getattr(self, 'customer_approval_status', '') == 'approved'
 
     class Meta:
         ordering = ["-created_at"]

@@ -15,18 +15,25 @@
             <table class="payment-table">
                 <thead>
                     <tr>
-                        <th style="width: 13%;">Transaction ID</th>
+                        <th style="width: 12%;">Booking ID</th>
+                        <th style="width: 14%;">Transaction ID</th>
                         <th style="width: 13%;">Customer</th>
                         <th style="width: 10%;">Amount</th>
                         <th style="width: 14%;">Payment Method</th>
-                        <th style="width: 14%;">Escrow Status</th>
-                        <th style="width: 12%;">Date</th>
+                        <th style="width: 13%;">Escrow Status</th>
+                        <th style="width: 10%;">Date</th>
                         <th style="width: 14%;">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for payment in payments %}
                     <tr>
+                        <!-- 1. BOOKING ID -->
+                        <td>
+                            <span class="booking-badge">#BK-{{ payment.booking.id }}</span>
+                        </td>
+
+                        <!-- 2. TRANSACTION ID -->
                         <td>
                             {% if payment.transaction_id %}
                                 #{{ payment.transaction_id }}
@@ -36,6 +43,7 @@
                                 #TRX-{{ payment.id }}
                             {% endif %}
                         </td>
+
                         <td><strong>{{ payment.customer.get_full_name|default:payment.customer.username }}</strong></td>
                         <td class="amount">PKR {{ payment.amount }}</td>
                         <td>
@@ -49,13 +57,33 @@
                             </span>
                         </td>
                         <td>{{ payment.created_at|date:"d M Y" }}</td>
+                        
+                     
                         <td>
-                            {% if payment.booking.ticket %}
-                                <span class="status-badge status-released">Ticket Sent</span>
-                            {% else %}
+                            {% if payment.payout_status == 'released' or payment.is_payout_released or payment.escrow_status == 'released' %}
+                               
+                                <button class="btn-payout-disabled" disabled title="Payout for this booking has already been released">
+                                    <i class="fas fa-check-circle"></i> Payout Released
+                                </button>
+
+                            {% elif not payment.booking.ticket %}
                                 <a href="{% url 'stakeholder:agent_upload_ticket' payment.booking.id %}" class="btn-send-ticket">
                                     Send Ticket
                                 </a>
+
+                            {% elif payment.payout_status == 'requested' or payment.is_payout_requested %}
+                                <span class="status-badge status-waiting">
+                                    <i class="fas fa-clock"></i> Payout Requested (Waiting)
+                                </span>
+
+                            {% else %}
+                        
+                                <form action="{% url 'stakeholder:agent_request_payout' payment.id %}" method="POST" class="payout-form" style="margin: 0; display: inline-block;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-request-payout">
+                                        Request Payout
+                                    </button>
+                                </form>
                             {% endif %}
                         </td>
                     </tr>
@@ -72,10 +100,31 @@
 </div>
 
 <style>
-    /* Fallback in case status-cancelled isn't already defined in your booking.css */
+    .booking-badge {
+        font-family: monospace;
+        font-weight: 700;
+        color: #2c3e50;
+        background-color: #edf2f7;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 13px;
+    }
+
     .status-cancelled {
         background-color: #fdecea;
         color: #c0392b;
+    }
+    
+    .status-waiting {
+        background-color: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeeba;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        display: inline-block;
+        white-space: nowrap;
     }
     .btn-send-ticket {
         display: inline-block;
@@ -92,5 +141,47 @@
         background-color: #146c43;
         color: #fff;
     }
+
+    .btn-request-payout {
+        background-color: #0b7a47;
+        color: #ffffff;
+        border: none;
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.2s ease;
+    }
+    .btn-request-payout:hover {
+        background-color: #085d36;
+    }
+    .btn-payout-disabled {
+        background-color: #e9ecef !important;
+        color: #6c757d !important;
+        border: 1px solid #ced4da !important;
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: not-allowed !important;
+        pointer-events: none; 
+        opacity: 0.65; 
+        filter: blur(0.3px);
+        white-space: nowrap;
+        user-select: none;
+    }
 </style>
+
+<script>
+    document.querySelectorAll('.payout-form').forEach(form => {
+        form.addEventListener('submit', function() {
+            const btn = this.querySelector('.btn-request-payout');
+            btn.disabled = true;
+            btn.innerText = 'Submitting...';
+        });
+    });
+</script>
+
 {% endblock %}

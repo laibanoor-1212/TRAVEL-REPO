@@ -7,9 +7,9 @@
         --primary-green: #0b7a47; 
         --pure-white: #ffffff;
         --danger-red: #d63031;
-       
         --warning-orange: #f39c12;
         --dark-slate: #1e293b;
+        --info-blue: #0284c7;
     }
 
     /* Tabs Styling */
@@ -33,8 +33,9 @@
 
     /* Status Badges */
     .badge { padding: 6px 12px; border-radius: 50px; font-size: 10px; font-weight: 700; text-transform: uppercase; display: inline-block; }
-    .bg-pending { background: #fef3c7; color:  #b91c1c;}
+    .bg-pending { background: #fef3c7; color: #b91c1c; }
     .bg-confirmed { background: #dcfce7; color: #15803d; }
+    .bg-completed { background: #dcfce7; color: #15803d; }
     .bg-cancelled { background: #fee2e2; color: #b91c1c; }
 
     /* Action Buttons */
@@ -81,7 +82,7 @@
             <a href="{% url 'adminpanel:admin_bookings' %}" style="text-decoration:none; color:#64748b; font-weight:bold;">&times; Close Panel</a>
         </div>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-            {% for customer in selected_booking_details.CustomerProfile.all %}
+            {% for customer in selected_booking_details.customer_profiles.all %}
             <div style="border: 1px solid #e2e8f0; padding: 20px; border-radius: 10px; background: #f8fafc;">
                 <h4 style="margin: 0 0 10px 0; color: var(--primary-green);">{{ customer.full_name }}</h4>
                 <p style="margin: 5px 0; font-size: 13px;"><b>Phone:</b> {{ customer.phone_number }}</p>
@@ -290,7 +291,7 @@
 
     function searchBookings() {
         var filter = document.getElementById("bookingSearch").value.toUpperCase();
-        var currentTab = document.querySelector(".tab-content[style*='block'] ") || document.querySelector(".tab-content.active");
+        var currentTab = document.querySelector(".tab-content[style*='block']") || document.querySelector(".tab-content.active");
         var tr = currentTab.querySelectorAll(".data-table tbody tr");
         for (var i = 0; i < tr.length; i++) {
             var text = tr[i].textContent || tr[i].innerText;

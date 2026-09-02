@@ -25,6 +25,7 @@ urlpatterns = [
   path("booking/<int:booking_id>/", views.booking_detail, name="booking_detail"),
     path("booking/<int:booking_id>/update-status/",views.update_booking_status,name="update_booking_status"),
     path("customer/<int:customer_id>/verify-doc/",views.verify_booking_doc,name="verify_booking_doc"),
+    path('payments/<int:payment_id>/request-payout/', views.agent_request_payout, name='agent_request_payout'),
      
 
    

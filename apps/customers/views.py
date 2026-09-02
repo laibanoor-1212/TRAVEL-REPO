@@ -1,10 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count, Q
 from .models import CustomerProfile
 from adminpanel.models import Complaint
 from payments.models import Payment
-from bookings.models import Bookings,Ticket 
+from bookings.models import Bookings, Ticket 
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
 from django.utils import timezone
@@ -12,9 +11,19 @@ from payments import services
 from django.core.exceptions import PermissionDenied
 from base.decorators import role_required
 from django.db.models import Sum, Count, Q
-from bookings.models import Bookings
 from payments.models import Payment
 from bookings.models import BookingCustomers, BookingStatusHistory
+
+from adminpanel.decorators import user_required
+
+# --- EMAIL IMPORTS (ADDED FOR UTILS INTEGRATION) ---
+from utils.emails import (
+    send_complaint_submitted_emails,
+    send_ticket_approved_notification,
+    send_ticket_rejected_notification,
+    send_booking_action_email,
+    send_docs_resubmitted_email,
+)
 
 
 @login_required(login_url='/auth/login/')
@@ -68,6 +77,7 @@ def user_profile_view(request):
     return render(request, 'customer/user_profile.html', context)
 
 
+@user_required
 @login_required(login_url='/auth/login/')
 def customer_kyc(request):
    
@@ -113,6 +123,8 @@ def customer_kyc(request):
         return redirect('customers:user_dashboard') 
     return render(request, 'customer/customer_kyc.html', {'profile': profile})
 
+
+@user_required
 @login_required(login_url='/auth/login/')
 def user_bookings(request):
     current_user_bookings = Bookings.objects.filter(user=request.user).order_by('-created_at')
@@ -122,23 +134,14 @@ def user_bookings(request):
     return render(request, 'customer/user_booking.html', context)
 
 
+@user_required
 @role_required('user')
 @login_required(login_url='/auth/login/')
 def user_dashboard(request):
-    # if request.user.role != 'customer':
-    #     raise PermissionDenied
-
-    # notifications = request.user.notifications.filter(is_deleted=False)[:10]
-    # unread_count = request.user.notifications.filter(is_read=False, is_deleted=False).count()
-
-    # context = {
-    #     'notifications': notifications,
-    #     'unread_count': unread_count,
-    # }
     return render(request, 'customer/user_layout.html')
 
 
-
+@user_required
 @login_required(login_url='/auth/login/')
 def overview_user(request):
     user = request.user
@@ -193,7 +196,7 @@ def overview_user(request):
     return render(request, 'customer/overview_user.html', context)
 
 
-
+@user_required
 def customer_complaints(request):
     COMPLAINT_TYPES = [
         ('ticket', 'Ticket & Booking Issue'),
@@ -209,13 +212,27 @@ def customer_complaints(request):
         subject = request.POST.get("subject")
         description = request.POST.get("description")
         
-        Complaint.objects.create(
+        complaint = Complaint.objects.create(
             user=request.user,
             complaint_type=complaint_type,
             subject=subject,
             description=description,
             status='pending'
         )
+
+        # Trigger Emails (Customer + Admin)
+        try:
+            send_complaint_submitted_emails(
+                user_email=request.user.email,
+                user_name=request.user.get_full_name() or request.user.username,
+                complaint_id=complaint.id,
+                complaint_type=complaint_type,
+                subject_text=subject,
+                description=description or ""
+            )
+        except Exception:
+            pass
+
         messages.success(request, "Aapki complaint successfully submit ho gayi hai!")
         return redirect(request.path)
 
@@ -237,6 +254,8 @@ def customer_complaints(request):
     }
     return render(request, 'customer/customer_complaints.html', context)
 
+
+@user_required
 @login_required(login_url='/auth/login/')
 def escrow_status_overview(request):
     payments = Payment.objects.filter(
@@ -246,6 +265,8 @@ def escrow_status_overview(request):
     context = {'payments': payments}
     return render(request, 'customer/customer_escrow_status.html', context)
 
+
+@user_required
 @login_required(login_url='/auth/login/')
 def user_ticket(request):
     bookings = (
@@ -255,6 +276,8 @@ def user_ticket(request):
     )
     return render(request, 'customer/user_ticket.html', {'bookings': bookings})
 
+
+@user_required
 def approve_ticket(request, booking_id):
     if request.method == "POST":
         booking = get_object_or_404(Bookings, id=booking_id, user=request.user)
@@ -265,12 +288,26 @@ def approve_ticket(request, booking_id):
             ticket.customer_approved_at = timezone.now()
             ticket.customer_rejection_reason = None 
             ticket.save()
+
+            # Trigger Email to Agent/Admin
+            try:
+                agent_email = getattr(getattr(getattr(booking, 'package', None), 'agent', None), 'email', None)
+                send_ticket_approved_notification(
+                    agent_email=agent_email,
+                    customer_name=request.user.get_full_name() or request.user.username,
+                    booking_id=booking.id
+                )
+            except Exception:
+                pass
+
             messages.success(request, "Ticket successfully approved!")
         except Ticket.DoesNotExist:
-            messages.error(request, "Is booking ke liye abhi koi ticket upload nahi kiya gaya.")
+            messages.error(request, "Ticket is not uploaded for this booking.")
             
         return redirect('customers:user_ticket')  
 
+
+@user_required
 def reject_ticket_view(request, booking_id):
     if request.method == "POST":
         booking = get_object_or_404(Bookings, id=booking_id, user=request.user)
@@ -281,6 +318,19 @@ def reject_ticket_view(request, booking_id):
             ticket.customer_approved = False
             ticket.customer_rejection_reason = reason
             ticket.save()
+
+            # Trigger Email to Agent/Admin
+            try:
+                agent_email = getattr(getattr(getattr(booking, 'package', None), 'agent', None), 'email', None)
+                send_ticket_rejected_notification(
+                    agent_email=agent_email,
+                    customer_name=request.user.get_full_name() or request.user.username,
+                    booking_id=booking.id,
+                    reason=reason or ""
+                )
+            except Exception:
+                pass
+
             messages.success(request, "Ticket rejection status updated.")
         except Ticket.DoesNotExist:
             messages.error(request, "Ticket record nahi mila.")
@@ -288,29 +338,124 @@ def reject_ticket_view(request, booking_id):
         return redirect('customers:user_ticket')
 
 
-
-@login_required(login_url='/auth/login/')
+@user_required
+@login_required
 def manage_booking_request(request, booking_id):
-    booking = get_object_or_404(Bookings, pk=booking_id, user=request.user)
+    booking = get_object_or_404(Bookings, id=booking_id)
+    is_customer = booking.user == request.user
+    is_admin = request.user.is_staff or getattr(request.user, 'role', '') == 'admin'
 
-    if request.method == 'POST':
-        action_type = request.POST.get('action_type')
-        reason = request.POST.get('reason', '')
+    if not (is_customer or is_admin):
+        messages.error(request, "Aap ke paas is booking ko manage karne ki permission nahi hai.")
+        return redirect('customers:user_bookings')
 
-        if action_type == 'cancel':
-            booking.status = 'cancelled'
-            booking.admin_note = f"Cancellation Reason: {reason}"
+    if request.method == "POST":
+        action_type = request.POST.get("action_type")
+        reason = request.POST.get("reason")
+        agent_email = getattr(getattr(getattr(booking, 'package', None), 'agent', None), 'email', None)
+
+        if action_type == "cancel":
+            old_status = booking.status
+            booking.status = "cancelled"
+            
+            if reason:
+                booking.customer_note = reason
+                
             booking.save()
-            messages.success(request, "Booking cancellation request submitted.")
 
-        elif action_type == 'extend':
-            new_date = request.POST.get('new_date')
-            booking.admin_note = f"Extension Requested to {new_date}. Reason: {reason}"
+            BookingStatusHistory.objects.create(
+                booking=booking,
+                old_status=old_status,
+                new_status="cancelled",
+                changed_by=request.user,
+                remarks=reason or "Cancellation requested by customer"
+            )
+
+            # Email Notification
+            try:
+                send_booking_action_email(
+                    action_type="cancel",
+                    customer_email=request.user.email,
+                    customer_name=request.user.get_full_name() or request.user.username,
+                    booking_id=booking.id,
+                    agent_email=agent_email,
+                    reason=reason or ""
+                )
+            except Exception:
+                pass
+
+            messages.success(request, "Aap ki booking cancellation request successfully submit ho gayi hai.")
+            return redirect('customers:user_bookings')
+
+        elif action_type == "refund":
+            if hasattr(booking, 'payment') and booking.payment:
+                payment = booking.payment
+                
+                if payment.payment_status in ['held_in_escrow', 'paid']:
+                    payment.payment_status = 'refund_requested' 
+                    payment.refund_reason = reason
+                    payment.save()
+
+                    booking.status = 'refund_requested'
+                    booking.customer_note = reason
+                    booking.save()
+
+                    BookingStatusHistory.objects.create(
+                        booking=booking,
+                        old_status=booking.status,
+                        new_status="refund_requested",
+                        changed_by=request.user,
+                        remarks=reason or "Refund requested by customer"
+                    )
+
+                    # Email Notification
+                    try:
+                        send_booking_action_email(
+                            action_type="refund",
+                            customer_email=request.user.email,
+                            customer_name=request.user.get_full_name() or request.user.username,
+                            booking_id=booking.id,
+                            agent_email=agent_email,
+                            reason=reason or ""
+                        )
+                    except Exception:
+                        pass
+
+                    messages.success(request, "Refund request successfully submited. Admin review it.")
+                else:
+                    messages.error(request, "In this payment status refund request is not able to submit.")
+            else:
+                messages.error(request, "this booking do not have valid payment record.")
+
+            return redirect('customers:user_bookings')
+
+        elif action_type == "extend":
+            new_date = request.POST.get("new_date")
+            booking.requested_extension_date = new_date  
+            booking.customer_note = reason
             booking.save()
-            messages.success(request, "Extension request submitted successfully.")
 
-    return redirect('bookings:my_bookings')
+            # Email Notification
+            try:
+                send_booking_action_email(
+                    action_type="extend",
+                    customer_email=request.user.email,
+                    customer_name=request.user.get_full_name() or request.user.username,
+                    booking_id=booking.id,
+                    agent_email=agent_email,
+                    reason=reason or "",
+                    new_date=new_date or ""
+                )
+            except Exception:
+                pass
 
+            messages.success(request, "Date extension request submited.")
+            return redirect('customers:user_bookings')
+
+    return redirect('customers:user_bookings')
+
+
+@user_required
 @login_required(login_url='/auth/login/')
 def booking_detail(request, booking_id):
     booking = get_object_or_404(Bookings, pk=booking_id, user=request.user)
@@ -321,6 +466,8 @@ def booking_detail(request, booking_id):
         'customers': customers
     })
 
+
+@user_required
 @login_required(login_url='/auth/login/')
 def update_booking_docs(request, booking_id):
     booking = get_object_or_404(Bookings, id=booking_id, user=request.user)
@@ -383,6 +530,17 @@ def update_booking_docs(request, booking_id):
             changed_by=request.user,
             comments="Customer re-submitted rejected documents/details for verification."
         )
+
+        # Trigger Re-submitted Email
+        try:
+            agent_email = getattr(getattr(getattr(booking, 'package', None), 'agent', None), 'email', None)
+            send_docs_resubmitted_email(
+                customer_name=request.user.get_full_name() or request.user.username,
+                booking_id=booking.id,
+                agent_email=agent_email
+            )
+        except Exception:
+            pass
 
         messages.success(request, "Corrections & updated documents re-submitted successfully!")
         return redirect('customers:booking_detail', booking_id=booking.id)

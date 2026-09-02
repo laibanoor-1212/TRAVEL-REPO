@@ -4,26 +4,16 @@
 {% block title %}Contact Us | Safar-e-Haram{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-<link rel="stylesheet"
-      href="{% static 'css/contactus.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/contactus.css' %}">
 {% endblock %}
-
 
 {% block content %}
 
 <div class="cp-wrapper">
 
-    <!-- =========================
-         HERO SECTION
-    ========================== -->
-
     <section class="cp-hero">
-
         <div class="cp-hero-content">
-
             <span class="cp-small-title">
                 <i class="fas fa-headset"></i>
                 CONTACT & SUPPORT
@@ -41,7 +31,6 @@
             </p>
 
             <div class="cp-hero-buttons">
-
                 <a href="#contact-form" class="cp-primary-btn">
                     Contact Support
                     <i class="fas fa-arrow-right"></i>
@@ -51,14 +40,10 @@
                     <i class="fas fa-phone"></i>
                     Get in Touch
                 </a>
-
             </div>
-
         </div>
 
-
         <div class="cp-hero-card">
-
             <div class="cp-hero-icon">
                 <i class="fas fa-kaaba"></i>
             </div>
@@ -71,7 +56,6 @@
             </p>
 
             <div class="cp-hero-contact">
-
                 <div>
                     <i class="fas fa-phone"></i>
                     <span>+92 21 3456 7890</span>
@@ -79,144 +63,87 @@
 
                 <div>
                     <i class="fas fa-envelope"></i>
-                    <span>support@safareharam.com</span>
+                    <span>safareharam.offcial1212@gmail.com</span>
                 </div>
-
             </div>
-
         </div>
-
     </section>
 
-
-    <!-- =========================
-         SUPPORT SERVICES
-    ========================== -->
-
     <section class="cp-services">
-
         <div class="cp-section-heading">
-
             <span>HOW WE CAN HELP</span>
-
             <h2>Support Designed Around Your Journey</h2>
-
             <p>
                 Choose the type of assistance you need and
                 we'll guide you in the right direction.
             </p>
-
         </div>
 
-
         <div class="cp-grid">
-
             <!-- Escrow -->
-
             <div class="cp-card cp-active">
-
                 <div class="cp-icon-wrap">
                     <i class="fas fa-shield-halved"></i>
                 </div>
-
                 <h3>Escrow Support</h3>
-
                 <p>
                     Get assistance with secure payments,
                     transactions and escrow-related concerns.
                 </p>
-
                 <a href="#contact-form" class="cp-card-link">
                     Get Support
                     <i class="fas fa-arrow-right"></i>
                 </a>
-
             </div>
 
-
             <!-- Verify Agent -->
-
             <div class="cp-card">
-
                 <div class="cp-icon-wrap">
                     <i class="fas fa-user-check"></i>
                 </div>
-
                 <h3>Verify Agent</h3>
-
                 <p>
                     Check the authenticity of a registered
                     Hajj or Umrah travel provider.
                 </p>
 
                 <div class="cp-search-box">
-
-                    <input
-                        type="text"
-                        id="agentIdInput"
-                        placeholder="Enter License ID">
-
-                    <button
-                        type="button"
-                        onclick="verifyAgent()">
-
-                        <i class="fas fa-search"></i>
-                        Verify
-
+                    <input type="text" id="agentIdInput" placeholder="Enter License ID">
+                    <button type="button" onclick="verifyAgent()">
+                        <i class="fas fa-search"></i> Verify
                     </button>
-
                 </div>
 
-                <div
-                    id="verifyResult"
-                    class="cp-status">
-                </div>
-
+                <div id="verifyResult" class="cp-status"></div>
             </div>
 
-
             <!-- Partner -->
-
             <div class="cp-card">
-
                 <div class="cp-icon-wrap">
                     <i class="fas fa-handshake"></i>
                 </div>
-
                 <h3>Partner Help</h3>
-
                 <p>
                     Dedicated assistance for registered
                     Agents, Guides and travel partners.
                 </p>
-
                 <a href="#contact-form" class="cp-card-link">
                     Partner Support
                     <i class="fas fa-arrow-right"></i>
                 </a>
-
             </div>
-
         </div>
-
     </section>
-
 
     <!-- =========================
          CONTACT MAIN SECTION
     ========================== -->
 
-    <section class="cp-main-container"
-             id="contact-details">
-
+    <section class="cp-main-container" id="contact-details">
 
         <!-- LEFT SIDE -->
-
         <aside class="cp-sidebar">
-
-            <span class="cp-side-label">
-                CONTACT INFORMATION
-            </span>
+            <span class="cp-side-label">CONTACT INFORMATION</span>
 
             <h2>
                 Let's Start a
@@ -229,560 +156,267 @@
                 We're happy to help.
             </p>
 
-
             <div class="cp-info-list">
-
-
                 <!-- Address -->
-
                 <div class="cp-info-item">
-
                     <div class="cp-info-icon">
                         <i class="fas fa-location-dot"></i>
                     </div>
-
                     <div>
-
                         <strong>Our Office</strong>
-
-                        <p>
-                            I.I. Chundrigar Road,
-                            Karachi, Pakistan
-                        </p>
-
+                        <p>I.I. Chundrigar Road, Karachi, Pakistan</p>
                     </div>
-
                 </div>
 
-
                 <!-- Phone -->
-
                 <div class="cp-info-item">
-
                     <div class="cp-info-icon">
                         <i class="fas fa-phone"></i>
                     </div>
-
                     <div>
-
                         <strong>Call Us</strong>
-
-                        <p>
-                            +92 21 3456 7890
-                        </p>
-
+                        <p>+92 21 3456 7890</p>
                     </div>
-
                 </div>
 
-
                 <!-- Email -->
-
                 <div class="cp-info-item">
-
                     <div class="cp-info-icon">
                         <i class="fas fa-envelope"></i>
                     </div>
-
                     <div>
-
                         <strong>Email Us</strong>
-
-                        <p>
-                            support@safareharam.com
-                        </p>
-
+                        <p>safareharam.offcial1212@gmail.com</p>
                     </div>
-
                 </div>
 
-
                 <!-- Hours -->
-
                 <div class="cp-info-item">
-
                     <div class="cp-info-icon">
                         <i class="fas fa-clock"></i>
                     </div>
-
                     <div>
-
                         <strong>Support Hours</strong>
-
-                        <p>
-                            Monday – Saturday
-                            <br>
-                            9:00 AM – 6:00 PM
-                        </p>
-
+                        <p>Monday – Saturday <br> 9:00 AM – 6:00 PM</p>
                     </div>
-
                 </div>
-
             </div>
-
 
             <!-- Social -->
-
             <div class="cp-social">
-
                 <span>Follow Safar-e-Haram</span>
-
                 <div>
-
-                    <a href="#">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-
-                    <a href="#">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-
-                    <a href="#">
-                        <i class="fab fa-youtube"></i>
-                    </a>
-
-                    <a href="#">
-                        <i class="fab fa-x-twitter"></i>
-                    </a>
-
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-x-twitter"></i></a>
                 </div>
-
             </div>
-
         </aside>
 
-
-        <!-- RIGHT FORM -->
-
-        <div class="cp-form-section"
-             id="contact-form">
-
+        <!-- RIGHT FORM (UPDATED FOR DJANGO BACKEND) -->
+        <div class="cp-form-section" id="contact-form">
             <div class="cp-form-heading">
-
                 <span>GET IN TOUCH</span>
-
                 <h2>Send Us a Message</h2>
-
                 <p>
                     Fill out the form below and our team
                     will get back to you as soon as possible.
                 </p>
-
             </div>
 
+            <!-- Django Flash Messages Alert -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="cp-status cp-success" style="display: block; margin-bottom: 20px; padding: 12px 16px; border-radius: 8px; font-weight: 600; background-color: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;">
+                        <i class="fas fa-circle-check"></i> {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
 
             <form method="POST">
-
                 {% csrf_token %}
 
-
                 <div class="cp-form-row">
-
                     <!-- Name -->
-
                     <div class="cp-input-group">
-
                         <label>
-                            <i class="fas fa-user"></i>
-                            Full Name
+                            <i class="fas fa-user"></i> Full Name
                         </label>
-
-                        <input
-                            type="text"
-                            name="name"
-                            placeholder="e.g. Muhammad Ali"
-                            required>
-
+                        <input type="text" name="name" placeholder="e.g. Ahmed" required>
                     </div>
-
 
                     <!-- Email -->
-
                     <div class="cp-input-group">
-
                         <label>
-                            <i class="fas fa-envelope"></i>
-                            Email Address
+                            <i class="fas fa-envelope"></i> Email Address
                         </label>
-
-                        <input
-                            type="email"
-                            name="email"
-                            placeholder="ali@example.com"
-                            required>
-
+                        <input type="email" name="email" placeholder="ahmed@example.com" required>
                     </div>
-
                 </div>
 
-
-                <!-- Category -->
-
+                <!-- Subject -->
                 <div class="cp-input-group">
-
                     <label>
-                        <i class="fas fa-list-check"></i>
-                        Inquiry Category
+                        <i class="fas fa-list-check"></i> Subject
                     </label>
-
-                    <select
-                        name="category"
-                        required>
-
-                        <option
-                            value=""
-                            disabled
-                            selected>
-
-                            Select inquiry topic
-
-                        </option>
-
-                        <option value="pilgrim">
-                            Pilgrim / Traveler
-                        </option>
-
-                        <option value="agent">
-                            Travel Agent
-                        </option>
-
-                        <option value="payment">
-                            Payment & Escrow
-                        </option>
-
-                        <option value="general">
-                            General Inquiry
-                        </option>
-
-                    </select>
-
+                    <input type="text" name="subject" placeholder="Inquiry Subject" required>
                 </div>
-
 
                 <!-- Message -->
-
                 <div class="cp-input-group">
-
                     <label>
-                        <i class="fas fa-comment-dots"></i>
-                        Your Message
+                        <i class="fas fa-comment-dots"></i> Your Message
                     </label>
-
-                    <textarea
-                        name="message"
-                        rows="6"
-                        placeholder="Tell us how we can help you..."
-                        required></textarea>
-
+                    <textarea name="message" rows="6" placeholder="Tell us how we can help you..." required></textarea>
                 </div>
 
-
-                <!-- Submit -->
-
-                <button
-                    type="submit"
-                    class="cp-submit-button">
-
+                <!-- Submit Button -->
+                <button type="submit" class="cp-submit-button">
                     <span>Send Message</span>
-
                     <i class="fas fa-paper-plane"></i>
-
                 </button>
 
-
                 <div class="cp-form-note">
-
                     <i class="fas fa-lock"></i>
-
-                    Your information is safe and will only
-                    be used to respond to your inquiry.
-
+                    Your information is safe and will only be used to respond to your inquiry.
                 </div>
-
             </form>
-
         </div>
-
     </section>
-
 
     <!-- =========================
          FAQ / HELP SECTION
     ========================== -->
 
     <section class="cp-faq">
-
         <div class="cp-section-heading">
-
             <span>QUICK ANSWERS</span>
-
             <h2>Frequently Asked Questions</h2>
-
-            <p>
-                Some quick answers to common questions.
-            </p>
-
+            <p>Some quick answers to common questions.</p>
         </div>
-
 
         <div class="cp-faq-grid">
-
             <div class="cp-faq-card">
-
-                <div class="cp-faq-number">
-                    01
-                </div>
-
+                <div class="cp-faq-number">01</div>
                 <div>
-
-                    <h3>
-                        How can I verify a travel agent?
-                    </h3>
-
-                    <p>
-                        Enter the agent's License ID in our
-                        Verify Agent section above to check
-                        their registration status.
-                    </p>
-
+                    <h3>How can I verify a travel agent?</h3>
+                    <p>Enter the agent's License ID in our Verify Agent section above to check their registration status.</p>
                 </div>
-
             </div>
 
-
             <div class="cp-faq-card">
-
-                <div class="cp-faq-number">
-                    02
-                </div>
-
+                <div class="cp-faq-number">02</div>
                 <div>
-
-                    <h3>
-                        Can I get help with my booking?
-                    </h3>
-
-                    <p>
-                        Yes. Select Pilgrim / Traveler in
-                        the contact form and describe your
-                        booking concern.
-                    </p>
-
+                    <h3>Can I get help with my booking?</h3>
+                    <p>Yes. Enter your details in the contact form and describe your booking concern.</p>
                 </div>
-
             </div>
 
-
             <div class="cp-faq-card">
-
-                <div class="cp-faq-number">
-                    03
-                </div>
-
+                <div class="cp-faq-number">03</div>
                 <div>
-
-                    <h3>
-                        Do you support travel partners?
-                    </h3>
-
-                    <p>
-                        Yes. Agents and Guides can contact
-                        our Partner Support team for
-                        assistance.
-                    </p>
-
+                    <h3>Do you support travel partners?</h3>
+                    <p>Yes. Agents and Guides can contact our Partner Support team for assistance.</p>
                 </div>
-
             </div>
 
-
             <div class="cp-faq-card">
-
-                <div class="cp-faq-number">
-                    04
-                </div>
-
+                <div class="cp-faq-number">04</div>
                 <div>
-
-                    <h3>
-                        How quickly will you respond?
-                    </h3>
-
-                    <p>
-                        Our support team aims to respond
-                        to inquiries as soon as possible
-                        during support hours.
-                    </p>
-
+                    <h3>How quickly will you respond?</h3>
+                    <p>Our support team aims to respond to inquiries as soon as possible during support hours.</p>
                 </div>
-
             </div>
-
         </div>
-
     </section>
-
 
     <!-- =========================
          BOTTOM CTA
     ========================== -->
 
     <section class="cp-bottom-cta">
-
         <div>
-
             <span>
                 <i class="fas fa-heart"></i>
                 YOUR SACRED JOURNEY MATTERS
             </span>
-
-            <h2>
-                Need Help Planning Your Journey?
-            </h2>
-
-            <p>
-                We're here to make your Hajj and Umrah
-                experience easier, clearer and more reliable.
-            </p>
-
+            <h2>Need Help Planning Your Journey?</h2>
+            <p>We're here to make your Hajj and Umrah experience easier, clearer and more reliable.</p>
         </div>
 
-        <a href="#contact-form"
-           class="cp-cta-button">
-
+        <a href="#contact-form" class="cp-cta-button">
             Contact Our Team
             <i class="fas fa-arrow-right"></i>
-
         </a>
-
     </section>
 
-</div>
+    <!-- =========================
+         FOOTER SECTION
+    ========================== -->
 
-
-<!-- =========================
-     AGENT VERIFY SCRIPT
-========================== -->
-
-<script>
-
-function verifyAgent() {
-
-    const input =
-        document.getElementById("agentIdInput");
-
-    const result =
-        document.getElementById("verifyResult");
-
-    const licenseId =
-        input.value.trim();
-
-
-    if (licenseId === "") {
-
-        result.innerHTML =
-            '<i class="fas fa-circle-exclamation"></i> Please enter a License ID.';
-
-        result.className =
-            "cp-status cp-error";
-
-        return;
-    }
-
-
-    /*
-       Replace this demo response with
-       your Django verification logic later.
-    */
-
-    result.innerHTML =
-        '<i class="fas fa-circle-check"></i> License ID submitted for verification.';
-
-    result.className =
-        "cp-status cp-success";
-
-}
-
-</script>
-<footer class="footer-wrapper">
-
-    <div class="footer-top-curve">
-        <svg viewBox="0 0 1440 150"
-             xmlns="http://www.w3.org/2000/svg"
-             preserveAspectRatio="none">
-
-            <path
-                fill="#ffff"
-                d="M0,64 C360,160 1080,0 1440,96 L1440,0 L0,0 Z">
-            </path>
-
-        </svg>
-    </div>
-
-    <div class="footer-content">
-
-        <div class="footer-columns">
-
-            <div>
-                <h3>About Safar-e-Haram</h3>
-
+    <footer class="cp-footer">
+        <div class="cp-footer-container">
+            <div class="cp-footer-brand">
+                <h3>Safar-e-Haram</h3>
                 <p>
-                    Safar-e-Haram guides you on a blessed journey —
-                    helping pilgrims explore routes, maps, and essential
-                    Hajj & Umrah information in one place.
+                    A trusted platform providing transparent, secure, and reliable
+                    Hajj & Umrah services for all pilgrims.
                 </p>
             </div>
 
-            <div>
-                <h3>Quick Links</h3>
+            <div class="cp-footer-links">
+                <div>
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Packages</a></li>
+                        <li><a href="#">Agents</a></li>
+                        <li><a href="#">Guides</a></li>
+                    </ul>
+                </div>
 
-                <ul>
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">Guides</a></li>
-                    <li><a href="#">Maps</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
+                <div>
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Escrow System</a></li>
+                        <li><a href="#">FAQs</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4>Connect</h4>
+                    <p>Email: support@safareharam.com</p>
+                    <p>Phone: +92 21 3456 7890</p>
+                </div>
             </div>
-
-            <div>
-                <h3>Support</h3>
-
-                <ul>
-                    <li><a href="#">FAQ</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Terms & Conditions</a></li>
-                </ul>
-            </div>
-
         </div>
 
-        <div class="footer-social">
-
-            <a href="#" aria-label="Facebook">
-                <i class="fab fa-facebook-f"></i>
-            </a>
-
-            <a href="#" aria-label="Instagram">
-                <i class="fab fa-instagram"></i>
-            </a>
-
-            <a href="#" aria-label="YouTube">
-                <i class="fab fa-youtube"></i>
-            </a>
-
-            <a href="#" aria-label="Twitter">
-                <i class="fab fa-x-twitter"></i>
-            </a>
-
+        <div class="cp-footer-bottom">
+            <p>&copy; {% now "Y" %} Safar-e-Haram. All rights reserved.</p>
         </div>
+    </footer>
 
-        <div class="footer-bottom">
-            <p>© 2025 Safar-e-Haram. All Rights Reserved.</p>
-        </div>
+</div>
 
-    </div>
+<!-- AGENT VERIFY SCRIPT -->
+<script>
+function verifyAgent() {
+    const input = document.getElementById("agentIdInput");
+    const result = document.getElementById("verifyResult");
+    const licenseId = input.value.trim();
 
-</footer>
+    if (licenseId === "") {
+        result.innerHTML = '<i class="fas fa-circle-exclamation"></i> Please enter a License ID.';
+        result.className = "cp-status cp-error";
+        return;
+    }
+
+    result.innerHTML = '<i class="fas fa-circle-check"></i> License ID submitted for verification.';
+    result.className = "cp-status cp-success";
+}
+</script>
 
 {% endblock %}

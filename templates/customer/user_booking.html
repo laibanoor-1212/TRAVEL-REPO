@@ -65,14 +65,14 @@
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.03);
     border: 1px solid #e2e8f0;
-    padding: 10px;
+    padding: 16px;
+    position: relative;
   }
 
   .table-responsive {
     width: 100%;
     overflow-x: auto;
-    padding-bottom: 50px; 
-    margin-bottom: -50px;
+    min-height: 300px;
   }
 
   .booking-table {
@@ -100,7 +100,6 @@
     color: var(--text-dark);
     vertical-align: middle;
     white-space: nowrap;
-    position: relative;
   }
 
   .status-badge {
@@ -118,7 +117,6 @@
     background-color: #fef2f2;
     color: #dc2626;
     border: 1px solid #fca5a5;
-    animation: pulse-red 2s infinite;
   }
 
   .status-confirmed {
@@ -139,19 +137,14 @@
     border: 1px solid #cbd5e1;
   }
 
-  @keyframes pulse-red {
-    0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.3); }
-    70% { box-shadow: 0 0 0 5px rgba(220, 38, 38, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
-  }
-
   .action-container {
     display: flex;
     align-items: center;
     gap: 8px;
+    position: relative;
   }
 
-  .btn-action-main {
+  .btn-view-outside {
     padding: 7px 12px;
     border-radius: 6px;
     font-size: 12px;
@@ -161,12 +154,20 @@
     align-items: center;
     gap: 6px;
     white-space: nowrap;
-    border: none;
-    cursor: pointer;
+    border: 1px solid #cbd5e1;
+    background-color: #f1f5f9;
+    color: var(--text-dark);
   }
 
-  .btn-secondary { background-color: #f1f5f9; color: var(--text-dark); border: 1px solid #cbd5e1; }
-  .btn-danger-fix { background-color: #dc2626; color: #ffffff; }
+  .btn-view-outside:hover {
+    background-color: #e2e8f0;
+  }
+
+  .btn-fix-outside {
+    background-color: #dc2626;
+    color: #ffffff;
+    border-color: #dc2626;
+  }
 
   .dropdown {
     position: relative;
@@ -177,50 +178,61 @@
     background: #f1f5f9;
     border: 1px solid #cbd5e1;
     color: var(--text-dark);
-    padding: 7px 11px;
+    padding: 7px 12px;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 14px;
+    transition: all 0.2s ease;
   }
 
-  .dropdown-btn:hover { background: #e2e8f0; }
+  .dropdown-btn:hover {
+    background: #e2e8f0;
+  }
 
-  .dropdown-menu {
+  .dropdown-menu-custom {
     display: none;
     position: absolute;
     right: 0;
-    top: 100%;
-    margin-top: 4px;
+    top: calc(100% + 4px);
     background-color: #ffffff;
-    min-width: 160px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    min-width: 180px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     border-radius: 8px;
-    border: 1px solid #e2e8f0;
-    z-index: 999;
+    border: 1px solid #cbd5e1;
+    z-index: 9999;
     padding: 6px 0;
   }
 
-  .dropdown-menu.show { display: block; }
-
-  .dropdown-item {
+  .dropdown-item-custom {
     color: var(--text-dark);
-    padding: 8px 14px;
+    padding: 9px 14px;
     text-decoration: none;
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 12px;
+    gap: 10px;
+    font-size: 13px;
     font-weight: 600;
     width: 100%;
     border: none;
     background: none;
     text-align: left;
     cursor: pointer;
+    box-sizing: border-box;
   }
 
-  .dropdown-item:hover { background-color: #f8fafc; }
-  .dropdown-item.text-danger { color: #dc2626; }
-  .dropdown-item.text-danger:hover { background-color: #fef2f2; }
+  .dropdown-item-custom:hover {
+    background-color: #f8fafc;
+  }
+
+  .dropdown-item-custom i {
+    width: 16px;
+    text-align: center;
+  }
+
+  .dropdown-item-custom.text-danger { color: #dc2626; }
+  .dropdown-item-custom.text-danger:hover { background-color: #fef2f2; }
+  .dropdown-item-custom.text-warning { color: #d97706; }
+  .dropdown-item-custom.text-warning:hover { background-color: #fffbeb; }
 
   .modal-overlay {
     position: fixed;
@@ -229,7 +241,7 @@
     display: none; 
     align-items: center; 
     justify-content: center;
-    z-index: 10000;
+    z-index: 100000;
     backdrop-filter: blur(2px);
   }
 
@@ -242,7 +254,11 @@
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
   }
 
-  .modal-content h3 { margin-top: 0; color: var(--text-dark); font-size: 18px; }
+  .modal-content h3 {
+    margin-top: 0;
+    font-size: 18px;
+    color: var(--text-dark);
+  }
 
   .modal-content textarea, .modal-content input {
     width: 100%;
@@ -256,6 +272,8 @@
   }
 
   .modal-footer { display: flex; justify-content: flex-end; gap: 10px; }
+  .btn-modal-cancel { padding: 8px 14px; border: 1px solid #cbd5e1; background: #fff; border-radius: 6px; cursor: pointer; font-weight: 600; }
+  .btn-modal-submit { padding: 8px 14px; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
 </style>
 
 <div class="bookings-wrapper">
@@ -293,13 +311,17 @@
             
             <!-- Booking Status Logic -->
             <td>
-              {% if booking.status == 'action_required' or booking.status == 'rollback' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
-                <span class="status-badge status-action-required">
-                  <i class="fa-solid fa-triangle-exclamation"></i> Re-upload Docs Needed
+              {% if booking.status == 'refund_requested' %}
+                <span class="status-badge status-pending" style="background-color: #fef3c7; color: #d97706; border: 1px solid #fcd34d;">
+                  <i class="fa-solid fa-rotate-left"></i> Refund Requested
                 </span>
-              {% elif booking.status == 'approved' or booking.status == 'confirmed' %}
+              {% elif booking.status in 'approved,confirmed,completed' or booking.payment.payment_status in 'released,completed,held_in_escrow,paid' %}
                 <span class="status-badge status-confirmed">
                   <i class="fa-solid fa-circle-check"></i> Approved
+                </span>
+              {% elif booking.status in 'action_required,rollback,reupload,docs_needed' %}
+                <span class="status-badge status-action-required">
+                  <i class="fa-solid fa-triangle-exclamation"></i> Re-upload Docs
                 </span>
               {% elif booking.status == 'rejected' %}
                 <span class="status-badge status-cancelled">
@@ -316,67 +338,96 @@
               {% endif %}
             </td>
 
-            <!-- Payment Status -->
+            <!-- Payment Status Logic (FIXED FOR REFUND) -->
             <td>
-              {% if not booking.payment %}
+              {% if booking.payment and booking.payment.payment_status == 'refund_requested' or booking.status == 'refund_requested' %}
+                <span class="status-badge status-pending" style="background-color: #fef3c7; color: #d97706; border: 1px solid #fcd34d;">
+                  <i class="fa-solid fa-rotate-left"></i> Refund Requested
+                </span>
+              {% elif booking.payment and booking.payment.payment_status == 'refunded' or booking.status == 'refunded' %}
                 <span class="status-badge status-cancelled">
-                  <i class="fa-solid fa-circle-xmark"></i> Not Paid
+                  <i class="fa-solid fa-arrow-rotate-left"></i> Refunded
                 </span>
-              {% elif booking.payment.payment_status == 'released' or booking.payment.payment_status == 'completed' %}
+              {% elif booking.payment and booking.payment.payment_status in 'released,completed' %}
                 <span class="status-badge status-confirmed">
-                  <i class="fa-solid fa-circle-check"></i> Paid
+                  <i class="fa-solid fa-circle-check"></i> Released
                 </span>
-              {% elif booking.payment.payment_status == 'pending' %}
+              {% elif booking.payment and booking.payment.payment_status in 'held_in_escrow,paid' %}
+                <span class="status-badge status-confirmed">
+                  <i class="fa-solid fa-shield-halved"></i> Held in Escrow
+                </span>
+              {% elif booking.payment and booking.payment.payment_status == 'pending' %}
                 <span class="status-badge status-pending">
-                  <i class="fa-solid fa-clock"></i> Payment Pending
+                  <i class="fa-solid fa-clock"></i> Pending
                 </span>
               {% else %}
                 <span class="status-badge status-cancelled">
-                  {{ booking.payment.get_payment_status_display }}
+                  <i class="fa-solid fa-circle-xmark"></i> Unpaid
                 </span>
               {% endif %}
             </td>
 
-            <!-- Actions -->
+            <!-- Actions Cell -->
             <td>
               <div class="action-container">
-                {% if booking.status == 'action_required' or booking.status == 'rollback' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
-                  <a href="{% url 'customers:booking_detail' booking.id %}" class="btn-action-main btn-danger-fix" title="Fix Documents">
+                
+                <!-- OUTSIDE: View / Fix Button -->
+                {% if booking.status in 'action_required,rollback,reupload,docs_needed' and not booking.payment.payment_status in 'released,completed,held_in_escrow,paid' %}
+                  <a href="{% url 'customers:booking_detail' booking.id %}" class="btn-view-outside btn-fix-outside">
                     <i class="fa-solid fa-upload"></i> Fix Docs
                   </a>
                 {% else %}
-                  <a href="{% url 'customers:booking_detail' booking.id %}" class="btn-action-main btn-secondary" title="View Details">
+                  <a href="{% url 'customers:booking_detail' booking.id %}" class="btn-view-outside">
                     <i class="fa-solid fa-eye"></i> View
                   </a>
                 {% endif %}
 
-                <!-- Options Menu -->
+                <!-- DROPDOWN BUTTON -->
                 <div class="dropdown">
-                  <button type="button" class="dropdown-btn" onclick="toggleDropdown('dropdown-{{ booking.id }}', event)">
+                  <button type="button" class="dropdown-btn" onclick="toggleBookingMenu('dropdown-{{ booking.id }}', event)">
                     <i class="fa-solid fa-ellipsis-vertical"></i>
                   </button>
-                  <div id="dropdown-{{ booking.id }}" class="dropdown-menu">
-                    {% if not booking.payment or booking.payment.payment_status == 'pending' or booking.payment.payment_status == 'failed' %}
-                      <a href="{% url 'bookings:choose_payment_method' booking.id %}" class="dropdown-item">
-                        <i class="fa-solid fa-credit-card" style="color: var(--primary-green);"></i> Pay Now
+
+                  <div id="dropdown-{{ booking.id }}" class="dropdown-menu-custom">
+                    
+                    {% if booking.payment and booking.payment.payment_status == 'refund_requested' or booking.status == 'refund_requested' %}
+                      <!-- Refund Already Requested -->
+                      <a href="{% url 'bookings:payment_status' booking.id %}" class="dropdown-item-custom">
+                        <i class="fa-solid fa-receipt" style="color: #0284c7;"></i> Track Refund
                       </a>
-                    {% else %}
-                      <a href="{% url 'bookings:payment_status' booking.id %}" class="dropdown-item">
+                    {% elif booking.payment and booking.payment.payment_status in 'released,completed' %}
+                      <!-- Released Payment Options -->
+                      <a href="{% url 'bookings:payment_status' booking.id %}" class="dropdown-item-custom">
                         <i class="fa-solid fa-receipt" style="color: #0284c7;"></i> Track Payment
+                      </a>
+                    {% elif booking.payment and booking.payment.payment_status in 'held_in_escrow,paid' %}
+                      <!-- Escrow Payment Options -->
+                      <a href="{% url 'bookings:payment_status' booking.id %}" class="dropdown-item-custom">
+                        <i class="fa-solid fa-receipt" style="color: #0284c7;"></i> Track Payment
+                      </a>
+                      <button type="button" class="dropdown-item-custom text-warning" onclick="openModal('refundModal-{{ booking.id }}')">
+                        <i class="fa-solid fa-rotate-left"></i> Request Refund
+                      </button>
+                    {% else %}
+                      <!-- Unpaid Booking Options -->
+                      <a href="{% url 'bookings:choose_payment_method' booking.id %}" class="dropdown-item-custom">
+                        <i class="fa-solid fa-credit-card" style="color: var(--primary-green);"></i> Pay Now
                       </a>
                     {% endif %}
 
-                    <button type="button" class="dropdown-item" onclick="openModal('extendModal-{{ booking.id }}')">
-                      <i class="fa-solid fa-calendar-plus" style="color: #0284c7;"></i> Extend Date
-                    </button>
+                    {% if booking.status != 'cancelled' and booking.status != 'completed' and booking.status != 'refund_requested' %}
+                      <button type="button" class="dropdown-item-custom" onclick="openModal('extendModal-{{ booking.id }}')">
+                        <i class="fa-solid fa-calendar-plus" style="color: #0284c7;"></i> Extend Date
+                      </button>
 
-                    {% if booking.status != 'cancelled' and booking.status != 'completed' %}
-                      <button type="button" class="dropdown-item text-danger" onclick="openModal('cancelModal-{{ booking.id }}')">
+                      <button type="button" class="dropdown-item-custom text-danger" onclick="openModal('cancelModal-{{ booking.id }}')">
                         <i class="fa-solid fa-ban"></i> Cancel Booking
                       </button>
                     {% endif %}
+
                   </div>
                 </div>
+
               </div>
             </td>
           </tr>
@@ -385,39 +436,50 @@
       </table>
     </div>
 
-    <!-- Modals Section -->
+    <!-- Modals -->
     {% for booking in bookings %}
-    <div id="cancelModal-{{ booking.id }}" class="modal-overlay">
+    <div id="cancelModal-{{ booking.id }}" class="modal-overlay" onclick="closeModalOnOverlay(event, 'cancelModal-{{ booking.id }}')">
       <div class="modal-content">
         <h3>Cancel Booking (#{{ booking.booking_id|default:booking.id }})</h3>
-        <p style="color: var(--text-muted); font-size: 13px;">Are you sure you want to cancel? Please provide a reason.</p>
         <form method="POST" action="{% url 'customers:manage_booking_request' booking.id %}">
           {% csrf_token %}
           <input type="hidden" name="booking_id" value="{{ booking.id }}" />
-          <textarea name="reason" rows="3" placeholder="Write reason here..." required></textarea>
+          <textarea name="reason" rows="3" placeholder="Reason for cancellation..." required></textarea>
           <div class="modal-footer">
-            <button type="button" class="btn-action-main btn-secondary" onclick="closeModal('cancelModal-{{ booking.id }}')">Close</button>
-            <button type="submit" name="action_type" value="cancel" class="btn-action-main btn-danger-fix">Submit Request</button>
+            <button type="button" class="btn-modal-cancel" onclick="closeModal('cancelModal-{{ booking.id }}')">Close</button>
+            <button type="submit" name="action_type" value="cancel" class="btn-modal-submit" style="background: #dc2626;">Cancel Booking</button>
           </div>
         </form>
       </div>
     </div>
 
-    <div id="extendModal-{{ booking.id }}" class="modal-overlay">
+    <div id="refundModal-{{ booking.id }}" class="modal-overlay" onclick="closeModalOnOverlay(event, 'refundModal-{{ booking.id }}')">
       <div class="modal-content">
-        <h3>Extend Date Request (#{{ booking.booking_id|default:booking.id }})</h3>
+        <h3>Request Refund (#{{ booking.booking_id|default:booking.id }})</h3>
         <form method="POST" action="{% url 'customers:manage_booking_request' booking.id %}">
           {% csrf_token %}
           <input type="hidden" name="booking_id" value="{{ booking.id }}" />
-          <label style="font-size: 12px; font-weight: 700; color: var(--text-dark);">New Expected Date:</label>
-          <input type="date" name="new_date" required />
-
-          <label style="font-size: 12px; font-weight: 700; color: var(--text-dark);">Reason for Extension:</label>
-          <textarea name="reason" rows="3" placeholder="Why do you want to extend?" required></textarea>
-
+          <textarea name="reason" rows="3" placeholder="Refund reason..." required></textarea>
           <div class="modal-footer">
-            <button type="button" class="btn-action-main btn-secondary" onclick="closeModal('extendModal-{{ booking.id }}')">Close</button>
-            <button type="submit" name="action_type" value="extend" class="btn-action-main" style="background: var(--primary-green); color: white;">Send Request</button>
+            <button type="button" class="btn-modal-cancel" onclick="closeModal('refundModal-{{ booking.id }}')">Close</button>
+            <button type="submit" name="action_type" value="refund" class="btn-modal-submit" style="background: #d97706;">Submit Refund</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="extendModal-{{ booking.id }}" class="modal-overlay" onclick="closeModalOnOverlay(event, 'extendModal-{{ booking.id }}')">
+      <div class="modal-content">
+        <h3>Extend Date (#{{ booking.booking_id|default:booking.id }})</h3>
+        <form method="POST" action="{% url 'customers:manage_booking_request' booking.id %}">
+          {% csrf_token %}
+          <input type="hidden" name="booking_id" value="{{ booking.id }}" />
+          <label style="font-size: 12px; font-weight: 700;">New Date:</label>
+          <input type="date" name="new_date" required />
+          <textarea name="reason" rows="3" placeholder="Reason..." required></textarea>
+          <div class="modal-footer">
+            <button type="button" class="btn-modal-cancel" onclick="closeModal('extendModal-{{ booking.id }}')">Close</button>
+            <button type="submit" name="action_type" value="extend" class="btn-modal-submit" style="background: var(--primary-green);">Send Request</button>
           </div>
         </form>
       </div>
@@ -426,36 +488,61 @@
 
     {% else %}
     <div style="text-align: center; padding: 50px 20px; color: var(--text-muted);">
-      <i class="fa-solid fa-folder-open" style="font-size: 48px; margin-bottom: 16px; color: #cbd5e1;"></i>
-      <h3 style="color: var(--text-dark); margin-bottom: 6px;">No Bookings Found</h3>
-      <p style="margin: 0;">You haven't booked any packages yet.</p>
+      <i class="fa-solid fa-calendar-xmark" style="font-size: 40px; margin-bottom: 12px; color: #cbd5e1;"></i>
+      <h3>No Bookings Found</h3>
     </div>
     {% endif %}
   </div>
 </div>
 
 <script>
-  function toggleDropdown(id, event) {
-    event.stopPropagation();
-    document.querySelectorAll('.dropdown-menu').forEach(menu => {
-      if (menu.id !== id) menu.classList.remove('show');
+  function toggleBookingMenu(id, event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    
+    var currentMenu = document.getElementById(id);
+    var allMenus = document.querySelectorAll('.dropdown-menu-custom');
+    
+    allMenus.forEach(function(menu) {
+      if (menu !== currentMenu) {
+        menu.style.display = 'none';
+      }
     });
-    document.getElementById(id).classList.toggle('show');
+
+    if (currentMenu) {
+      currentMenu.style.display = (currentMenu.style.display === 'block') ? 'none' : 'block';
+    }
   }
 
   function openModal(id) {
-    document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.remove('show'));
-    const modal = document.getElementById(id);
-    if(modal) modal.style.display = "flex";
+    closeAllMenus();
+    var modal = document.getElementById(id);
+    if (modal) modal.style.display = "flex";
   }
 
   function closeModal(id) {
-    const modal = document.getElementById(id);
-    if(modal) modal.style.display = "none";
+    var modal = document.getElementById(id);
+    if (modal) modal.style.display = "none";
   }
 
-  window.onclick = function() {
-    document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.remove('show'));
-  };
+  function closeModalOnOverlay(event, id) {
+    if (event.target.classList.contains('modal-overlay')) {
+      closeModal(id);
+    }
+  }
+
+  function closeAllMenus() {
+    document.querySelectorAll('.dropdown-menu-custom').forEach(function(menu) {
+      menu.style.display = 'none';
+    });
+  }
+
+  document.addEventListener('click', function(event) {
+    if (!event.target.closest('.dropdown')) {
+      closeAllMenus();
+    }
+  });
 </script>
 {% endblock %}

@@ -23,11 +23,14 @@ urlpatterns = [
     path('complaints/', views.admin_complaints, name='admin_complaints'),
     path('payments/', views.admin_payments_list, name='admin_payments_list'),
     path('payments/<int:payment_id>/', views.admin_payment_detail, name='payment_detail'),
+    
+    # Action Route to Release Payout
+    path('payments/<int:payment_id>/release/', views.admin_release_payout, name='admin_release_payout'),
     path('payments/proof/<int:proof_id>/verify/', views.admin_verify_proof, name='verify_proof'),
     path('payments/proof/<int:proof_id>/reject/', views.admin_reject_proof, name='reject_proof'),
     path('payments/<int:payment_id>/release/', views.admin_release_payment, name='release_payment'),
     path('payments/<int:payment_id>/cancel/', views.admin_cancel_payment, name='cancel_payment'),
-    path('payments/<int:payment_id>/refund/', views.admin_refund_payment, name='refund_payment'),
+   path('payments/<int:payment_id>/refund/', views.admin_refund_payment, name='admin_refund_payment'),
     path('package-types/add/', views.add_package_type, name='add_package_type'),
     path('package-types/delete/<int:pk>/', views.delete_package_type, name='delete_package_type'),
     path('admin-dashboard/commission-setting/', views.set_commission, name='set_commission'),

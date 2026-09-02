@@ -349,28 +349,14 @@
                 <label>Operator</label>
                 <select id="operatorSelect" class="clean-select-input">
                     <option value="All">All Operators</option>
-                    {% for agent in approved_agents %}
-                        <option value="{% if agent.stakeholder_profile and agent.stakeholder_profile.agency_name %}{{ agent.stakeholder_profile.agency_name }}{% elif agent.agency_name %}{{ agent.agency_name }}{% else %}{{ agent.username }}{% endif %}">
-                            {% if agent.stakeholder_profile and agent.stakeholder_profile.agency_name %}
-                                {{ agent.stakeholder_profile.agency_name }}
-                            {% elif agent.agency_name %}
-                                {{ agent.agency_name }}
-                            {% else %}
-                                {{ agent.username }}
-                            {% endif %}
-                        </option>
-                    {% empty %}
-                        {% for agency in agencies %}
-                            <option value="{{ agency.agency_name|default:agency.username }}">
-                                {{ agency.agency_name|default:agency.username }}
-                            </option>
-                        {% empty %}
-                            {% for pkg in packages %}
-                                {% if pkg.agency %}
-                                    <option value="{{ pkg.agency }}">{{ pkg.agency }}</option>
+                    {% for pkg in packages %}
+                        {% if pkg.agency %}
+                            {% with agency_name=pkg.agency.stakeholder_profile.agency_name|default:pkg.agency.agency_name|default:pkg.agency.username %}
+                                {% if agency_name %}
+                                    <option value="{{ agency_name }}">{{ agency_name }}</option>
                                 {% endif %}
-                            {% endfor %}
-                        {% endfor %}
+                            {% endwith %}
+                        {% endif %}
                     {% endfor %}
                 </select>
             </div>
@@ -423,7 +409,7 @@
         {% for package in packages %}
             <div class="theme-tour-card"
                  data-operator="{% if package.agency.stakeholder_profile and package.agency.stakeholder_profile.agency_name %}{{ package.agency.stakeholder_profile.agency_name }}{% elif package.agency.agency_name %}{{ package.agency.agency_name }}{% else %}{{ package.agency.username|default:package.agency }}{% endif %}"
-                 data-package-type="{{ package.package_type|default:'hajj'|lower }}"
+                 data-package-type="{{ package.package_type.name|default:package.package_type|default:'hajj'|lower }}"
                  data-tier="{{ package.tier|default:''|lower }}"
                  data-price="{{ package.price }}">
 
@@ -480,7 +466,17 @@
         const resultsCounter = document.getElementById('resultsCounter');
         const noFilterMatchState = document.getElementById('noFilterMatchState');
         const allPackageCards = document.querySelectorAll('.theme-tour-card');
-
+        if (operatorSelect) {
+            const seenValues = new Set();
+            Array.from(operatorSelect.options).forEach(option => {
+                const val = option.value.trim().toLowerCase();
+                if (val !== "all" && seenValues.has(val)) {
+                    option.remove();
+                } else {
+                    seenValues.add(val);
+                }
+            });
+        }
         function runSearchFilter() {
             let selectedType = packageTypeSelect ? packageTypeSelect.value.toLowerCase().trim() : "all";
             let selectedOperator = operatorSelect ? operatorSelect.value.toLowerCase().trim() : "all";
@@ -498,7 +494,7 @@
                 let isMatch = true;
 
                 // 1. Package Type Check
-                if (selectedType !== "all" && cardType !== selectedType) {
+                if (selectedType !== "all" && !cardType.includes(selectedType)) {
                     isMatch = false;
                 }
 
@@ -535,7 +531,7 @@
             }
         }
 
-        // Live Change Event Listeners (Dropdown Change Par Fawri Filter)
+        // Event Listeners for Live Filter
         if (packageTypeSelect) packageTypeSelect.addEventListener('change', runSearchFilter);
         if (operatorSelect) operatorSelect.addEventListener('change', runSearchFilter);
         if (priceSelect) priceSelect.addEventListener('change', runSearchFilter);
@@ -556,8 +552,6 @@
                 runSearchFilter();
             });
         }
-
-        // Initial Execution on Page Load
         runSearchFilter();
     });
 </script>

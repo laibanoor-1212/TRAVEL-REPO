@@ -2,117 +2,417 @@
 {% load static %}
 
 {% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    .page-container {
+        max-width: 1000px;
+        margin: 30px auto;
+        padding: 0 20px;
+        font-family: 'Poppins', 'Segoe UI', sans-serif;
+    }
+
+    .form-wizard {
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e2e8f0;
+    }
+
+    .wizard-header {
+        margin-bottom: 25px;
+        border-bottom: 2px solid #f1f5f9;
+        padding-bottom: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .agency-label {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #198754;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .agency-name {
+        margin: 5px 0 0 0;
+        color: #0f5132;
+        font-weight: 700;
+        font-size: 1.5rem;
+    }
+
+    .form-part {
+        margin-bottom: 30px;
+        background: #fafafa;
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #edf2f7;
+    }
+
+    .part-title {
+        color: #198754;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 18px;
+        border-bottom: 1px solid #e2e8f0;
+        padding-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .input-grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .input-grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+
+    .field-box {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .field-box label {
+        font-weight: 600;
+        font-size: 0.88rem;
+        color: #2d3748;
+        margin-bottom: 6px;
+    }
+
+    .field-box input[type="text"],
+    .field-box input[type="number"],
+    .field-box input[type="date"],
+    .field-box select,
+    .field-box textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        font-size: 0.92rem;
+        background-color: #ffffff;
+        outline: none;
+        transition: all 0.2s ease;
+        box-sizing: border-box;
+    }
+
+    .field-box input:focus,
+    .field-box select:focus,
+    .field-box textarea:focus {
+        border-color: #198754;
+        box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.15);
+    }
+
+    .locked-input {
+        background-color: #e9ecef !important;
+        cursor: not-allowed;
+        color: #6c757d;
+    }
+
+    .services-selection {
+        margin-top: 10px;
+    }
+
+    .pill-group {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #ffffff;
+        padding: 8px 16px;
+        border-radius: 20px;
+        border: 1px solid #cbd5e1;
+        cursor: pointer;
+        font-size: 0.88rem;
+        font-weight: 500;
+        user-select: none;
+        transition: all 0.2s ease;
+    }
+
+    .pill:hover {
+        border-color: #198754;
+        background: #f0fdf4;
+    }
+
+    .pill input[type="checkbox"] {
+        accent-color: #198754;
+        width: 16px;
+        height: 16px;
+    }
+
+    .upload-zone {
+        border: 2px dashed #cbd5e1;
+        padding: 20px;
+        text-align: center;
+        border-radius: 8px;
+        background: #ffffff;
+        cursor: pointer;
+        transition: border 0.3s ease;
+    }
+
+    .upload-zone:hover {
+        border-color: #198754;
+    }
+
+    .upload-zone label {
+        cursor: pointer;
+        color: #198754;
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+
+    .form-footer-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        margin-top: 25px;
+    }
+
+    .btn-clear {
+        padding: 10px 22px;
+        background: #6c757d;
+        color: #ffffff;
+        border: none;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background 0.2s;
+    }
+
+    .btn-clear:hover {
+        background: #5a6268;
+    }
+
+    .btn-publish {
+        padding: 10px 26px;
+        background: #198754;
+        color: #ffffff;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: background 0.2s;
+    }
+
+    .btn-publish:hover {
+        background: #146c43;
+    }
+
+    @media (max-width: 768px) {
+        .input-grid-2, .input-grid-3 {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
 <div class="page-container">
     <div class="form-wizard">
         <div class="wizard-header">
             <div class="agency-info">
-                <span class="agency-label">ADD PACKAGES</span>
-                <h2 class="agency-name">{{ request.user.stakeholder_profile.agency_name }}</h2>
+                <span class="agency-label">CREATE NEW PACKAGE</span>
+                <h2 class="agency-name">
+                    {% if request.user.stakeholder_profile.agency_name %}
+                        {{ request.user.stakeholder_profile.agency_name }}
+                    {% else %}
+                        {{ request.user.username }}
+                    {% endif %}
+                </h2>
             </div>
-           
+            <div>
+                <a href="{% url 'packages:manage_packages' %}" style="text-decoration: none; color: #6c757d; font-size: 0.9rem; font-weight: 500;">
+                    <i class="fas fa-arrow-left"></i> Back to Manage Packages
+                </a>
+            </div>
         </div>
 
-        <form method="POST" enctype="multipart/form-data" class="stepped-form">
+        {% if messages %}
+            {% for message in messages %}
+                <div style="padding: 12px 16px; margin-bottom: 20px; border-radius: 8px; font-weight: 500; {% if message.tags == 'error' %}background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;{% else %}background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb;{% endif %}">
+                    <i class="fas {% if message.tags == 'error' %}fa-exclamation-circle{% else %}fa-check-circle{% endif %}" style="margin-right: 8px;"></i>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" action="{% url 'packages:create_packages' %}" enctype="multipart/form-data" id="packageForm">
             {% csrf_token %}
 
+            <!-- Section 1: Agency Information -->
             <div class="form-part">
                 <div class="part-title">
-                    <span class="part-number">1</span>
-                    <h3>Agency Verification</h3>
+                    <i class="fas fa-id-card"></i> Agency Information
                 </div>
                 <div class="part-body">
                     <div class="input-grid-2">
                         <div class="field-box">
                             <label>Agency Name</label>
-                            <input type="text" value="{{ request.user.stakeholder_profile.agency_name }}" readonly class="locked-input">
+                            <input type="text" value="{{ request.user.stakeholder_profile.agency_name|default:request.user.username }}" readonly class="locked-input">
                         </div>
                         <div class="field-box">
                             <label>License Number</label>
-                            <input type="text" value="{{ request.user.stakeholder_profile.license_number }}" readonly class="locked-input">
+                            <input type="text" value="{{ request.user.stakeholder_profile.license_number|default:'N/A' }}" readonly class="locked-input">
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Section 2: Package Specifications -->
             <div class="form-part">
                 <div class="part-title">
-                    <span class="part-number">2</span>
-                    <h3>Package Specifications</h3>
+                    <i class="fas fa-suitcase"></i> Package Specifications
                 </div>
                 <div class="part-body">
-                    <div class="field-box full-width">
-                        <label>Package Title</label>
-                        <input type="text" name="title" placeholder="e.g. Premium 15 Days Umrah Group" required>
+                    <div class="input-grid-2" style="margin-bottom: 15px;">
+                        <div class="field-box">
+                            <label>Package Title *</label>
+                            <input type="text" name="name" id="package-name-input" placeholder="e.g. Premium 15 Days Umrah Group" required>
+                        </div>
+                        <div class="field-box">
+                            <label>Package Type *</label>
+                            <select name="package_type" required>
+                                <option value="" disabled selected>-- Select Package Type --</option>
+                                {% for ptype in package_types %}
+                                    <option value="{{ ptype.id }}">{{ ptype.name }}</option>
+                                {% empty %}
+                                    <option value="" disabled>No package types available</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                     </div>
-                    
+
+                    <div class="input-grid-3" style="margin-bottom: 15px;">
+                        <div class="field-box">
+                            <label>Price (PKR: 100,000 - 2,500,000) *</label>
+                            <input type="number" name="price" id="price-input" min="100000" max="2500000" placeholder="150000" required>
+                        </div>
+                        <div class="field-box">
+                            <label>Tier</label>
+                            <select name="tier">
+                                <option value="economy">Economy</option>
+                                <option value="standard" selected>Standard</option>
+                                <option value="vip">VIP</option>
+                                <option value="luxury">Luxury</option>
+                            </select>
+                        </div>
+                        <div class="field-box">
+                            <label>Total Seats *</label>
+                            <input type="number" name="total_seats" value="50" min="1" required>
+                        </div>
+                    </div>
+
                     <div class="input-grid-3">
                         <div class="field-box">
-                            <label>Price (PKR)</label>
-                            <input type="number" name="price" placeholder="0.00" required>
+                            <label>Duration (Days) *</label>
+                            <input type="number" name="duration_days" placeholder="15" value="15" min="1" required>
                         </div>
                         <div class="field-box">
-                            <label>Total Nights</label>
-                            <input type="number" name="duration" placeholder="15" required>
+                            <label>Departure Date *</label>
+                            <input type="date" name="departure_date" id="departure_date" required>
                         </div>
                         <div class="field-box">
-                            <label>Departure Date</label>
-                            <input type="date" name="departure_date" required>
+                            <label>Application Deadline</label>
+                            <input type="date" name="application_deadline" id="application_deadline">
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Section 3: Accommodation & Inclusions -->
             <div class="form-part">
                 <div class="part-title">
-                    <span class="part-number">3</span>
-                    <h3>Accommodation & Inclusions</h3>
+                    <i class="fas fa-hotel"></i> Accommodation & Inclusions
                 </div>
                 <div class="part-body">
-                    <div class="input-grid-2">
+                    <div class="input-grid-2" style="margin-bottom: 15px;">
                         <div class="field-box">
-                            <label><i class="fas fa-mosque"></i> Makkah Hotel</label>
-                            <input type="text" name="makkah_hotel" placeholder="Hotel Name">
+                            <label><i class="fas fa-kaaba"></i> Makkah Hotel</label>
+                            <input type="text" name="makkah_hotel" placeholder="e.g. Pullman Zamzam Makkah">
                         </div>
                         <div class="field-box">
-                            <label><i class="fas fa-kaaba"></i> Madinah Hotel</label>
-                            <input type="text" name="madinah_hotel" placeholder="Hotel Name">
+                            <label><i class="fas fa-mosque"></i> Madinah Hotel</label>
+                            <input type="text" name="madinah_hotel" placeholder="e.g. Anwar Al Madinah Movenpick">
                         </div>
                     </div>
 
                     <div class="services-selection">
-                        <label>Included Services:</label>
+                        <label style="font-weight: 600; font-size: 0.88rem; margin-bottom: 8px; display: block;">Included Services:</label>
                         <div class="pill-group">
-                            <label class="pill"><input type="checkbox" name="visa"> Visa</label>
-                            <label class="pill"><input type="checkbox" name="ticket"> Ticket</label>
-                            <label class="pill"><input type="checkbox" name="transport"> Transport</label>
-                            <label class="pill"><input type="checkbox" name="ziyarat"> Ziyarat</label>
+                            <label class="pill"><input type="checkbox" name="visa" checked> Visa Processing</label>
+                            <label class="pill"><input type="checkbox" name="ticket" checked> Return Ticket</label>
+                            <label class="pill"><input type="checkbox" name="transport" checked> Transport Included</label>
+                            <label class="pill"><input type="checkbox" name="ziyarat" checked> Ziyarat Tour</label>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Section 4: Media & Description -->
             <div class="form-part">
                 <div class="part-title">
-                    <span class="part-number">4</span>
-                    <h3>Media & Poster</h3>
+                    <i class="fas fa-file-alt"></i> Media & Description
                 </div>
                 <div class="part-body">
-                    <div class="field-box">
-                        <label>Detailed Itinerary</label>
-                        <textarea name="description" rows="4" placeholder="Describe the package flow..."></textarea>
+                    <div class="field-box" style="margin-bottom: 15px;">
+                        <label>Detailed Itinerary / Description</label>
+                        <textarea name="description" rows="4" placeholder="Enter full itinerary details, hotel distances, flight routes, and rules..."></textarea>
                     </div>
-                    <div class="upload-zone">
-                        <input type="file" name="banner" id="banner">
-                        <label for="banner"><i class="fas fa-image"></i> Click to Upload Package Banner</label>
+                    <div class="field-box">
+                        <label>Upload Package Banner Image</label>
+                        <div class="upload-zone">
+                            <input type="file" name="banner" id="banner" accept="image/*" style="display: none;" onchange="updateFileName(this)">
+                            <label for="banner" id="upload-label">
+                                <i class="fas fa-cloud-upload-alt" style="font-size: 1.5rem; display: block; margin-bottom: 5px;"></i>
+                                Click to Upload Package Banner Image
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="form-footer-actions">
-                <button type="reset" class="btn-clear">Clear All</button>
-                <button type="submit" class="btn-publish">Publish Package Now</button>
+                <button type="reset" class="btn-clear">Clear Form</button>
+                <button type="submit" id="submit-btn" class="btn-publish">
+                    <i class="fas fa-paper-plane"></i> Publish Package
+                </button>
             </div>
         </form>
     </div>
 </div>
+
+<script>
+function updateFileName(input) {
+    const label = document.getElementById('upload-label');
+    if (input.files && input.files[0]) {
+        label.innerHTML = `<i class="fas fa-file-image" style="font-size: 1.5rem; display: block; margin-bottom: 5px;"></i> Selected: ${input.files[0].name}`;
+    }
+}
+
+// Strictly Client-Side Validation on Submit
+document.getElementById('packageForm').addEventListener('submit', function(e) {
+    const departureDate = document.getElementById('departure_date').value;
+    const deadlineDate = document.getElementById('application_deadline').value;
+
+    if (deadlineDate && departureDate && deadlineDate > departureDate) {
+        e.preventDefault();
+        alert("Application deadline departure date se baad ki nahi ho sakti!");
+    }
+});
+</script>
 {% endblock %}

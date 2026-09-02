@@ -12,118 +12,206 @@
         --info-blue: #0284c7;
     }
 
-    /* Table Container & Layout Structure */
-    .table-wrapper { 
-        background: var(--pure-white); 
-        border-radius: 12px; 
-        box-shadow: 0 5px 15px rgba(0,0,0,0.05); 
-        overflow-x: auto; 
-        margin-bottom: 30px; 
-        border: 1px solid #e2e8f0; 
+    .payments-outer-container {
+        padding: 15px;
+        width: 100%;
+        box-sizing: border-box;
     }
-    .data-table { width: 100%; border-collapse: collapse; text-align: left; min-width: 1100px; }
-    .data-table th { background: var(--primary-green); color: white; padding: 15px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .data-table td { padding: 15px; border-bottom: 1px solid #f1f1f1; font-size: 13px; vertical-align: middle; color: #334155; }
-    .data-table tr:hover { background-color: #f8fafc; }
 
-    /* Custom Filter Box matching Booking Control top bars */
+    .header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
     .filter-panel { 
         background: white; 
         border: 1px solid #e2e8f0; 
-        border-radius: 12px; 
-        padding: 15px 20px; 
-        margin-bottom: 25px; 
-        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        border-radius: 10px; 
+        padding: 12px 16px; 
+        margin-bottom: 20px; 
+        box-shadow: 0 2px 8px rgba(0,0,0,0.03);
     }
+
     .filter-select {
-        padding: 10px 15px;
-        border-radius: 8px;
+        padding: 8px 12px;
+        border-radius: 6px;
         border: 1px solid #cbd5e1;
         outline: none;
-        font-size: 14px;
+        font-size: 13px;
         color: var(--dark-slate);
-        min-width: 180px;
-        cursor: pointer;
+        background-color: #fff;
     }
 
-    /* Action Buttons Styles */
-    .btn-action {
-        padding: 8px 14px; border-radius: 8px; font-size: 11px; font-weight: 700;
-        text-decoration: none; border: none; cursor: pointer; color: white; transition: 0.2s;
-        display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    .search-input-box {
+        padding: 8px 16px; 
+        border-radius: 20px; 
+        border: 1px solid #cbd5e1; 
+        width: 100%;
+        max-width: 280px; 
+        outline: none; 
+        font-size: 13px;
+        box-sizing: border-box;
     }
-    .btn-blue { background: var(--primary-green); }
-    .btn-outline-clear { background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
-    .btn-outline-clear:hover { background: #e2e8f0; }
 
-    /* Custom Status Badges matching Booking layout rules */
-    .badge { padding: 6px 12px; border-radius: 50px; font-size: 10px; font-weight: 700; text-transform: uppercase; display: inline-block; }
+    /* Fixed Layout & Horizontal Scroll Container */
+    .table-wrapper { 
+        background: var(--pure-white); 
+        border-radius: 10px; 
+        box-shadow: 0 4px 12px rgba(0,0,0,0.04); 
+        overflow-x: auto; 
+        margin-bottom: 25px; 
+        border: 1px solid #e2e8f0; 
+        position: relative;
+        width: 100%;
+    }
+
+    .data-table { 
+        width: 100%; 
+        border-collapse: separate;
+        border-spacing: 0;
+        text-align: left; 
+        font-size: 12px;
+    }
+
+    .data-table th { 
+        background: var(--primary-green); 
+        color: white; 
+        padding: 10px 12px; 
+        font-size: 10px; 
+        text-transform: uppercase; 
+        letter-spacing: 0.5px; 
+        white-space: nowrap;
+        border-bottom: 1px solid #086138;
+    }
+
+    .data-table td { 
+        padding: 8px 12px; 
+        border-bottom: 1px solid #edf2f7; 
+        vertical-align: middle; 
+        color: #334155; 
+        white-space: nowrap;
+        background: #ffffff;
+    }
+
+    .data-table tr:hover td { 
+        background-color: #f8fafc; 
+    }
+
+    /* Sticky First Column (# ID) */
+    .data-table th:first-child,
+    .data-table td:first-child {
+        position: sticky;
+        left: 0;
+        z-index: 10;
+        border-right: 2px solid #e2e8f0;
+    }
+
+    .data-table td:first-child {
+        background: #ffffff;
+    }
+
+    /* Sticky Last Column (Action) */
+    .data-table th:last-child,
+    .data-table td:last-child {
+        position: sticky;
+        right: 0;
+        z-index: 10;
+        border-left: 2px solid #e2e8f0;
+    }
+
+    .data-table td:last-child {
+        background: #ffffff;
+    }
+
+    .data-table tr:hover td:first-child,
+    .data-table tr:hover td:last-child {
+        background-color: #f8fafc;
+    }
+
+    /* Compact Badges & Buttons */
+    .badge { 
+        padding: 4px 8px; 
+        border-radius: 50px; 
+        font-size: 10px; 
+        font-weight: 700; 
+        text-transform: uppercase; 
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        white-space: nowrap;
+    }
+
     .bg-released { background: #dcfce7; color: #15803d; }
     .bg-failed { background: #fee2e2; color: #b91c1c; }
     .bg-escrow-hold { background: #fef3c7; color: #b45309; }
     .bg-neutral { background: #f1f5f9; color: #475569; }
 
-    .small-id { font-size: 11px; color: #64748b; display: block; margin-top: 2px; }
-    .search-input-box {
-        padding: 12px 20px; 
-        border-radius: 25px; 
-        border: 1px solid #cbd5e1; 
-        width: 300px; 
-        outline: none; 
-        font-size: 14px;
+    .btn-action {
+        padding: 5px 10px; 
+        border-radius: 6px; 
+        font-size: 11px; 
+        font-weight: 700;
+        text-decoration: none; 
+        border: none; 
+        cursor: pointer; 
+        color: white; 
+        display: inline-flex; 
+        align-items: center; 
+        gap: 4px; 
+        white-space: nowrap;
     }
+
+    .btn-blue { background: var(--primary-green); }
+    .btn-outline-clear { background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
+    .btn-outline-clear:hover { background: #e2e8f0; }
 </style>
 
-<div class="container" style="padding: 20px;">
-    <!-- Messages Notification Bar -->
+<div class="payments-outer-container">
     {% if messages %}
         {% for message in messages %}
-            <div style="padding: 15px; background: {% if message.tags == 'success' %}#dcfce7; color: #15803d;{% else %}#fee2e2; color: #b91c1c;{% endif %} border-radius: 8px; margin-bottom: 20px; font-weight: 600;">
+            <div style="padding: 12px; background: {% if message.tags == 'success' %}#dcfce7; color: #15803d;{% else %}#fee2e2; color: #b91c1c;{% endif %} border-radius: 6px; margin-bottom: 15px; font-size: 13px; font-weight: 600;">
                 {{ message }}
             </div>
         {% endfor %}
     {% endif %}
 
-    <!-- Top Management Brand Row -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+    <div class="header-row">
         <div>
-            <h2 style="color: var(--primary-green); font-weight: 800; margin: 0; font-size: 26px;">Payments — Escrow Management</h2>
-            <p style="color: #64748b; margin: 4px 0 0; font-size: 14px;">Audit transactional records, track incoming payment methods, and oversee security releases.</p>
+            <h2 style="color: var(--primary-green); font-weight: 800; margin: 0; font-size: 22px;">Payments — Escrow Management</h2>
+            <p style="color: #64748b; margin: 3px 0 0; font-size: 12px;">Audit transactional records, track approvals, agent payout requests, and refunds.</p>
         </div>
-        <!-- Client Side Quick Filtering -->
-        <input type="text" id="paymentSearch" placeholder="Search Payments, Customer, ID..." onkeyup="searchPaymentsTable()" class="search-input-box">
+        <input type="text" id="paymentSearch" placeholder="Search Payments, Customer, Agent..." onkeyup="searchPaymentsTable()" class="search-input-box">
     </div>
 
-    <!-- Alignment Form Filter Matrix -->
     <div class="filter-panel">
-        <form method="get" id="filterForm" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin: 0;">
-            <!-- Added onchange submission -->
+        <form method="get" id="filterForm" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin: 0;">
             <select name="method" class="filter-select" onchange="this.form.submit()">
                 <option value="">All Methods</option>
                 <option value="stripe" {% if method_filter == 'stripe' %}selected{% endif %}>Stripe Gateway</option>
                 <option value="raast" {% if method_filter == 'raast' %}selected{% endif %}>Raast P2P Transfer</option>
             </select>
 
-            <!-- Added onchange submission -->
             <select name="status" class="filter-select" onchange="this.form.submit()">
                 <option value="">All Statuses</option>
                 <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
-                <option value="payment_submitted" {% if status_filter == 'payment_submitted' %}selected{% endif %}>Payment Submitted</option>
-                <option value="payment_verified" {% if status_filter == 'payment_verified' %}selected{% endif %}>Payment Verified</option>
                 <option value="held_in_escrow" {% if status_filter == 'held_in_escrow' %}selected{% endif %}>Held in Escrow</option>
-                <option value="ticket_uploaded" {% if status_filter == 'ticket_uploaded' %}selected{% endif %}>Ticket Uploaded</option>
                 <option value="customer_approved" {% if status_filter == 'customer_approved' %}selected{% endif %}>Customer Approved</option>
+                <option value="payout_requested" {% if status_filter == 'payout_requested' %}selected{% endif %}>Payout Requested</option>
                 <option value="released" {% if status_filter == 'released' %}selected{% endif %}>Released</option>
-                <option value="cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                <option value="refund_requested" {% if status_filter == 'refund_requested' %}selected{% endif %}>Refund Requested</option>
                 <option value="refunded" {% if status_filter == 'refunded' %}selected{% endif %}>Refunded</option>
+                <option value="cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>Cancelled</option>
             </select>
 
-            <button type="submit" class="btn-action btn-blue" style="height: 40px; padding: 0 20px;">Filter Data</button>
-            <a href="{% url 'adminpanel:admin_payments_list' %}" class="btn-action btn-outline-clear" style="height: 40px; padding: 0 16px; display: inline-flex; align-items: center; justify-content: center;">Reset</a>
+            <button type="submit" class="btn-action btn-blue" style="height: 35px; padding: 0 14px;">Filter</button>
+            <a href="{% url 'adminpanel:admin_payments_list' %}" class="btn-action btn-outline-clear" style="height: 35px; padding: 0 12px; display: inline-flex; align-items: center;">Reset</a>
         </form>
     </div>
 
-    <!-- Core Payments Main Table Structure -->
     <div class="table-wrapper">
         <table class="data-table" id="paymentsMainTable">
             <thead>
@@ -131,12 +219,13 @@
                     <th># ID</th>
                     <th>Booking</th>
                     <th>Customer</th>
-                    <th>Assigned Agent</th>
+                    <th>Agent</th>
                     <th>Method</th>
-                    <th>Settled Amount</th>
-                    <th>Payment Status</th>
+                    <th>Amount</th>
+                    <th>Customer Approval</th>
+                    <th>Agent Payout Request</th>
+                    <th>Refund Request</th>
                     <th>Escrow Status</th>
-                    <th>Created At</th>
                     <th style="text-align: center;">Action</th>
                 </tr>
             </thead>
@@ -145,12 +234,8 @@
                 <tr>
                     <td><b>#{{ payment.id }}</b></td>
                     <td><span style="font-weight: 700; color: var(--dark-slate);">#{{ payment.booking_id }}</span></td>
-                    <td>
-                        <strong>{{ payment.customer.username }}</strong>
-                    </td>
-                    <td>
-                        <strong>{{ payment.agent.username }}</strong>
-                    </td>
+                    <td><strong>{{ payment.customer.username }}</strong></td>
+                    <td><strong>{{ payment.agent.username }}</strong></td>
                     <td>
                         {% if payment.payment_method == 'stripe' %}
                             <span class="badge bg-neutral" style="background:#e0f2fe; color:#0369a1;">Stripe</span>
@@ -158,31 +243,63 @@
                             <span class="badge bg-neutral" style="background:#e0e7ff; color:#4338ca;">Raast</span>
                         {% endif %}
                     </td>
-                    <td><b style="color: var(--primary-green); font-size: 14px;">{{ payment.amount }} {{ payment.currency }}</b></td>
+                    <td><b style="color: var(--primary-green); font-size: 12px;">{{ payment.amount }} {{ payment.currency }}</b></td>
+                    
                     <td>
-                        <span class="badge 
-                            {% if payment.payment_status == 'released' %}bg-released
-                            {% elif payment.payment_status == 'cancelled' or payment.payment_status == 'refunded' %}bg-failed
-                            {% elif payment.payment_status == 'held_in_escrow' %}bg-escrow-hold
-                            {% else %}bg-neutral{% endif %}">
-                            {{ payment.get_payment_status_display }}
-                        </span>
+                        {% if payment.is_customer_approved or payment.customer_approval_status == 'approved' or payment.escrow_status == 'released' or payment.payout_status == 'released' %}
+                            <span class="badge bg-released"><i class="fa-solid fa-circle-check"></i> Approved</span>
+                        {% elif payment.customer_approval_status == 'rejected' %}
+                            <span class="badge bg-failed"><i class="fa-solid fa-circle-xmark"></i> Rejected</span>
+                        {% else %}
+                            <span class="badge bg-escrow-hold"><i class="fa-solid fa-clock"></i> Pending</span>
+                        {% endif %}
                     </td>
+
+                    <td>
+                        {% if payment.payout_status == 'requested' or payment.is_payout_requested or payment.escrow_status == 'payout_requested' or payment.payment_status == 'payout_requested' %}
+                            <span class="badge bg-neutral" style="background:#fef3c7; color:#92400e; border:1px solid #fcd34d;">
+                                Requested (Rs. {{ payment.payout_amount|default:payment.amount }})
+                            </span>
+                        {% elif payment.payout_status == 'released' or payment.is_payout_released or payment.escrow_status == 'released' or payment.payment_status == 'released' %}
+                            <span class="badge bg-released">Payout Done</span>
+                        {% elif payment.payout_status == 'rejected' or payment.escrow_status == 'rejected' %}
+                            <span class="badge bg-failed">Payout Rejected</span>
+                        {% else %}
+                            <span class="badge bg-neutral" style="color:#94a3b8;">No Request</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if payment.payment_status == 'refund_requested' or payment.escrow_status == 'refund_requested' or payment.booking.status == 'refund_requested' %}
+                            <span class="badge bg-failed" style="border: 1px solid #f87171; background: #fee2e2;">
+                                 Claimed
+                            </span>
+                        {% elif payment.payment_status == 'refunded' or payment.escrow_status == 'refunded' %}
+                            <span class="badge bg-neutral" style="background:#e2e8f0; color:#475569;">
+                                Refunded
+                            </span>
+                        {% else %}
+                            <span class="badge bg-neutral" style="color:#94a3b8;">
+                                No Claim
+                            </span>
+                        {% endif %}
+                    </td>
+
                     <td>
                         <span class="badge bg-neutral" style="border: 1px solid #cbd5e1; font-weight: 600;">
-                            {{ payment.get_escrow_status_display }}
+                            {{ payment.get_escrow_status_display|default:payment.escrow_status }}
                         </span>
                     </td>
-                    <td style="color: #64748b;">{{ payment.created_at|date:"d M Y, H:i" }}</td>
+
                     <td style="text-align: center;">
-                        <a href="{% url 'adminpanel:payment_detail' payment.id %}" class="btn-action btn-blue" style="padding: 6px 16px;">
+                        <a href="{% url 'adminpanel:payment_detail' payment.id %}" class="btn-action btn-blue">
                             Manage
                         </a>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="10" style="text-align: center; padding: 40px; color: #94a3b8; font-weight: 500;">
+                    <td colspan="11" style="text-align: center; padding: 30px; color: #94a3b8;">
                         Koi payment records aap ke filter parameters ke mutabiq nahi mile.
                     </td>
                 </tr>
