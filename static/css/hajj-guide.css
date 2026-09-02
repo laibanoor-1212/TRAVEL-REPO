@@ -1,321 +1,1126 @@
+/* =========================================
+   SAFAR-E-HARAM - HAJJ GUIDE
+========================================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 html {
-  font-family: 'Poppins', sans-serif;
-  }
-.guide-container1 {
-  width: 90%;
-  max-width: 1400px;
-  margin: auto;
+    scroll-behavior: smooth;
+}
 
-  font-family: 'Poppins', sans-serif;
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #f7faf8;
+    color: #17251e;
+}
+
+.guide-page {
+    width: 100%;
+    overflow: hidden;
 }
 
 
-.hero-section1 {
-  position: relative;
-  height: 45vh;
-    padding-top: 40px;
-   background-image: url("{% static 'images/myphoto.jpg' %}") center/cover no-repeat;
-  border-radius: 12px;
-  overflow: hidden;
-  margin-top: 20px;
+/* =========================================
+   HERO
+========================================= */
+
+.guide-hero {
+    position: relative;
+
+    min-height: 540px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(7, 53, 34, 0.94),
+            rgba(15, 81, 50, 0.82)
+        ),
+        url("../images/miqat.jpg");
+
+    background-size: cover;
+    background-position: center;
+
+    overflow: hidden;
 }
 
-.hero-section1 .overlay {
-  position: absolute;
-  width: 100%;
-  
-  height: 100%;
-  background: rgba(0, 0, 0, 0.45);
+.guide-hero-overlay {
+    position: absolute;
+    inset: 0;
+
+    background:
+        radial-gradient(
+            circle at 20% 30%,
+            rgba(255,255,255,0.08),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 80% 70%,
+            rgba(255,255,255,0.07),
+            transparent 35%
+        );
 }
 
-.hero-text {
-  position: absolute;
-  bottom: 35px;
-  left: 35px;
-  color: white;
+.guide-hero-content {
+    position: relative;
+
+    z-index: 2;
+
+    max-width: 850px;
+
+    padding: 60px 25px;
 }
 
-.hero-text h1 {
-  font-size: 42px;
-  font-weight: 700;
-  margin-bottom: 10px;
+.hero-badge {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 8px 18px;
+
+    border: 1px solid rgba(255,255,255,0.25);
+
+    border-radius: 50px;
+
+    background: rgba(255,255,255,0.08);
+
+    color: #d8f3dc;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    letter-spacing: 1.5px;
+
+    margin-bottom: 22px;
+
+    backdrop-filter: blur(8px);
 }
 
-.hero-text p {
-  width: 90%;
-  font-size: 16px;
-  line-height: 1.6;
+.guide-hero h1 {
+    color: #ffffff;
+
+    font-size: clamp(42px, 6vw, 68px);
+
+    font-weight: 700;
+
+    line-height: 1.1;
+
+    margin-bottom: 14px;
+
+    letter-spacing: -1.5px;
+}
+
+.guide-hero h1 span {
+    color: #b7e4c7;
+}
+
+.arabic-text {
+    color: #d8f3dc;
+
+    font-size: 25px;
+
+    margin: 12px 0 18px;
+
+    font-family: serif;
+}
+
+.guide-hero p {
+    max-width: 700px;
+
+    margin: auto;
+
+    color: rgba(255,255,255,0.88);
+
+    font-size: 16px;
+
+    line-height: 1.8;
+}
+
+.hero-btn {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-top: 30px;
+
+    padding: 13px 25px;
+
+    background: #ffffff;
+
+    color: #0f5132;
+
+    text-decoration: none;
+
+    border-radius: 50px;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    transition: all 0.3s ease;
+}
+
+.hero-btn:hover {
+    background: #d8f3dc;
+
+    color: #0b3d25;
+
+    transform: translateY(-3px);
+}
+
+.hero-decoration {
+    position: absolute;
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    border-radius: 50%;
+}
+
+.hero-decoration-one {
+    width: 350px;
+    height: 350px;
+
+    left: -170px;
+    bottom: -170px;
+}
+
+.hero-decoration-two {
+    width: 280px;
+    height: 280px;
+
+    right: -130px;
+    top: -130px;
 }
 
 
-.info-box {
-  background: white;
-  border-radius: 15px;
-  padding: 30px;
-  margin: 40px 0;
-  box-shadow: 0 5px 18px rgba(0,0,0,0.08);
-  border: 1px solid #e5e5e5;
-  position: relative;
+/* =========================================
+   INTRODUCTION
+========================================= */
+
+.guide-intro {
+    max-width: 1100px;
+
+    margin: 70px auto 20px;
+
+    padding: 50px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 45px;
+
+    background: #ffffff;
+
+    border-radius: 24px;
+
+    box-shadow:
+        0 15px 45px rgba(15,81,50,0.07);
+
+    border: 1px solid #e5eee8;
+}
+
+.intro-icon {
+    min-width: 110px;
+
+    height: 110px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 30px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #d8f3dc,
+            #edf8f0
+        );
+
+    color: #0f5132;
+
+    font-size: 42px;
+}
+
+.intro-content {
+    flex: 1;
+}
+
+.section-label {
+    display: block;
+
+    color: #25855a;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 10px;
+}
+
+.intro-content h2,
+.section-heading h2,
+.guide-cta h2 {
+    color: #123b2a;
+
+    font-size: 34px;
+
+    line-height: 1.25;
+
+    margin-bottom: 15px;
+}
+
+.intro-content h2 span,
+.section-heading h2 span,
+.guide-cta h2 span {
+    color: #25855a;
+}
+
+.intro-content p {
+    color: #64748b;
+
+    font-size: 15px;
+
+    line-height: 1.8;
+
+    margin-bottom: 10px;
 }
 
 
-.info-box::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 170px;
-  background: url('/static/images/hajj-banner.jpg') center/cover no-repeat;
-  border-radius: 15px 15px 0 0;
+/* =========================================
+   JOURNEY
+========================================= */
+
+.journey-section {
+    width: 100%;
+
+    max-width: 1400px;
+
+    margin: 80px auto;
+
+    padding: 0 25px;
+}
+
+.section-heading {
+    text-align: center;
+
+    max-width: 700px;
+
+    margin: 0 auto 45px;
+}
+
+.section-heading h2 {
+    margin-bottom: 12px;
+}
+
+.section-heading p {
+    color: #64748b;
+
+    font-size: 15px;
+
+    line-height: 1.7;
 }
 
 
-.info-box h2,
-.info-box p {
-  position: relative;
-  z-index: 2;
-}
-
-.info-box h2 {
-  margin-top: 180px; 
-  color: #0d7436;
-  font-weight: 700;
-  font-size: 26px;
-  margin-bottom: 12px;
-}
-
-.info-box p {
-  font-size: 15px;
-  line-height: 1.7;
-  color: #444;
-}
-
+/* =========================================
+   CARD GRID
+   4 CARDS PER ROW
+========================================= */
 
 .card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 25px;
-  margin-top: 30px;
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 22px;
+
+    width: 100%;
 }
 
+
+/* =========================================
+   GUIDE CARD
+========================================= */
 
 .guide-card {
-  position: relative;
-  height: 270px;
-  border-radius: 15px;
-  overflow: hidden;
-  cursor: pointer;
-  transition: 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    position: relative;
+
+    min-width: 0;
+
+    height: 455px;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #e5eee8;
+
+    box-shadow:
+        0 8px 25px rgba(15,81,50,0.06);
+
+    transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease;
 }
 
-.guide-card img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: 0.5s ease;
-}
+.guide-card:hover {
+    transform: translateY(-8px);
 
-
-.card-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  padding: 25px;
-  background: rgba(0,0,0,0.55);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  opacity: 0;
-  transition: 0.4s ease;
+    box-shadow:
+        0 20px 45px rgba(15,81,50,0.15);
 }
 
 
-.guide-card:hover .card-overlay {
-  opacity: 1;
+/* =========================================
+   CARD IMAGE
+========================================= */
+
+.card-image {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+
+    height: 100%;
+
+    overflow: hidden;
 }
 
-.guide-card:hover img {
-  transform: scale(1.12);
+.card-image img {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+
+    transition:
+        transform 0.6s ease;
+}
+
+.guide-card:hover .card-image img {
+    transform: scale(1.07);
 }
 
 
-.card-overlay h3 {
-  color: white;
-  margin-bottom: 12px;
-  font-size: 20px;
-  font-weight: 600;
+/* =========================================
+   DARK IMAGE OVERLAY
+========================================= */
+
+.image-overlay {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 1;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(0,0,0,0.05) 0%,
+            rgba(0,0,0,0.10) 25%,
+            rgba(0,0,0,0.38) 45%,
+            rgba(5,18,12,0.88) 76%,
+            rgba(5,18,12,0.96) 100%
+        );
 }
 
 
-.card-buttons {
-  display: flex;
-  gap: 12px;
+/* =========================================
+   STEP NUMBER
+========================================= */
+
+.step-number {
+    position: absolute;
+
+    top: 15px;
+
+    left: 15px;
+
+    z-index: 3;
+
+    width: 43px;
+
+    height: 43px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: rgba(255,255,255,0.96);
+
+    color: #0f5132;
+
+    border-radius: 50%;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    box-shadow:
+        0 5px 15px rgba(0,0,0,0.15);
 }
 
-.explore-btn {
-  padding: 7px 16px;
-  background: #0d7436;
-  color: white;
-  border-radius: 6px;
-  font-size: 14px;
-  text-decoration: none;
-  transition: 0.3s;
+
+/* =========================================
+   CARD CONTENT OVER IMAGE
+========================================= */
+
+.card-content {
+    position: absolute;
+
+    left: 0;
+
+    right: 0;
+
+    bottom: 0;
+
+    z-index: 2;
+
+    padding: 24px 22px 20px;
+
+    color: #ffffff;
 }
 
-.explore-btn:hover {
-  background: #0a5b2a;
+.card-label {
+    display: block;
+
+    color: #9ee2b8;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.7px;
+
+    margin-bottom: 6px;
+}
+
+.card-content h3 {
+    color: #ffffff;
+
+    font-size: 21px;
+
+    line-height: 1.25;
+
+    margin: 0 0 9px;
+
+    font-weight: 600;
+}
+
+.card-content p {
+    color: rgba(255,255,255,0.88);
+
+    font-size: 12.5px;
+
+    line-height: 1.65;
+
+    min-height: 62px;
+
+    margin: 0;
 }
 
 
+/* =========================================
+   READ BUTTON
+========================================= */
 
+.read-btn {
+    width: 100%;
 
-@media (max-width: 768px) {
+    display: flex;
 
-  .hero-text h1 {
-    font-size: 32px;
-  }
+    align-items: center;
 
-  .info-box h2 {
-    font-size: 22px;
-  }
+    justify-content: center;
 
-  .guide-card {
-    height: 240px;
-  }
+    gap: 8px;
+
+    margin-top: 16px;
+
+    padding: 11px 15px;
+
+    background: #0f5132;
+
+    color: #ffffff;
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    border-radius: 9px;
+
+    text-decoration: none;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    transition:
+        all 0.25s ease;
 }
+
+.read-btn:hover {
+    background: #25855a;
+
+    color: #ffffff;
+
+    transform: translateY(-2px);
+}
+
+.read-btn i {
+    font-size: 13px;
+}
+
+
+/* =========================================
+   HOW IT WORKS
+========================================= */
+
+.guide-help {
+    background: #f0f7f2;
+
+    padding: 80px 25px;
+}
+
+.help-grid {
+    max-width: 1050px;
+
+    margin: 45px auto 0;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 25px;
+}
+
+.help-card {
+    position: relative;
+
+    background: #ffffff;
+
+    padding: 35px 28px;
+
+    text-align: center;
+
+    border-radius: 20px;
+
+    border: 1px solid #e1eee5;
+
+    transition: 0.3s ease;
+}
+
+.help-card:hover {
+    transform: translateY(-6px);
+
+    box-shadow:
+        0 15px 35px rgba(15,81,50,0.08);
+}
+
+.help-number {
+    position: absolute;
+
+    top: 18px;
+
+    right: 20px;
+
+    color: #d8e9dd;
+
+    font-size: 30px;
+
+    font-weight: 700;
+}
+
+.help-icon {
+    width: 65px;
+
+    height: 65px;
+
+    margin: 0 auto 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 18px;
+
+    background: #e6f4ea;
+
+    color: #0f5132;
+
+    font-size: 24px;
+}
+
+.help-card h3 {
+    color: #173c2b;
+
+    font-size: 18px;
+
+    margin-bottom: 10px;
+}
+
+.help-card p {
+    color: #64748b;
+
+    font-size: 13px;
+
+    line-height: 1.7;
+}
+
+
+/* =========================================
+   CTA
+========================================= */
+
+.guide-cta {
+    max-width: 1100px;
+
+    margin: 80px auto;
+
+    padding: 65px 30px;
+
+    text-align: center;
+
+    border-radius: 28px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0b3d25,
+            #0f5132
+        );
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+.guide-cta::before {
+    content: "";
+
+    position: absolute;
+
+    width: 300px;
+
+    height: 300px;
+
+    border-radius: 50%;
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    left: -150px;
+
+    top: -150px;
+}
+
+.guide-cta::after {
+    content: "";
+
+    position: absolute;
+
+    width: 250px;
+
+    height: 250px;
+
+    border-radius: 50%;
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    right: -120px;
+
+    bottom: -120px;
+}
+
+.cta-content {
+    position: relative;
+
+    z-index: 2;
+}
+
+.guide-cta .section-label {
+    color: #b7e4c7;
+}
+
+.guide-cta h2 {
+    color: #ffffff;
+
+    margin-bottom: 15px;
+}
+
+.guide-cta h2 span {
+    color: #b7e4c7;
+}
+
+.guide-cta p {
+    max-width: 650px;
+
+    margin: auto;
+
+    color: rgba(255,255,255,0.8);
+
+    font-size: 14px;
+
+    line-height: 1.7;
+}
+
+.cta-btn {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-top: 25px;
+
+    padding: 12px 24px;
+
+    background: #ffffff;
+
+    color: #0f5132;
+
+    border-radius: 50px;
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    transition: 0.3s ease;
+}
+
+.cta-btn:hover {
+    background: #d8f3dc;
+
+    color: #0f5132;
+
+    transform: translateY(-3px);
+}
+
+
+/* =========================================
+   FOOTER
+========================================= */
+
+.footer-wrapper {
+    position: relative;
+
+    background: #0b3d25;
+
+    color: #ffffff;
+
+    margin-top: 100px;
+}
+
+.footer-top-curve {
+    position: absolute;
+
+    top: -90px;
+
+    left: 0;
+
+    width: 100%;
+
+    height: 100px;
+
+    overflow: hidden;
+}
+
+.footer-top-curve svg {
+    width: 100%;
+
+    height: 100%;
+}
+
+.footer-content {
+    max-width: 1200px;
+
+    margin: auto;
+
+    padding: 60px 25px 25px;
+}
+
+.footer-columns {
+    display: grid;
+
+    grid-template-columns:
+        2fr 1fr 1fr;
+
+    gap: 50px;
+}
+
+.footer-columns h3 {
+    color: #ffffff;
+
+    font-size: 18px;
+
+    margin-bottom: 15px;
+}
+
+.footer-columns p {
+    color: #b8cec0;
+
+    font-size: 13px;
+
+    line-height: 1.8;
+
+    max-width: 400px;
+}
+
+.footer-columns ul {
+    list-style: none;
+
+    padding: 0;
+}
+
+.footer-columns li {
+    margin-bottom: 9px;
+}
+
+.footer-columns a {
+    color: #b8cec0;
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    transition: 0.2s ease;
+}
+
+.footer-columns a:hover {
+    color: #ffffff;
+
+    padding-left: 4px;
+}
+
+.footer-social {
+    display: flex;
+
+    justify-content: center;
+
+    gap: 12px;
+
+    margin: 40px 0 25px;
+}
+
+.footer-social a {
+    width: 38px;
+
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.08);
+
+    color: #ffffff;
+
+    text-decoration: none;
+
+    transition: 0.3s ease;
+}
+
+.footer-social a:hover {
+    background: #25855a;
+
+    transform: translateY(-3px);
+}
+
+.footer-bottom {
+    padding-top: 20px;
+
+    border-top:
+        1px solid rgba(255,255,255,0.1);
+
+    text-align: center;
+}
+
+.footer-bottom p {
+    color: #9fb8a9;
+
+    font-size: 12px;
+}
+
+
+/* =========================================
+   RESPONSIVE - 2 CARDS
+========================================= */
+
+@media (max-width: 1100px) {
+
+    .card-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 24px;
+    }
+
+    .guide-intro {
+        margin-left: 25px;
+
+        margin-right: 25px;
+    }
+
+    .guide-cta {
+        margin-left: 25px;
+
+        margin-right: 25px;
+    }
+}
+
+
+/* =========================================
+   RESPONSIVE - MOBILE
+========================================= */
+
+@media (max-width: 750px) {
+
+    .guide-hero {
+        min-height: 500px;
+    }
+
+    .guide-hero h1 {
+        font-size: 42px;
+    }
+
+    .guide-intro {
+        flex-direction: column;
+
+        text-align: center;
+
+        padding: 35px 25px;
+    }
+
+    .intro-icon {
+        min-width: 85px;
+
+        width: 85px;
+
+        height: 85px;
+
+        font-size: 30px;
+    }
+
+    .card-grid {
+        grid-template-columns: 1fr;
+
+        gap: 22px;
+    }
+
+    .guide-card {
+        height: 450px;
+    }
+
+    .help-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-columns {
+        grid-template-columns: 1fr;
+
+        text-align: center;
+
+        gap: 30px;
+    }
+
+    .footer-columns p {
+        margin: auto;
+    }
+}
+
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
 
 @media (max-width: 480px) {
 
-  .hero-text h1 {
-    font-size: 26px;
-  }
+    .guide-hero {
+        min-height: 480px;
+    }
 
-  .hero-text p {
-    width: 95%;
-    font-size: 13px;
-  }
+    .guide-hero-content {
+        padding: 40px 18px;
+    }
 
-  .info-box h2 {
-    margin-top: 160px;
-  }
+    .guide-hero h1 {
+        font-size: 36px;
+    }
 
-  .guide-card {
-    height: 220px;
-  }
+    .arabic-text {
+        font-size: 21px;
+    }
 
-  .explore-btn {
-    font-size: 12px;
-    padding: 5px 10px;
-  }
+    .guide-hero p {
+        font-size: 14px;
+    }
+
+    .journey-section {
+        padding: 0 15px;
+    }
+
+    .intro-content h2,
+    .section-heading h2,
+    .guide-cta h2 {
+        font-size: 28px;
+    }
+
+    .guide-card {
+        height: 440px;
+    }
+
+    .card-content {
+        padding: 22px 18px 18px;
+    }
+
+    .card-content h3 {
+        font-size: 20px;
+    }
+
+    .card-content p {
+        font-size: 12.5px;
+    }
+
+    .guide-cta {
+        margin-left: 15px;
+
+        margin-right: 15px;
+
+        padding: 50px 20px;
+    }
 }
-.info-box-collage {
-  display: flex;
-  gap: 30px;
-  background: white;
-  border-radius: 20px;
-  padding: 35px;
-  margin: 50px 0;
-  box-shadow: 0 5px 25px rgba(0,0,0,0.12);
-  border: 1px solid #e3e3e3;
-  align-items: center;
-}
-
-
-.collage {
-  width: 50%;
-  position: relative;
-  height: 350px;
-}
-
-
-.collage img {
-  position: absolute;
-  border-radius: 18px;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-}
-
-.collage img:hover {
-  transform: scale(1.05);
-}
-
-.img1 {
-  width: 180px;
-  height: 250px;
-  top: 0;
-  left: 0;
-  z-index: 3;
-}
-
-.img2 {
-  width: 130px;
-  height: 180px;
-  top: 50px;
-  left: 140px;
-  z-index: 2;
-  transform: rotate(-5deg);
-}
-
-.img3 {
-  width: 160px;
-  height: 200px;
-  top: 100px;
-  left: 50px;
-  z-index: 1;
-  transform: rotate(5deg);
-}
-
-.img4 {
-  width: 120px;
-  height: 150px;
-  bottom: 0;
-  left: 180px;
-  z-index: 4;
-  transform: rotate(-3deg);
-}
-
-
-.collage-text {
-  width: 50%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.collage-text h2 {
-  font-size: 32px;
-  color: #0d7436;
-  margin-bottom: 15px;
-  font-weight: bold;
-}
-
-.collage-text p {
-  font-size: 16px;
-  color: #444;
-  line-height: 1.7;
-  margin-bottom: 12px;
-}
-
-
-@media (max-width: 900px) {
-  .info-box-collage {
-    flex-direction: column;
-  }
-  .collage {
-    width: 100%;
-    height: 300px;
-    margin-bottom: 25px;
-  }
-  .collage img {
-    position: absolute;
-  }
-  .collage-text {
-    width: 100%;
-  }
-}
-

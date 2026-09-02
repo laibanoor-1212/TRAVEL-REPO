@@ -9,65 +9,67 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from .models import Bookings, Ticket 
+from packages.models import Package
 from django.urls import reverse
 from payments.models import Payment, PaymentMethod
 from payments import services
-
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
-def book_package(request, package_id):
 
+@login_required
+def book_package(request, package_id):
     package = get_object_or_404(Package, id=package_id)
-    
+
     if request.method == 'POST':
         person_count = int(request.POST.get('person_count', 1))
         calculated_total = package.price * person_count
         booking = Bookings.objects.create(
-            user=request.user,        
-            package=package,          
+            user=request.user,
+            package=package,
             total_persons=person_count,
             total_amount=calculated_total,
-            status='pending'         
+            status='pending',
+            customer_note=request.POST.get('customer_note', '')
         )
-        
-       
-        full_names = request.POST.getlist('name_[]')
-        phone_numbers = request.POST.getlist('phone_[]')
+        names = request.POST.getlist('name_[]')
+        phones = request.POST.getlist('phone_[]')
         cnics = request.POST.getlist('cnic_[]')
         emails = request.POST.getlist('email_[]')
         addresses = request.POST.getlist('address_[]')
-        passport_numbers = request.POST.getlist('passport_[]')
-        passport_expiries = request.POST.getlist('expiry_[]')
-        passport_scans = request.FILES.getlist('pass_file_[]')
-        passport_photos = request.FILES.getlist('photo_file_[]')
+        passports = request.POST.getlist('passport_[]')
+        expiries = request.POST.getlist('expiry_[]')
+
+        pass_files = request.FILES.getlist('pass_file_[]')
+        photo_files = request.FILES.getlist('photo_file_[]')
         cnic_fronts = request.FILES.getlist('cnic_front_[]')
         cnic_backs = request.FILES.getlist('cnic_back_[]')
-        
-        for i in range(person_count):
-            try:
-                expiry_date = passport_expiries[i] if (i < len(passport_expiries) and passport_expiries[i]) else None
-                
-                BookingCustomers.objects.create(
-                    booking=booking,
-                    full_name=full_names[i] if i < len(full_names) else '',
-                    phone_number=phone_numbers[i] if i < len(phone_numbers) else '',
-                    cnic=cnics[i] if i < len(cnics) else '',
-                    email=emails[i] if i < len(emails) else '',
-                    address=addresses[i] if i < len(addresses) else '',
-                    passport_number=passport_numbers[i] if i < len(passport_numbers) else None,
-                    passport_expiry=expiry_date,
-                    passport_scan=passport_scans[i] if i < len(passport_scans) else None,
-                    passport_photo=passport_photos[i] if i < len(passport_photos) else None,
-                    cnic_front=cnic_fronts[i] if i < len(cnic_fronts) else None,
-                    cnic_back=cnic_backs[i] if i < len(cnic_backs) else None,
-                )
-            except Exception as e:
-                print(f"Error saving traveler {i+1}: {e}")
-        booking_display_id = getattr(booking, 'booking_id', booking.id)
-        messages.success(request, f"Booking #{booking_display_id} register sucessfully!")
-        return redirect('bookings:choose_payment_method', booking_id=booking.id)
-        
+        for i in range(len(names)):
+            BookingCustomers.objects.create(
+                booking=booking,
+                full_name=names[i],
+                phone_number=phones[i] if i < len(phones) else '',
+                cnic=cnics[i] if i < len(cnics) else '',
+                email=emails[i] if (i < len(emails) and emails[i]) else None,
+                address=addresses[i] if (i < len(addresses) and addresses[i]) else None,
+                passport_number=passports[i] if (i < len(passports) and passports[i]) else None,
+                passport_expiry=expiries[i] if (i < len(expiries) and expiries[i]) else None,
+                passport_scan=pass_files[i] if i < len(pass_files) else None,
+                passport_photo=photo_files[i] if i < len(photo_files) else None,
+                cnic_front=cnic_fronts[i] if i < len(cnic_fronts) else None,
+                cnic_back=cnic_backs[i] if i < len(cnic_backs) else None,
+                verification_status='pending'
+            )
+
+        messages.success(request, "Booking request submitted successfully!")
+        return redirect('bookings:booking_success', slug=booking.slug)
+
     return render(request, 'bookings/booking.html', {'package': package})
+
+
+@login_required
+def booking_success(request, slug):
+    booking = get_object_or_404(Bookings, slug=slug, user=request.user)
+    return render(request, 'bookings/booking_success.html', {'booking': booking})
 
 
  
@@ -81,7 +83,7 @@ def manage_bookings(request):
 @login_required(login_url='/auth/login/')
 def choose_payment_method(request, booking_id):
     booking = get_object_or_404(Bookings, pk=booking_id, user=request.user)
-    if hasattr(booking, 'payment'):
+    if hasattr(booking, 'payment') and booking.payment.payment_status in ['completed', 'released', 'escrow']:
         return redirect('bookings:payment_status', booking_id=booking.id)
 
     if request.method == "POST":
@@ -90,14 +92,19 @@ def choose_payment_method(request, booking_id):
         if method not in (PaymentMethod.STRIPE, PaymentMethod.RAAST):
             messages.error(request, "Sahi payment method choose karein.")
             return redirect('bookings:choose_payment_method', booking_id=booking.id)
-
-        Payment.objects.create(
+        payment, created = Payment.objects.get_or_create(
             booking=booking,
-            customer=request.user,
-            agent=booking.package.agency,
-            payment_method=method,
-            amount=booking.package.price,
+            defaults={
+                'customer': request.user,
+                'agent': booking.package.agency,
+                'payment_method': method,
+                'amount': booking.total_amount, 
+            }
         )
+        if not created:
+            payment.payment_method = method
+            payment.amount = booking.total_amount
+            payment.save()
 
         if method == PaymentMethod.STRIPE:
             return redirect('bookings:stripe_checkout', booking_id=booking.id)
@@ -197,6 +204,47 @@ def payment_status(request, booking_id):
         'ticket': ticket,
     }
     return render(request, 'bookings/payment_status.html', context)
+
+@login_required(login_url='/auth/login/')
+def edit_booking_documents(request, booking_id):
+    booking = get_object_or_404(Bookings, pk=booking_id, user=request.user)
+    customers = booking.CustomerProfile.all()
+
+    if request.method == 'POST':
+        for cust in customers:
+            if cust.verification_status == 'rejected':
+                cust.full_name = request.POST.get(f'full_name_{cust.id}', cust.full_name)
+                cust.passport_number = request.POST.get(f'passport_number_{cust.id}', cust.passport_number)
+
+                if request.FILES.get(f'passport_scan_{cust.id}'):
+                    cust.passport_scan = request.FILES[f'passport_scan_{cust.id}']
+                if request.FILES.get(f'passport_photo_{cust.id}'):
+                    cust.passport_photo = request.FILES[f'passport_photo_{cust.id}']
+                if request.FILES.get(f'cnic_front_{cust.id}'):
+                    cust.cnic_front = request.FILES[f'cnic_front_{cust.id}']
+                if request.FILES.get(f'cnic_back_{cust.id}'):
+                    cust.cnic_back = request.FILES[f'cnic_back_{cust.id}']
+
+                cust.verification_status = 'pending'
+                cust.rejection_reason = ''
+                cust.save()
+
+        old_status = booking.status
+        booking.status = 'processing'
+        booking.save()
+
+        BookingStatusHistory.objects.create(
+            booking=booking,
+            old_status=old_status,
+            new_status='processing',
+            changed_by=request.user,
+            remarks="Customer resubmitted details after rollback."
+        )
+
+        messages.success(request, "Documents successfully resubmit ho gaye hain.")
+        return redirect('bookings:payment_status', booking_id=booking.id)
+
+    return render(request, 'bookings/edit_booking.html', {'booking': booking, 'customers': customers})
 
 
 

@@ -5,126 +5,414 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Safar-e-Haram{% endblock %}</title>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-      <link rel="stylesheet" href="{% static 'css/user_layout.css' %}">
-      <link rel="stylesheet" href="{% static 'css/overview_user.css' %}">
-      <link rel="stylesheet" href="{% static 'css/user_booking.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/user_layout.css' %}">
+    <link rel="stylesheet" href="{% static 'css/overview_user.css' %}">
+    <link rel="stylesheet" href="{% static 'css/user_booking.css' %}">
+
+    <style>
+        :root {
+            --sidebar-full-width: 250px;
+            --sidebar-collapsed-width: 65px;
+            --brand-color: #155c3b;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f8;
+            display: flex;
+        }
+
+        /* --- COLLAPSIBLE SIDEBAR --- */
+        .sidebar {
+            width: var(--sidebar-full-width);
+            background-color: var(--brand-color);
+            color: #ffffff;
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Collapsed State */
+        body.sidebar-closed .sidebar {
+            width: var(--sidebar-collapsed-width);
+        }
+
+        /* LOGO SECTION ADJUSTMENTS */
+        .logo-section {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            height: 75px; /* Container height slightly increased for larger logo */
+            box-sizing: border-box;
+        }
+
+        .logo-section a {
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            white-space: nowrap;
+            width: 100%;
+        }
+
+        /* Enlarged Logo Style */
+        .logo-img {
+            height: 42px; /* Increased logo height */
+            width: 42px;  /* Increased logo width */
+            object-fit: contain;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .brand-text {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+            transition: opacity 0.2s ease;
+        }
+
+        body.sidebar-closed .brand-text {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .side-nav {
+            padding: 15px 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            flex-grow: 1;
+        }
+
+        .nav-group-title {
+            padding: 10px 20px 5px;
+            font-size: 10px;
+            text-transform: uppercase;
+            color: #a3c9b8;
+            letter-spacing: 0.5px;
+            margin: 0;
+            white-space: nowrap;
+            transition: opacity 0.2s ease;
+        }
+
+        body.sidebar-closed .nav-group-title {
+            opacity: 0;
+            height: 0;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: #e0f2e9;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .nav-item i {
+            font-size: 16px;
+            width: 25px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .nav-item span {
+            margin-left: 10px;
+            transition: opacity 0.2s ease;
+        }
+
+        /* Hide Text Label when Collapsed */
+        body.sidebar-closed .nav-item span {
+            opacity: 0;
+            display: none;
+        }
+
+        body.sidebar-closed .nav-item {
+            justify-content: center;
+            padding: 14px 0;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: #0f452c;
+            color: #ffffff;
+        }
+
+        /* --- DYNAMIC MAIN CONTENT WRAPPER --- */
+        .main-container {
+            margin-left: var(--sidebar-full-width);
+            width: calc(100% - var(--sidebar-full-width));
+            min-height: 100vh;
+            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body.sidebar-closed .main-container {
+            margin-left: var(--sidebar-collapsed-width);
+            width: calc(100% - var(--sidebar-collapsed-width));
+        }
+
+        /* Top Navbar */
+        .top-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 25px;
+            height: 75px; /* Matched with logo section height */
+            background: #ffffff;
+            border-bottom: 1px solid #eaedf0;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+
+        .sidebar-toggle-btn {
+            background: transparent;
+            border: none;
+            font-size: 18px;
+            color: var(--brand-color);
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .sidebar-toggle-btn:hover {
+            background: #f0f7f3;
+        }
+
+        .browse-btn {
+            color: var(--brand-color);
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            background: #f0f7f3;
+            border: 1px solid #d4e8dd;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dropdown-menu-box {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 45px;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+            border-radius: 8px;
+            border: 1px solid #eee;
+            z-index: 1050;
+        }
+
+        .content-area {
+            padding: 25px;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+    </style>
 </head>
 <body>
 
-    <aside class="sidebar">
+    <!-- Icon-Safe Collapsible Sidebar -->
+    <aside class="sidebar" id="userSidebar">
+        <!-- Brand Logo & Title -->
         <div class="logo-section">
-            <h2 style="margin:0; font-size: 20px; letter-spacing: 1px;">SAFAR-E-HARAM</h2>
+            <a href="/">
+                <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/201/201623.png'">
+                <h2 class="brand-text">SAFAR-E-HARAM</h2>
+            </a>
         </div>
         
         <nav class="side-nav">
             <p class="nav-group-title">Main Menu</p>
-            <a href="{% url 'customers:overview_user'%}" class="nav-item {% if request.resolver_match.url_name == 'overview_user' %}active{% endif %}"><i class="fa-solid fa-gauge-high"></i> Overview</a>
-            <a href="{% url 'customers:user_bookings'%}" class="nav-item"><i class="fa-solid fa-kaaba"></i> My Bookings</a>
-            <a href="{% url 'customers:user_profile_view'%}" class="nav-item"><i class="fas fa-user-plus"></i>Setup Profile </a>
-
+            
+            <a href="{% url 'customers:overview_user'%}" class="nav-item {% if request.resolver_match.url_name == 'overview_user' %}active{% endif %}" title="Overview">
+                <i class="fa-solid fa-gauge-high"></i>
+                <span>Overview</span>
+            </a>
+            
+            <a href="{% url 'customers:user_bookings'%}" class="nav-item {% if request.resolver_match.url_name == 'user_bookings' %}active{% endif %}" title="My Bookings">
+                <i class="fa-solid fa-kaaba"></i>
+                <span>My Bookings</span>
+            </a>
+            
+            <a href="{% url 'customers:user_profile_view'%}" class="nav-item {% if request.resolver_match.url_name == 'user_profile_view' %}active{% endif %}" title="Setup Profile">
+                <i class="fas fa-user-gear"></i>
+                <span>Setup Profile</span>
+            </a>
 
             <p class="nav-group-title">Finance & Escrow</p>
-            <a href="{% url 'customers:escrow_status'%}" class="nav-item {% if request.resolver_match.url_name == 'escrow_status' %}active{% endif %}"><i class="fa-solid fa-shield-halved"></i> Escrow Status</a>
-            <a href="/payments/" class="nav-item"><i class="fa-solid fa-receipt"></i> Receipts</a>
+            
+            <a href="{% url 'customers:escrow_status'%}" class="nav-item {% if request.resolver_match.url_name == 'escrow_status' %}active{% endif %}" title="Escrow Status">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Escrow Status</span>
+            </a>
+            
+            <a href="/payments/" class="nav-item" title="Receipts">
+                <i class="fa-solid fa-receipt"></i>
+                <span>Receipts</span>
+            </a>
 
             <p class="nav-group-title">Travel Documents</p>
-            <a href="{% url 'customers:user_ticket'%}" class="nav-item"><i class="fa-solid fa-file-invoice"></i> Tickets & Visa</a>
-           
+            
+            <a href="{% url 'customers:user_ticket'%}" class="nav-item" title="Tickets & Visa">
+                <i class="fa-solid fa-file-invoice"></i>
+                <span>Tickets & Visa</span>
+            </a>
 
             <p class="nav-group-title">Support</p>
-            <a href="{% url 'customers:customer_complaints'%}" class="nav-item" style="color: #e67e22;"><i class="fa-solid fa-circle-exclamation"></i> Report Issue</a>
+            
+            <a href="{% url 'customers:customer_complaints'%}" class="nav-item" style="color: #f39c12;" title="Report Issue">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span>Report Issue</span>
+            </a>
         </nav>
 
-        <div class="logout-section">
-            <a href="{% url 'accounts:logout'%}" class="nav-item" style="color: var(--danger);"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        <!-- Sidebar Exit Link -->
+        <div style="border-top: 1px solid rgba(255,255,255,0.1); padding: 5px 0;">
+            <a href="/" class="nav-item" style="color: #a3b8ad; font-size: 13px;" title="Go to Home">
+                <i class="fa-solid fa-house"></i>
+                <span>Go to Home</span>
+            </a>
         </div>
     </aside>
 
+    <!-- Main Container -->
     <div class="main-container">
+        <!-- Top Navbar -->
         <nav class="top-navbar">
-            <div style="color: #666; font-size: 14px;">
-                <i class="fa-solid fa-calendar-day"></i> <b>Today:</b> {% now "jS F Y" %}
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <button class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Toggle Sidebar">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+                <div style="color: #666; font-size: 13px; font-weight: 500;">
+                    <i class="fa-solid fa-calendar-day" style="color: var(--brand-color);"></i> 
+                    <span style="margin-left: 5px;">{% now "jS F Y" %}</span>
+                </div>
             </div>
 
-            <div style="display: flex; align-items: center; gap: 25px;">
-                 <a href="" class="home-icon" title="Home"><i class="fas fa-home"></i></a>
-                <div class="notification-wrapper">
-                   
-                    <div class="notification-wrapper" onclick="toggleNotif(event)" style="position: relative; cursor: pointer;">
-                    <i class="fa-solid fa-bell" style="font-size: 20px; color: #888;"></i>
-                    
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <a href="/packages/" class="browse-btn">
+                    <i class="fa-solid fa-magnifying-glass"></i> Browse Packages
+                </a>
+
+                <!-- Notifications -->
+                <div style="position: relative; cursor: pointer;" onclick="toggleDropdown('notifDropdown', event)">
+                    <i class="fa-solid fa-bell" style="font-size: 18px; color: #6c757d;"></i>
                     {% if unread_count > 0 %}
-                        <span class="notif-badge" style="position: absolute; top: -5px; right: -5px; background: var(--danger, #dc3545); color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; font-weight: bold;">
+                        <span style="position: absolute; top: -6px; right: -6px; background: #dc3545; color: white; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold;">
                             {{ unread_count }}
                         </span>
                     {% endif %}
                     
-                    <div class="notif-dropdown" id="notifDropdown" style="display: none; position: absolute; right: 0; top: 35px; width: 320px; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 8px; border: 1px solid #eee; max-height: 400px; overflow-y: auto; z-index: 1050;">
-                        <div style="padding: 12px; background: #f8faf9; font-weight: bold; border-bottom: 1px solid #eee; color: #155c3b;">
+                    <div class="dropdown-menu-box" id="notifDropdown" style="width: 290px;">
+                        <div style="padding: 12px 16px; background: #f8faf9; font-weight: 600; border-bottom: 1px solid #eee; color: var(--brand-color); font-size: 13px;">
                             Notifications
                         </div>
-                        
-                        <div class="notif-body">
+                        <div style="max-height: 280px; overflow-y: auto;">
                             {% if notifications %}
                                 {% for noti in notifications %}
-                                    <a href="{% url 'notifications:mark_as_read' noti.slug %}" class="notif-item" style="display: flex; gap: 12px; padding: 12px; text-decoration: none; color: #333; border-bottom: 1px solid #f1f1f1; transition: 0.2s; {% if not noti.is_read %}background: #f4fcf8;{% endif %}">
-                                        <i class="{{ noti.icon|default:'fa-solid fa-info-circle' }}" style="color: #155c3b; font-size: 1.1rem; padding-top: 3px;"></i>
-                                        <div style="flex: 1;">
-                                            <b style="font-size: 13px; display: block; margin-bottom: 2px;">{{ noti.title }}</b>
-                                            <small style="color: #666; font-size: 12px; display: block; line-height: 1.3;">{{ noti.message|truncatechars:60 }}</small>
-                                            <span style="font-size: 10px; color: #999; display: block; margin-top: 4px;">{{ noti.created_at|timesince }} ago</span>
+                                    <a href="{% url 'notifications:mark_as_read' noti.slug %}" style="display: flex; gap: 10px; padding: 12px; text-decoration: none; color: #333; border-bottom: 1px solid #f1f1f1;">
+                                        <i class="fa-solid fa-info-circle" style="color: var(--brand-color); margin-top: 2px;"></i>
+                                        <div>
+       
+                                            <b style="font-size: 12px; display: block;">{{ noti.title }}</b>
+                                            <span style="font-size: 11px; color: #666;">{{ noti.message|truncatechars:45 }}</span>
                                         </div>
                                     </a>
                                 {% endfor %}
                             {% else %}
-                                <div style="padding: 20px; text-align: center; color: #888; font-size: 13px;">
-                                    No new notifications
-                                </div>
+                                <div style="padding: 20px; text-align: center; color: #888; font-size: 12px;">No new notifications</div>
                             {% endif %}
                         </div>
-                        
-                        <a href="/notif-all/" style="display:block; text-align:center; padding: 10px; font-size: 12px; color: #155c3b; text-decoration:none; border-top: 1px solid #eee; font-weight: 600;">View All</a>
                     </div>
-                </div>
                 </div>
 
-                <div style="display: flex; align-items: center; gap: 12px; border-left: 1px solid #eee; padding-left: 20px;">
-                    <div style="text-align: right;">
-                        <span style="display: block; font-size: 13px; font-weight: 600;">{{ request.user.username }}</span>
-                        <span style="font-size: 10px; color: #27ae60;">Online</span>
+                <!-- Profile Dropdown -->
+                <div style="position: relative; border-left: 1px solid #eee; padding-left: 15px;">
+                    <div onclick="toggleDropdown('userDropdown', event)" style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                        <div style="text-align: right;">
+                            <span style="display: block; font-size: 13px; font-weight: 600; color: #2c3e50;">
+                                {{ request.user.first_name|default:request.user.username }}
+                            </span>
+                            <span style="font-size: 10px; color: #27ae60; font-weight: 500;">Customer</span>
+                        </div>
+                        <i class="fa-solid fa-circle-user" style="font-size: 30px; color: var(--brand-color);"></i>
+                        <i class="fa-solid fa-chevron-down" style="font-size: 10px; color: #888;"></i>
                     </div>
-                    <i class="fa-solid fa-circle-user" style="font-size: 30px; color: #ccc;"></i>
+
+                    <div class="dropdown-menu-box" id="userDropdown" style="width: 180px; padding: 5px 0;">
+                        <a href="{% url 'customers:user_profile_view'%}" style="display: flex; align-items: center; gap: 10px; padding: 10px 15px; color: #333; text-decoration: none; font-size: 13px;">
+                            <i class="fa-solid fa-user" style="color: #666; width: 14px;"></i> My Profile
+                        </a>
+                        <a href="{% url 'customers:user_bookings'%}" style="display: flex; align-items: center; gap: 10px; padding: 10px 15px; color: #333; text-decoration: none; font-size: 13px;">
+                            <i class="fa-solid fa-kaaba" style="color: #666; width: 14px;"></i> My Bookings
+                        </a>
+                        <div style="border-top: 1px solid #eee; margin: 4px 0;"></div>
+                        <a href="{% url 'accounts:logout'%}" style="display: flex; align-items: center; gap: 10px; padding: 10px 15px; color: #dc3545; text-decoration: none; font-size: 13px; font-weight: 500;">
+                            <i class="fa-solid fa-right-from-bracket" style="width: 14px;"></i> Logout
+                        </a>
+                    </div>
                 </div>
+
             </div>
         </nav>
 
-        <main style="padding: 40px;">
+        <main class="content-area">
             {% block content %}{% endblock %}
         </main>
     </div>
 
     <script>
-      function toggleNotif(event) {
-            // Dropdown menu ke andar click karne se toggle event ko rokne ke liye
-            event.stopPropagation();
-            var dropdown = document.getElementById("notifDropdown");
-            dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
+        function toggleSidebar() {
+            document.body.classList.toggle('sidebar-closed');
         }
 
-        // Close dropdown when clicking anywhere outside
-        window.onclick = function(event) {
-            var dropdown = document.getElementById("notifDropdown");
-            var wrapper = document.querySelector('.notification-wrapper');
-            
-            // Agar dropdown khula hai aur click dropdown ya bell par nahi hua, to band kar do
-            if (dropdown && dropdown.style.display === "block" && !wrapper.contains(event.target)) {
-                dropdown.style.display = "none";
+        function toggleDropdown(id, event) {
+            event.stopPropagation();
+            const notif = document.getElementById('notifDropdown');
+            const user = document.getElementById('userDropdown');
+
+            if (id === 'notifDropdown') {
+                user.style.display = 'none';
+                notif.style.display = (notif.style.display === 'block') ? 'none' : 'block';
+            } else if (id === 'userDropdown') {
+                notif.style.display = 'none';
+                user.style.display = (user.style.display === 'block') ? 'none' : 'block';
             }
         }
 
-    
+        window.onclick = function() {
+            document.getElementById('notifDropdown').style.display = 'none';
+            document.getElementById('userDropdown').style.display = 'none';
+        }
     </script>
 </body>
 </html>

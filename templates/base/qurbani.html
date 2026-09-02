@@ -1,0 +1,181 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    .ifada-page {
+        width: 90%;
+        max-width: 1200px;
+        margin: 35px auto 70px;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .ifada-hero {
+        height: 400px;
+        border-radius: 20px;
+        overflow: hidden;
+        position: relative;
+        background:
+            linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.45)),
+            url("{% static 'images/tawafal-ifadah.jpeg' %}") center/cover no-repeat;
+    }
+
+    .ifada-hero-content {
+        position: absolute;
+        bottom: 45px;
+        left: 50px;
+        color: white;
+    }
+
+    .ifada-hero-content span {
+        font-size: 13px;
+        letter-spacing: 2px;
+    }
+
+    .ifada-hero-content h1 {
+        font-size: 48px;
+        margin: 8px 0;
+        font-weight: 800;
+    }
+
+    .ifada-hero-content p {
+        font-size: 16px;
+        max-width: 700px;
+    }
+
+    .ifada-content {
+        background: white;
+        margin-top: 35px;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 8px 28px rgba(0,0,0,.08);
+    }
+
+    .ifada-content h2 {
+        color: #0d7436;
+        margin-top: 25px;
+    }
+
+    .ifada-content h2:first-child {
+        margin-top: 0;
+    }
+
+    .ifada-content p {
+        color: #555;
+        line-height: 1.8;
+        font-size: 16px;
+    }
+
+    .ifada-box {
+        background: #f3faf6;
+        padding: 22px 28px;
+        border-left: 4px solid #0d7436;
+        border-radius: 10px;
+        margin: 25px 0;
+    }
+
+    .ifada-box li {
+        color: #555;
+        margin: 10px 0;
+    }
+
+    .back-btn {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 11px 23px;
+        background: #0d7436;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+    }
+
+    @media(max-width:600px) {
+        .ifada-page {
+            width: 94%;
+        }
+
+        .ifada-hero {
+            height: 320px;
+        }
+
+        .ifada-hero-content {
+            left: 25px;
+            bottom: 30px;
+        }
+
+        .ifada-hero-content h1 {
+            font-size: 35px;
+        }
+
+        .ifada-content {
+            padding: 25px;
+        }
+    }
+</style>
+
+
+<div class="ifada-page">
+
+    <section class="ifada-hero">
+
+        <div class="ifada-hero-content">
+
+            <span>IMPORTANT HAJJ RITUAL</span>
+
+            <h1>Tawaf al-Ifada</h1>
+
+            <p>
+                A significant Tawaf performed as part of the
+                completion of the Hajj rituals.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="ifada-content">
+
+        <h2>What is Tawaf al-Ifada?</h2>
+
+        <p>
+            Tawaf al-Ifada is an important ritual associated with
+            Hajj. Pilgrims perform Tawaf around the Kaaba as part
+            of the sacred pilgrimage.
+        </p>
+
+        <h2>Performing Tawaf</h2>
+
+        <p>
+            Pilgrims approach the Sacred Mosque and perform the
+            prescribed circumambulation around the Kaaba while
+            remembering Allah and making dua.
+        </p>
+
+        <div class="ifada-box">
+            <ul>
+                <li>Prepare yourself before entering the Sacred Mosque.</li>
+                <li>Maintain cleanliness and respectful behavior.</li>
+                <li>Perform the required circumambulation around the Kaaba.</li>
+                <li>Follow official guidance and crowd-management instructions.</li>
+            </ul>
+        </div>
+
+        <h2>Spiritual Significance</h2>
+
+        <p>
+            Tawaf is an expression of devotion and submission to
+            Allah. It brings the pilgrim's attention back to the
+            sacred center of worship.
+        </p>
+
+        <a href="{% url 'hajj_guide' %}" class="back-btn">
+            ← Back to Hajj Guide
+        </a>
+
+    </section>
+
+</div>
+
+{% endblock %}

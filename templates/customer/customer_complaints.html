@@ -1,30 +1,134 @@
-{% extends 'customer/user_layout.html' %} {% block content %}
-<div style="max-width: 600px; margin: 40px auto; padding: 30px; background: #fff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); font-family: sans-serif;">
-    <h2 style="color: #0b7a47; margin-bottom: 5px; font-weight: 800;">Submit a Complaint / Query</h2>
-    <p style="color: #64748b; font-size: 14px; margin-bottom: 25px;">Let us know if you are facing issues with your tickets, hotel, or packages.</p>
+{% extends 'customer/user_layout.html' %} 
+{% block content %}
+<div style="width: 100%; box-sizing: border-box; padding: 25px 30px; font-family: sans-serif;">
     
-    <form method="POST">
-        {% csrf_token %}
-        <div style="margin-bottom: 15px;">
-            <label style="display:block; font-size:12px; font-weight:700; color:#475569; text-transform:uppercase; margin-bottom:8px;">What is the issue about?</label>
-            <select name="complaint_type" required style="width:100%; padding:12px; border-radius:8px; border:1px solid #cbd5e1; outline:none;">
-                {% for value, label in issues %}
-                    <option value="{{ value }}">{{ label }}</option>
-                {% endfor %}
-            </select>
+    <!-- Success Message -->
+    {% if messages %}
+        {% for message in messages %}
+            <div style="padding: 12px 18px; background: #dcfce7; color: #15803d; border-radius: 8px; margin-bottom: 20px; font-size: 14px; border: 1px solid #bbf7d0;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- STATS SUMMARY CARDS -->
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 25px;">
+        
+        <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #0b7a47; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
+            <span style="font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700;">Total Filed</span>
+            <h2 style="margin: 5px 0 0; color: #0b7a47; font-size: 26px; font-weight: 800;">{{ counts.total|default:"0" }}</h2>
         </div>
 
-        <div style="margin-bottom: 15px;">
-            <label style="display:block; font-size:12px; font-weight:700; color:#475569; text-transform:uppercase; margin-bottom:8px;">Subject / Title</label>
-            <input type="text" name="subject" required placeholder="e.g., Ticket not received for Booking #123" style="width:100%; padding:12px; border-radius:8px; border:1px solid #cbd5e1; outline:none;">
+        <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #d97706; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
+            <span style="font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700;">In Progress</span>
+            <h2 style="margin: 5px 0 0; color: #d97706; font-size: 26px; font-weight: 800;">{{ counts.in_progress|default:"0" }}</h2>
         </div>
 
-        <div style="margin-bottom: 20px;">
-            <label style="display:block; font-size:12px; font-weight:700; color:#475569; text-transform:uppercase; margin-bottom:8px;">Explain your issue in detail</label>
-            <textarea name="description" rows="5" required placeholder="Provide as much details as possible..." style="width:100%; padding:12px; border-radius:8px; border:1px solid #cbd5e1; outline:none; resize:none;"></textarea>
+        <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #b91c1c; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
+            <span style="font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700;">Pending</span>
+            <h2 style="margin: 5px 0 0; color: #b91c1c; font-size: 26px; font-weight: 800;">{{ counts.pending|default:"0" }}</h2>
         </div>
 
-        <button type="submit" style="width:100%; padding:14px; background:#0b7a47; color:#fff; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:15px;">Submit Grievance</button>
-    </form>
+        <div style="background: #fff; padding: 20px; border-radius: 10px; border-left: 5px solid #15803d; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
+            <span style="font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700;">Resolved</span>
+            <h2 style="margin: 5px 0 0; color: #15803d; font-size: 26px; font-weight: 800;">{{ counts.resolved|default:"0" }}</h2>
+        </div>
+
+    </div>
+
+    <!-- MAIN TWO-COLUMN FLEX LAYOUT -->
+    <div style="display: flex; gap: 25px; align-items: flex-start; flex-wrap: wrap;">
+        
+        <!-- LEFT COLUMN: FORM -->
+        <div style="flex: 1; min-width: 320px; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+            <h3 style="color: #0b7a47; margin-top: 0; margin-bottom: 5px; font-weight: 800; font-size: 20px;">Submit a Complaint / Query</h3>
+            <p style="color: #64748b; font-size: 13px; margin-bottom: 20px;">Provide details regarding your booking or technical issue.</p>
+            
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display:block; font-size:11px; font-weight:700; color:#475569; text-transform:uppercase; margin-bottom:6px;">Issue Category</label>
+                    <select name="complaint_type" required style="width:100%; padding:11px; border-radius:8px; border:1px solid #cbd5e1; outline:none; background: #fff; font-size:13px; box-sizing: border-box;">
+                        <option value="" disabled selected>-- Select Concern Type --</option>
+                        {% for value, label in issues %}
+                            <option value="{{ value }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label style="display:block; font-size:11px; font-weight:700; color:#475569; text-transform:uppercase; margin-bottom:6px;">Subject / Title</label>
+                    <input type="text" name="subject" required placeholder="e.g., Ticket timing issue" style="width:100%; padding:11px; border-radius:8px; border:1px solid #cbd5e1; outline:none; box-sizing: border-box; font-size:13px;">
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="display:block; font-size:11px; font-weight:700; color:#475569; text-transform:uppercase; margin-bottom:6px;">Description</label>
+                    <textarea name="description" rows="4" required placeholder="Explain your issue in detail..." style="width:100%; padding:11px; border-radius:8px; border:1px solid #cbd5e1; outline:none; resize:none; box-sizing: border-box; font-size:13px;"></textarea>
+                </div>
+
+                <button type="submit" style="width:100%; padding:12px; background:#0b7a47; color:#fff; border:none; border-radius:8px; font-weight:700; cursor:pointer; font-size:14px;">Submit Grievance</button>
+            </form>
+        </div>
+
+        <!-- RIGHT COLUMN: TABLE TRACKING -->
+        <div style="flex: 1.8; min-width: 450px; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+            <h3 style="color: #1e293b; font-weight: 700; margin-top: 0; margin-bottom: 15px; font-size: 18px;">Track My Complaints & Live Status</h3>
+            
+            <div style="overflow-x: auto;">
+                <style>
+                    .customer-table { width: 100%; border-collapse: collapse; text-align: left; }
+                    .customer-table th { background: #f8fafc; color: #475569; padding: 12px 10px; font-size: 11px; text-transform: uppercase; border-bottom: 2px solid #e2e8f0; }
+                    .customer-table td { padding: 12px 10px; border-bottom: 1px solid #f1f5f9; font-size: 13px; color: #334155; }
+                    .status-badge { padding: 4px 10px; border-radius: 50px; font-size: 10px; font-weight: 700; text-transform: uppercase; display: inline-block; }
+                    .st-pending { background: #fee2e2; color: #b91c1c; }
+                    .st-progress { background: #fef3c7; color: #d97706; }
+                    .st-resolved { background: #dcfce7; color: #15803d; }
+                </style>
+                
+                <table class="customer-table">
+                    <thead>
+                        <tr>
+                            <th>Case Ref</th>
+                            <th>Category</th>
+                            <th>Subject & Details</th>
+                            <th>Date</th>
+                            <th>Live Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in my_complaints %}
+                        <tr>
+                            <td><b>#SH-C-{{ c.id }}</b></td>
+                            <td style="font-weight: 600; text-transform: capitalize;">{{ c.complaint_type }}</td>
+                            <td>
+                                <strong style="color: #1e293b;">{{ c.subject }}</strong>
+                                <div style="font-size: 11px; color: #64748b; margin-top: 2px;">{{ c.description|truncatechars:45 }}</div>
+                            </td>
+                            <td style="white-space: nowrap;">{{ c.created_at|date:"d M Y" }}</td>
+                            <td>
+                                {% if c.status == 'in_progress' %}
+                                    <span class="status-badge st-progress">In Progress</span>
+                                {% elif c.status == 'pending' %}
+                                    <span class="status-badge st-pending">Pending</span>
+                                {% elif c.status == 'resolved' %}
+                                    <span class="status-badge st-resolved">Resolved</span>
+                                {% else %}
+                                    <span class="status-badge st-pending">{{ c.status }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 30px; color: #94a3b8;">You have not submitted any complaints yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
 </div>
 {% endblock %}

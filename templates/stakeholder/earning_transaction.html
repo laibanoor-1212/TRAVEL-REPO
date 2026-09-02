@@ -1,69 +1,304 @@
 {% extends 'stakeholder/dashboard_layout2.html' %}
 {% load static %}
 
+{% block title %}Earning & Transactions Overview{% endblock %}
+
 {% block content %}
+<style>
+    :root {
+        --primary-green: #0b4b32;
+        --secondary-green: #126b48;
+        --accent-mint: #e8f5f0;
+        --accent-mint-border: #bce3d4;
+        --text-dark: #1e293b;
+        --text-muted: #64748b;
+        --bg-light: #f8faf9;
+        --border-color: #e2e8f0;
+        --white: #ffffff;
+        --danger-red: #d97706;
+        --danger-bg: #fef3c7;
+    }
 
-<link rel="stylesheet" href="{% static 'css/agent_earnings.css' %}">
+    body {
+        background-color: var(--bg-light);
+        color: var(--text-dark);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
 
-<div class="dashboard-wrapper">
-    <!-- Top Stats Bar -->
-    <div class="grid">
-        <div class="card">
-            <h3>Total Released Earnings</h3>
-            <h2>PKR {{ total_earnings|floatformat:2 }}</h2>
+    .earning-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1.5rem;
+    }
+
+    /* Header Styling */
+    .dashboard-header {
+        margin-bottom: 2rem;
+    }
+    .dashboard-header h2 {
+        color: var(--primary-green);
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 0 0 0.25rem 0;
+    }
+    .dashboard-header p {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        margin: 0;
+    }
+
+    /* Analytics Summary Cards Grid */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .stat-card {
+        background: var(--white);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-card.highlight {
+        border-left: 5px solid var(--primary-green);
+        background: linear-gradient(135deg, var(--white) 0%, var(--accent-mint) 100%);
+    }
+
+    .stat-info span {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--text-muted);
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-info h3 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin: 0;
+        color: var(--text-dark);
+    }
+
+    .stat-card.highlight .stat-info h3 {
+        color: var(--primary-green);
+    }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
+        background: var(--accent-mint);
+        color: var(--primary-green);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        font-weight: bold;
+    }
+
+    /* Transactions Table Container */
+    .table-card {
+        background: var(--white);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+        overflow: hidden;
+    }
+
+    .table-card-header {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+        background-color: var(--white);
+    }
+
+    .table-card-header h4 {
+        margin: 0;
+        color: var(--primary-green);
+        font-size: 1.15rem;
+        font-weight: 700;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        font-size: 0.95rem;
+    }
+
+    .custom-table th {
+        background-color: #f1f5f9;
+        color: var(--text-muted);
+        font-weight: 600;
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid var(--border-color);
+        white-space: nowrap;
+    }
+
+    .custom-table td {
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid var(--border-color);
+        color: var(--text-dark);
+        vertical-align: middle;
+    }
+
+    .custom-table tbody tr:hover {
+        background-color: #f8fafc;
+    }
+
+    /* Status Badges */
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.35rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: capitalize;
+    }
+
+    .badge-released {
+        background-color: var(--accent-mint);
+        color: var(--primary-green);
+        border: 1px solid var(--accent-mint-border);
+    }
+
+    .badge-escrow {
+        background-color: var(--danger-bg);
+        color: var(--danger-red);
+        border: 1px solid #fcd34d;
+    }
+
+    .amount-gross {
+        font-weight: 600;
+    }
+    .amount-deduction {
+        color: #dc2626;
+        font-weight: 500;
+    }
+    .amount-net {
+        color: var(--primary-green);
+        font-weight: 700;
+    }
+    .text-right {
+        text-align: right;
+    }
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: var(--text-muted);
+    }
+</style>
+
+<div class="earning-container">
+
+    <!-- Header Section -->
+    <div class="dashboard-header">
+        <h2>Earnings & Commission Breakdown</h2>
+        <p>Monitor released payments, platform deductions, and net payouts in real-time.</p>
+    </div>
+
+    <!-- Stats Dashboard Grid -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-info">
+                <span>Total Bookings (Gross)</span>
+                <h3>PKR {{ total_earnings|floatformat:2 }}</h3>
+            </div>
+            <div class="stat-icon">Rs</div>
         </div>
-        <div class="card">
-            <h3>Commission Deducted (10%)</h3>
-            <h2>PKR {{ commission_deducted|floatformat:2 }}</h2>
+
+        <div class="stat-card">
+            <div class="stat-info">
+                <span>Commission Deducted</span>
+                <h3 style="color: #dc2626;">- PKR {{ commission_deducted|floatformat:2 }}</h3>
+            </div>
+            <div class="stat-icon" style="background: #fee2e2; color: #dc2626;">%</div>
         </div>
-        <div class="card">
-            <h3>Net Payable to Agent</h3>
-            <h2>PKR {{ net_payable|floatformat:2 }}</h2>
+
+        <div class="stat-card highlight">
+            <div class="stat-info">
+                <span>Net Released Earning</span>
+                <h3>PKR {{ net_payable|floatformat:2 }}</h3>
+            </div>
+            <div class="stat-icon">✓</div>
         </div>
     </div>
 
-    <!-- Dynamic History Table -->
-    <div class="card full">
-        <h3>Transaction History</h3>
-        <div class="table-wrapper">
-            <table>
+    <!-- Data Table Card -->
+    <div class="table-card">
+        <div class="table-card-header">
+            <h4>Transaction History</h4>
+        </div>
+        <div class="table-responsive">
+            <table class="custom-table">
                 <thead>
                     <tr>
                         <th>Booking ID</th>
                         <th>Customer</th>
                         <th>Package</th>
-                        <th>Total Amount</th>
-                        <th>Commission %</th>
-                        <th>Commission Cut</th>
-                        <th>Agent Earning</th>
                         <th>Escrow Status</th>
+                        <th class="text-right">Gross Amount</th>
+                        <th class="text-right">Commission</th>
+                        <th class="text-right">Net Earning</th>
                     </tr>
                 </thead>
-
                 <tbody>
                     {% for payment in payments %}
                     <tr>
-                        <td>{{ payment.booking.booking_id }}</td>
+                        <td><strong>#{{ payment.booking.id }}</strong></td>
                         <td>{{ payment.booking.user.get_full_name|default:payment.booking.user.username }}</td>
                         <td>{{ payment.booking.package.title }}</td>
-                        <td>PKR {{ payment.amount|floatformat:0 }}</td>
-                        <td>10%</td>
-                        <td>PKR {{ payment.amount|default:0|pluralize }}</td> <!-- Replace with calculation if needed -->
-                        <td>PKR {{ payment.amount|floatformat:0 }}</td>
                         <td>
-                            {% if payment.escrow_status == 'RELEASED' %}
-                                <span class="paid">Released</span>
-                            {% elif payment.escrow_status == 'HELD_IN_ESCROW' %}
-                                <span class="pending">Held in Escrow</span>
+                            {% if payment.escrow_status|lower == 'released' %}
+                                <span class="badge badge-released">● Released</span>
                             {% else %}
-                                <span class="failed">{{ payment.get_escrow_status_display }}</span>
+                                <span class="badge badge-escrow">● {{ payment.escrow_status|title }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-right amount-gross">PKR {{ payment.amount|floatformat:2 }}</td>
+                        
+                        <!-- Commission Column Breakdown -->
+                        <td class="text-right amount-deduction">
+                            {% if payment.release_record %}
+                                - PKR {{ payment.release_record.admin_commission_amount|floatformat:2 }}
+                            {% else %}
+                                <span style="color: var(--text-muted); font-style: italic;">Pending</span>
+                            {% endif %}
+                        </td>
+                        
+                        <!-- Net Amount Column -->
+                        <td class="text-right amount-net">
+                            {% if payment.release_record %}
+                                PKR {{ payment.release_record.amount_released|floatformat:2 }}
+                            {% else %}
+                                <span style="color: var(--text-muted); font-style: italic;">In Escrow</span>
                             {% endif %}
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="8" style="text-align: center; padding: 20px;">
-                            Koi payment records nahi mile.
+                        <td colspan="7" class="empty-state">
+                            No earning transactions or records found.
                         </td>
                     </tr>
                     {% endfor %}
@@ -71,6 +306,6 @@
             </table>
         </div>
     </div>
-</div>
 
+</div>
 {% endblock %}

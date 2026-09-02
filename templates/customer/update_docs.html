@@ -1,0 +1,353 @@
+{% extends 'customer/user_layout.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+  :root {
+    --primary-green: #064e3b;
+    --accent-green: #047857;
+    --light-green: #ecfdf5;
+    --border-green: #a7f3d0;
+    --text-dark: #0f172a;
+    --danger-soft: #fff1f2;
+    --danger-border: #fecdd3;
+    --danger-text: #991b1b;
+  }
+
+  .doc-update-wrapper {
+    background-color: #f8fafc;
+    min-height: 85vh;
+  }
+
+  .bk-card {
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 4px 20px rgba(6, 78, 59, 0.04);
+    border: 1px solid #e2e8f0;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+
+  .bk-header-main {
+    background: linear-gradient(135deg, var(--primary-green), var(--accent-green));
+    color: #ffffff;
+    padding: 24px 28px;
+  }
+
+  .bk-header-sub {
+    background: var(--primary-green);
+    color: #ffffff;
+    padding: 14px 24px;
+    border-bottom: 3px solid var(--accent-green);
+  }
+
+  .bk-body {
+    padding: 28px;
+  }
+
+  /* Rejection Input Card */
+  .field-fix-card {
+    background: #ffffff;
+    border: 1px solid var(--danger-border);
+    border-left: 4px solid var(--danger-text);
+    border-radius: 10px;
+    padding: 18px;
+    height: 100%;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .field-fix-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(153, 27, 27, 0.08);
+  }
+
+  .field-fix-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .field-fix-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .rejection-badge {
+    background-color: var(--danger-soft);
+    color: var(--danger-text);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--danger-border);
+  }
+
+  .rejection-reason-box {
+    background-color: var(--danger-soft);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 0.84rem;
+    color: #881337;
+    margin-bottom: 12px;
+  }
+
+  /* Inputs Styling */
+  .form-control-custom {
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.92rem;
+    transition: all 0.2s;
+  }
+
+  .form-control-custom:focus {
+    border-color: var(--accent-green);
+    box-shadow: 0 0 0 3px rgba(4, 120, 87, 0.15);
+    outline: none;
+  }
+
+  /* Buttons */
+  .btn-green-submit {
+    background-color: var(--primary-green);
+    color: #ffffff;
+    font-weight: 600;
+    padding: 12px 32px;
+    border-radius: 10px;
+    border: none;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(6, 78, 59, 0.15);
+  }
+
+  .btn-green-submit:hover {
+    background-color: var(--accent-green);
+    color: #ffffff;
+    box-shadow: 0 6px 18px rgba(4, 120, 87, 0.25);
+  }
+
+  .section-divider {
+    border-bottom: 2px solid var(--light-green);
+    padding-bottom: 10px;
+    margin-bottom: 24px;
+    color: var(--primary-green);
+    font-weight: 700;
+  }
+</style>
+
+<div class="doc-update-wrapper py-4">
+  <div class="container">
+
+    <!-- Top Header Banner -->
+    <div class="bk-card">
+      <div class="bk-header-main d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+          <span class="badge bg-white text-dark mb-2 px-3 py-2 fw-semibold shadow-sm">
+            <i class="bi bi-shield-exclamation text-warning me-1"></i> Action Required
+          </span>
+          <h3 class="mb-1 text-white fw-bold">Update Rejected Booking Details</h3>
+          <p class="text-white-50 mb-0 font-light">
+            Booking Ref #<strong>{{ booking.booking_id|default:booking.id }}</strong> — Please correct the highlighted information below for verification.
+          </p>
+        </div>
+        <a href="{% url 'customers:booking_detail' booking.id %}" class="btn btn-outline-light rounded-pill px-4">
+          <i class="bi bi-arrow-left me-1"></i> Back to Booking
+        </a>
+      </div>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      {% for customer in customers %}
+        <div class="bk-card">
+          <div class="bk-header-sub d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-person-badge fs-5"></i>
+              <h5 class="mb-0 text-white fw-bold">{{ customer.full_name }}</h5>
+            </div>
+            <span class="badge bg-light text-dark px-3 py-1">Passenger #{{ forloop.counter }}</span>
+          </div>
+
+          <div class="bk-body">
+            <h6 class="section-divider fs-6"><i class="bi bi-pencil-square me-2"></i>Correction Form</h6>
+
+            <div class="row g-4">
+              
+              <!-- Full Name -->
+              {% if customer.field_statuses.full_name == 'rejected' %}
+                <div class="col-md-6">
+                  <div class="field-fix-card">
+                    <div class="field-fix-header">
+                      <span class="field-fix-title">Full Name</span>
+                      <span class="rejection-badge"><i class="bi bi-x-circle me-1"></i>Rejected</span>
+                    </div>
+                    <div class="rejection-reason-box">
+                      <strong>Reason:</strong> {{ customer.rollback_remarks.full_name|default:"Invalid name format" }}
+                    </div>
+                    <input type="text" name="full_name_{{ customer.id }}" class="form-control form-control-custom" value="{{ customer.full_name }}" required placeholder="Enter updated full name">
+                  </div>
+                </div>
+              {% endif %}
+
+              <!-- Phone Number -->
+              {% if customer.field_statuses.phone_number == 'rejected' %}
+                <div class="col-md-6">
+                  <div class="field-fix-card">
+                    <div class="field-fix-header">
+                      <span class="field-fix-title">Phone Number</span>
+                      <span class="rejection-badge"><i class="bi bi-x-circle me-1"></i>Rejected</span>
+                    </div>
+                    <div class="rejection-reason-box">
+                      <strong>Reason:</strong> {{ customer.rollback_remarks.phone_number|default:"Invalid phone number" }}
+                    </div>
+                    <input type="text" name="phone_number_{{ customer.id }}" class="form-control form-control-custom" value="{{ customer.phone_number }}" required placeholder="Enter updated phone number">
+                  </div>
+                </div>
+              {% endif %}
+
+              <!-- Email -->
+              {% if customer.field_statuses.email == 'rejected' %}
+                <div class="col-md-6">
+                  <div class="field-fix-card">
+                    <div class="field-fix-header">
+                      <span class="field-fix-title">Email Address</span>
+                      <span class="rejection-badge"><i class="bi bi-x-circle me-1"></i>Rejected</span>
+                    </div>
+                    <div class="rejection-reason-box">
+                      <strong>Reason:</strong> {{ customer.rollback_remarks.email|default:"Invalid email address" }}
+                    </div>
+                    <input type="email" name="email_{{ customer.id }}" class="form-control form-control-custom" value="{{ customer.email }}" required placeholder="Enter updated email">
+                  </div>
+                </div>
+              {% endif %}
+
+              <!-- CNIC -->
+              {% if customer.field_statuses.cnic == 'rejected' %}
+                <div class="col-md-6">
+                  <div class="field-fix-card">
+                    <div class="field-fix-header">
+                      <span class="field-fix-title">CNIC / ID Number</span>
+                      <span class="rejection-badge"><i class="bi bi-x-circle me-1"></i>Rejected</span>
+                    </div>
+                    <div class="rejection-reason-box">
+                      <strong>Reason:</strong> {{ customer.rollback_remarks.cnic|default:"Invalid CNIC number" }}
+                    </div>
+                    <input type="text" name="cnic_{{ customer.id }}" class="form-control form-control-custom" value="{{ customer.cnic }}" required placeholder="Enter updated CNIC">
+                  </div>
+                </div>
+              {% endif %}
+
+              <!-- Passport Number -->
+              {% if customer.field_statuses.passport_number == 'rejected' %}
+                <div class="col-md-6">
+                  <div class="field-fix-card">
+                    <div class="field-fix-header">
+                      <span class="field-fix-title">Passport Number</span>
+                      <span class="rejection-badge"><i class="bi bi-x-circle me-1"></i>Rejected</span>
+                    </div>
+                    <div class="rejection-reason-box">
+                      <strong>Reason:</strong> {{ customer.rollback_remarks.passport_number|default:"Incorrect passport number" }}
+                    </div>
+                    <input type="text" name="passport_number_{{ customer.id }}" class="form-control form-control-custom" value="{{ customer.passport_number }}" required placeholder="Enter updated passport number">
+                  </div>
+                </div>
+              {% endif %}
+
+              <!-- Passport Expiry -->
+              {% if customer.field_statuses.passport_expiry == 'rejected' %}
+                <div class="col-md-6">
+                  <div class="field-fix-card">
+                    <div class="field-fix-header">
+                      <span class="field-fix-title">Passport Expiry Date</span>
+                      <span class="rejection-badge"><i class="bi bi-x-circle me-1"></i>Rejected</span>
+                    </div>
+                    <div class="rejection-reason-box">
+                      <strong>Reason:</strong> {{ customer.rollback_remarks.passport_expiry|default:"Expired or invalid expiry date" }}
+                    </div>
+                    <input type="date" name="passport_expiry_{{ customer.id }}" class="form-control form-control-custom" value="{{ customer.passport_expiry|date:'Y-m-d' }}" required>
+                  </div>
+                </div>
+              {% endif %}
+
+              <!-- Passport Scan -->
+              {% if customer.field_statuses.passport_scan == 'rejected' %}
+                <div class="col-md-6">
+                  <div class="field-fix-card">
+                    <div class="field-fix-header">
+                      <span class="field-fix-title">Passport Scan Document</span>
+                      <span class="rejection-badge"><i class="bi bi-x-circle me-1"></i>Re-upload Required</span>
+                    </div>
+                    <div class="rejection-reason-box">
+                      <strong>Reason:</strong> {{ customer.rollback_remarks.passport_scan|default:"Unclear image or invalid scan" }}
+                    </div>
+                    <input type="file" name="passport_scan_{{ customer.id }}" class="form-control form-control-custom" required>
+                  </div>
+                </div>
+              {% endif %}
+
+              <!-- Passport Photo -->
+              {% if customer.field_statuses.passport_photo == 'rejected' %}
+                <div class="col-md-6">
+                  <div class="field-fix-card">
+                    <div class="field-fix-header">
+                      <span class="field-fix-title">Passport Size Photograph</span>
+                      <span class="rejection-badge"><i class="bi bi-x-circle me-1"></i>Re-upload Required</span>
+                    </div>
+                    <div class="rejection-reason-box">
+                      <strong>Reason:</strong> {{ customer.rollback_remarks.passport_photo|default:"Photo does not meet specifications" }}
+                    </div>
+                    <input type="file" name="passport_photo_{{ customer.id }}" class="form-control form-control-custom" required>
+                  </div>
+                </div>
+              {% endif %}
+
+              <!-- CNIC Front -->
+              {% if customer.field_statuses.cnic_front == 'rejected' %}
+                <div class="col-md-6">
+                  <div class="field-fix-card">
+                    <div class="field-fix-header">
+                      <span class="field-fix-title">CNIC Front Copy</span>
+                      <span class="rejection-badge"><i class="bi bi-x-circle me-1"></i>Re-upload Required</span>
+                    </div>
+                    <div class="rejection-reason-box">
+                      <strong>Reason:</strong> {{ customer.rollback_remarks.cnic_front|default:"Unclear or missing front image" }}
+                    </div>
+                    <input type="file" name="cnic_front_{{ customer.id }}" class="form-control form-control-custom" required>
+                  </div>
+                </div>
+              {% endif %}
+
+              <!-- CNIC Back -->
+              {% if customer.field_statuses.cnic_back == 'rejected' %}
+                <div class="col-md-6">
+                  <div class="field-fix-card">
+                    <div class="field-fix-header">
+                      <span class="field-fix-title">CNIC Back Copy</span>
+                      <span class="rejection-badge"><i class="bi bi-x-circle me-1"></i>Re-upload Required</span>
+                    </div>
+                    <div class="rejection-reason-box">
+                      <strong>Reason:</strong> {{ customer.rollback_remarks.cnic_back|default:"Unclear or missing back image" }}
+                    </div>
+                    <input type="file" name="cnic_back_{{ customer.id }}" class="form-control form-control-custom" required>
+                  </div>
+                </div>
+              {% endif %}
+
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+
+      <div class="d-flex justify-content-end mb-5">
+        <button type="submit" class="btn btn-green-submit text-uppercase tracking-wide">
+          <i class="bi bi-send-check me-2"></i> Re-submit Corrected Details
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div>
+{% endblock %}

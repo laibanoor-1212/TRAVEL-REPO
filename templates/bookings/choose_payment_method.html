@@ -1,95 +1,334 @@
 {% extends 'base/base.html' %}
+{% load static %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
+<div class="sp-payment-wrapper">
+    <div class="sp-payment-container">
 
-            <div class="text-center mb-4">
-                <h3>Complete Your Payment</h3>
-                <p class="text-muted">Booking #{{ booking.id }} — {{ booking.package.name }}</p>
-                <h4 class="text-success">PKR {{ booking.package.price }}</h4>
-            </div>
-
-            <form method="post">
-                {% csrf_token %}
-                <div class="row g-4">
-
-                    <!-- Stripe option -->
-                    <div class="col-md-6">
-                        <label class="payment-option-card w-100 h-100 d-block">
-                            <input type="radio" name="payment_method" value="stripe" class="d-none payment-radio" required>
-                            <div class="card h-100 border-2 payment-card">
-                                <div class="card-body text-center py-4">
-                                    <div class="mb-3">
-                                        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <rect width="48" height="48" rx="10" fill="#635BFF"/>
-                                            <path d="M22 17c0-1 .9-1.5 2.2-1.5 2 0 4.5.6 6.5 1.7v-6.1c-2.2-.9-4.3-1.2-6.5-1.2-5.3 0-8.9 2.8-8.9 7.4 0 7.2 10 6 10 9.1 0 1.2-1 1.6-2.5 1.6-2.2 0-5-.9-7.2-2.1v6.2c2.4 1 4.9 1.5 7.2 1.5 5.5 0 9.2-2.7 9.2-7.4 0-7.7-10-6.3-10-9.2z" fill="white"/>
-                                        </svg>
-                                    </div>
-                                    <h5 class="card-title mb-1">Pay with Stripe</h5>
-                                    <p class="text-muted small mb-0">Card payment (Test Mode)</p>
-                                </div>
-                            </div>
-                        </label>
-                    </div>
-
-                    <!-- Raast option -->
-                    <div class="col-md-6">
-                        <label class="payment-option-card w-100 h-100 d-block">
-                            <input type="radio" name="payment_method" value="raast" class="d-none payment-radio" required>
-                            <div class="card h-100 border-2 payment-card">
-                                <div class="card-body text-center py-4">
-                                    <div class="mb-3">
-                                        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <rect width="48" height="48" rx="10" fill="#00A651"/>
-                                            <path d="M14 24h20M24 14v20" stroke="white" stroke-width="3" stroke-linecap="round"/>
-                                        </svg>
-                                    </div>
-                                    <h5 class="card-title mb-1">Pay with Raast</h5>
-                                    <p class="text-muted small mb-0">Bank app / JazzCash transfer</p>
-                                </div>
-                            </div>
-                        </label>
-                    </div>
-
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-4" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
+            {% endfor %}
+        {% endif %}
 
-                <div class="d-grid mt-4">
-                    <button type="submit" class="btn btn-primary btn-lg">Continue</button>
-                </div>
-            </form>
-
-            <div class="text-center mt-4">
-                <small class="text-muted">
-                 your payment hold in secure escrow system until you receive the ticket and approve it.
-                </small>
+        <!-- Header Section -->
+        <div class="text-center mb-4">
+            <span class="sp-badge">
+                <i class="fa-solid fa-shield-halved"></i> Secure Escrow Checkout
+            </span>
+            <h3 class="sp-heading">Select Payment Method</h3>
+            <p class="sp-subheading">Booking #{{ booking.id }} &bull; {{ booking.package.name }}</p>
+            
+            <div class="sp-amount-box mt-3">
+                <span class="sp-amount-label">Total Amount Payable</span>
+                <h2 class="sp-amount-tag">PKR {{ booking.total_amount }}</h2>
             </div>
-
         </div>
+
+        <form method="post" action="{% url 'bookings:choose_payment_method' booking.id %}">
+            {% csrf_token %}
+            
+            <div class="sp-methods-grid">
+
+                <!-- Stripe Option -->
+                <div class="sp-method-col">
+                    <label class="sp-option-card">
+                        <input type="radio" name="payment_method" value="stripe" class="sp-radio-input" required>
+                        <div class="sp-card-body">
+                            <div class="sp-check-indicator">
+                                <i class="fa-solid fa-check"></i>
+                            </div>
+                            <div class="mb-3">
+                                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="48" height="48" rx="12" fill="#635BFF"/>
+                                    <path d="M22 17c0-1 .9-1.5 2.2-1.5 2 0 4.5.6 6.5 1.7v-6.1c-2.2-.9-4.3-1.2-6.5-1.2-5.3 0-8.9 2.8-8.9 7.4 0 7.2 10 6 10 9.1 0 1.2-1 1.6-2.5 1.6-2.2 0-5-.9-7.2-2.1v6.2c2.4 1 4.9 1.5 7.2 1.5 5.5 0 9.2-2.7 9.2-7.4 0-7.7-10-6.3-10-9.2z" fill="white"/>
+                                </svg>
+                            </div>
+                            <h5 class="sp-method-title">Pay with Stripe</h5>
+                            <p class="sp-method-desc">Credit / Debit Card</p>
+                            <span class="sp-tag-small mt-3">Instant Confirmation</span>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Raast Option -->
+                <div class="sp-method-col">
+                    <label class="sp-option-card">
+                        <input type="radio" name="payment_method" value="raast" class="sp-radio-input" required>
+                        <div class="sp-card-body">
+                            <div class="sp-check-indicator">
+                                <i class="fa-solid fa-check"></i>
+                            </div>
+                            <div class="mb-3">
+                                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="48" height="48" rx="12" fill="#0f5132"/>
+                                    <path d="M14 24h20M24 14v20" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                            <h5 class="sp-method-title">Pay with Raast</h5>
+                            <p class="sp-method-desc">Bank App / JazzCash / EasyPaisa</p>
+                            <span class="sp-tag-small mt-3">Local Bank Transfer</span>
+                        </div>
+                    </label>
+                </div>
+
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="sp-submit-btn">
+                    <span>Proceed to Payment</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </form>
+
+        <div class="text-center mt-4">
+            <div class="sp-escrow-badge">
+                <i class="fa-solid fa-lock" style="color: #0f5132;"></i>
+                <span>Protected by Safar-e-Haram Escrow System</span>
+            </div>
+        </div>
+
     </div>
 </div>
 
 <style>
-    .payment-card {
+    .sp-payment-wrapper {
+        width: 100%;
+        min-height: 100vh;
+        background: #f8fafc;
+        padding-top: 110px;
+        padding-bottom: 60px;
+        padding-left: 16px;
+        padding-right: 16px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        box-sizing: border-box;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .sp-payment-container {
+        width: 100%;
+        max-width: 680px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 24px;
+        padding: 36px 32px;
+        box-shadow: 0 10px 30px -5px rgba(15, 81, 50, 0.08);
+        box-sizing: border-box;
+    }
+
+    .sp-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background-color: #dcfce7;
+        color: #0f5132;
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        padding: 6px 14px;
+        border-radius: 50px;
+    }
+
+    .sp-heading {
+        font-weight: 800;
+        color: #0f172a;
+        margin-top: 10px;
+        margin-bottom: 4px;
+        font-size: 1.6rem;
+    }
+
+    .sp-subheading {
+        color: #64748b;
+        margin-bottom: 0;
+        font-size: 0.92rem;
+    }
+
+    .sp-amount-box {
+        background-color: #f0fdf4;
+        border: 1px dashed #86efac;
+        border-radius: 14px;
+        padding: 16px;
+        display: inline-block;
+        width: 100%;
+        max-width: 320px;
+        box-sizing: border-box;
+    }
+
+    .sp-amount-label {
+        display: block;
+        font-size: 0.75rem;
+        color: #166534;
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    .sp-amount-tag {
+        color: #0f5132;
+        font-weight: 800;
+        margin: 4px 0 0 0;
+        font-size: 1.65rem;
+    }
+
+    .sp-methods-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-top: 24px;
+    }
+
+    .sp-option-card {
+        position: relative;
+        display: block;
         cursor: pointer;
-        transition: all 0.15s ease-in-out;
-        border-color: #dee2e6 !important;
+        height: 100%;
     }
-    .payment-card:hover {
-        border-color: #86b7fe !important;
-        box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.06);
+
+    .sp-radio-input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
     }
-    .payment-radio:checked + .payment-card {
-        border-color: #0d6efd !important;
-        box-shadow: 0 0 0 0.2rem rgba(13,110,253,0.15);
-        background-color: #f0f6ff;
+
+    .sp-card-body {
+        position: relative;
+        height: 100%;
+        border: 2px solid #e2e8f0;
+        border-radius: 18px;
+        padding: 24px 16px;
+        text-align: center;
+        background-color: #ffffff;
+        transition: all 0.2s ease-in-out;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .sp-check-indicator {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: #f1f5f9;
+        border: 1px solid #cbd5e1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+    .sp-check-indicator i {
+        font-size: 10px;
+        color: transparent;
+    }
+
+    .sp-method-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 4px;
+    }
+
+    .sp-method-desc {
+        font-size: 0.82rem;
+        color: #64748b;
+        margin: 0;
+    }
+
+    .sp-tag-small {
+        font-size: 0.72rem;
+        color: #0f5132;
+        background-color: #f0fdf4;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-weight: 700;
+        border: 1px solid #dcfce7;
+    }
+
+    /* Hover State */
+    .sp-option-card:hover .sp-card-body {
+        border-color: #0f5132;
+        transform: translateY(-2px);
+    }
+
+    /* Active Checked State */
+    .sp-radio-input:checked ~ .sp-card-body {
+        border-color: #0f5132;
+        background-color: #f0fdf4;
+        box-shadow: 0 0 0 4px rgba(15, 81, 50, 0.12);
+    }
+
+    .sp-radio-input:checked ~ .sp-card-body .sp-check-indicator {
+        background-color: #0f5132;
+        border-color: #0f5132;
+    }
+
+    .sp-radio-input:checked ~ .sp-card-body .sp-check-indicator i {
+        color: #ffffff;
+    }
+
+    .sp-submit-btn {
+        width: 100%;
+        background-color: #0f5132;
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 1rem;
+        padding: 15px 24px;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        box-shadow: 0 8px 16px -4px rgba(15, 81, 50, 0.3);
+    }
+
+    .sp-submit-btn:hover {
+        background-color: #166534;
+        transform: translateY(-1px);
+    }
+
+    .sp-escrow-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        padding: 8px 16px;
+        border-radius: 30px;
+        font-size: 0.8rem;
+        color: #475569;
+        font-weight: 600;
+    }
+
+    @media (max-width: 576px) {
+        .sp-payment-wrapper {
+            padding-top: 90px;
+            padding-bottom: 40px;
+        }
+        .sp-payment-container {
+            padding: 24px 20px;
+        }
+        .sp-methods-grid {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 {% endblock %}

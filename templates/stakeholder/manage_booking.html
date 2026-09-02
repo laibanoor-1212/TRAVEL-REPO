@@ -1,99 +1,200 @@
 {% extends 'stakeholder/dashboard_layout2.html' %}
+{% load static %}
+
 {% block content %}
 <style>
-    .bk-1{
-       margin-top: 50px;
-          margin-left: 50px;
-          color:#155724;
-          margin-bottom: 15px; 
-    }
-    .bk h2{
-     
-          color:#155724;
-         
-    }
-    .status-badge {
-        padding: 12px 6px;
-        border-radius: 20px;
-        font-size: 10px;
-        font-weight: 500;
-        text-transform: capitalize;
-    }
-    .status-pending { background: #fff3cd; color: #856404; }
-    .status-approved { background: #d4edda; color: #155724; }
-    .status-rejected { background: #f8d7da; color: #721c24; }
-    .status-date-req { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
-    
-    .manage-btn {
-        background: var(--primary-green);
-        color: white;
-        text-decoration: none;
-        padding: 8px 16px;
-        border-radius: 6px;
-        font-size: 13px;
-        transition: 0.3s;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        border: none;
-        cursor: pointer;
-    }
-    .manage-btn:hover { background: var(--light-green); }
+  :root {
+    --primary-green: #064e3b;
+    --accent-green: #047857;
+    --light-green: #ecfdf5;
+    --border-color: #e2e8f0;
+    --text-dark: #0f172a;
+  }
 
-    table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
-    th { color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .bk-container {
+    padding: 24px;
+    background-color: #f8fafc;
+    min-height: 85vh;
+  }
 
-    .empty-row { text-align: center; color: #888; font-style: italic; padding: 30px !important; }
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+
+  .page-title {
+    color: var(--primary-green);
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .count-badge {
+    background: var(--primary-green);
+    color: #ffffff;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.88rem;
+  }
+
+  .table-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(6, 78, 59, 0.05);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+  }
+
+  .custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+  }
+
+  .custom-table thead {
+    background: var(--primary-green);
+    color: #ffffff;
+  }
+
+  .custom-table th {
+    padding: 14px 18px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .custom-table td {
+    padding: 16px 18px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+  }
+
+  /* Status Badges */
+  .status-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    text-transform: uppercase;
+  }
+
+  .st-resubmitted { background: #e0e7ff; color: #3730a3; border: 1px solid #c7d2fe; }
+  .st-approved    { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+  .st-action      { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+  .st-rejected    { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+  .st-pending     { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+  .st-ticket      { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+
+  .btn-action-view {
+    background: var(--primary-green);
+    color: #ffffff;
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.84rem;
+    font-weight: 600;
+    transition: background 0.2s;
+    display: inline-block;
+  }
+
+  .btn-action-view:hover {
+    background: var(--accent-green);
+    color: #ffffff;
+  }
 </style>
 
-<div class="bk-1">
-    <div class="bk" style="margin-bottom: 20px;">
-        <h2>Manage Bookings</h2>
-        <p style="color: #666; font-size: 14px;">View and manage customer documents for your packages.</p>
-    </div>
+<div class="bk-container">
+  <div class="page-header">
+    <h2 class="page-title"><i class="bi bi-journal-check me-2"></i>Manage Package Bookings</h2>
+    <span class="count-badge">
+      Total Bookings: {{ bookings.count }}
+    </span>
+  </div>
 
-    <table>
+  <div class="table-card">
+    <div style="overflow-x: auto;">
+      <table class="custom-table">
         <thead>
-            <tr>
-                <th>Booking ID</th>
-                <th>Customer Name</th>
-                <th>Package Name</th>
-                <th>Total Persons</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
+          <tr>
+            <th>Booking ID</th>
+            <th>Customer Details</th>
+            <th>Package Name</th>
+            <th>Travelers</th>
+            <th>Verification Status</th>
+            <th style="text-align: center;">Action</th>
+          </tr>
         </thead>
         <tbody>
-            {% for booking in bookings %}
-            <tr>
-                <td><strong>#{{ booking.booking_id|default:booking.id }}</strong></td>
-                <td>{{ booking.user.get_full_name|default:booking.user.username }}</td>
-                <td>{{ booking.package.name }}</td>
-                <td>{{ booking.total_persons }} Persons</td>
-                <td>
-                    {% if booking.status == 'pending' %}
-                        <span class="status-badge status-pending">In Progress</span>
-                    {% elif booking.status == 'date_requested' %}
-                        <span class="status-badge status-date-req"><i class="fas fa-clock"></i> Date Requested</span>
-                    {% elif booking.status == 'approved' %}
-                        <span class="status-badge status-approved">Approved</span>
-                    {% else %}
-                        <span class="status-badge status-rejected">{{ booking.status }}</span>
-                    {% endif %}
-                </td>
-                <td>
-                    <a href="{% url 'stakeholder:booking_detail' booking.id %}" class="manage-btn">
-                        <i class="fa-solid fa-file-medical"></i> Docs
-                    </a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="6" class="empty-row">No bookings registered yet.</td>
-            </tr>
-            {% endfor %}
+          {% for booking in bookings %}
+          <tr>
+            <td>
+              <strong style="color: var(--primary-green);">#{{ booking.booking_id|default:booking.id }}</strong>
+            </td>
+            <td>
+              <div style="font-weight: 600; color: var(--text-dark);">
+                {{ booking.user.get_full_name|default:booking.user.username }}
+              </div>
+              <small style="color: #64748b;">{{ booking.user.email }}</small>
+            </td>
+            <td>
+              <span style="font-weight: 600; color: #334155;">
+                {{ booking.package.title|default:booking.package.name }}
+              </span>
+            </td>
+            <td>
+              <strong>{{ booking.total_persons|default:"1" }} Person(s)</strong>
+            </td>
+            <td>
+              {% comment %} Check for User Resubmission vs Agent Review Statuses {% endcomment %}
+              {% if booking.status == 'resubmitted' or booking.status == 'under_review' %}
+                <span class="status-badge st-resubmitted">
+                  <i class="bi bi-arrow-repeat"></i> Resubmitted (Review Needed)
+                </span>
+              {% elif booking.status == 'action_required' or booking.status == 'rollback' or booking.status == 'rejected_fields' %}
+                <span class="status-badge st-action">
+                  <i class="bi bi-exclamation-triangle"></i> Action Required (User)
+                </span>
+              {% elif booking.status == 'approved' or booking.status == 'confirmed' %}
+                <span class="status-badge st-approved">
+                  <i class="bi bi-check-circle"></i> Approved
+                </span>
+              {% elif booking.status == 'ticket_issued' or booking.status == 'completed' %}
+                <span class="status-badge st-ticket">
+                  <i class="bi bi-ticket-perforated"></i> Ticket Issued
+                </span>
+              {% elif booking.status == 'cancelled' or booking.status == 'rejected' %}
+                <span class="status-badge st-rejected">
+                  <i class="bi bi-x-circle"></i> Rejected / Cancelled
+                </span>
+              {% else %}
+                <span class="status-badge st-pending">
+                  <i class="bi bi-clock"></i> Pending Review
+                </span>
+              {% endif %}
+            </td>
+            <td style="text-align: center;">
+              <a href="{% url 'stakeholder:booking_detail' booking.id %}" class="btn-action-view">
+                <i class="bi bi-eye me-1"></i> Review & Docs
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" style="text-align: center; padding: 30px; color: #64748b;">
+              <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+              No package bookings found.
+            </td>
+          </tr>
+          {% endfor %}
         </tbody>
-    </table>
+      </table>
+    </div>
+  </div>
 </div>
 {% endblock %}

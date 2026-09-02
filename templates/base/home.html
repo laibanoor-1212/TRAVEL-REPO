@@ -2,13 +2,11 @@
 {% block content %}
 {% load static %} 
 
-<link rel="stylesheet" href="{% static 'css/home.css' %}">
-
 <section class="hero-sectionbg">
   
    <div class="video-wrapper">
   <video autoplay muted loop id="bg-video">
-    <source src="{% static 'videos/kabba.mp4' %}" type="video/mp4">
+    <source src="{% static 'videos/kabbaview.mp4' %}" type="video/mp4">
   </video>
 
   <div class="overlay2"></div>
@@ -37,11 +35,11 @@
         </form>
       </div>
       <div class="hero-action-buttons">
-        <a href="{% url 'base:packages' %}" class="btn-customer">Find a Package</a>
+        <a href="{% url 'base:hajj_packages' %}" class="btn-customer">Find a Package</a>
         
         <a href="{% url 'stakeholder:create_profile' %}" class="btn-agent">Register as Agent</a>
       </div>
-     
+      
 </div>
 </div>
    
@@ -104,135 +102,108 @@
   <div class="custom-shape-divider-bottom">
      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
    
-    <path d="M0,40 C150,0 400,120 1200,100 L1200,120 L0,120 Z" class="shape-fill"></path>
+    <path d="M0,40 C150,0 400,120 1200,100 L1200,120 L0,120 Z" class="shape-fill"></path>   
 
   </svg>
   </div>
 </section>
 
-<section class="destinations">
-    <div class="container1">
-        <h1>Popular Destinations</h1>
-        <p class="subtitle">Discover the sacred cities and holy places waiting for your visit.</p>
+<!-- Updated Dynamic Destinations Section -->
+<!-- Admin-Driven Dynamic Destinations Section -->
+<section class="destinations-section">
+  <div class="dest-container">
+    <span class="dest-header-tag">Sacred Places & Categories</span>
+    <h2 class="dest-main-title">Popular Destinations</h2>
+    <p class="dest-subtitle">Explore holy destinations and verified package categories curated by admin.</p>
 
-        <div class="ptype-grid">
+    <div class="dest-grid">
+      {% for type in package_types %}
+        <div class="dest-card">
+          <div class="dest-img-wrapper">
+            {% if type.image %}
+              <!-- Admin dwara uploaded image yahan render ho gi -->
+              <img src="{{ type.image.url }}" alt="{{ type.name }}">
+            {% else %}
+              <!-- Fallback Image agar Admin ne image na di ho -->
+              <img src="{% static 'images/kabbaview.jpeg' %}" alt="{{ type.name }}">
+            {% endif %}
+            <span class="dest-badge">Verified</span>
+          </div>
 
-            <div class="ptype-card">
-                <div class="ptype-img-wrap">
-                    <img src="{% static 'images/makkah.jpg' %}" alt="Makkah">
-                </div>
-                <div class="ptype-icon pink"><i class="fas fa-kaaba"></i></div>
-                <h3>Makkah</h3>
-                <p class="desc">The holiest city in Islam and home to the Kaaba.</p>
-                <a href="{% url 'base:hajjpackages' %}" class="ptype-link">Explore Makkah →</a>
+          <div class="dest-content">
+            <h3 class="dest-card-title">{{ type.name }}</h3>
+            <p class="dest-card-desc">
+              {% if type.description %}
+                {{ type.description|truncatewords:14 }}
+              {% else %}
+                Explore sacred places and customized pilgrimage options tailored for you.
+              {% endif %}
+            </p>
+            
+            <div class="dest-card-footer">
+              <a href="{% url 'base:hajj_packages' %}?type={{ type.id }}" class="dest-btn">
+                Explore Packages &rarr;
+              </a>
             </div>
-
-            <div class="ptype-card">
-                <div class="ptype-img-wrap">
-                    <img src="{% static 'images/nabvi.jpeg' %}" alt="Madinah">
-                </div>
-                <div class="ptype-icon blue"><i class="fas fa-mosque"></i></div>
-                <h3>Madinah</h3>
-                <p class="desc">The blessed city of Masjid an-Nabawi.</p>
-                <a href="{% url 'base:packages' %}" class="ptype-link">Explore Madinah →</a>
-            </div>
-
-            <div class="ptype-card">
-                <div class="ptype-img-wrap">
-                    <img src="{% static 'images/iran.jpeg' %}" alt="Iran">
-                </div>
-                <div class="ptype-icon orange"><i class="fas fa-fire"></i></div>
-                <h3>Iran</h3>
-                <p class="desc">Visit the holy shrines and rich Islamic heritage.</p>
-                <a href="#" class="ptype-link">Explore Iran →</a>
-            </div>
-
-            <div class="ptype-card">
-                <div class="ptype-img-wrap">
-                    <img src="{% static 'images/iraq.jpeg' %}" alt="Iraq">
-                </div>
-                <div class="ptype-icon purple"><i class="fas fa-place-of-worship"></i></div>
-                <h3>Iraq</h3>
-                <p class="desc">Explore Karbala, Najaf and other sacred places.</p>
-                <a href="#" class="ptype-link">Explore Iraq →</a>
-            </div>
-
+          </div>
         </div>
+      {% empty %}
+        <div class="dest-empty-state">
+          <p>No package types added yet by Admin.</p>
+        </div>
+      {% endfor %}
     </div>
+  </div>
 </section>
-
-
-<section class="package-types-section">
+<section class="packages">
     <div class="container1">
-        <h1>Packages Types</h1>
-        <p class="subtitle">Explore our specialized travel categories tailored for your spiritual journey.</p>
 
-        <div class="ptype-grid">
+        <h1>Popular Packages</h1>
 
-            <div class="ptype-card">
-                <div class="ptype-img-wrap">
-                    <img src="{% static 'images/hajj.jpeg' %}" alt="Hajj Packages">
+        <div class="package-cards">
+
+            <div class="package-card">
+                <img src="{% static 'images/umrah.png' %}" alt="Umrah Package">
+                <div class="package-content">
+                    <h3>Economy Umrah</h3>
+                    <p>7 Days • Makkah & Madinah</p>
+                    <h4>PKR 185,000</h4>
+                    <a href="#" class="package-btn">View Details</a>
                 </div>
-                <div class="ptype-icon pink"><i class="fas fa-kaaba"></i></div>
-                <h3>Hajj Packages</h3>
-                <p class="desc">Official management rules configured across specialized seasonal levels with complete guidance.</p>
-                <div class="ptype-tags">
-                    <span class="ptype-tag">Economy</span>
-                    <span class="ptype-tag">Standard</span>
-                    <span class="ptype-tag vip">VIP</span>
-                    <span class="ptype-tag">Luxury</span>
-                </div>
-                <a href="{% url 'base:hajjpackages' %}" class="ptype-link">Explore Hajj Options →</a>
             </div>
 
-            <div class="ptype-card">
-                <div class="ptype-img-wrap">
-                    <img src="{% static 'images/nabvi.jpeg' %}" alt="Umrah Packages">
+            <div class="package-card">
+                <img src="{% static 'images/tawaf4.jpeg' %}" alt="Premium Package">
+                <div class="package-content">
+                    <h3>Premium Umrah</h3>
+                    <p>10 Days • 5 Star Hotels</p>
+                    <h4>PKR 325,000</h4>
+                    <a href="#" class="package-btn">View Details</a>
                 </div>
-                <div class="ptype-icon blue"><i class="fas fa-mosque"></i></div>
-                <h3>Umrah Packages</h3>
-                <p class="desc">Flexible groups throughout the year matching customized logistics, flights, and accommodations.</p>
-                <div class="ptype-tags">
-                    <span class="ptype-tag">Economy</span>
-                    <span class="ptype-tag">Standard</span>
-                    <span class="ptype-tag vip">VIP</span>
-                    <span class="ptype-tag">Luxury</span>
-                </div>
-                <a href="{% url 'base:packages' %}" class="ptype-link">Explore Umrah Options →</a>
             </div>
 
-            <div class="ptype-card">
-                <div class="ptype-img-wrap">
-                    <img src="{% static 'images/qom.png' %}" alt="Iran Ziyarat">
+            <div class="package-card">
+                <img src="{% static 'images/iran.png' %}" alt="Iran Package">
+                <div class="package-content">
+                    <h3>Iran Ziyarat</h3>
+                    <p>8 Days • Mashhad & Qom</p>
+                    <h4>PKR 235,000</h4>
+                    <a href="#" class="package-btn">View Details</a>
                 </div>
-                <div class="ptype-icon orange"><i class="fas fa-fire"></i></div>
-                <h3>Iran Ziyarat</h3>
-                <p class="desc">Specialized spiritual group setups with comprehensive transit permissions and guided tours.</p>
-                <div class="ptype-tags">
-                    <span class="ptype-tag">Economy</span>
-                    <span class="ptype-tag">Standard</span>
-                    <span class="ptype-tag luxury">Luxury</span>
-                </div>
-                <a href="#" class="ptype-link">Explore Iran Ziyarat →</a>
             </div>
 
-            <div class="ptype-card">
-                <div class="ptype-img-wrap">
-                    <img src="{% static 'images/iraq.jpeg' %}" alt="Iraq Ziyarat">
+            <div class="package-card">
+                <img src="{% static 'images/iraq.png' %}" alt="Iraq Package">
+                <div class="package-content">
+                    <h3>Iraq Ziyarat</h3>
+                    <p>9 Days • Karbala & Najaf</p>
+                    <h4>PKR 255,000</h4>
+                    <a href="#" class="package-btn">View Details</a>
                 </div>
-                <div class="ptype-icon purple"><i class="fas fa-place-of-worship"></i></div>
-                <h3>Iraq Ziyarat</h3>
-                <p class="desc">Ziyarat tour routes designed with optimal safety, premium catering layers, and expert companions.</p>
-                <div class="ptype-tags">
-                    <span class="ptype-tag">Economy</span>
-                    <span class="ptype-tag">Standard</span>
-                    <span class="ptype-tag vip">VIP</span>
-                    <span class="ptype-tag">Luxury</span>
-                </div>
-                <a href="#" class="ptype-link">Explore Iraq Ziyarat →</a>
             </div>
 
         </div>
+
     </div>
 </section>
 
@@ -276,7 +247,7 @@
                     </div>
                     
                     <div class="action-area">
-                        <a href="{% url 'base:packages' %}" class="btn-safar-gold">Explore Agent Packages</a>
+                        <a href="{% url 'base:hajj_packages' %}" class="btn-safar-gold">Explore Agent Packages</a>
                     </div>
                 </div>
             </div>
@@ -336,7 +307,7 @@
 
     <div class="hero-btns" style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 25px;">
         <button class="learn-btn" style="border: 2px solid var(--color);">
-            <a href="{% url 'base:hajjpackages' %}" style="color: var(--color); text-decoration:none;">EXPLORE PACKAGES</a>
+            <a href="{% url 'base:hajj_packages' %}" style="color: var(--color); text-decoration:none;">EXPLORE PACKAGES</a>
         </button>
         
         <button class="learn-btn" style="background: transparent;border: 2px solid var(--color);color: var(--color);">
@@ -422,7 +393,7 @@
         <div class="info">
         <h3>Ahram</h3>
           <p>how to wear ihram and its restrictions</p>
-           <button class="view"><a href="{% url 'base:ahram'%}">Veiw More</a></button>
+           <button class="view"><a href="#">Veiw More</a></button>
         </div>
       </div>
        <div class="cardb">
@@ -432,7 +403,7 @@
         <div class="info">
         <h3>Packages</h3>
           <p>hajj and umrah packages form different travel agents</p>
-           <button class="view"><a href="{% url 'base:hajjpackages'%}">Veiw More</a></button>
+           <button class="view"><a href="{% url 'base:hajj_packages'%}">Veiw More</a></button>
         </div>
       </div>
     </div>
@@ -457,7 +428,7 @@
                 <li><i class="fas fa-check"></i> Step-by-Step Ritual Guides</li>
                 <li><i class="fas fa-check"></i> Secure Payment Protection</li>
             </ul>
-            <a href="{% url 'base:hajjpackages' %}" class="portal-btn">Find a Package</a>
+            <a href="{% url 'base:hajj_packages' %}" class="portal-btn">Find a Package</a>
         </div>
 
         <div class="portal-card agent-card">
@@ -475,63 +446,11 @@
 </section>
 
 
-<footer class="footer-wrapper">
- 
-  <div class="footer-top-curve">
-    <svg viewBox="0 0 1440 150" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-      
-      <path fill="#ffff" d="M0,64 C360,160 1080,0 1440,96 L1440,0 L0,0 Z"></path>
-    </svg>
-  </div>
-
-
-  <div class="footer-content">
-    <img src="{% static 'images/logo.png'%}" alt="">
-    <div class="footer-columns">
-      <div>
-        <h3> Safar-e-Haram</h3>
-        <p>Safar-e-Haram guides you on a blessed journey — helping pilgrims explore routes, maps, and essential Hajj & Umrah information in one place.</p>
-      </div>
-
-      <div>
-        <h3>Quick Links</h3>
-        <ul>
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Guides</a></li>
-          <li><a href="#">Maps</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-      </div>
-
-      <div>
-        <h3>Support</h3>
-        <ul>
-          <li><a href="#">FAQ</a></li>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Terms & Conditions</a></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="footer-social">
-      <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-      <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-      <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-      <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
-    </div>
-
-    <div class="footer-bottom">
-      <p>© 2025 Safar-e-Haram. All Rights Reserved.</p>
-    </div>
-  </div>
-</footer>
-
-
 <script>
     // Optional JS if you want interactive "Read More" button
-    document.querySelector('.read-more').addEventListener('click', () => {
+    document.querySelector('.read-more')?.addEventListener('click', () => {
         alert('Redirect to more info page');
     });
 </script>
 
- {% endblock %}
+{% endblock %}

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django_ckeditor_5.fields import CKEditor5Field
 User = get_user_model()
 
 class Complaint(models.Model):
@@ -74,3 +75,35 @@ class Complaint(models.Model):
 
     def __str__(self):
         return f"#{self.id} | {self.user.email} - {self.get_complaint_type_display()}"
+
+
+
+class SystemSetting(models.Model):
+    primary_currency = models.CharField(max_length=10, default="PKR", choices=[('PKR', 'PKR'), ('SAR', 'SAR'), ('USD', 'USD')])
+    timezone = models.CharField(max_length=50, default="Asia/Karachi")
+    maintenance_mode = models.BooleanField(default=False)
+    
+    def save(self, *args, **kwargs):
+        self.pk = 1  
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def load(cls):
+        obj, created = cls.objects.get_or_create(pk=1)
+        return obj
+
+    def __str__(self):
+        return "Safar-e-Haram Platform Settings"
+
+
+class GuidePage(models.Model):
+    # Unique slug identifying each route (e.g., 'miqat', 'tawaf', 'mashad', 'karbala')
+    page_slug = models.SlugField(max_length=100, unique=True, help_text="Page key identifier matching view route")
+    title = models.CharField(max_length=200, help_text="Page Heading Title")
+    banner_image = models.ImageField(upload_to='guides/banners/', blank=True, null=True)
+    content = CKEditor5Field('Guide Content', config_name='extends', blank=True)
+    is_published = models.BooleanField(default=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.title} ({self.page_slug})"

@@ -1,0 +1,212 @@
+/* ==========================================
+   SAFAR-E-HARAM ARCH BLEND FOOTER
+   ========================================== */
+
+html {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    flex: 1 0 auto;
+    width: 100%;
+}
+
+/* Base Wrapper */
+.footer-wrapper {
+    position: relative !important;
+    background: linear-gradient(180deg, #04392a 0%, #065f46 100%) !important;
+    color: #ffffff !important;
+    font-family: 'Poppins', sans-serif !important;
+    width: 100% !important;
+    margin-top: auto !important;
+    display: block !important;
+    z-index: 50;
+}
+
+/* ==========================================
+   ARCH (MAHRAB) BLEND TOP SECTION
+   ========================================== */
+.footer-top-curve {
+    position: relative;
+    width: 100%;
+    height: 60px;
+    line-height: 0;
+    overflow: hidden;
+    margin-top: -1px;
+}
+
+.footer-top-curve svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.footer-top-curve svg path {
+    fill: #04392a !important; /* Blends directly into footer body */
+}
+
+/* Gold Accent Border Under Arch */
+.footer-top-curve::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #ffd700, transparent);
+    opacity: 0.8;
+}
+
+/* Inner Layout Content */
+.footer-content {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 20px 40px 30px 40px;
+}
+
+/* Logo Styling */
+.footer-content img {
+    height: 55px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+    margin-bottom: 25px;
+    filter: drop-shadow(0px 3px 6px rgba(0, 0, 0, 0.3));
+}
+
+/* Columns Grid Layout */
+.footer-columns {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 40px;
+    margin-bottom: 30px;
+}
+
+.footer-columns > div {
+    flex: 1 1 230px;
+}
+
+.footer-columns h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #ffd700 !important;
+    margin-top: 0;
+    margin-bottom: 18px;
+    position: relative;
+    display: inline-block;
+    letter-spacing: 0.5px;
+}
+
+/* Underline Indicator */
+.footer-columns h3::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 28px;
+    height: 2px;
+    background-color: #ffd700;
+    border-radius: 2px;
+}
+
+.footer-columns p {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.92rem;
+    line-height: 1.65;
+    margin: 0;
+}
+
+/* Links & Hover Micro-Interactions */
+.footer-columns ul {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.footer-columns ul li {
+    margin-bottom: 11px;
+}
+
+.footer-columns ul li a {
+    color: rgba(255, 255, 255, 0.8) !important;
+    text-decoration: none !important;
+    font-size: 0.92rem;
+    transition: all 0.25s ease-in-out;
+    display: inline-block;
+}
+
+.footer-columns ul li a:hover {
+    color: #ffd700 !important;
+    transform: translateX(6px);
+}
+
+/* Social Buttons */
+.footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 30px 0 25px 0;
+}
+
+.footer-social a {
+    color: #ffffff !important;
+    font-size: 17px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    text-decoration: none !important;
+    backdrop-filter: blur(5px);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.footer-social a:hover {
+    background-color: #ffd700 !important;
+    color: #04392a !important;
+    border-color: #ffd700 !important;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+}
+
+/* Copyright Bar */
+.footer-bottom {
+    text-align: center;
+    font-size: 0.88rem;
+    color: rgba(255, 255, 255, 0.7);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    padding-top: 20px;
+    margin-top: 10px;
+}
+
+.footer-bottom p {
+    margin: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 820px) {
+    .footer-content {
+        padding: 15px 25px 25px 25px;
+    }
+
+    .footer-columns {
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .footer-top-curve {
+        height: 40px;
+    }
+}

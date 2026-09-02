@@ -1,0 +1,503 @@
+{% extends 'customer/user_layout.html' %}
+{% load static %}
+{% block title %}Booking Details #{{ booking.id }} - Safar-e-Haram{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  :root {
+    --primary-green: #059669;
+    --primary-green-hover: #047857;
+    --light-green-bg: #ecfdf5;
+    --border-green: #a7f3d0;
+    --text-dark: #0f172a;
+    --text-muted: #64748b;
+    --bg-light: #f8fafc;
+  }
+
+  .booking-wrapper {
+    max-width: 1250px;
+    margin: 30px auto;
+    padding: 0 20px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  .booking-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    border: 1px solid #e2e8f0;
+    padding: 28px;
+  }
+
+  /* Header Section */
+  .detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .detail-header h2 {
+    margin: 0;
+    color: var(--text-dark);
+    font-size: 22px;
+    font-weight: 800;
+  }
+
+  .detail-header .meta-date {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-top: 4px;
+    display: block;
+  }
+
+  /* Status Badges Matching Table Theme */
+  .status-badge {
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+
+  .status-action-required {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fca5a5;
+    animation: pulse-red 2s infinite;
+  }
+
+  .status-confirmed {
+    background-color: var(--light-green-bg);
+    color: var(--primary-green);
+    border: 1px solid var(--border-green);
+  }
+
+  .status-pending {
+    background-color: #fef3c7;
+    color: #b45309;
+    border: 1px solid #fde68a;
+  }
+
+  .status-cancelled {
+    background-color: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #cbd5e1;
+  }
+
+  @keyframes pulse-red {
+    0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.3); }
+    70% { box-shadow: 0 0 0 5px rgba(220, 38, 38, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+  }
+
+  /* Rollback Banner */
+  .agent-note-box {
+    margin-top: 24px;
+    background: #fff7ed;
+    border-left: 4px solid #f97316;
+    padding: 18px;
+    border-radius: 8px;
+    border: 1px solid #ffedd5;
+  }
+
+  /* Section Titles */
+  .section-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin: 32px 0 16px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 8px;
+  }
+
+  .section-title i {
+    color: var(--primary-green);
+  }
+
+  /* Grids */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+  }
+
+  .info-box {
+    background: var(--bg-light);
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 16px;
+  }
+
+  .field-label {
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  .field-value {
+    color: var(--text-dark);
+    font-size: 14px;
+    font-weight: 600;
+    word-break: break-word;
+  }
+
+  /* Documents & Warnings */
+  .doc-card-rejected {
+    background: #fff5f5 !important;
+    border: 1.5px solid #fca5a5 !important;
+  }
+
+  .missing-field {
+    background: #fef2f2;
+    border: 1px dashed #ef4444;
+    padding: 8px 12px;
+    border-radius: 8px;
+  }
+
+  .text-missing {
+    color: #dc2626 !important;
+    font-weight: 700 !important;
+    font-size: 12px;
+  }
+
+  .doc-link {
+    color: var(--primary-green);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: #ffffff;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    transition: all 0.2s;
+  }
+
+  .doc-link:hover {
+    background: var(--light-green-bg);
+    border-color: var(--border-green);
+  }
+
+  /* Buttons */
+  .btn-action-main {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .btn-danger-fix {
+    background-color: #dc2626;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+  }
+
+  .btn-danger-fix:hover {
+    background-color: #b91c1c;
+  }
+
+  .btn-secondary {
+    background-color: #f1f5f9;
+    color: var(--text-dark);
+    border: 1px solid #cbd5e1;
+  }
+
+  .btn-secondary:hover {
+    background-color: #e2e8f0;
+  }
+</style>
+
+<div class="booking-wrapper">
+  <div class="booking-card">
+    
+    <!-- Header & Booking Overview -->
+    <div class="detail-header">
+      <div>
+        <h2>Booking #{{ booking.booking_id|default:booking.id }}</h2>
+        <span class="meta-date">
+          <i class="fa-regular fa-calendar" style="margin-right: 4px;"></i> Booked on: {{ booking.created_at|date:"M d, Y - h:i A" }}
+        </span>
+      </div>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <a href="{% url 'customers:user_bookings' %}" class="btn-action-main btn-secondary">
+          <i class="fa-solid fa-arrow-left"></i> Back to List
+        </a>
+
+        {% if booking.status == 'approved' or booking.status == 'confirmed' or booking.status == 'ticket_issued' or booking.status == 'completed' %}
+          <span class="status-badge status-confirmed"><i class="fa-solid fa-circle-check"></i> {{ booking.get_status_display|default:booking.status }}</span>
+        {% elif booking.status == 'cancelled' or booking.status == 'rejected' %}
+          <span class="status-badge status-cancelled"><i class="fa-solid fa-circle-xmark"></i> {{ booking.get_status_display|default:booking.status }}</span>
+        {% elif booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
+          <span class="status-badge status-action-required"><i class="fa-solid fa-triangle-exclamation"></i> Action Needed</span>
+        {% else %}
+          <span class="status-badge status-pending"><i class="fa-solid fa-clock"></i> Under Review</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Agent Note (Only on Rollback / Action Needed) -->
+    {% if booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
+    <div class="agent-note-box">
+      <div style="display: flex; gap: 12px; align-items: flex-start;">
+        <i class="fa-solid fa-circle-exclamation" style="color: #ea580c; font-size: 20px; margin-top: 2px;"></i>
+        <div>
+          <h4 style="margin: 0 0 4px 0; color: #c2410c; font-size: 15px; font-weight: 700;">Agent Rollback Note:</h4>
+          <p style="margin: 0; color: #7c2d12; font-size: 14px; line-height: 1.5;">
+            {{ booking.admin_note|default:"Agent has requested updates on your submitted details or documents. Please re-upload the rejected/missing items." }}
+          </p>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Package Details -->
+    <div class="section-title"><i class="fa-solid fa-box-archive"></i> Package & Agency Overview</div>
+    <div class="grid-2">
+      <div class="info-box">
+        <span class="field-label">Package Name</span>
+        <span class="field-value" style="color: var(--primary-green);">{{ booking.package.name }}</span>
+      </div>
+      <div class="info-box">
+        <span class="field-label">Travel Agency</span>
+        <span class="field-value">{{ booking.package.agency.agency_name|default:booking.package.agency.username }}</span>
+      </div>
+      <div class="info-box">
+        <span class="field-label">Departure Date</span>
+        <span class="field-value">{{ booking.package.departure_date|date:"d M, Y" }}</span>
+      </div>
+      <div class="info-box">
+        <span class="field-label">Total Travelers</span>
+        <span class="field-value">{{ customers|length }} Person(s)</span>
+      </div>
+    </div>
+
+    <!-- Traveler Information -->
+    <div class="section-title"><i class="fa-solid fa-users-gear"></i> Detailed Traveler Information</div>
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+      {% for customer in customers %}
+      <div class="info-box {% if booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}{% if customer.verification_status == 'rejected' %}doc-card-rejected{% endif %}{% endif %}" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 20px; border-radius: 10px;">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px; margin-bottom: 16px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="background: var(--primary-green); color: white; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">
+              {{ forloop.counter }}
+            </span>
+            <strong style="color: var(--text-dark); font-size: 16px;">{{ customer.full_name }}</strong>
+          </div>
+          <div>
+            {% if customer.verification_status == 'approved' %}
+              <span class="status-badge status-confirmed"><i class="fa-solid fa-check"></i> Approved</span>
+            {% elif customer.verification_status == 'rejected' or customer.verification_status == 'rollback' %}
+              <span class="status-badge status-action-required"><i class="fa-solid fa-xmark"></i> Fix Required</span>
+            {% else %}
+              <span class="status-badge status-pending"><i class="fa-solid fa-clock"></i> Under Review</span>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="grid-3" style="margin-bottom: 16px;">
+          <div>
+            <span class="field-label">Full Name</span>
+            <span class="field-value">{{ customer.full_name }}</span>
+          </div>
+
+          <div class="{% if booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}{% if not customer.cnic %}missing-field{% endif %}{% endif %}">
+            <span class="field-label">CNIC Number</span>
+            {% if customer.cnic %}
+              <span class="field-value">{{ customer.cnic }}</span>
+            {% elif booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
+              <span class="text-missing"><i class="fa-solid fa-circle-exclamation"></i> Missing CNIC</span>
+            {% else %}
+              <span class="field-value" style="color: var(--text-muted);">-</span>
+            {% endif %}
+          </div>
+
+          <div class="{% if booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}{% if not customer.phone_number %}missing-field{% endif %}{% endif %}">
+            <span class="field-label">Phone Number</span>
+            {% if customer.phone_number %}
+              <span class="field-value">{{ customer.phone_number }}</span>
+            {% elif booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
+              <span class="text-missing"><i class="fa-solid fa-circle-exclamation"></i> Missing Phone</span>
+            {% else %}
+              <span class="field-value" style="color: var(--text-muted);">-</span>
+            {% endif %}
+          </div>
+
+          <div class="{% if booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}{% if not customer.email %}missing-field{% endif %}{% endif %}">
+            <span class="field-label">Email Address</span>
+            {% if customer.email %}
+              <span class="field-value">{{ customer.email }}</span>
+            {% elif booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
+              <span class="text-missing"><i class="fa-solid fa-circle-exclamation"></i> Missing Email</span>
+            {% else %}
+              <span class="field-value" style="color: var(--text-muted);">-</span>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Passport Details -->
+        {% if customer.passport_number or customer.passport_expiry or booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
+        <div style="background: var(--bg-light); padding: 12px 16px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 16px;">
+          <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase;">
+            <i class="fa-solid fa-passport" style="color: var(--primary-green);"></i> Passport Details
+          </div>
+          <div class="grid-3">
+            <div class="{% if booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}{% if not customer.passport_number %}missing-field{% endif %}{% endif %}">
+              <span class="field-label">Passport Number</span>
+              {% if customer.passport_number %}
+                <span class="field-value">{{ customer.passport_number }}</span>
+              {% elif booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
+                <span class="text-missing"><i class="fa-solid fa-circle-exclamation"></i> Missing Passport No.</span>
+              {% endif %}
+            </div>
+
+            <div class="{% if booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}{% if not customer.passport_expiry %}missing-field{% endif %}{% endif %}">
+              <span class="field-label">Passport Expiry Date</span>
+              {% if customer.passport_expiry %}
+                <span class="field-value">{{ customer.passport_expiry|date:"d M, Y" }}</span>
+              {% elif booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
+                <span class="text-missing"><i class="fa-solid fa-circle-exclamation"></i> Missing Expiry Date</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Submitted Documents -->
+        <div style="background: var(--bg-light); padding: 14px; border-radius: 8px; border: 1px dashed #cbd5e1;">
+          <span class="field-label" style="margin-bottom: 10px;">Submitted Documents:</span>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            {% if customer.cnic_front %}
+              <a href="{{ customer.cnic_front.url }}" target="_blank" class="doc-link">
+                <i class="fa-solid fa-id-card"></i> CNIC Front
+              </a>
+            {% elif booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
+              <span class="missing-field text-missing"><i class="fa-solid fa-circle-xmark"></i> CNIC Front Missing</span>
+            {% endif %}
+
+            {% if customer.cnic_back %}
+              <a href="{{ customer.cnic_back.url }}" target="_blank" class="doc-link">
+                <i class="fa-solid fa-id-card"></i> CNIC Back
+              </a>
+            {% elif booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
+              <span class="missing-field text-missing"><i class="fa-solid fa-circle-xmark"></i> CNIC Back Missing</span>
+            {% endif %}
+
+            {% if customer.passport_scan %}
+              <a href="{{ customer.passport_scan.url }}" target="_blank" class="doc-link">
+                <i class="fa-solid fa-passport"></i> Passport Scan
+              </a>
+            {% elif booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
+              <span class="missing-field text-missing"><i class="fa-solid fa-circle-xmark"></i> Passport Scan Missing</span>
+            {% endif %}
+
+            {% if customer.passport_photo %}
+              <a href="{{ customer.passport_photo.url }}" target="_blank" class="doc-link">
+                <i class="fa-solid fa-image"></i> Passport Photo
+              </a>
+            {% elif booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
+              <span class="missing-field text-missing"><i class="fa-solid fa-circle-xmark"></i> Passport Photo Missing</span>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Rejection Remarks -->
+        {% if booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
+          {% if customer.rejection_reason %}
+          <div style="color: #b91c1c; font-size: 13px; margin-top: 14px; background: #fef2f2; padding: 12px; border-radius: 8px; border: 1px solid #fca5a5;">
+            <strong style="display: block; margin-bottom: 2px;"><i class="fa-solid fa-circle-exclamation"></i> Agent Remarks:</strong> 
+            {{ customer.rejection_reason }}
+          </div>
+          {% endif %}
+        {% endif %}
+
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Custom Requirements / Extra Documents -->
+    {% if booking.documents and booking.documents.all %}
+    <div class="section-title"><i class="fa-solid fa-file-circle-check"></i> Additional Custom Requirements</div>
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      {% for doc in booking.documents.all %}
+      <div class="info-box {% if booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}{% if doc.status == 'rejected' %}doc-card-rejected{% endif %}{% endif %}" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <strong style="color: var(--text-dark); font-size: 14px;">{{ doc.field_name }}</strong>
+          {% if booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
+            {% if doc.status == 'rejected' and doc.rejection_reason %}
+              <div style="color: #dc2626; font-size: 12px; margin-top: 4px; font-weight: 600;">
+                <i class="fa-solid fa-xmark"></i> Reason: {{ doc.rejection_reason }}
+              </div>
+            {% endif %}
+          {% endif %}
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 12px;">
+          {% if doc.file_value %}
+            <a href="{{ doc.file_value.url }}" target="_blank" class="doc-link"><i class="fa-solid fa-paperclip"></i> View File</a>
+          {% elif doc.text_value %}
+            <span style="color: var(--text-dark); font-size: 13px; background: #e2e8f0; padding: 4px 10px; border-radius: 6px; font-weight: 600;">{{ doc.text_value }}</span>
+          {% else %}
+            {% if booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
+              <span class="text-missing" style="font-size: 12px;"><i class="fa-solid fa-circle-xmark"></i> Missing</span>
+            {% endif %}
+          {% endif %}
+
+          {% if doc.status == 'approved' %}
+            <span class="status-badge status-confirmed">Approved</span>
+          {% elif doc.status == 'rejected' %}
+            <span class="status-badge status-cancelled">Rejected</span>
+          {% else %}
+            <span class="status-badge status-pending">Under Review</span>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Action Button -->
+    {% if booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
+    <div style="margin-top: 32px; text-align: right; border-top: 2px solid #f1f5f9; padding-top: 24px;">
+      <a href="{% url 'customers:update_booking_docs' booking.id %}" class="btn-action-main btn-danger-fix">
+        <i class="fa-solid fa-upload"></i> Upload / Fix Missing Documents
+      </a>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

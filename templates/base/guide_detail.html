@@ -1,0 +1,24 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    {% if guide_page %}
+        <!-- Jab Admin Panel se content add hoga -->
+        <h1 class="mb-4">{{ guide_page.title }}</h1>
+        
+        {% if guide_page.banner_image %}
+            <div class="mb-4">
+                <img src="{{ guide_page.banner_image.url }}" class="img-fluid rounded" alt="{{ guide_page.title }}">
+            </div>
+        {% endif %}
+
+        <div class="guide-content-area">
+            {{ guide_page.content|safe }}
+        </div>
+    {% else %}
+        <!-- Agar Admin Panel mein abhi text add nahi hua -->
+        <h1 class="mb-4">{{ default_title }}</h1>
+        <p class="text-muted">Is page ka content filhal Admin Panel se update hona baaqi hai.</p>
+    {% endif %}
+</div>
+{% endblock %}

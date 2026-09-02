@@ -1,4 +1,5 @@
 from django.urls import path
+from django.contrib.auth import views as auth_views
 from . import views
 
 app_name='adminpanel'
@@ -30,5 +31,15 @@ urlpatterns = [
     path('package-types/add/', views.add_package_type, name='add_package_type'),
     path('package-types/delete/<int:pk>/', views.delete_package_type, name='delete_package_type'),
     path('admin-dashboard/commission-setting/', views.set_commission, name='set_commission'),
+    path('settings/', views.admin_settings_view, name='admin_settings'),
+    path('settings/change-password/', 
+         auth_views.PasswordChangeView.as_view(
+         template_name='adminpanel/admin_change_password.html',
+         success_url='/adminpanel/settings/'), name='admin_change_password'),
 
+    path('settings/download-backup/', views.download_db_backup, name='download_db_backup'),
+    path("guides/", views.guide_list, name="guide_list"),
+    path("guides/edit/<slug:page_slug>/",views.admin_guide_edit,name="admin_guide_edit",),
+    path("guides/delete/<slug:page_slug>/",views.delete_guide,name="admin_guide_delete",),
+    path("api/save-guide/<slug:page_slug>/",views.api_save_guide,name="api_save_guide",),
 ]

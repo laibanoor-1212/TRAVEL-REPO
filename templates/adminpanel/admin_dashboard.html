@@ -9,14 +9,17 @@
   --green-light:#eaf7f0;
 }
 
-/* ===== STATS ===== */
-.grid-3{
+/* ===== STATS GRID ===== */
+.grid-4{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
+  grid-template-columns:repeat(4,1fr);
   gap:14px;
 }
-@media(max-width:992px){
-  .grid-3{grid-template-columns:repeat(2,1fr);}
+@media(max-width:1200px){
+  .grid-4{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:576px){
+  .grid-4{grid-template-columns:1fr;}
 }
 
 .grid-2{
@@ -30,13 +33,11 @@
 
 .stat-card{
   background:linear-gradient(135deg,var(--green-light),#fff);
-  /* border-left:4px solid var(--green); */
   border-radius:10px;
   padding:16px;
   display:flex;
-  margin-bottom: 10px;
+  margin-top: 15px;
   gap:12px;
-  margin-top: 20px;
   align-items:center;
   box-shadow:0 6px 16px rgba(0,0,0,.05);
 }
@@ -62,12 +63,13 @@
   font-size:20px;
 }
 
-/* ===== COMMON CARD ===== */
+/* ===== CARD STYLING ===== */
 .card{
   background:#fff;
   border-radius:12px;
   padding:18px;
   box-shadow:0 8px 22px rgba(0,0,0,.06);
+  border: none;
 }
 
 .section-title{
@@ -76,6 +78,7 @@
   align-items:center;
   gap:8px;
   margin-bottom:14px;
+  color: #1a1a1a;
 }
 
 /* ===== ADMIN ACTIONS ===== */
@@ -134,20 +137,32 @@
   color:#6b7b6b;
 }
 
-/* ===== RECENT ===== */
-.recent-list li{
-  padding:8px 0;
-  border-bottom:1px solid rgba(0,0,0,.06);
-  font-size:14px;
+/* ===== TABLE STYLING ===== */
+.table th {
+  background-color: var(--green-light);
+  color: var(--green);
+  font-weight: 600;
+  font-size: 13px;
+}
+.table td {
+  font-size: 14px;
 }
 </style>
 
-<!-- ===== TOP STATS (3 + 2 layout) ===== -->
-<section class="grid-3 mb-3">
+<!-- ===== TOP STATS CARDS (GRID OF 4) ===== -->
+<section class="grid-4 mb-3">
+  <div class="stat-card">
+    <div class="stat-icon"><i class="bi bi-people"></i></div>
+    <div>
+      <div class="stat-value">{{ total_pilgrims|default:0 }}</div>
+      <div class="stat-title">Total Pilgrims</div>
+    </div>
+  </div>
+
   <div class="stat-card">
     <div class="stat-icon"><i class="bi bi-patch-check"></i></div>
     <div>
-      <div class="stat-value">{{ verified_agents|default:"12" }}</div>
+      <div class="stat-value">{{ verified_agents|default:0 }}</div>
       <div class="stat-title">Verified Agents</div>
     </div>
   </div>
@@ -155,7 +170,7 @@
   <div class="stat-card">
     <div class="stat-icon"><i class="bi bi-person-exclamation"></i></div>
     <div>
-      <div class="stat-value">{{ pending_agents|default:"3" }}</div>
+      <div class="stat-value">{{ pending_agents|default:0 }}</div>
       <div class="stat-title">Pending Verifications</div>
     </div>
   </div>
@@ -163,38 +178,55 @@
   <div class="stat-card">
     <div class="stat-icon"><i class="bi bi-briefcase"></i></div>
     <div>
-      <div class="stat-value">{{ active_packages|default:"28" }}</div>
+      <div class="stat-value">{{ active_packages|default:0 }}</div>
       <div class="stat-title">Active Packages</div>
     </div>
   </div>
 </section>
 
-<section class="grid-2 mb-4">
+<!-- ===== FINANCIAL & BOOKING STATS ===== -->
+<section class="grid-4 mb-4">
   <div class="stat-card">
     <div class="stat-icon"><i class="bi bi-receipt"></i></div>
     <div>
-      <div class="stat-value">{{ pending_bookings|default:"9" }}</div>
+      <div class="stat-value">{{ pending_bookings|default:0 }}</div>
       <div class="stat-title">Pending Bookings</div>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon"><i class="bi bi-check2-circle"></i></div>
+    <div>
+      <div class="stat-value">{{ completed_bookings|default:0 }}</div>
+      <div class="stat-title">Completed Trips</div>
     </div>
   </div>
 
   <div class="stat-card">
     <div class="stat-icon"><i class="bi bi-safe"></i></div>
     <div>
-      <div class="stat-value">Rs {{ escrow_balance|default:"250,000" }}</div>
-      <div class="stat-title">Escrow Balance</div>
+      <div class="stat-value">Rs {{ escrow_balance|default:0 }}</div>
+      <div class="stat-title">Escrow Held</div>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon"><i class="bi bi-cash-coin"></i></div>
+    <div>
+      <div class="stat-value">Rs {{ total_revenue|default:0 }}</div>
+      <div class="stat-title">Total Revenue</div>
     </div>
   </div>
 </section>
 
-<!-- ===== ACTIONS + ACTIVITY ===== -->
+<!-- ===== ACTIONS + QUICK VERIFICATION TABLE ===== -->
 <section class="row g-3">
 
-  <!-- ADMIN ACTIONS -->
-  <div class="col-lg-6">
-    <div class="card">
+  <!-- ADMIN QUICK ACTIONS -->
+  <div class="col-lg-5">
+    <div class="card h-100">
       <div class="section-title">
-        <i class="bi bi-shield-check"></i> Admin Actions
+        <i class="bi bi-shield-check"></i> Admin Operations
       </div>
 
       <div class="admin-actions">
@@ -202,32 +234,32 @@
         <a href="{% url 'adminpanel:agent_requests' %}" class="action-card">
           <div class="action-icon"><i class="bi bi-person-check"></i></div>
           <div>
-            <div class="action-title">Verify Travel Agents</div>
-            <div class="action-desc">Approve or block agent accounts</div>
+            <div class="action-title">Verify Agents</div>
+            <div class="action-desc">Approve or block agencies</div>
           </div>
         </a>
 
         <a href="" class="action-card">
           <div class="action-icon"><i class="bi bi-list-check"></i></div>
           <div>
-            <div class="action-title">Manage Bookings</div>
-            <div class="action-desc">Confirm or cancel bookings</div>
+            <div class="action-title">Bookings</div>
+            <div class="action-desc">Review pilgrimage bookings</div>
           </div>
         </a>
 
         <a href="" class="action-card">
           <div class="action-icon"><i class="bi bi-cash-stack"></i></div>
           <div>
-            <div class="action-title">Release Payments</div>
-            <div class="action-desc">Control escrow payments</div>
+            <div class="action-title">Escrow Payments</div>
+            <div class="action-desc">Release payment holds</div>
           </div>
         </a>
 
         <a href="" class="action-card">
-          <div class="action-icon"><i class="bi bi-book"></i></div>
+          <div class="action-icon"><i class="bi bi-box-seam"></i></div>
           <div>
-            <div class="action-title">Manage Guides</div>
-            <div class="action-desc">Edit Hajj, Umrah & Ziyarat guides</div>
+            <div class="action-title">Packages</div>
+            <div class="action-desc">Manage Umrah/Hajj listings</div>
           </div>
         </a>
 
@@ -235,19 +267,45 @@
     </div>
   </div>
 
-  <!-- RECENT ACTIVITY -->
-  <div class="col-lg-6">
-    <div class="card">
-      <div class="section-title">
-        <i class="bi bi-clock-history"></i> Recent Activity
+  <!-- PENDING AGENT VERIFICATIONS TABLE -->
+  <div class="col-lg-7">
+    <div class="card h-100">
+      <div class="section-title justify-content-between">
+        <span><i class="bi bi-hourglass-split"></i> Pending Agent Requests</span>
+        <a href="{% url 'adminpanel:agent_requests' %}" class="btn btn-sm btn-link text-success p-0 text-decoration-none">View All</a>
       </div>
 
-      <ul class="list-unstyled recent-list mb-0">
-        <li>Agent <strong>Al-Haram Travels</strong> submitted documents</li>
-        <li>Booking <strong>#1021</strong> marked completed</li>
-        <li>Payment released to <strong>Al-Haram Travels</strong></li>
-        <li>Package removed due to incorrect info</li>
-      </ul>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead>
+            <tr>
+              <th>Agency / Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Joined</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for agent in recent_pending_agents %}
+            <tr>
+              <td><strong>{{ agent.agency_name|default:agent.username }}</strong></td>
+              <td>{{ agent.email }}</td>
+              <td>{{ agent.phone_number|default:"N/A" }}</td>
+              <td>{{ agent.date_joined|date:"d M Y" }}</td>
+              <td>
+                <a href="{% url 'adminpanel:agent_requests' %}" class="btn btn-sm btn-outline-success">Review</a>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="5" class="text-center text-muted py-4">No pending agent requests right now.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
     </div>
   </div>
 

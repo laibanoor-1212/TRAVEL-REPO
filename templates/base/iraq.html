@@ -1,0 +1,129 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="iraq-container">
+
+  <section class="iraq-hero">
+    <div class="overlay"></div>
+    <div class="hero-content">
+      <h1>Iraq Ziyarat Guide</h1>
+      <p>
+        Visit the sacred land of Karbala and Najaf — a journey of sacrifice, faith, and devotion.
+      </p>
+    </div>
+  </section>
+
+  <section class="iraq-intro">
+    <div class="intro-left">
+      <h2>What is Iraq Ziyarat?</h2>
+      <p>
+        Iraq Ziyarat includes visiting the holy shrines of Imam Hussain (A.S), 
+        Hazrat Abbas (A.S), Imam Ali (A.S), and other revered personalities.
+      </p>
+      <p>
+        It is a deeply spiritual journey that reflects sacrifice, patience, 
+        and unwavering faith in Allah.
+      </p>
+    </div>
+
+    <div class="intro-right">
+      <img src="{% static 'images/karbala.png' %}">
+      <img src="{% static 'images/najaf.png' %}">
+    </div>
+  </section>
+
+  <section class="iraq-shrines">
+    <h2>Holy Places of Ziyarat</h2>
+
+    <div class="shrines-grid">
+
+      <div class="shrine-card">
+        <img src="{% static 'images/karbala.png' %}">
+        <div class="overlay-card">
+          <h3>Karbala</h3>
+          <p>Imam Hussain (A.S) & Hazrat Abbas (A.S)</p>
+          <a href="{% url 'base:karbala' %}" class="button">Explanation</a>
+        </div>
+      </div>
+
+      <div class="shrine-card">
+        <img src="{% static 'images/najaf.png' %}">
+        <div class="overlay-card">
+          <h3>Najaf</h3>
+          <p>Imam Ali (A.S)</p>
+          <a href="{% url 'base:najaf' %}" class="button">Explanation</a>
+        </div>
+      </div>
+
+      <div class="shrine-card">
+        <img src="{% static 'images/kazmin.png' %}">
+        <div class="overlay-card">
+          <h3>Kazmain</h3>
+          <p>Imam Musa Kazim (A.S)</p>
+          <a href="{% url 'base:kazmin' %}" class="button">Explanation</a>
+        </div>
+      </div>
+
+      <div class="shrine-card">
+        <img src="{% static 'images/samarra.png' %}">
+        <div class="overlay-card">
+          <h3>Samarra</h3>
+          <p>Imam Hasan Askari (A.S)</p>
+          <a href="{% url 'base:samarra' %}" class="button">Explanation</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="iraq-timeline">
+    <h2>Your Ziyarat Journey</h2>
+
+    <div class="timeline">
+
+      <div class="timeline-item">
+        <h4>Arrival in Najaf</h4>
+        <p>Start your journey from the city of Imam Ali (A.S).</p>
+      </div>
+
+      <div class="timeline-item">
+        <h4>Travel to Karbala</h4>
+        <p>Visit Imam Hussain (A.S) and Hazrat Abbas (A.S).</p>
+      </div>
+
+      <div class="timeline-item">
+        <h4>Kazmain & Samarra</h4>
+        <p>Explore other important shrines.</p>
+      </div>
+
+      <div class="timeline-item">
+        <h4>Spiritual Reflection</h4>
+        <p>Spend time in ibadah and reflection.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="iraq-dua">
+    <h2>Important Ziyarat</h2>
+
+    <div class="dua-card">
+      <p style="direction: rtl; font-size: 1.6rem;">
+        اَلسَّلَامُ عَلَيْكَ يَا أَبَا عَبْدِ اللَّهِ
+      </p>
+      <p><strong>Peace be upon you, O Aba Abdillah (Imam Hussain A.S)</strong></p>
+    </div>
+
+    <div class="dua-card">
+      <p style="direction: rtl; font-size: 1.6rem;">
+        اَلسَّلَامُ عَلَيْكَ يَا أَمِيرَ الْمُؤْمِنِينَ
+      </p>
+      <p><strong>Peace be upon you, O Commander of the Faithful (Imam Ali A.S)</strong></p>
+    </div>
+  </section>
+
+</div>
+
+{% endblock %}
