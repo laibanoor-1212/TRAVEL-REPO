@@ -43,7 +43,8 @@ path("tawaf-wida/", views.tawaf_wida, name="tawaf_wida"),
             path('masjidumer/', views.masjidumer, name='masjidumer'),
              path('uhad/', views.uhad, name='uhad'),
     path('about/', views.about, name='about'),
-
-
+    path('search/', views.global_search, name='global_search'),
+     path('travel_agent/', views.agent_list, name='agent_list'),
+    path('travel_agent/<int:pk>/', views.agent_detail, name='agent_detail'),
     path('hajj_packages/', views.hajj_packages, name='hajj_packages'),
 ]

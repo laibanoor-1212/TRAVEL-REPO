@@ -3,271 +3,319 @@
 
 {% block content %}
 
+<!-- FontAwesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 <style>
-   
-.hero-text-overlay{
-    position:absolute;
-    left:80px;
-    /* bottom:80px; */
-    max-width:600px;
+:root {
+    --primary-green: #1f7a4f;
+    --dark-green: #145234;
+    --light-bg: #f8fafc;
+    --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    --border-color: #e2e8f0;
 }
 
-.hero-text-overlay h1{
-    font-size:3rem;
-    font-weight:700;
-    color:#fff;
+body {
+    background-color: var(--light-bg);
 }
 
-.hero-text-overlay p{
-    font-size:1.1rem;
-    color:#fff;
-    opacity:.95;
+/* Hero Section */
+.agent-hero {
+    background: linear-gradient(135deg, rgba(20, 82, 52, 0.92), rgba(31, 122, 79, 0.88)),
+                url("{% static 'images/hajjpackages.jpeg' %}") center/cover no-repeat;
+    padding: 90px 0 70px;
+    color: #ffffff;
+    text-align: center;
+    border-bottom-left-radius: 35px;
+    border-bottom-right-radius: 35px;
 }
 
-:root{
-    --green:#1f7a4f;
-    --green-dark:#165c3b;
-    --light-green:#f3fff8;
-    --gray:#6b7280;
+.agent-hero h1 {
+    font-size: 2.6rem;
+    font-weight: 800;
+    margin-bottom: 12px;
 }
 
-
-.stakeholder-hero{
-    background:
-        linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.55)),
-        url("{% static 'images/hajjpackages.jpeg' %}") center/cover no-repeat;
-    padding:200px 0;
-    color:#fff;
-    position:relative;
+.agent-hero p {
+    font-size: 1.05rem;
+    opacity: 0.9;
+    max-width: 620px;
+    margin: 0 auto;
 }
 
-.stakeholder-hero h1{
-    font-size:3rem;
-    font-weight:700;
+/* Search Bar Container */
+.search-container {
+    margin-top: -32px;
+    position: relative;
+    z-index: 10;
 }
 
-.stakeholder-hero p{
-    max-width:600px;
-    font-size:1.1rem;
-    opacity:.95;
+.search-box {
+    background: #ffffff;
+    border-radius: 50px;
+    padding: 8px 18px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--border-color);
 }
 
-.hero-home-btn{
-    position:absolute;
-    top:30px;
-    left:30px;
+.search-box .form-control, 
+.search-box .form-select {
+    border: none;
+    box-shadow: none !important;
 }
 
-.hero-home-btn a{
-    background:#fff;
-    color:var(--green);
-    padding:10px 18px;
-    border-radius:30px;
-    font-weight:600;
-    text-decoration:none;
-    box-shadow:0 6px 18px rgba(0,0,0,.2);
+/* Agent Card Design */
+.agent-card {
+    background: #ffffff;
+    border-radius: 18px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
 }
 
-.hero-home-btn a:hover{
-    background:var(--light-green);
+.agent-card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 18px 35px rgba(31, 122, 79, 0.12);
+    border-color: var(--primary-green);
 }
 
-
-.stakeholder-section{
-    background:#fff;
-    padding:50px 0;
+.card-top {
+    padding: 24px 20px 15px;
+    text-align: center;
+    border-bottom: 1px dashed var(--border-color);
+    position: relative;
 }
 
-.provider-card{
-    margin-left: 30px;
-    margin-right: 30px;
-    border:1px solid #e5e7eb;
-    border-radius:18px;
-    padding:20px 18px;
-    text-align:center;
-    background:#fff;
-    transition:.3s;
-    height:100%;
+.verified-tag {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #e6f4ea;
+    color: var(--primary-green);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
 }
 
-.provider-card:hover{
-    transform:translateY(-6px);
-    box-shadow:0 20px 40px rgba(0,0,0,.08);
+.agency-avatar {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    background: #eef7f2;
+    color: var(--primary-green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin: 0 auto 12px;
+    border: 3px solid #ffffff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
 }
 
-.provider-card img{
-    max-height:120px;
-    
-    margin-bottom:20px;
-    object-fit:contain;
+.agency-name {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #1e293b;
+    margin-bottom: 4px;
 }
 
-.provider-card h5{
-    font-weight:600;
-    font-size:1.1rem;
-    color:#111827;
+.owner-name {
+    font-size: 0.85rem;
+    color: #64748b;
 }
 
-.provider-card p{
-    font-size:.95rem;
-    color:var(--gray);
+.card-body-custom {
+    padding: 18px 20px;
+    flex-grow: 1;
 }
 
-.provider-card a{
-    display:inline-block;
-    margin-top:15px;
-    background:var(--green);
-    color:#fff;
-    padding:10px 22px;
-    border-radius:30px;
-    font-size:.9rem;
-    font-weight:600;
-    text-decoration:none;
+.detail-line {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.88rem;
+    color: #475569;
+    margin-bottom: 8px;
 }
 
-.provider-card a:hover{
-    background:var(--green-dark);
+.detail-line i {
+    width: 18px;
+    color: var(--primary-green);
 }
 
-
-.site-footer{
-    background:var(--green-dark);
-    color:#fff;
-    padding:50px 0 25px;
+.badge-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 14px;
 }
 
-.site-footer h6{
-    font-weight:600;
-    margin-bottom:15px;
+.custom-badge {
+    font-size: 0.72rem;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 600;
 }
 
-.site-footer a{
-    color:#e5f5ec;
-    text-decoration:none;
-    font-size:.95rem;
+.bg-hajj { background: #fef3c7; color: #92400e; }
+.bg-ziyarat { background: #e0e7ff; color: #3730a3; }
+.bg-iata { background: #d1fae5; color: #065f46; }
+
+.card-footer-custom {
+    padding: 15px 20px 20px;
+    display: flex;
+    gap: 10px;
 }
 
-.site-footer a:hover{
-    text-decoration:underline;
+.btn-view-details {
+    border: 1px solid var(--primary-green);
+    color: var(--primary-green);
+    background: transparent;
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 10px;
+    width: 50%;
+    text-align: center;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.2s;
 }
 
-.footer-bottom{
-    border-top:1px solid rgba(255,255,255,.15);
-    margin-top:30px;
-    padding-top:15px;
-    text-align:center;
-    font-size:.9rem;
-    opacity:.9;
-}
-.stakeholder-section{
-    padding-left:8px;
-    padding-right:8px;
+.btn-view-details:hover {
+    background: #eef7f2;
+    color: var(--dark-green);
 }
 
+.btn-view-packages {
+    background: var(--primary-green);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 10px;
+    width: 50%;
+    text-align: center;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.btn-view-packages:hover {
+    background: var(--dark-green);
+    color: #ffffff;
+}
 </style>
 
-
-<section class="stakeholder-hero">
-    <div class="hero-home-btn">
-        <a href="{% url 'base:home' %}">← Home</a>
-    </div>
-
-    
-     <div class="hero-text-overlay">
-        <h1>Authorized Service Providers</h1>
-        <!-- <p>
-            Browse verified Hajj & Umrah stakeholders approved to offer
-            trusted pilgrimage services for pilgrims worldwide.
-        </p> -->
-    </div>
+<!-- Hero Section -->
+<section class="agent-hero">
+    <div class="container">
+        <h1>Verified Travel Agencies</h1>
+        <p>Explore DTS & Govt registered travel agencies providing trusted Hajj, Umrah, and Ziyarat packages.</p>
     </div>
 </section>
 
-
-<section class="stakeholder-section">
- 
-        <div class="row g-4"> 
-
-            
-            <div class="col-lg-4 col-md-6"> 
-                <div class="provider-card">
-                    <img src="{% static 'images/agency2.png' %}" alt="">
-                    <h5>Abdul Lateef Jameel</h5>
-                    <p>Real Estate & Pilgrim Services Provider</p>
-                    <a href="#">View Profile</a>
+<!-- Filter/Search Bar -->
+<div class="container search-container">
+    <form method="GET" action="{% url 'base:agent_list' %}">
+        <div class="search-box">
+            <div class="row g-2 align-items-center">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                        <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search by Agency, Owner, DTS No...">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <select name="service" class="form-select border-0">
+                        <option value="">All Services</option>
+                        <option value="hajj" {% if service_filter == 'hajj' %}selected{% endif %}>Hajj Services</option>
+                        <option value="ziyarat" {% if service_filter == 'ziyarat' %}selected{% endif %}>Ziyarat Services</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-view-packages w-100">
+                        <i class="fa-solid fa-filter me-1"></i> Filter
+                    </button>
                 </div>
             </div>
+        </div>
+    </form>
+</div>
 
-            <div class="col-lg-4 col-md-6">
-                <div class="provider-card">
-                    <img src="{% static 'images/agency2.png' %}" alt="">
-                    <h5>Al Bait Guests</h5>
-                    <p>Comprehensive Hajj & Umrah Management</p>
-                    <a href="#">View Profile</a>
+<!-- Agents Grid -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            {% for agency in agencies %}
+                <div class="col-lg-4 col-md-6">
+                    <div class="agent-card">
+                        
+                        <!-- Top Header -->
+                        <div class="card-top">
+                            <span class="verified-tag"><i class="fa-solid fa-circle-check"></i> Verified</span>
+                            <div class="agency-avatar">
+                                <i class="fa-solid fa-building-columns"></i>
+                            </div>
+                            <h5 class="agency-name">{{ agency.agency_name }}</h5>
+                            <p class="owner-name"><i class="fa-solid fa-user me-1"></i> {{ agency.owner_name }}</p>
+                        </div>
+
+                        <!-- Card Body (Phone No Removed) -->
+                        <div class="card-body-custom">
+                            <div class="detail-line">
+                                <i class="fa-solid fa-location-dot"></i>
+                                <span>{{ agency.office_address|truncatewords:8 }}</span>
+                            </div>
+
+                            <div class="detail-line">
+                                <i class="fa-solid fa-id-card"></i>
+                                <span>DTS License: <strong>{{ agency.dts_no }}</strong></span>
+                            </div>
+
+                            <!-- Badges -->
+                            <div class="badge-group">
+                                {% if agency.is_hajj %}
+                                    <span class="custom-badge bg-hajj"><i class="fa-solid fa-kaaba me-1"></i> Hajj</span>
+                                {% endif %}
+                                {% if agency.is_ziyarat %}
+                                    <span class="custom-badge bg-ziyarat"><i class="fa-solid fa-mosque me-1"></i> Ziyarat</span>
+                                {% endif %}
+                                {% if agency.iata_no %}
+                                    <span class="custom-badge bg-iata"><i class="fa-solid fa-plane me-1"></i> IATA</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Card Footer -->
+                        <div class="card-footer-custom">
+                            <a href="{% url 'base:agent_detail' agency.id %}" class="btn-view-details">
+                                <i class="fa-solid fa-circle-info"></i> Details
+                            </a>
+                           <a href="{% url 'base:hajj_packages' %}?agent_id={{ agency.id }}" class="btn-view-packages">
+    Packages <i class="fa-solid fa-arrow-right ms-1"></i>
+</a>
+                        </div>
+
+                    </div>
                 </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6">
-                <div class="provider-card">
-                    <img src="{% static 'images/agency2.png' %}" alt="">
-                    <h5>Al Rajhi Likhidmat</h5>
-                    <p>Licensed Hajj Operations Company</p>
-                    <a href="#">View Profile</a>
+            {% empty %}
+                <div class="col-12 text-center py-5">
+                    <div class="p-5 bg-white rounded-4 shadow-sm border">
+                        <i class="fa-solid fa-user-slash fa-3x text-muted mb-3"></i>
+                        <h4>No Approved Agencies Found</h4>
+                        <p class="text-muted">There are currently no agents matching your search parameters.</p>
+                        <a href="{% url 'base:agent_list' %}" class="btn btn-view-packages text-white mt-2">Reset Filter</a>
+                    </div>
                 </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6">
-                <div class="provider-card">
-                    <img src="{% static 'images/agency2.png' %}" alt="">
-                    <h5>Dur Hospitality</h5>
-                    <p>Hospitality & Accommodation Services</p>
-                    <a href="#">View Profile</a>
-                </div>
-            </div>
-
+            {% endfor %}
         </div>
     </div>
 </section>
-
-
-
-<footer class="site-footer">
-    
-        <div class="row">
-
-            <div class="col-md-4">
-                <h6>Safar-e-Haram</h6>
-                <p class="small">
-                    A trusted platform connecting pilgrims with
-                    verified Hajj & Umrah service providers.
-                </p>
-            </div>
-
-            <div class="col-md-4">
-                <h6>Quick Links</h6>
-                <ul class="list-unstyled">
-                    <li><a href="{% url 'base:home' %}">Home</a></li>
-                    <li><a href="#">Packages</a></li>
-                    <li><a href="#">Stakeholders</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
-            </div>
-
-            <div class="col-md-4">
-                <h6>Support</h6>
-                <ul class="list-unstyled">
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Terms & Conditions</a></li>
-                    <li><a href="#">Help Center</a></li>
-                </ul>
-            </div>
-
-        </div>
-
-        <div class="footer-bottom">
-            © {{ now|date:"Y" }} Safar-e-Haram. All Rights Reserved.
-        </div>
-    </div>
-</footer>
 
 {% endblock %}

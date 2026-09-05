@@ -50,6 +50,3 @@ class AgentKYC(models.Model):
     def __str__(self):
 
         return f"{self.agency_name} - {self.kyc_status}"
-    
-    
-    

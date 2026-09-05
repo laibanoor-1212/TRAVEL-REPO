@@ -1,165 +1,205 @@
 {% extends "base/base.html" %}
 {% load static %}
-{% block content %} 
-  
-    <link rel="stylesheet" href="{% static 'css/agent_details.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> 
-    <div class="page-wrapper">
-    <section class="hero-section">
-        <div class="hero-image">
-          
-            <img src="{% static 'images/makkah.png'%}">
+
+{% block content %}
+
+<!-- FontAwesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root {
+    --primary-green: #1f7a4f;
+    --dark-green: #145234;
+    --light-bg: #f8fafc;
+    --border-color: #e2e8f0;
+    --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+body {
+    background-color: var(--light-bg);
+}
+
+/* Detail Header */
+.detail-header {
+    background: linear-gradient(135deg, rgba(20, 82, 52, 0.95), rgba(31, 122, 79, 0.9)),
+                url("{% static 'images/hajjpackages.jpeg' %}") center/cover no-repeat;
+    padding: 70px 0 50px;
+    color: #ffffff;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+}
+
+.detail-card-main {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--card-shadow);
+    padding: 30px;
+    margin-top: -40px;
+    position: relative;
+    z-index: 10;
+}
+
+.agency-avatar-lg {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: #eef7f2;
+    color: var(--primary-green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    border: 4px solid #ffffff;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.info-box {
+    background: #f8fafc;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+}
+
+.info-label {
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #64748b;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.info-value {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+}
+
+.custom-badge {
+    font-size: 0.8rem;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.bg-hajj { background: #fef3c7; color: #92400e; }
+.bg-ziyarat { background: #e0e7ff; color: #3730a3; }
+.bg-iata { background: #d1fae5; color: #065f46; }
+
+.btn-primary-green {
+    background: var(--primary-green);
+    color: #ffffff;
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 12px 24px;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.2s;
+}
+
+.btn-primary-green:hover {
+    background: var(--dark-green);
+    color: #ffffff;
+}
+</style>
+
+<!-- Top Header Section -->
+<section class="detail-header">
+    <div class="container">
+        <div class="d-flex align-items-center gap-2 mb-2">
+            <a href="{% url 'base:agent_list' %}" class="text-white text-decoration-none">
+                <i class="fa-solid fa-arrow-left me-1"></i> Back to Agents
+            </a>
         </div>
-        <div class="hero-content">
-            <h1>KARVAN-E-ROYAL</h1>
-            <p>
-            Karvan-e-Royal is on a mission to redefine your Hajj & Umrah experience. 
-            Our commitment is to prioritize customer satisfaction by delivering 
-            high-quality and cost-effective air travel services that meet your 
-            needs and exceed your expectations.
-            </p>
-            <p class="quran-quote">
-                “Indeed, the first House established for mankind was that at Makkah.”
-            </p>
-        </div>
-    </section>
-    
-        <section class="services-container">
-    <div class="cards-wrapper">
-        <div class="service-card">
-            <img src="{% static 'images/k1.jpg'%}">
-        </div>
-        <div class="service-card">
-            <img src="{% static 'images/k2.jpg'%}">
-        </div>
-        <div class="service-card">
-             <img src="{% static 'images/k3.jpg'%}">
-        </div>
-        <div class="service-card">
-            <img src="{% static 'images/k4.jpg'%}">
-        </div>
+        <h1 class="fw-bold mb-1">{{ agent.agency_name }}</h1>
+        <p class="mb-0 opacity-75"><i class="fa-solid fa-circle-check me-1"></i> Verified Partner Agency</p>
     </div>
 </section>
-    <section class="info-section">
-        <h2>Our Hajj & Umrah Services</h2>
-        <div class="info-grid">
 
-            <div class="info-box">
-                <i class="fa-solid fa-kaaba"></i>
-                <h4>Complete Guidance</h4>
-                <p>Step-by-step guidance for all rituals of Hajj and Umrah.</p>
-            </div>
-
-            <div class="info-box">
-                <i class="fa-solid fa-hotel"></i>
-                <h4>Premium Hotels</h4>
-                <p>Stay in top hotels near Haram with comfortable facilities.</p>
-            </div>
-
-            <div class="info-box">
-                <i class="fa-solid fa-bus"></i>
-                <h4>Transport Services</h4>
-                <p>Reliable transport for Ziyarat and travel.</p>
-            </div>
-
-            <div class="info-box">
-                <i class="fa-solid fa-headset"></i>
-                <h4>24/7 Support</h4>
-                <p>Our team is available anytime to assist pilgrims.</p>
-            </div>
-
-        </div>
-    </section>
-
-    <section class="hotels-section">
-        <h2>Top Hotels Near Haram</h2>
-        <div class="hotel-grid">
-
-            <div class="hotel-card">
-                <img src="{% static 'images/swissotel.jpg' %}">
-                <h4>Swissotel Makkah</h4>
-                <p>Luxury stay just steps from Masjid al-Haram.</p>
-            </div>
-
-            <div class="hotel-card">
-                <img src="{% static 'images/pullman.jpg' %}">
-                <h4>Pullman ZamZam</h4>
-                <p>Comfortable rooms with Haram view.</p>
-            </div>
-
-            <div class="hotel-card">
-                <img src="{% static 'images/Anwar.jpg' %}">
-                <h4>Anwar Al Madinah</h4>
-                <p>Premium hotel near Masjid Nabawi.</p>
-            </div>
-
-        </div>
-    </section>
-
-    <div class="royal-card-container">
-    <div class="royal-card">
-        <h3 class="gold-text">CONTACT INFO</h3>
-        <div class="info-list">
-            <div class="info-item">
-                <i class="fa-solid fa-location-dot gold-icon"></i>
-                <p>Plot # 4-c, Jami Commercial, Main Khayaban-e-Ittehad, Phase-7, D.H.A., Karachi, Pakistan.</p>
-            </div>
-<div class="info-item">
-    <i class="fa-solid fa-phone gold-icon"></i>
-    <p>UAN : (021) 111 786 666</p>
-    </div>
-<div class="info-item">
-    <i class="fa-solid fa-envelope gold-icon"></i>
-    <p>hajj@royalgroup.com.pk</p>
-    </div>
-    </div>
-    </div>
-</div>
-</div>
-        <section class="reviews-section">
-    <div class="page-wrapper">
-        <h2 class="section-heading">What Our Pilgrims Say</h2>
-        <div class="reviews-grid">
+<!-- Main Details Section -->
+<section class="pb-5">
+    <div class="container">
+        <div class="detail-card-main">
             
-        <div class="review-item">
-            <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
-            <p class="review-text">Karvan-e-Royal made my Umrah journey so peaceful. Their management and choice of hotels are excellent.</p>
-            <div class="reviewer-info">
-            <img src="https://ui-avatars.com/api/?name=Zahid+Khan&background=1a4d2e&color=fff">
-        <div>
-            <h4>Zahid Khan</h4>
-            <span>Umrah 2024</span>
-            </div>
-            </div>
+            <!-- Agency Title Row -->
+            <div class="d-md-flex align-items-center justify-content-between mb-4 pb-3 border-bottom">
+                <div class="d-flex align-items-center gap-3 mb-3 mb-md-0">
+                    <div class="agency-avatar-lg">
+                        <i class="fa-solid fa-building-columns"></i>
+                    </div>
+                    <div>
+                        <h3 class="fw-bold mb-1 text-dark">{{ agent.agency_name }}</h3>
+                        <p class="text-muted mb-0"><i class="fa-solid fa-user me-1"></i> Owner: <strong>{{ agent.owner_name }}</strong></p>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    {% if agent.is_hajj %}
+                        <span class="custom-badge bg-hajj"><i class="fa-solid fa-kaaba me-1"></i> Hajj & Umrah</span>
+                    {% endif %}
+                    {% if agent.is_ziyarat %}
+                        <span class="custom-badge bg-ziyarat"><i class="fa-solid fa-mosque me-1"></i> Ziyarat</span>
+                    {% endif %}
+                    {% if agent.iata_no %}
+                        <span class="custom-badge bg-iata"><i class="fa-solid fa-plane me-1"></i> IATA Accredited</span>
+                    {% endif %}
+                </div>
             </div>
 
-    <div class="review-item">
-        <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
-        <p class="review-text">Highly professional team. They fulfill every promise they make. Best experience for Hajj with family.</p>
-        <div class="reviewer-info">
-        <img src="https://ui-avatars.com/api/?name=Maryam+Bibi&background=1a4d2e&color=fff">
-        <div>
-            <h4>Maryam Bibi</h4>
-            <span>Hajj 2023</span>
-            </div>
-            </div>
+            <!-- Details Grid (No Phone Number) -->
+            <div class="row g-3">
+                
+                <div class="col-md-6">
+                    <div class="info-box">
+                        <div class="info-label"><i class="fa-solid fa-id-card me-1 text-success"></i> DTS License Number</div>
+                        <p class="info-value">{{ agent.dts_no }}</p>
+                    </div>
+                </div>
+
+                {% if agent.iata_no %}
+                <div class="col-md-6">
+                    <div class="info-box">
+                        <div class="info-label"><i class="fa-solid fa-plane-departure me-1 text-success"></i> IATA Registration No.</div>
+                        <p class="info-value">{{ agent.iata_no }}</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="col-12">
+                    <div class="info-box">
+                        <div class="info-label"><i class="fa-solid fa-location-dot me-1 text-success"></i> Office Address</div>
+                        <p class="info-value">{{ agent.office_address }}</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="info-box">
+                        <div class="info-label"><i class="fa-solid fa-shield-halved me-1 text-success"></i> Verification Status</div>
+                        <p class="info-value text-success"><i class="fa-solid fa-circle-check"></i> Government Approved</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="info-box">
+                        <div class="info-label"><i class="fa-solid fa-calendar-check me-1 text-success"></i> Registered Date</div>
+                        <p class="info-value">{{ agent.submitted_at|date:"F d, Y" }}</p>
+                    </div>
+                </div>
+
             </div>
 
-        <div class="review-item">
-            <div class="quote-icon"><i class="fas fa-quote-left"></i></div>
-            <p class="review-text">Excellent services and very cooperative staff. All ziyarat were properly guided.</p>
-            <div class="reviewer-info">
-            <img src="https://ui-avatars.com/api/?name=Irfan+Ali&background=1a4d2e&color=fff">
-            <div>
-            <h4>Irfan Ali</h4>
-            <span>Umrah 2025</span>
-            </div>
-            </div>
+            <!-- Action Button -->
+            <div class="mt-4 text-end">
+                <a href="{% url 'base:hajj_packages' %}?q={{ agent.agency_name }}" class="btn-primary-green">
+                    Browse Packages by {{ agent.agency_name }} <i class="fa-solid fa-arrow-right ms-2"></i>
+                </a>
             </div>
 
         </div>
     </div>
 </section>
 
-
-{% endblock content %}
+{% endblock %}

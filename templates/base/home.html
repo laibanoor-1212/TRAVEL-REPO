@@ -29,10 +29,17 @@
 </h3>
   <p class="animate-subtitle">The Trusted Marketplace to Compare & Book Sacred Travel Packages</p>
     <div class="search-box-container">
-        <form action="" method="GET" class="hero-search-form-inline">
-          <input type="text" name="q" placeholder="Search packages, destinations, or travel agents..." required>
-          <button type="submit">Search</button>
-        </form>
+       <form action="{% url 'base:global_search' %}" method="GET" class="hero-search-form-inline">
+  <input 
+    type="text" 
+    name="q" 
+    placeholder="Search packages, guides (Iran, Iraq, Umrah), or my booking..." 
+    required
+  >
+  <button type="submit">
+    <i class="fas fa-search"></i> Search
+  </button>
+</form>
       </div>
       <div class="hero-action-buttons">
         <a href="{% url 'base:hajj_packages' %}" class="btn-customer">Find a Package</a>
@@ -108,103 +115,153 @@
   </div>
 </section>
 
-<!-- Updated Dynamic Destinations Section -->
-<!-- Admin-Driven Dynamic Destinations Section -->
+<!-- Admin-Driven Dynamic Packages Types Section -->
+<!-- CLEARFIX TO PREVENT HERO OVERLAP -->
+<div style="clear: both; width: 100%; display: block; height: 50px;"></div>
+
+<!-- PACKAGES TYPES SECTION -->
 <section class="destinations-section">
   <div class="dest-container">
-    <span class="dest-header-tag">Sacred Places & Categories</span>
-    <h2 class="dest-main-title">Popular Destinations</h2>
-    <p class="dest-subtitle">Explore holy destinations and verified package categories curated by admin.</p>
+    <h2 class="dest-main-title">PACKAGES TYPES</h2>
+    <p class="dest-subtitle">Explore our specialized travel categories tailored for your spiritual journey.</p>
 
     <div class="dest-grid">
       {% for type in package_types %}
         <div class="dest-card">
+          
+          <!-- Dome Arch Image Box (Dynamic Admin Upload) -->
           <div class="dest-img-wrapper">
             {% if type.image %}
-              <!-- Admin dwara uploaded image yahan render ho gi -->
               <img src="{{ type.image.url }}" alt="{{ type.name }}">
+            {% elif type.image_url %}
+              <img src="{{ type.image_url }}" alt="{{ type.name }}">
+            {% elif type.type_image %}
+              <img src="{{ type.type_image.url }}" alt="{{ type.name }}">
+            {% elif type.picture %}
+              <img src="{{ type.picture.url }}" alt="{{ type.name }}">
             {% else %}
-              <!-- Fallback Image agar Admin ne image na di ho -->
-              <img src="{% static 'images/kabbaview.jpeg' %}" alt="{{ type.name }}">
+              <!-- Preloaded High-Quality Fallbacks based on category title -->
+              {% if "hajj" in type.name|lower %}
+                <img src="https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&q=80&w=600" alt="Hajj">
+              {% elif "umrah" in type.name|lower %}
+                <img src="https://images.unsplash.com/photo-1565552645632-d725f8bfc19a?auto=format&fit=crop&q=80&w=600" alt="Umrah">
+              {% elif "iran" in type.name|lower %}
+                <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&q=80&w=600" alt="Iran">
+              {% elif "iraq" in type.name|lower %}
+                <img src="https://images.unsplash.com/photo-1519817650390-64a93db51149?auto=format&fit=crop&q=80&w=600" alt="Iraq">
+              {% else %}
+                <img src="https://images.unsplash.com/photo-1565552645632-d725f8bfc19a?auto=format&fit=crop&q=80&w=600" alt="{{ type.name }}">
+              {% endif %}
             {% endif %}
-            <span class="dest-badge">Verified</span>
           </div>
 
           <div class="dest-content">
+            <!-- Circular Icon Accent -->
+            <div class="mini-category-icon icon-bg-{% cycle '1' '2' '3' '4' %}">
+              <i class="fas {% if 'hajj' in type.name|lower %}fa-kaaba{% elif 'umrah' in type.name|lower %}fa-mosque{% else %}fa-place-of-worship{% endif %}"></i>
+            </div>
+
+            <!-- Dynamic Title & Description -->
             <h3 class="dest-card-title">{{ type.name }}</h3>
             <p class="dest-card-desc">
               {% if type.description %}
-                {{ type.description|truncatewords:14 }}
+                {{ type.description|truncatewords:12 }}
               {% else %}
-                Explore sacred places and customized pilgrimage options tailored for you.
+                Official management rules configured across specialized seasonal levels with complete guidance.
               {% endif %}
             </p>
+
+            <!-- Tier Badges -->
+            <div class="package-tags">
+              <div class="tags-row">
+                <span class="tag">Economy</span>
+                <span class="tag">Standard</span>
+                <span class="tag highlight-gold">VIP</span>
+              </div>
+              <div class="tags-row">
+                <span class="tag tag-luxury">Luxury</span>
+              </div>
+            </div>
             
+            <!-- Bottom Link/Button Force Display -->
             <div class="dest-card-footer">
-              <a href="{% url 'base:hajj_packages' %}?type={{ type.id }}" class="dest-btn">
-                Explore Packages &rarr;
+              <a href="{% url 'base:hajj_packages' %}?type={{ type.id }}" class="dest-link-btn">
+                Explore {{ type.name }} Options &rarr;
               </a>
             </div>
           </div>
+
         </div>
       {% empty %}
         <div class="dest-empty-state">
-          <p>No package types added yet by Admin.</p>
+          <p>No package types available right now.</p>
         </div>
       {% endfor %}
     </div>
   </div>
 </section>
-<section class="packages">
-    <div class="container1">
 
-        <h1>Popular Packages</h1>
+<div style="clear: both; width: 100%; display: block; height: 50px;"></div>
+<!-- Safar-e-Haram Exact Workflow Section -->
+<section class="how-to-book-section">
+  <div class="htb-container">
+    <div class="htb-header text-center">
+      <span class="htb-tagline">TRANSPARENT & ESCROW-PROTECTED</span>
+      <h2 class="htb-title">How To Book On Safar-e-Haram</h2>
+      <p class="htb-subtitle">A secure 4-step booking journey designed for complete peace of mind.</p>
+    </div>
 
-        <div class="package-cards">
-
-            <div class="package-card">
-                <img src="{% static 'images/umrah.png' %}" alt="Umrah Package">
-                <div class="package-content">
-                    <h3>Economy Umrah</h3>
-                    <p>7 Days • Makkah & Madinah</p>
-                    <h4>PKR 185,000</h4>
-                    <a href="#" class="package-btn">View Details</a>
-                </div>
-            </div>
-
-            <div class="package-card">
-                <img src="{% static 'images/tawaf4.jpeg' %}" alt="Premium Package">
-                <div class="package-content">
-                    <h3>Premium Umrah</h3>
-                    <p>10 Days • 5 Star Hotels</p>
-                    <h4>PKR 325,000</h4>
-                    <a href="#" class="package-btn">View Details</a>
-                </div>
-            </div>
-
-            <div class="package-card">
-                <img src="{% static 'images/iran.png' %}" alt="Iran Package">
-                <div class="package-content">
-                    <h3>Iran Ziyarat</h3>
-                    <p>8 Days • Mashhad & Qom</p>
-                    <h4>PKR 235,000</h4>
-                    <a href="#" class="package-btn">View Details</a>
-                </div>
-            </div>
-
-            <div class="package-card">
-                <img src="{% static 'images/iraq.png' %}" alt="Iraq Package">
-                <div class="package-content">
-                    <h3>Iraq Ziyarat</h3>
-                    <p>9 Days • Karbala & Najaf</p>
-                    <h4>PKR 255,000</h4>
-                    <a href="#" class="package-btn">View Details</a>
-                </div>
-            </div>
-
+    <div class="htb-steps-grid">
+      
+      <!-- Step 1 -->
+      <div class="htb-step-card">
+        <div class="step-badge">01</div>
+        <div class="htb-icon-wrapper">
+          <i class="fas fa-cubes"></i>
         </div>
+        <h3 class="htb-step-title">Select & View Package</h3>
+        <p class="htb-step-desc">Different verified agents list their packages. Compare pricing, hotels, transport, and select the suitable option.</p>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="htb-step-card">
+        <div class="step-badge">02</div>
+        <div class="htb-icon-wrapper">
+          <i class="fas fa-file-signature"></i>
+        </div>
+        <h3 class="htb-step-title">Submit Booking Request</h3>
+        <p class="htb-step-desc">Review full package details and submit your booking request. The travel agent will review and approve your request.</p>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="htb-step-card">
+        <div class="step-badge">03</div>
+        <div class="htb-icon-wrapper">
+          <i class="fas fa-lock"></i>
+        </div>
+        <h3 class="htb-step-title">Pay to Escrow Hold</h3>
+        <p class="htb-step-desc">Once approved (or prior), pay securely. Your amount is locked safely in Escrow—it is NEVER sent directly to the agent.</p>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="htb-step-card">
+        <div class="step-badge">04</div>
+        <div class="htb-icon-wrapper">
+          <i class="fas fa-ticket-alt"></i>
+        </div>
+        <h3 class="htb-step-title">Ticket Delivery & Release</h3>
+        <p class="htb-step-desc">Agent sends your travel tickets. Once you verify and confirm ticket receipt, funds are released to the agent.</p>
+      </div>
 
     </div>
+
+    <!-- Quick Action Bar -->
+    <div class="htb-footer-action text-center">
+      <a href="{% url 'base:hajj_packages' %}" class="htb-btn-primary">
+        Browse & Book Packages <i class="fas fa-arrow-right"></i>
+      </a>
+    </div>
+  </div>
 </section>
 
 <section class="premium-marketplace-section">
@@ -444,6 +501,61 @@
         </div>
     </div>
 </section>
+
+
+ <footer class="footer-wrapper">
+        <div class="footer-top-curve">
+            <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M0,0 Q600,110 1200,0 L1200,120 L0,120 Z"></path>
+            </svg>
+        </div>
+
+        <div class="footer-content">
+            <img src="{% static 'images/logo.png' %}" alt="Logo">
+
+            <div class="footer-columns">
+                <div>
+                    <h3>Safar-e-Haram</h3>
+                    <p>
+                        Safar-e-Haram guides you on a blessed journey —
+                        helping pilgrims explore routes, maps, and essential
+                        Hajj & Umrah information in one place.
+                    </p>
+                </div>
+
+                <div>
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="{% url 'base:home' %}">Home</a></li>
+                        <li><a href="{% url 'base:Guide' %}">Guides</a></li>
+                        <li><a href="{% url 'base:ziyarat' %}">Ziyarat</a></li>
+                        <li><a href="{% url 'base:contactus' %}">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-social">
+                <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+            </div>
+
+            <div class="footer-bottom">
+                <p>© 2026 Safar-e-Haram. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
 
 
 <script>

@@ -8,14 +8,15 @@ from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from .models import CustomUser
 from django.utils.http import urlsafe_base64_decode,urlsafe_base64_encode
-from django.utils.encoding import force_str
+from django.utils.encoding import force_str, force_bytes
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import user_passes_test
 from django.core.paginator import Paginator
 from django.contrib.auth.forms import PasswordResetForm,SetPasswordForm
 from .forms import CustomUserRegistrationForm
 from django.contrib.auth import authenticate, login as auth_login
-from django.contrib import messages
+
+from django.contrib.sites.shortcuts import get_current_site
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -48,28 +49,81 @@ def login_view(request):
             
     return render(request, 'accounts/login.html') 
 
-def register_view(request): 
+
+def register_view(request):
+    if request.user.is_authenticated:
+        return redirect('home')
     if request.method == 'POST':
         form = CustomUserRegistrationForm(request.POST)
         if form.is_valid():
-
             user = form.save(commit=False)
+            user.is_active = False
             user.save()
-            if user.role == 'stakeholder':
-                request.session['stakeholder_id'] = user.id
-                messages.success(request, "Stakeholder account created successfully. Please submit your docs.")
-                return redirect('stakeholder:KYC')
- 
-            else:
-                login(request, user,backend='django.contrib.auth.backends.ModelBackend')
-                messages.success(request, "User account created successfully")
-                return redirect('customers:user_dashboard')
 
+            # Generate activation token & link
+            current_site = get_current_site(request)
+            mail_subject = 'Safar-e-Haram - Verify Your Email Address'
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = default_token_generator.make_token(user)
+            activation_link = f"http://{current_site.domain}/activate/{uid}/{token}/"
+
+            message = (
+                f"Hello {user.first_name},\n\n"
+                f"Thank you for registering with Safar-e-Haram.\n"
+                f"Please verify your email address by clicking the link below:\n\n"
+                f"{activation_link}\n\n"
+                f"Best regards,\nSafar-e-Haram Team"
+            )
+
+            try:
+                send_mail(
+                    mail_subject,
+                    message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [user.email],
+                    fail_silently=False,
+                )
+                messages.success(
+                    request, 
+                    "Registration successful! We have sent an activation link to your email. Please verify your email before logging in."
+                )
+            except Exception as e:
+                messages.error(
+                    request, 
+                    "Failed to send email verification. Please ensure you entered a valid email address."
+                )
+
+            return redirect('accounts:login')
     else:
-        form = CustomUserRegistrationForm()
+        initial_role = request.GET.get('role', 'user')
+        form = CustomUserRegistrationForm(initial={'role': initial_role})
 
     return render(request, 'accounts/register.html', {'form': form})
 
+
+def activate_account(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = CustomUser.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
+        user = None
+    if user is not None and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        if user.role == 'stakeholder':
+            request.session['stakeholder_id'] = user.id
+            messages.success(
+                request, 
+                "Email verified successfully! Stakeholder account activated. Please submit your documentation."
+            )
+            return redirect('stakeholder:KYC')
+        else:
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            messages.success(request, "Email verified! User account activated successfully.")
+            return redirect('customers:user_dashboard')
+    else:
+        messages.error(request, "Activation link is invalid or has expired.")
+        return redirect('register')
 
 def logout_view(request):
     logout(request)

@@ -1,7 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from packages.models import Package, PackageType 
 from adminpanel.models import GuidePage
 from .models import ContactMessage
+from django.urls import reverse
+from django.db.models import Q
+from stakeholder.models import AgentKYC
+from django.shortcuts import get_object_or_404
 
 # Helper function to fetch page content dynamically
 def get_guide_context(page_slug, page_title):
@@ -12,9 +16,12 @@ def get_guide_context(page_slug, page_title):
     }
 GUIDE_TEMPLATE = 'base/guide_detail.html'
 def home(request):
-    package_types = PackageType.objects.all().order_by('-id')
-    context = {'package_types': package_types}
-    return render(request, 'base/home.html', context)
+    # Dynamic package types query kar ke dynamic list bhejein
+    package_types = PackageType.objects.all()
+    
+    return render(request, 'base/home.html', {
+        'package_types': package_types
+    })
 
 def about(request):
     return render(request, 'base/about.html')
@@ -110,11 +117,91 @@ def masjidumer(request):
 
 def uhad(request):
     return render(request, 'base/uhad.html', get_guide_context('uhad', 'Jabal Uhud'))
+def global_search(request):
+    query = request.GET.get('q', '').strip().lower()
+    if not query:
+        return redirect('base:home')
+    if 'package' in query or 'packages' in query:
+        packages_url = reverse('base:hajj_packages')
+        
+        if 'umrah' in query:
+            return redirect(f"{packages_url}?category=umrah")
+        elif 'ziyarat' in query:
+            return redirect(f"{packages_url}?category=ziyarat")
+        elif 'hajj' in query:
+            return redirect(f"{packages_url}?category=hajj")
+        else:
+            return redirect(f"{packages_url}?q={query}")
+    umrah_guide_keywords = ['umrah guide', 'umrah steps', 'ahram', 'ihram', 'tawaf', 'sai']
+    if any(keyword in query for keyword in umrah_guide_keywords) or query == 'umrah':
+        return redirect('base:Guide')
+    hajj_guide_keywords = ['hajj guide', 'hajj steps', 'mina', 'arafat', 'muzdalifah', 'jamarat']
+    if any(keyword in query for keyword in hajj_guide_keywords) or query == 'hajj':
+        return redirect('base:hajj-guide')
+    iraq_keywords = ['iraq', 'najaf', 'najaf ashraf', 'karbala', 'kazmain', 'samarra', 'iraq guide', 'iraq ziyarat']
+    if any(keyword in query for keyword in iraq_keywords):
+        return redirect('base:iraq_guide')
 
+    iran_keywords = ['iran', 'mashhad', 'qom', 'tehran', 'shiraz', 'iran guide', 'iran ziyarat']
+    if any(keyword in query for keyword in iran_keywords):
+        return redirect('base:iran_guide')
+
+    syria_keywords = ['syria', 'sham', 'shaam', 'damascus', 'damishq', 'syria guide', 'syria ziyarat']
+    if any(keyword in query for keyword in syria_keywords):
+        return redirect('base:syria_guide')
+    general_guide_keywords = ['guide', 'guides', 'travel guide', 'ziyarat guide']
+    if query in general_guide_keywords or any(k == query for k in general_guide_keywords):
+        return redirect(reverse('base:home') + '#guides')  # Ya redirect('base:hajj_guide') kar dein
+    booking_keywords = ['my booking', 'booking status', 'my book', 'my orders', 'ticket status', 'escrow status']
+    if any(keyword in query for keyword in booking_keywords):
+        return redirect('base:user_bookings')
+    how_to_book_keywords = ['how to book', 'booking process', 'escrow', 'payment method', 'step']
+    if any(keyword in query for keyword in how_to_book_keywords):
+        return redirect(reverse('base:home') + '#how-to-book')
+    agent_keywords = ['agent', 'agency', 'travel agent', 'agencies']
+    if any(keyword in query for keyword in agent_keywords):
+        return redirect('base:agent_list')
+    packages_url = reverse('base:hajj_packages')
+    return redirect(f"{packages_url}?q={query}")
 def hajj_packages(request):
-    active_packages = Package.objects.filter(status='active').order_by('-created_at')
-    return render(request, 'packages/hajjpackages.html', {'packages': active_packages})
+    packages = Package.objects.filter(status__iexact='active').order_by('-created_at')
 
+    query = request.GET.get('q', '').strip()
+    category_filter = request.GET.get('category', '').strip()
+    type_filter = request.GET.get('type', '').strip()
+    agent_id = request.GET.get('agent_id', '').strip()
+    if agent_id:
+        try:
+            agent_kyc = AgentKYC.objects.get(id=agent_id)
+            packages = packages.filter(
+                Q(agency__agency_name__iexact=agent_kyc.agency_name) |
+                Q(agency=agent_kyc.user) | 
+                Q(agency_id=agent_id)
+            )
+        except AgentKYC.DoesNotExist:
+            packages = packages.none()
+
+    elif query:
+        packages = packages.filter(
+            Q(name__icontains=query) |
+            Q(description__icontains=query) |
+            Q(city__icontains=query) |
+            Q(country__icontains=query) |
+            Q(agency__agency_name__icontains=query) |
+            Q(package_type__name__icontains=query)
+        )
+
+    if category_filter:
+        packages = packages.filter(package_type__name__iexact=category_filter)
+
+    if type_filter:
+        packages = packages.filter(tier__iexact=type_filter)
+
+    context = {
+        'packages': packages,
+        'search_query': query,
+    }
+    return render(request, 'packages/hajjpackages.html', context)
 
 def contactus(request):
     if request.method == 'POST':
@@ -133,3 +220,36 @@ def contactus(request):
         return redirect('base:contactus')  
 
     return render(request, 'base/contactus.html')
+def agent_list(request):
+    query = request.GET.get('q', '').strip()
+    service_filter = request.GET.get('service', '')
+    agencies = AgentKYC.objects.filter(kyc_status='approved')
+    if query:
+        agencies = agencies.filter(
+            Q(agency_name__icontains=query) |
+            Q(owner_name__icontains=query) |
+            Q(dts_no__icontains=query) |
+            Q(iata_no__icontains=query)
+        )
+
+    if service_filter == 'hajj':
+        agencies = agencies.filter(is_hajj=True)
+    elif service_filter == 'ziyarat':
+        agencies = agencies.filter(is_ziyarat=True)
+
+    agencies = agencies.order_by('-submitted_at')
+
+    context = {
+        'agencies': agencies,
+        'query': query,
+        'service_filter': service_filter,
+    }
+    return render(request, 'base/travel_agents.html', context)
+
+def agent_detail(request, pk):
+    agent = get_object_or_404(AgentKYC, pk=pk, kyc_status='approved')
+    
+    context = {
+        'agent': agent,
+    }
+    return render(request, 'base/agent_details.html', context)
