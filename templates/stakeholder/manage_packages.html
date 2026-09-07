@@ -181,6 +181,11 @@
         color: #842029;
     }
 
+    .status-pill.full-status {
+        background-color: #fff3cd;
+        color: #664d03;
+    }
+
     /* --- Action Row Buttons --- */
     .actions-cell {
         display: flex;
@@ -298,13 +303,7 @@
                             <td>
                                 <span class="status-pill active-status">
                                     <i class="fas fa-circle" style="font-size: 0.5rem; margin-right: 6px; vertical-align: middle;"></i>
-                                    {% if package.get_status_display %}
-                                        {{ package.get_status_display }}
-                                    {% elif package.status %}
-                                        {{ package.status }}
-                                    {% else %}
-                                        Active
-                                    {% endif %}
+                                    Active
                                 </span>
                             </td>
                             <td>
@@ -366,16 +365,27 @@
                                 {{ package.seats_left|default:"0" }}
                             </td>
                             <td>
-                                <span class="status-pill expired-status">
-                                    <i class="fas fa-circle" style="font-size: 0.5rem; margin-right: 6px; vertical-align: middle;"></i>
-                                    {% if package.get_status_display %}
-                                        {{ package.get_status_display }}
-                                    {% elif package.status %}
-                                        {{ package.status }}
-                                    {% else %}
+                                {% if package.status != 'active' %}
+                                    <span class="status-pill expired-status">
+                                        <i class="fas fa-circle" style="font-size: 0.5rem; margin-right: 6px; vertical-align: middle;"></i>
                                         Inactive
-                                    {% endif %}
-                                </span>
+                                    </span>
+                                {% elif package.application_deadline < today %}
+                                    <span class="status-pill expired-status">
+                                        <i class="fas fa-clock" style="font-size: 0.75rem; margin-right: 6px; vertical-align: middle;"></i>
+                                        Expired
+                                    </span>
+                                {% elif package.seats_left <= 0 %}
+                                    <span class="status-pill full-status">
+                                        <i class="fas fa-ban" style="font-size: 0.75rem; margin-right: 6px; vertical-align: middle;"></i>
+                                        Fully Booked
+                                    </span>
+                                {% else %}
+                                    <span class="status-pill expired-status">
+                                        <i class="fas fa-circle" style="font-size: 0.5rem; margin-right: 6px; vertical-align: middle;"></i>
+                                        Inactive
+                                    </span>
+                                {% endif %}
                             </td>
                             <td>
                                 <div class="actions-cell">

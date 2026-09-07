@@ -10,7 +10,6 @@
         --danger-red: #d63031;
         --warning-orange: #f39c12;
         --muted-gray: #636e72;
-      
         --border-color: #e2e8f0;
     }
 
@@ -34,10 +33,12 @@
 
     /* Badges Layout */
     .badge { padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 500; display: inline-block; }
-    .badge-vip { background: #fff3cd; color: var(--primary-green):; }
+    .badge-vip { background: #fff3cd; color: var(--primary-green); }
     .badge-economy { background: #d1ecf1; color: #0c5460; }
     .badge-active { background: var(--light-green); color: var(--primary-green); }
     .badge-blocked { background: #fff5f5; color: var(--danger-red); }
+    .badge-expired { background: #f8d7da; color: #842029; }
+    .badge-full { background: #fff3cd; color: #664d03; }
 
     /* Dashboard Actions Row */
     .btn-action {
@@ -61,6 +62,14 @@
 
 <div class="container" style="padding: 20px;">
     
+    {% if messages %}
+        {% for message in messages %}
+            <div style="padding: 12px 18px; margin-bottom: 20px; border-radius: 6px; background-color: #eef7f0; color: #0b7a47; border: 1px solid #c2e2cc; font-size: 14px;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
         <div>
             <h2 style="color: var(--primary-green); font-weight: 600; font-size: 24px;">Package Monitoring Portal</h2>
@@ -78,10 +87,11 @@
     </div>
 
     <div class="tab-menu">
-        <button class="tab-link active" onclick="openTab(event, 'activeTab')">Live Packages</button>
-        <button class="tab-link" onclick="openTab(event, 'blockedTab')">Blocked / Inactive</button>
+        <button class="tab-link active" onclick="openTab(event, 'activeTab')">Live Packages ({{ active_packages|length|default:"0" }})</button>
+        <button class="tab-link" onclick="openTab(event, 'blockedTab')">Inactive / Blocked / Expired ({{ blocked_packages|length|default:"0" }})</button>
     </div>
 
+    <!-- Live Packages Tab -->
     <div id="activeTab" class="tab-content active">
         <div class="table-wrapper">
             <table class="data-table" id="packageTable">
@@ -99,22 +109,27 @@
                     {% for pkg in active_packages %}
                     <tr data-type="{{ pkg.package_type }}">
                         <td><b>#{{ pkg.id }}</b></td>
-                        <td><strong>{{ pkg.title }}</strong><br><span class="badge {% if pkg.package_type == 'VIP' %}badge-vip{% else %}badge-economy{% endif %}">{{ pkg.package_type }}</span></td>
+                        <td>
+                            <strong>{{ pkg.title|default:pkg.name }}</strong><br>
+                            <span class="badge {% if pkg.package_type == 'VIP' %}badge-vip{% else %}badge-economy{% endif %}">
+                                {{ pkg.package_type|default:"Standard" }}
+                            </span>
+                        </td>
                         <td>
                             <div class="agent-wrapper">
-                                <strong>{% firstof pkg.agency.agency_name pkg.user.agency_name pkg.user.username "Registered Agent" %}</strong>
+                                <strong>{% firstof pkg.agency.agency_name pkg.user.agency_name pkg.agent.username pkg.user.username "Registered Agent" %}</strong>
                                 <span class="small-info">📧 {% firstof pkg.agency.email pkg.user.email "N/A" %}</span>
                             </div>
                         </td>
                         <td>
-                            <span class="small-info">🛫 {{ pkg.start_date|date:"d M Y" }}</span>
-                            <span class="small-info">🛬 {{ pkg.end_date|date:"d M Y" }}</span>
+                            <span class="small-info">🛫 {{ pkg.start_date|date:"d M Y"|default:"N/A" }}</span>
+                            <span class="small-info">🛬 {{ pkg.end_date|date:"d M Y"|default:"N/A" }}</span>
                         </td>
                         <td><span class="badge badge-active">Active</span></td>
                         <td style="text-align: center;">
                             <div style="display: flex; gap: 6px; justify-content: center;">
                                 <a href="{% url 'packages:packages_detail' pkg.id %}" class="btn-action btn-blue">View Details</a>
-                                <a href="{% url 'adminpanel:block_package' pkg.id %}" class="btn-action btn-orange">Block</a>
+                                <a href="{% url 'adminpanel:block_package' pkg.id %}" class="btn-action btn-orange" onclick="return confirm('Are you sure you want to block this package?')">Block</a>
                                 <a href="{% url 'adminpanel:remove_package' pkg.id %}" class="btn-action btn-red" onclick="return confirm('Delete permanently?')">Remove</a>
                             </div>
                         </td>
@@ -129,6 +144,7 @@
         </div>
     </div>
 
+    <!-- Inactive / Blocked / Expired / Fully Booked Tab -->
     <div id="blockedTab" class="tab-content">
         <div class="table-wrapper">
             <table class="data-table" id="blockedPackageTable">
@@ -145,25 +161,41 @@
                     {% for pkg in blocked_packages %}
                     <tr data-type="{{ pkg.package_type }}">
                         <td><b>#{{ pkg.id }}</b></td>
-                        <td><strong>{{ pkg.title }}</strong></td>
+                        <td><strong>{{ pkg.title|default:pkg.name }}</strong></td>
                         <td>
                             <div class="agent-wrapper">
-                                <strong>{% firstof pkg.agency.agency_name pkg.user.agency_name pkg.user.username "Registered Agent" %}</strong>
+                                <strong>{% firstof pkg.agency.agency_name pkg.user.agency_name pkg.agent.username pkg.user.username "Registered Agent" %}</strong>
                                 <span class="small-info">📧 {% firstof pkg.agency.email pkg.user.email "N/A" %}</span>
                             </div>
                         </td>
-                        <td><span class="badge badge-blocked">Blocked</span></td>
+                        <td>
+                            {% if pkg.status == 'blocked' %}
+                                <span class="badge badge-blocked">Blocked</span>
+                            {% elif pkg.application_deadline and pkg.application_deadline < today %}
+                                <span class="badge badge-expired">Expired</span>
+                            {% elif pkg.end_date and pkg.end_date < today %}
+                                <span class="badge badge-expired">Expired</span>
+                            {% elif pkg.seats_left and pkg.seats_left <= 0 %}
+                                <span class="badge badge-full">Fully Booked</span>
+                            {% elif pkg.booked_seats and pkg.total_seats and pkg.booked_seats >= pkg.total_seats %}
+                                <span class="badge badge-full">Fully Booked</span>
+                            {% else %}
+                                <span class="badge badge-blocked">Inactive</span>
+                            {% endif %}
+                        </td>
                         <td style="text-align: center;">
                             <div style="display: flex; gap: 6px; justify-content: center;">
-                                <a href="" class="btn-action btn-blue">View</a>
-                                <a href="{% url 'adminpanel:unblock_package' pkg.id %}" class="btn-action btn-green">Unblock</a>
+                                <a href="{% url 'packages:packages_detail' pkg.id %}" class="btn-action btn-blue">View</a>
+                                {% if pkg.status == 'blocked' %}
+                                    <a href="{% url 'adminpanel:unblock_package' pkg.id %}" class="btn-action btn-green">Unblock</a>
+                                {% endif %}
                                 <a href="{% url 'adminpanel:remove_package' pkg.id %}" class="btn-action btn-red" onclick="return confirm('Delete permanently?')">Remove</a>
                             </div>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="5" style="text-align: center; padding: 30px; color: var(--muted-gray);">No blocked/inactive records found in repository segments.</td>
+                        <td colspan="5" style="text-align: center; padding: 30px; color: var(--muted-gray);">No inactive/blocked/expired records found.</td>
                     </tr>
                     {% endfor %}
                 </tbody>

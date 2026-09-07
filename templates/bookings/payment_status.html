@@ -11,14 +11,38 @@
                 {% endfor %}
             {% endif %}
 
-            <div class="mb-5 mt-2">
-                <h4 class="mb-1 fw-bold">Payment Status</h4>
-                <span class="text-muted">Booking #{{ booking.id }}</span>
+            <div class="mb-4 mt-2 d-flex justify-content-between align-items-center">
+                <div>
+                    <h4 class="mb-1 fw-bold">Payment Status</h4>
+                    <span class="text-muted">Booking #{{ booking.id }}</span>
+                </div>
+                <div>
+                    {% if booking.status == 'incomplete' %}
+                        <span class="badge bg-danger fs-6 px-3 py-2">Booking Incomplete</span>
+                    {% else %}
+                        <span class="badge bg-success fs-6 px-3 py-2">{{ booking.get_status_display }}</span>
+                    {% endif %}
+                </div>
             </div>
+
+            <!-- INCOMPLETE / NO PAYMENT ALERT & TRY AGAIN BUTTON -->
+            {% if booking.status == 'incomplete' or not payment or payment.payment_status in 'pending,incomplete,failed' %}
+                <div class="alert alert-danger border-0 shadow-sm rounded-3 p-4 mb-4 d-md-flex justify-content-between align-items-center">
+                    <div class="mb-3 mb-md-0">
+                        <h5 class="alert-heading fw-bold mb-1"><i class="bi bi-exclamation-octagon-fill me-2"></i>Payment Incomplete!</h5>
+                        <p class="mb-0 text-dark opacity-75">Aapki booking abhi incomplete hai. Process poora karne ke liye payment dobara start karein.</p>
+                    </div>
+                    <div>
+                        <a href="{% url 'bookings:retry_payment' booking.id %}" class="btn btn-danger fw-bold px-4 py-2 text-nowrap rounded-3 shadow-sm">
+                            <i class="bi bi-arrow-repeat me-1"></i> Try Again / Pay Now
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
 
             {% if not payment %}
                 <div class="alert alert-warning border-0 shadow-sm rounded-3">
-                    <i class="bi bi-exclamation-triangle me-2"></i>No payment found for this booking.
+                    <i class="bi bi-exclamation-triangle me-2"></i>No payment record found for this booking.
                 </div>
             {% else %}
 
@@ -26,7 +50,7 @@
             <div class="ps-card">
                 <div class="status-track">
 
-                    <div class="status-step {% if payment.payment_status != 'pending' %}done{% endif %}">
+                    <div class="status-step {% if payment.payment_status != 'pending' and payment.payment_status != 'incomplete' %}done{% endif %}">
                         <div class="status-dot"><i class="bi bi-check-lg"></i></div>
                         <small>Pending</small>
                     </div>
@@ -81,7 +105,13 @@
                         <i class="bi bi-info-circle"></i>
                         <div>
                             <div class="detail-label">Status</div>
-                            <div class="detail-value">{{ payment.get_payment_status_display }}</div>
+                            <div class="detail-value">
+                                {% if payment.payment_status in 'incomplete,pending,failed' %}
+                                    <span class="text-danger fw-bold">{{ payment.get_payment_status_display }}</span>
+                                {% else %}
+                                    <span class="text-success fw-bold">{{ payment.get_payment_status_display }}</span>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                     <div class="detail-item">
@@ -98,7 +128,7 @@
             {% if ticket %}
             <div class="ps-card">
                 <div class="ps-card-title">Ticket</div>
-                <a href="{% url 'customers:user_ticket'%}" class="btn-approve d-inline-flex align-items-center justify-content-center text-decoration-none">
+                <a href="{% url 'customers:user_ticket' %}" class="btn-approve d-inline-flex align-items-center justify-content-center text-decoration-none">
                     <i class="bi bi-ticket-perforated me-2"></i> View Ticket &amp; Approve
                 </a>
             </div>

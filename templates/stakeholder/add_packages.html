@@ -155,16 +155,18 @@
 
     .upload-zone {
         border: 2px dashed #cbd5e1;
-        padding: 20px;
+        padding: 25px;
         text-align: center;
         border-radius: 8px;
         background: #ffffff;
         cursor: pointer;
-        transition: border 0.3s ease;
+        transition: all 0.3s ease;
+        position: relative;
     }
 
     .upload-zone:hover {
         border-color: #198754;
+        background: #f0fdf4;
     }
 
     .upload-zone label {
@@ -172,6 +174,18 @@
         color: #198754;
         font-weight: 600;
         font-size: 0.95rem;
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+
+    .preview-image {
+        max-width: 100%;
+        max-height: 180px;
+        border-radius: 6px;
+        margin-top: 10px;
+        object-fit: cover;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
     .form-footer-actions {
@@ -228,8 +242,8 @@
             <div class="agency-info">
                 <span class="agency-label">CREATE NEW PACKAGE</span>
                 <h2 class="agency-name">
-                    {% if request.user.stakeholder_profile.agency_name %}
-                        {{ request.user.stakeholder_profile.agency_name }}
+                    {% if request.user.agent_kyc.agency_name %}
+                        {{ request.user.agent_kyc.agency_name }}
                     {% else %}
                         {{ request.user.username }}
                     {% endif %}
@@ -263,11 +277,11 @@
                     <div class="input-grid-2">
                         <div class="field-box">
                             <label>Agency Name</label>
-                            <input type="text" value="{{ request.user.stakeholder_profile.agency_name|default:request.user.username }}" readonly class="locked-input">
+                            <input type="text" value="{{ request.user.agent_kyc.agency_name|default:request.user.username }}" readonly class="locked-input">
                         </div>
                         <div class="field-box">
-                            <label>License Number</label>
-                            <input type="text" value="{{ request.user.stakeholder_profile.license_number|default:'N/A' }}" readonly class="locked-input">
+                            <label>DTS License Number</label>
+                            <input type="text" value="{{ request.user.agent_kyc.dts_no|default:'N/A' }}" readonly class="locked-input">
                         </div>
                     </div>
                 </div>
@@ -286,10 +300,10 @@
                         </div>
                         <div class="field-box">
                             <label>Package Type *</label>
-                            <select name="package_type" required>
+                            <select name="package_type" id="package_type_select" onchange="handleTypeChange()" required>
                                 <option value="" disabled selected>-- Select Package Type --</option>
                                 {% for ptype in package_types %}
-                                    <option value="{{ ptype.id }}">{{ ptype.name }}</option>
+                                    <option value="{{ ptype.id }}" data-typename="{{ ptype.name|lower }}">{{ ptype.name }}</option>
                                 {% empty %}
                                     <option value="" disabled>No package types available</option>
                                 {% endfor %}
@@ -297,9 +311,20 @@
                         </div>
                     </div>
 
+                    <div class="input-grid-2" style="margin-bottom: 15px;">
+                        <div class="field-box">
+                            <label>Country *</label>
+                            <input type="text" name="country" id="country_input" value="Saudi Arabia" placeholder="e.g. Saudi Arabia, UAE, Turkey" required>
+                        </div>
+                        <div class="field-box">
+                            <label>City / Region</label>
+                            <input type="text" name="city" id="city_input" value="Makkah" placeholder="e.g. Makkah / Dubai / Istanbul">
+                        </div>
+                    </div>
+
                     <div class="input-grid-3" style="margin-bottom: 15px;">
                         <div class="field-box">
-                            <label>Price (PKR: 100,000 - 2,500,000) *</label>
+                            <label>Price (PKR) *</label>
                             <input type="number" name="price" id="price-input" min="100000" max="2500000" placeholder="150000" required>
                         </div>
                         <div class="field-box">
@@ -341,13 +366,13 @@
                 </div>
                 <div class="part-body">
                     <div class="input-grid-2" style="margin-bottom: 15px;">
-                        <div class="field-box">
-                            <label><i class="fas fa-kaaba"></i> Makkah Hotel</label>
-                            <input type="text" name="makkah_hotel" placeholder="e.g. Pullman Zamzam Makkah">
+                        <div class="field-box" id="hotel_box_1">
+                            <label id="label_hotel_1"><i class="fas fa-kaaba"></i> Makkah Hotel</label>
+                            <input type="text" name="makkah_hotel" id="input_hotel_1" placeholder="e.g. Pullman Zamzam Makkah">
                         </div>
-                        <div class="field-box">
-                            <label><i class="fas fa-mosque"></i> Madinah Hotel</label>
-                            <input type="text" name="madinah_hotel" placeholder="e.g. Anwar Al Madinah Movenpick">
+                        <div class="field-box" id="hotel_box_2">
+                            <label id="label_hotel_2"><i class="fas fa-mosque"></i> Madinah Hotel</label>
+                            <input type="text" name="madinah_hotel" id="input_hotel_2" placeholder="e.g. Anwar Al Madinah Movenpick">
                         </div>
                     </div>
 
@@ -357,7 +382,8 @@
                             <label class="pill"><input type="checkbox" name="visa" checked> Visa Processing</label>
                             <label class="pill"><input type="checkbox" name="ticket" checked> Return Ticket</label>
                             <label class="pill"><input type="checkbox" name="transport" checked> Transport Included</label>
-                            <label class="pill"><input type="checkbox" name="ziyarat" checked> Ziyarat Tour</label>
+                            <label class="pill" id="pill_ziyarat"><input type="checkbox" name="ziyarat" checked> Ziyarat Tour</label>
+                            <label class="pill" id="pill_meals"><input type="checkbox" name="meals"> Meals / Buffet</label>
                         </div>
                     </div>
                 </div>
@@ -373,13 +399,17 @@
                         <label>Detailed Itinerary / Description</label>
                         <textarea name="description" rows="4" placeholder="Enter full itinerary details, hotel distances, flight routes, and rules..."></textarea>
                     </div>
+                    
                     <div class="field-box">
                         <label>Upload Package Banner Image</label>
                         <div class="upload-zone">
-                            <input type="file" name="banner" id="banner" accept="image/*" style="display: none;" onchange="updateFileName(this)">
+                            <input type="file" name="banner" id="banner" accept="image/*" style="display: none;" onchange="previewBannerImage(this)">
                             <label for="banner" id="upload-label">
-                                <i class="fas fa-cloud-upload-alt" style="font-size: 1.5rem; display: block; margin-bottom: 5px;"></i>
-                                Click to Upload Package Banner Image
+                                <div id="upload-prompt">
+                                    <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: #198754; margin-bottom: 8px; display: block;"></i>
+                                    <span>Click to upload package banner image (JPG, PNG)</span>
+                                </div>
+                                <img id="banner-preview" src="#" alt="Banner Preview" class="preview-image" style="display: none;">
                             </label>
                         </div>
                     </div>
@@ -387,7 +417,7 @@
             </div>
 
             <div class="form-footer-actions">
-                <button type="reset" class="btn-clear">Clear Form</button>
+                <button type="reset" class="btn-clear" onclick="resetImagePreview()">Clear Form</button>
                 <button type="submit" id="submit-btn" class="btn-publish">
                     <i class="fas fa-paper-plane"></i> Publish Package
                 </button>
@@ -397,21 +427,103 @@
 </div>
 
 <script>
-function updateFileName(input) {
-    const label = document.getElementById('upload-label');
+// Image Preview
+function previewBannerImage(input) {
+    const prompt = document.getElementById('upload-prompt');
+    const preview = document.getElementById('banner-preview');
+
     if (input.files && input.files[0]) {
-        label.innerHTML = `<i class="fas fa-file-image" style="font-size: 1.5rem; display: block; margin-bottom: 5px;"></i> Selected: ${input.files[0].name}`;
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+            prompt.innerHTML = `<i class="fas fa-check-circle" style="font-size: 1.5rem; color: #198754; margin-bottom: 5px; display: block;"></i>
+                                <strong>Selected File:</strong> ${input.files[0].name} <br>
+                                <small style="color: #6c757d;">(Click again to change image)</small>`;
+        }
+
+        reader.readAsDataURL(input.files[0]);
     }
 }
 
-// Strictly Client-Side Validation on Submit
+function resetImagePreview() {
+    const prompt = document.getElementById('upload-prompt');
+    const preview = document.getElementById('banner-preview');
+    
+    preview.src = "#";
+    preview.style.display = 'none';
+    prompt.innerHTML = `<i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: #198754; margin-bottom: 8px; display: block;"></i>
+                        <span>Click to upload package banner image (JPG, PNG)</span>`;
+}
+
+// Dynamic field management based on Package Type
+function handleTypeChange() {
+    const select = document.getElementById('package_type_select');
+    const selectedOption = select.options[select.selectedIndex];
+    const typeName = (selectedOption.getAttribute('data-typename') || selectedOption.text).toLowerCase();
+
+    const countryInput = document.getElementById('country_input');
+    const cityInput = document.getElementById('city_input');
+    
+    const labelHotel1 = document.getElementById('label_hotel_1');
+    const labelHotel2 = document.getElementById('label_hotel_2');
+    const inputHotel1 = document.getElementById('input_hotel_1');
+    const inputHotel2 = document.getElementById('input_hotel_2');
+    const hotelBox2 = document.getElementById('hotel_box_2');
+
+    const pillZiyarat = document.getElementById('pill_ziyarat');
+
+    if (typeName.includes('hajj') || typeName.includes('umrah')) {
+        countryInput.value = "Saudi Arabia";
+        cityInput.value = "Makkah";
+        cityInput.placeholder = "e.g. Makkah / Madinah";
+        
+        labelHotel1.innerHTML = `<i class="fas fa-kaaba"></i> Makkah Hotel`;
+        labelHotel2.innerHTML = `<i class="fas fa-mosque"></i> Madinah Hotel`;
+        inputHotel1.placeholder = "e.g. Pullman Zamzam Makkah";
+        inputHotel2.placeholder = "e.g. Anwar Al Madinah Movenpick";
+        
+        hotelBox2.style.display = "flex";
+        pillZiyarat.style.display = "inline-flex";
+
+    } else if (typeName.includes('ziyarat') || typeName.includes('iran') || typeName.includes('iraq')) {
+        countryInput.value = "Iraq";
+        cityInput.value = "Najaf";
+        cityInput.placeholder = "e.g. Najaf / Karbala";
+        
+        labelHotel1.innerHTML = `<i class="fas fa-hotel"></i> Najaf Hotel`;
+        labelHotel2.innerHTML = `<i class="fas fa-hotel"></i> Karbala Hotel`;
+        inputHotel1.placeholder = "e.g. Al-Kawthar Hotel";
+        inputHotel2.placeholder = "e.g. Baron Hotel Karbala";
+
+        hotelBox2.style.display = "flex";
+        pillZiyarat.style.display = "inline-flex";
+
+    } else {
+        countryInput.value = "";
+        countryInput.placeholder = "e.g. UAE, Turkey, Malaysia";
+        cityInput.value = "";
+        cityInput.placeholder = "e.g. Dubai, Istanbul, Baku";
+
+        labelHotel1.innerHTML = `<i class="fas fa-hotel"></i> Primary Hotel / Resort`;
+        inputHotel1.placeholder = "e.g. 4-Star Hotel / Resort Name";
+
+        hotelBox2.style.display = "none";
+        inputHotel2.value = ""; 
+
+        pillZiyarat.style.display = "none";
+    }
+}
+
+// Client-side Date Validation
 document.getElementById('packageForm').addEventListener('submit', function(e) {
     const departureDate = document.getElementById('departure_date').value;
     const deadlineDate = document.getElementById('application_deadline').value;
 
     if (deadlineDate && departureDate && deadlineDate > departureDate) {
         e.preventDefault();
-        alert("Application deadline departure date se baad ki nahi ho sakti!");
+        alert("Application deadline cannot be after departure date!");
     }
 });
 </script>

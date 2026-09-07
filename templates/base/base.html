@@ -38,7 +38,6 @@
 
     {% if request.resolver_match.url_name == 'login' or request.resolver_match.url_name == 'register' or '/login' in request.path or '/signup' in request.path or '/register' in request.path %}
     <style>
-        /* Navbar hide hone par top padding reset karne ke liye */
         body, main {
             padding-top: 0 !important;
             margin-top: 0 !important;
@@ -55,7 +54,7 @@
         <p class="english">A Blessed Journey to the House of Allah</p>
     </div>
 
-    <!-- Navbar Section (Clean single condition) -->
+    <!-- Navbar Section -->
     {% if request.resolver_match.url_name != 'login' and request.resolver_match.url_name != 'register' and '/login' not in request.path and '/signup' not in request.path and '/register' not in request.path %}
         <nav class="nav-bar">
           <div class="nav-container">
@@ -68,6 +67,7 @@
               <i class="fas fa-bars"></i>
             </div>
 
+            <!-- Main Menu (Contains Links + Auth/Profile Options inside) -->
             <div class="menu" id="menu">
               <ul class="nav-links">
                 <li><a href="{% url 'base:home' %}">Home</a></li>
@@ -96,56 +96,52 @@
 
                 <li><a href="{% url 'base:ziyarat' %}">Ziyarat</a></li>
                 <li><a href="{% url 'base:contactus' %}">Contact Us</a></li>
+
+                <!-- CONDITIONAL AUTH / PROFILE INTEGRATED DIRECTLY IN NAV LINKS -->
+                {% if user.is_authenticated %}
+                  <li class="dropdown user-nav-item">
+                    <a href="javascript:void(0)" class="profile-toggle-btn">
+                      <i class="fas fa-user-circle user-minimal-icon"></i> Account ▾
+                    </a>
+                    <ul class="dropdown-menu user-dropdown-menu">
+                      <li class="user-meta">
+                        <strong>{{ user.email }}</strong>
+                        <span>{{ user.role|default:"User" }}</span>
+                      </li>
+
+                      {% if user.role|lower == 'stakeholder' or user.role|lower == 'agent' %}
+                        {% if user.agent_kyc and user.agent_kyc.kyc_status == 'approved' %}
+                          <li><a href="{% url 'stakeholder:stakeholder_dashboard' %}">Agent Dashboard</a></li>
+                        {% elif user.agent_kyc and user.agent_kyc.kyc_status == 'pending' %}
+                          <li><a href="{% url 'stakeholder:KYC' %}">KYC Pending</a></li>
+                        {% elif user.agent_kyc and user.agent_kyc.kyc_status == 'rollback' %}
+                          <li><a href="{% url 'stakeholder:KYC' %}">Action Required (Rollback)</a></li>
+                        {% else %}
+                          <li><a href="{% url 'stakeholder:KYC' %}">Submit KYC</a></li>
+                        {% endif %}
+
+                      {% elif user.role|lower == 'admin' or user.is_superuser or user.is_staff %}
+                        <li><a href="{% url 'adminpanel:admin_dashboard' %}">Admin Dashboard</a></li>
+
+                      {% else %}
+                        <li><a href="{% url 'customers:user_dashboard' %}">User Dashboard</a></li>
+                      {% endif %}
+
+                      <li><a href="{% url 'accounts:logout' %}" id="logout-link">Logout</a></li>
+                    </ul>
+                  </li>
+                {% else %}
+                  <li class="auth-nav-item">
+                    <a href="{% url 'accounts:register' %}" class="nav-auth-link signup-highlight">Sign-Up</a>
+                  </li>
+                  <li class="auth-nav-item">
+                    <a href="{% url 'accounts:login' %}" class="nav-auth-link">Login</a>
+                  </li>
+                {% endif %}
+
               </ul>
             </div>
 
-            <div class="nav-icons-group">
-              {% if user.is_authenticated %}
-                <div class="user-profile-wrap" onclick="toggleUserMenu()">
-                  <i class="fas fa-user-circle user-minimal-icon"></i>
-                  <ul class="nav-dropdown" id="userMenu">
-                    <li class="user-meta">
-                      <strong>{{ user.email }}</strong>
-                      <span>{{ user.role|default:"User" }}</span>
-                    </li>
-
-                    {% if user.role|lower == 'stakeholder' or user.role|lower == 'agent' %}
-                      <hr>
-                      {% if user.agent_kyc and user.agent_kyc.kyc_status == 'approved' %}
-                        <li><a href="{% url 'stakeholder:stakeholder_dashboard' %}">Agent Dashboard</a></li>
-                      {% elif user.agent_kyc and user.agent_kyc.kyc_status == 'pending' %}
-                        <li><a href="{% url 'stakeholder:KYC' %}">KYC Pending</a></li>
-                      {% elif user.agent_kyc and user.agent_kyc.kyc_status == 'rollback' %}
-                        <li><a href="{% url 'stakeholder:KYC' %}">Action Required (Rollback)</a></li>
-                      {% else %}
-                        <li><a href="{% url 'stakeholder:KYC' %}">Submit KYC</a></li>
-                      {% endif %}
-
-                    {% elif user.role|lower == 'admin' or user.is_superuser or user.is_staff %}
-                      <hr>
-                      <li><a href="{% url 'adminpanel:admin_dashboard' %}">Admin Dashboard</a></li>
-
-                    {% else %}
-                      <hr>
-                      <li><a href="{% url 'customers:user_dashboard' %}">User Dashboard</a></li>
-                    {% endif %}
-
-                    <hr>
-                    <li><a href="{% url 'accounts:logout' %}" style="color: #d9534f !important;">Logout</a></li>
-                  </ul>
-                </div>
-              {% else %}
-                <div class="auth-buttons">
-                  <a href="{% url 'accounts:register' %}" class="signup-btn">Sign-Up</a>
-                  <a href="{% url 'accounts:login' %}" class="signup-btn">Login</a>
-                </div>
-              {% endif %}
-            </div>
-
-            <div class="search-bar" id="search-bar">
-              <input type="text" placeholder="Search..." />
-              <button id="close-search"><i class="fas fa-times"></i></button>
-            </div>
           </div>
         </nav>
     {% endif %}

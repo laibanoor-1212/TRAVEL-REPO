@@ -11,6 +11,8 @@ class PaymentMethod(models.TextChoices):
 
 class PaymentStatus(models.TextChoices):
     PENDING = "pending", "Pending"
+    INCOMPLETE = "incomplete", "Incomplete"       
+    FAILED = "failed", "Failed"
     PAYMENT_SUBMITTED = "payment_submitted", "Payment Submitted"
     PAYMENT_VERIFIED = "payment_verified", "Payment Verified"
     HELD_IN_ESCROW = "held_in_escrow", "Held in Escrow"

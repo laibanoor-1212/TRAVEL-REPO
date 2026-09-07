@@ -206,3 +206,5 @@ ADMIN_NOTIFICATION_EMAILS = [
     'safareharam.offcial1212@gmail.com',  
     'noorlaiba1212@gmail.com',           
 ]
+
+LOGIN_URL = '/auth/login/'

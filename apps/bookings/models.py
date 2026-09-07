@@ -54,6 +54,7 @@ class Bookings(models.Model):
 class BookingCustomers(models.Model):
     VERIFICATION_STATUS_CHOICES = [
         ('pending', 'Pending'),
+        ('incomplete', 'Incomplete'),
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
         ('resubmitted', 'Resubmitted by User'),
@@ -142,14 +143,10 @@ class BookingDocument(models.Model):
     )
 
     booking = models.ForeignKey(Bookings, on_delete=models.CASCADE, related_name='documents')
-    field_name = models.CharField(max_length=100)  # e.g., 'CNIC Front', 'Father Name', 'Passport Copy'
+    field_name = models.CharField(max_length=100)
     field_type = models.CharField(max_length=10, choices=FIELD_TYPE_CHOICES, default='file')
-    
-    # Values
     text_value = models.TextField(blank=True, null=True)
     file_value = models.FileField(upload_to='booking_docs/', blank=True, null=True)
-    
-    # Verification System
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     rejection_reason = models.TextField(blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True)

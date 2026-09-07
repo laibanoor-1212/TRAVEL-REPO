@@ -3,32 +3,39 @@ from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from packages.models import Package
-from .models import Bookings, BookingCustomers
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
-from .models import Bookings, Ticket 
-from packages.models import Package
 from django.urls import reverse
-from payments.models import Payment, PaymentMethod
+from packages.models import Package
+from payments.models import Payment, PaymentMethod, PaymentStatus
 from payments import services
+from .models import Bookings, BookingCustomers, Ticket, BookingStatusHistory
+
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
-@login_required
+@login_required(login_url='/auth/login/')
 def book_package(request, package_id):
     package = get_object_or_404(Package, id=package_id)
+    if package.status != 'active' or package.seats_left() <= 0:
+        messages.error(request, "Yeh package fully booked ho chuka hai.")
+        return redirect('packages:package_list')
 
     if request.method == 'POST':
         person_count = int(request.POST.get('person_count', 1))
+        if person_count > package.seats_left():
+            messages.error(request, f"Sirf {package.seats_left()} seats available hain.")
+            return redirect(request.path)
+            
         calculated_total = package.price * person_count
+
         booking = Bookings.objects.create(
             user=request.user,
             package=package,
             total_persons=person_count,
             total_amount=calculated_total,
-            status='pending',
+            status='incomplete',
             customer_note=request.POST.get('customer_note', '')
         )
         names = request.POST.getlist('name_[]')
@@ -43,6 +50,7 @@ def book_package(request, package_id):
         photo_files = request.FILES.getlist('photo_file_[]')
         cnic_fronts = request.FILES.getlist('cnic_front_[]')
         cnic_backs = request.FILES.getlist('cnic_back_[]')
+        
         for i in range(len(names)):
             BookingCustomers.objects.create(
                 booking=booking,
@@ -59,12 +67,12 @@ def book_package(request, package_id):
                 cnic_back=cnic_backs[i] if i < len(cnic_backs) else None,
                 verification_status='pending'
             )
-
-        messages.success(request, "Booking request submitted successfully!")
-        return redirect('bookings:booking_success', slug=booking.slug)
+        package.booked_seats += person_count
+        package.save() 
+        messages.info(request, "Booking form submitted successfully! Make payment to complete the process or wait for booking approval.")
+        return redirect('bookings:choose_payment_method', booking_id=booking.id)
 
     return render(request, 'bookings/booking.html', {'package': package})
-
 
 @login_required
 def booking_success(request, slug):
@@ -72,7 +80,6 @@ def booking_success(request, slug):
     return render(request, 'bookings/booking_success.html', {'booking': booking})
 
 
- 
 def manage_bookings(request):
     bookings = Bookings.objects.all().select_related('user', 'package').order_by('-id')
     context = {
@@ -80,17 +87,20 @@ def manage_bookings(request):
     }
     return render(request, 'stakeholder/manage_bookings.html', context)
 
+
 @login_required(login_url='/auth/login/')
 def choose_payment_method(request, booking_id):
     booking = get_object_or_404(Bookings, pk=booking_id, user=request.user)
-    if hasattr(booking, 'payment') and booking.payment.payment_status in ['completed', 'released', 'escrow']:
+    if hasattr(booking, 'payment') and booking.payment.payment_status in [
+        PaymentStatus.PAYMENT_VERIFIED, PaymentStatus.HELD_IN_ESCROW, PaymentStatus.RELEASED
+    ]:
         return redirect('bookings:payment_status', booking_id=booking.id)
 
     if request.method == "POST":
         method = request.POST.get('payment_method')
 
         if method not in (PaymentMethod.STRIPE, PaymentMethod.RAAST):
-            messages.error(request, "Sahi payment method choose karein.")
+            messages.error(request, "choose the correct payment method")
             return redirect('bookings:choose_payment_method', booking_id=booking.id)
         payment, created = Payment.objects.get_or_create(
             booking=booking,
@@ -98,12 +108,15 @@ def choose_payment_method(request, booking_id):
                 'customer': request.user,
                 'agent': booking.package.agency,
                 'payment_method': method,
-                'amount': booking.total_amount, 
+                'amount': booking.total_amount,
+                'payment_status': PaymentStatus.INCOMPLETE,
             }
         )
         if not created:
             payment.payment_method = method
             payment.amount = booking.total_amount
+            payment.payment_status = PaymentStatus.INCOMPLETE
+            payment.stripe_payment_intent_id = None  # Previous intent reset
             payment.save()
 
         if method == PaymentMethod.STRIPE:
@@ -118,10 +131,9 @@ def choose_payment_method(request, booking_id):
 def stripe_checkout_page(request, booking_id):
     booking = get_object_or_404(Bookings, pk=booking_id, user=request.user)
     payment = get_object_or_404(Payment, booking=booking, payment_method=PaymentMethod.STRIPE)
-
     if not payment.stripe_payment_intent_id:
         intent = stripe.PaymentIntent.create(
-            amount=int(payment.amount * 100), 
+            amount=int(payment.amount * 100),
             currency="pkr",
             metadata={"booking_id": booking.id, "payment_id": payment.id},
         )
@@ -149,11 +161,33 @@ def confirm_stripe_payment(request, booking_id):
 
     try:
         services.verify_stripe_payment(payment, stripe_status=intent.status)
+ 
+        booking.status = 'pending'
+        booking.save()
     except ValueError as e:
+        payment.payment_status = PaymentStatus.FAILED
+        payment.save()
+        booking.status = 'incomplete'
+        booking.save()
         return JsonResponse({'success': False, 'error': str(e)}, status=400)
 
     redirect_url = reverse('bookings:payment_status', kwargs={'booking_id': booking.id})
     return JsonResponse({'success': True, 'redirect_url': redirect_url})
+
+
+@login_required(login_url='/auth/login/')
+def retry_payment(request, booking_id):
+    booking = get_object_or_404(Bookings, pk=booking_id, user=request.user)
+
+    if hasattr(booking, 'payment'):
+        payment = booking.payment
+        payment.payment_status = PaymentStatus.INCOMPLETE
+        payment.stripe_payment_intent_id = None
+        payment.save()
+
+    return redirect('bookings:choose_payment_method', booking_id=booking.id)
+
+
 @login_required(login_url='/auth/login/')
 def raast_payment_page(request, booking_id):
     booking = get_object_or_404(Bookings, pk=booking_id, user=request.user)
@@ -162,7 +196,7 @@ def raast_payment_page(request, booking_id):
     context = {
         'booking': booking,
         'payment': payment,
-        'admin_raast_id': getattr(settings, "ADMIN_RAAST_ID", "Not configured"),
+        'admin_raast_id': getattr(settings, "ADMIN_RAAST_ID", "03001234567"),
     }
     return render(request, 'bookings/raast_payment.html', context)
 
@@ -177,7 +211,7 @@ def upload_raast_proof(request, booking_id):
         screenshot = request.FILES.get('screenshot')
 
         if not transaction_reference:
-            messages.error(request, "Transaction ID is mandatory.")
+            messages.error(request, "Transaction ID enter karna zaroori hai.")
             return redirect('bookings:raast_payment', booking_id=booking.id)
 
         services.submit_raast_proof(
@@ -186,7 +220,10 @@ def upload_raast_proof(request, booking_id):
             screenshot=screenshot,
             transaction_reference=transaction_reference,
         )
-        messages.success(request, "Proof is submitted, wait for admin verification.")
+        booking.status = 'pending'
+        booking.save()
+
+        messages.success(request, "Payment proof is submitted Admin ki wait for admin verfication.")
         return redirect('bookings:payment_status', booking_id=booking.id)
 
     return redirect('bookings:raast_payment', booking_id=booking.id)
@@ -204,47 +241,3 @@ def payment_status(request, booking_id):
         'ticket': ticket,
     }
     return render(request, 'bookings/payment_status.html', context)
-
-@login_required(login_url='/auth/login/')
-def edit_booking_documents(request, booking_id):
-    booking = get_object_or_404(Bookings, pk=booking_id, user=request.user)
-    customers = booking.CustomerProfile.all()
-
-    if request.method == 'POST':
-        for cust in customers:
-            if cust.verification_status == 'rejected':
-                cust.full_name = request.POST.get(f'full_name_{cust.id}', cust.full_name)
-                cust.passport_number = request.POST.get(f'passport_number_{cust.id}', cust.passport_number)
-
-                if request.FILES.get(f'passport_scan_{cust.id}'):
-                    cust.passport_scan = request.FILES[f'passport_scan_{cust.id}']
-                if request.FILES.get(f'passport_photo_{cust.id}'):
-                    cust.passport_photo = request.FILES[f'passport_photo_{cust.id}']
-                if request.FILES.get(f'cnic_front_{cust.id}'):
-                    cust.cnic_front = request.FILES[f'cnic_front_{cust.id}']
-                if request.FILES.get(f'cnic_back_{cust.id}'):
-                    cust.cnic_back = request.FILES[f'cnic_back_{cust.id}']
-
-                cust.verification_status = 'pending'
-                cust.rejection_reason = ''
-                cust.save()
-
-        old_status = booking.status
-        booking.status = 'processing'
-        booking.save()
-
-        BookingStatusHistory.objects.create(
-            booking=booking,
-            old_status=old_status,
-            new_status='processing',
-            changed_by=request.user,
-            remarks="Customer resubmitted details after rollback."
-        )
-
-        messages.success(request, "Documents successfully resubmit ho gaye hain.")
-        return redirect('bookings:payment_status', booking_id=booking.id)
-
-    return render(request, 'bookings/edit_booking.html', {'booking': booking, 'customers': customers})
-
-
-

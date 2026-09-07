@@ -431,11 +431,11 @@
                     <h3>{{ package.name }}</h3>
                     <div class="price-text">PKR {{ package.price }}</div>
 
-                    <ul class="card-details-list">
-                        <li><i class="fa-regular fa-clock"></i> {{ package.duration_days|default:"14" }} Days</li>
-                        <li><i class="fa-solid fa-hotel"></i> Hotel Included</li>
-                        <li><i class="fa-solid fa-chair"></i> {{ package.seats_left|default:"Available" }} Seats</li>
-                    </ul>
+                         <ul class="card-details-list">
+                            <li><i class="fa-regular fa-clock"></i> {{ package.duration_days|default:"14" }} Days</li>
+                            <li><i class="fa-solid fa-hotel"></i> Hotel Included</li>
+                            <li><i class="fa-solid fa-chair"></i> {{ package.seats_left }} Seats Left</li>
+                        </ul>
 
                     <div class="card-footer-actions">
                         <a href="{% url 'packages:packages_detail' package.id %}" class="btn-theme-outline">Details</a>

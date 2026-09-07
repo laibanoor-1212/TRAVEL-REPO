@@ -234,13 +234,24 @@ def admin_logout_view(request):
 @user_passes_test(is_platform_admin)
 @admin_required
 def admin_packages(request):
-    active_packages = Package.objects.filter(status='active').order_by('-id')
-    blocked_packages = Package.objects.filter(status='blocked').order_by('-id')
+    today = timezone.now().date()
+    date_filter = Q(application_deadline__gte=today) if hasattr(Package, 'application_deadline') else Q(end_date__gte=today)
+    seat_filter = Q(booked_seats__lt=F('total_seats')) if hasattr(Package, 'booked_seats') else Q(seats_left__gt=0)
+
+    active_packages = Package.objects.filter(
+        Q(status='active') & date_filter & seat_filter
+    ).order_by('-id')
+    blocked_packages = Package.objects.exclude(
+        id__in=active_packages.values_list('id', flat=True)
+    ).order_by('-id')
+
     context = {
         'active_packages': active_packages,
         'blocked_packages': blocked_packages,
+        'today': today,
     }
     return render(request, 'adminpanel/admin_packages.html', context)
+
 
 @user_passes_test(is_platform_admin)
 @admin_required
@@ -249,11 +260,13 @@ def block_package(request, pkg_id):
     package.status = 'blocked'
     package.save()
 
-    if hasattr(package, 'agent') and package.agent:
-        send_package_status_email(package.agent, package, 'blocked')
+    agent = getattr(package, 'agent', None) or getattr(package, 'agency', None)
+    if agent and 'send_package_status_email' in globals():
+        send_package_status_email(agent, package, 'blocked')
 
     messages.warning(request, f"Package #{package.id} has been blocked successfully.")
     return redirect('adminpanel:admin_packages')
+
 
 @user_passes_test(is_platform_admin)
 @admin_required
@@ -262,26 +275,27 @@ def unblock_package(request, pkg_id):
     package.status = 'active'
     package.save()
 
-    if hasattr(package, 'agent') and package.agent:
-        send_package_status_email(package.agent, package, 'active')
+    agent = getattr(package, 'agent', None) or getattr(package, 'agency', None)
+    if agent and 'send_package_status_email' in globals():
+        send_package_status_email(agent, package, 'active')
 
     messages.success(request, f"Package #{package.id} is now live again.")
     return redirect('adminpanel:admin_packages')
+
 
 @user_passes_test(is_platform_admin)
 @admin_required
 def remove_package(request, pkg_id):
     package = get_object_or_404(Package, id=pkg_id)
-    agent = getattr(package, 'agent', None)
+    agent = getattr(package, 'agent', None) or getattr(package, 'agency', None)
 
-    if agent:
+    if agent and 'send_package_status_email' in globals():
         send_package_status_email(agent, package, 'removed')
 
     package.delete()
 
     messages.error(request, "Package has been permanently removed from the system.")
     return redirect('adminpanel:admin_packages')
-
 @admin_required
 def admin_customer(request):
     customers = CustomerProfile.objects.all().order_by('-id')

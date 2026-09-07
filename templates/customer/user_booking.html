@@ -309,19 +309,19 @@
             <td>{{ booking.total_persons }} Person(s)</td>
             <td><strong>{{ booking.total_amount }}</strong></td>
             
-            <!-- Booking Status Logic -->
+            <!-- Updated Booking Status Logic -->
             <td>
               {% if booking.status == 'refund_requested' %}
                 <span class="status-badge status-pending" style="background-color: #fef3c7; color: #d97706; border: 1px solid #fcd34d;">
                   <i class="fa-solid fa-rotate-left"></i> Refund Requested
                 </span>
-              {% elif booking.status in 'approved,confirmed,completed' or booking.payment.payment_status in 'released,completed,held_in_escrow,paid' %}
-                <span class="status-badge status-confirmed">
-                  <i class="fa-solid fa-circle-check"></i> Approved
-                </span>
               {% elif booking.status in 'action_required,rollback,reupload,docs_needed' %}
                 <span class="status-badge status-action-required">
-                  <i class="fa-solid fa-triangle-exclamation"></i> Re-upload Docs
+                  <i class="fa-solid fa-triangle-exclamation"></i> Fix Docs
+                </span>
+              {% elif booking.status in 'approved,confirmed,completed' %}
+                <span class="status-badge status-confirmed">
+                  <i class="fa-solid fa-circle-check"></i> Approved
                 </span>
               {% elif booking.status == 'rejected' %}
                 <span class="status-badge status-cancelled">
@@ -338,7 +338,7 @@
               {% endif %}
             </td>
 
-            <!-- Payment Status Logic (FIXED FOR REFUND) -->
+            <!-- Payment Status Logic -->
             <td>
               {% if booking.payment and booking.payment.payment_status == 'refund_requested' or booking.status == 'refund_requested' %}
                 <span class="status-badge status-pending" style="background-color: #fef3c7; color: #d97706; border: 1px solid #fcd34d;">
@@ -372,7 +372,7 @@
               <div class="action-container">
                 
                 <!-- OUTSIDE: View / Fix Button -->
-                {% if booking.status in 'action_required,rollback,reupload,docs_needed' and not booking.payment.payment_status in 'released,completed,held_in_escrow,paid' %}
+                {% if booking.status in 'action_required,rollback,reupload,docs_needed' %}
                   <a href="{% url 'customers:booking_detail' booking.id %}" class="btn-view-outside btn-fix-outside">
                     <i class="fa-solid fa-upload"></i> Fix Docs
                   </a>
