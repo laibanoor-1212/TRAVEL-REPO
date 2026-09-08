@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,8 +14,7 @@
         <div class="icon success">✔</div>
         <h2>Password Updated</h2>
         <p>Your password has been successfully changed.</p>
-        <button>Back to Login</button>
-
+        <button><a href="{% url 'accounts:login' %}">Back to Login</a></button>
     </div>
 </div>
 

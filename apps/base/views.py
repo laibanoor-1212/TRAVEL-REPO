@@ -3,8 +3,9 @@ from packages.models import Package, PackageType
 from adminpanel.models import GuidePage
 from .models import ContactMessage
 from django.urls import reverse
-from django.db.models import Q
 from stakeholder.models import AgentKYC
+from django.db.models import Q, F
+from django.utils import timezone
 from django.shortcuts import get_object_or_404
 
 # Helper function to fetch page content dynamically
@@ -164,12 +165,18 @@ def global_search(request):
     packages_url = reverse('base:hajj_packages')
     return redirect(f"{packages_url}?q={query}")
 def hajj_packages(request):
-    packages = Package.objects.filter(status__iexact='active').order_by('-created_at')
+    today = timezone.now().date()
+    packages = Package.objects.filter(
+        status__iexact='active',
+        application_deadline__gte=today,
+        booked_seats__lt=F('total_seats')
+    ).order_by('-created_at')
 
     query = request.GET.get('q', '').strip()
     category_filter = request.GET.get('category', '').strip()
     type_filter = request.GET.get('type', '').strip()
     agent_id = request.GET.get('agent_id', '').strip()
+
     if agent_id:
         try:
             agent_kyc = AgentKYC.objects.get(id=agent_id)
@@ -202,7 +209,6 @@ def hajj_packages(request):
         'search_query': query,
     }
     return render(request, 'packages/hajjpackages.html', context)
-
 def contactus(request):
     if request.method == 'POST':
         name = request.POST.get('name')

@@ -19,10 +19,12 @@ from django.contrib import admin
 from django.conf.urls.static import static
 from django.urls import path,include
 
+
 urlpatterns = [
+   
     path('secret-django-admin/', admin.site.urls),
     path('', include('base.urls')),
-    path('auth/', include('accounts.urls')),
+ path('auth/', include(('apps.accounts.urls', 'accounts'), namespace='accounts')),
     path('stakeholder/', include('stakeholder.urls')),
     path('adminpanel/', include('adminpanel.urls')),
     path('customers/', include('customers.urls')),

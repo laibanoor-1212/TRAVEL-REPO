@@ -15,44 +15,58 @@ from django.core.paginator import Paginator
 from django.contrib.auth.forms import PasswordResetForm,SetPasswordForm
 from .forms import CustomUserRegistrationForm
 from django.contrib.auth import authenticate, login as auth_login
-
+from django.urls import reverse
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import ValidationError
+from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth import get_user_model
+User = get_user_model()
+
 
 def login_view(request):
     if request.user.is_authenticated:
         if request.user.is_superuser or request.user.is_staff:
-                return redirect('adminpanel:admin_login') 
-        elif request.user.role == 'stakeholder':
+            return redirect('adminpanel:dashboard')
+        elif getattr(request.user, 'role', None) == 'stakeholder':
             return redirect('stakeholder:KYC')
         else:
             return redirect('customers:user_dashboard')
 
-    if request.method == "POST":
-       
-        email_or_username = request.POST.get('username') 
+    if request.method == 'POST':
+        email_or_username = request.POST.get('username')
         password = request.POST.get('password')
-        user = authenticate(request, username=email_or_username, password=password)
+
+        user = authenticate(
+            request, username=email_or_username, password=password
+        )
 
         if user is not None:
+            if not user.is_active:
+                messages.error(
+                    request,
+                    'Your account is not activated yet. Please check your email for the activation link.',
+                )
+                return render(request, 'accounts/login.html')
+
             auth_login(request, user)
-            
-            messages.success(request, "Login Successful!")
+            messages.success(request, 'Login Successful!')
+
             if user.is_superuser or user.is_staff:
-                    return redirect('adminpanel:admin_login') 
-            elif user.role == 'stakeholder':
+                return redirect('adminpanel:dashboard')
+            elif getattr(user, 'role', None) == 'stakeholder':
                 return redirect('stakeholder:KYC')
             else:
                 return redirect('customers:user_dashboard')
-           
         else:
-            messages.error(request, "Invalid Username/Email or Password.")
-            
-    return render(request, 'accounts/login.html') 
+            messages.error(request, 'Invalid Username/Email or Password.')
+
+    return render(request, 'accounts/login.html')
 
 
 def register_view(request):
     if request.user.is_authenticated:
-        return redirect('home')
+        return redirect('base:home')
+
     if request.method == 'POST':
         form = CustomUserRegistrationForm(request.POST)
         if form.is_valid():
@@ -60,40 +74,59 @@ def register_view(request):
             user.is_active = False
             user.save()
 
-            # Generate activation token & link
-            current_site = get_current_site(request)
-            mail_subject = 'Safar-e-Haram - Verify Your Email Address'
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             token = default_token_generator.make_token(user)
-            activation_link = f"http://{current_site.domain}/activate/{uid}/{token}/"
 
-            message = (
-                f"Hello {user.first_name},\n\n"
-                f"Thank you for registering with Safar-e-Haram.\n"
-                f"Please verify your email address by clicking the link below:\n\n"
-                f"{activation_link}\n\n"
-                f"Best regards,\nSafar-e-Haram Team"
+            relative_url = reverse(
+                'accounts:activate', kwargs={'uidb64': uid, 'token': token}
             )
+            activation_link = request.build_absolute_uri(relative_url)
+
+            mail_subject = 'Safar-e-Haram - Verify Your Account'
+            html_message = f"""
+            <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;">
+                <h2 style="color: #1a5f7a; text-align: center;">Welcome to Safar-e-Haram!</h2>
+                <p>Hello <strong>{user.first_name or user.username}</strong>,</p>
+                <p>Thank you for registering with Safar-e-Haram. Please verify your account to get started.</p>
+                
+                <div style="text-align: center; margin: 30px 0;">
+                    <a href="{activation_link}" style="background-color: #1a5f7a; color: #ffffff; padding: 12px 25px; text-decoration: none; font-size: 16px; border-radius: 5px; display: inline-block; font-weight: bold;">Activate My Account</a>
+                </div>
+                
+                <p style="font-size: 13px; color: #666;">If the button above does not work, copy and paste this link into your browser:</p>
+                <p style="font-size: 13px; word-break: break-all;"><a href="{activation_link}">{activation_link}</a></p>
+                
+                <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+                <p style="font-size: 12px; color: #888; text-align: center;">If you did not register for this account, please ignore this email.</p>
+            </div>
+            """
+
+            plain_message = strip_tags(html_message)
 
             try:
                 send_mail(
-                    mail_subject,
-                    message,
-                    settings.DEFAULT_FROM_EMAIL,
-                    [user.email],
+                    subject=mail_subject,
+                    message=plain_message,
+                    from_email=getattr(
+                        settings, 'DEFAULT_FROM_EMAIL', settings.EMAIL_HOST_USER
+                    ),
+                    recipient_list=[user.email],
+                    html_message=html_message, 
                     fail_silently=False,
                 )
                 messages.success(
-                    request, 
-                    "Registration successful! We have sent an activation link to your email. Please verify your email before logging in."
+                    request,
+                    'Registration successful! We have sent an activation link to your email. Please verify before logging in.',
                 )
             except Exception as e:
                 messages.error(
-                    request, 
-                    "Failed to send email verification. Please ensure you entered a valid email address."
+                    request,
+                    f'Failed to send activation email. Error: {str(e)}',
                 )
 
             return redirect('accounts:login')
+        else:
+            messages.error(request, 'Please correct the errors below.')
     else:
         initial_role = request.GET.get('role', 'user')
         form = CustomUserRegistrationForm(initial={'role': initial_role})
@@ -102,29 +135,32 @@ def register_view(request):
 
 
 def activate_account(request, uidb64, token):
+    User = get_user_model()
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
-        user = CustomUser.objects.get(pk=uid)
-    except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
-    if user is not None and default_token_generator.check_token(user, token):
-        user.is_active = True
-        user.save()
-        if user.role == 'stakeholder':
-            request.session['stakeholder_id'] = user.id
-            messages.success(
-                request, 
-                "Email verified successfully! Stakeholder account activated. Please submit your documentation."
-            )
-            return redirect('stakeholder:KYC')
-        else:
-            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-            messages.success(request, "Email verified! User account activated successfully.")
-            return redirect('customers:user_dashboard')
-    else:
-        messages.error(request, "Activation link is invalid or has expired.")
-        return redirect('register')
 
+    if user is not None and default_token_generator.check_token(user, token):
+        if not user.is_active:
+            user.is_active = True
+            user.save()
+            messages.success(
+                request,
+                'Your account has been successfully activated! You can now log in.',
+            )
+        else:
+            messages.info(
+                request, 'Your account is already activated. Please log in.'
+            )
+        return redirect('accounts:login')
+    else:
+        messages.error(
+            request,
+            'The activation link is invalid, expired, or has already been used.',
+        )
+        return redirect('accounts:login')
 def logout_view(request):
     logout(request)
     messages.success(request, "Logout successful!")
@@ -156,37 +192,37 @@ def forget_password(request):
                     html_message=msg_html,
                 )
             messages.success(request,"Reset link sent to your email.")
-            return redirect("login")
+            return redirect("accounts:login")
         else:
             messages.error(request,"No user found with this email.")
     return render( request,"accounts/forget_password.html" )
-
-
-
 def reset_password_confirm(request, uidb64, token):
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
-        user = CustomUser.objects.get(pk=uid)
-    except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
-    if user is not None and default_token_generator.check_token(user, token):
+    if user is None or not default_token_generator.check_token(user, token):
+        return render(request, "accounts/forget_password_invalid.html")
+    if request.method == 'POST':
+        new_password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
 
-        if request.method == "POST":
-            new_password = request.POST.get("password")
-            confirm_password = request.POST.get("confirm_password")
-            if new_password == confirm_password:
-
+        if not new_password or not confirm_password:
+            messages.error(request, "Please fill in all fields.")
+        elif new_password != confirm_password:
+            messages.error(request, "New password and confirm password do not match!")
+        else:
+            try:
+                validate_password(new_password, user=user)
                 user.set_password(new_password)
                 user.save()
-                messages.success(request, "Password reset successfully!")
-                return redirect("login")
-            else:
-                messages.error(request, "New password and confirm password do not match!")
-
-        return render(request, "accounts/reset_password_confirm.html")
-
-    else:
-        return render(request, "accounts/forget_password_invalid.html")
+                return render(request, "accounts/forget_reset_confirm.html")
+                
+            except ValidationError as e:
+                for error in e.messages:
+                    messages.error(request, error)
+    return render(request, "accounts/password_reset_confirm.html")
     
 
 def is_platform_admin(user):
@@ -197,8 +233,6 @@ def admin_manage_users(request):
     base_users = CustomUser.objects.exclude(is_superuser=True).exclude(role='admin').order_by('-date_joined')
     
     active_tab = request.GET.get('tab', 'all')
-    
-    # 4 Alag Alag tab status ki filtration logic
     if active_tab == 'active':
         users_list = base_users.filter(is_active=True, is_approved=True)
     elif active_tab == 'deactivated':
@@ -215,8 +249,6 @@ def admin_manage_users(request):
     search_query = request.GET.get('search', '')
     if search_query:
         users_list = users_list.filter(email__icontains=search_query)
-        
-    # Counters object updates for top navigation indicators
     counts = {
         'all': base_users.count(),
         'active': base_users.filter(is_active=True, is_approved=True).count(),

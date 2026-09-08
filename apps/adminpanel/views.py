@@ -14,7 +14,7 @@ from bookings.models import Bookings, BookingStatusHistory
 from notifications.models import Notification
 from .models import Complaint, SystemSetting, GuidePage
 from payments.models import EscrowTransaction, CommissionSetting, PaymentRelease, Payment, PaymentProof, PaymentStatusLog, PaymentStatus
-from accounts.models import CustomUser
+from apps.accounts.models import CustomUser
 import json
 from .decorators import admin_required
 from django.views.decorators.http import require_POST
