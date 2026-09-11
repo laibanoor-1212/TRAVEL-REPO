@@ -101,7 +101,6 @@
     color: #ffffff;
   }
   
-  /* Back Button Styling */
   .btn-back-link {
     background: rgba(255, 255, 255, 0.15);
     color: #ffffff;
@@ -122,7 +121,6 @@
 
 <div class="container-fluid py-4" style="background-color: #f8fafc;">
 
-  <!-- Message Alerts -->
   {% if messages %}
     {% for message in messages %}
       <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-4 shadow-sm" role="alert">
@@ -132,11 +130,9 @@
     {% endfor %}
   {% endif %}
 
-  <!-- Booking Summary Header with Back Button -->
   <div class="bk-card">
     <div class="bk-header">
       <div class="d-flex align-items-center gap-3">
-        <!-- Back Button -->
         <a href="{% url 'stakeholder:manage_booking' %}" class="btn-back-link">
           <i class="bi bi-arrow-left me-1"></i> Back to Bookings
         </a>
@@ -202,6 +198,32 @@
             </div>
           </div>
 
+          <!-- Gender Field -->
+          <div class="field-verify-card">
+            <div class="field-title">Gender</div>
+            <div class="field-val">{{ customer.gender|default:"N/A" }}</div>
+            <div class="control-group">
+              <select name="field_status_gender" class="form-select form-select-sm mb-2 field-status-select">
+                <option value="approved" {% if customer.field_statuses.gender == 'approved' or not customer.field_statuses.gender %}selected{% endif %}>✅ Approve</option>
+                <option value="rejected" {% if customer.field_statuses.gender == 'rejected' %}selected{% endif %}>❌ Reject / Request Rollback</option>
+              </select>
+              <input type="text" name="remark_gender" class="form-control form-control-sm" placeholder="Reason if rejected..." value="{{ customer.rollback_remarks.gender|default:'' }}">
+            </div>
+          </div>
+
+          <!-- Date of Birth Field -->
+          <div class="field-verify-card">
+            <div class="field-title">Date of Birth</div>
+            <div class="field-val">{{ customer.date_of_birth|default:"N/A" }}</div>
+            <div class="control-group">
+              <select name="field_status_date_of_birth" class="form-select form-select-sm mb-2 field-status-select">
+                <option value="approved" {% if customer.field_statuses.date_of_birth == 'approved' or not customer.field_statuses.date_of_birth %}selected{% endif %}>✅ Approve</option>
+                <option value="rejected" {% if customer.field_statuses.date_of_birth == 'rejected' %}selected{% endif %}>❌ Reject / Request Rollback</option>
+              </select>
+              <input type="text" name="remark_date_of_birth" class="form-control form-control-sm" placeholder="Reason if rejected..." value="{{ customer.rollback_remarks.date_of_birth|default:'' }}">
+            </div>
+          </div>
+
           <!-- Phone Number Field -->
           <div class="field-verify-card">
             <div class="field-title">Phone Number</div>
@@ -254,6 +276,19 @@
             </div>
           </div>
 
+          <!-- Passport Issue Date Field -->
+          <div class="field-verify-card">
+            <div class="field-title">Passport Issue Date</div>
+            <div class="field-val">{{ customer.passport_issue_date|default:"N/A" }}</div>
+            <div class="control-group">
+              <select name="field_status_passport_issue_date" class="form-select form-select-sm mb-2 field-status-select">
+                <option value="approved" {% if customer.field_statuses.passport_issue_date == 'approved' or not customer.field_statuses.passport_issue_date %}selected{% endif %}>✅ Approve</option>
+                <option value="rejected" {% if customer.field_statuses.passport_issue_date == 'rejected' %}selected{% endif %}>❌ Reject / Request Rollback</option>
+              </select>
+              <input type="text" name="remark_passport_issue_date" class="form-control form-control-sm" placeholder="Reason if rejected..." value="{{ customer.rollback_remarks.passport_issue_date|default:'' }}">
+            </div>
+          </div>
+
           <!-- Passport Expiry Field -->
           <div class="field-verify-card">
             <div class="field-title">Passport Expiry Date</div>
@@ -273,14 +308,45 @@
         <h6 class="section-heading"><i class="bi bi-file-earmark-medical me-2"></i>Uploaded Documents Verification</h6>
         <div class="verification-grid mb-4">
 
+          <!-- Digital Photograph Doc -->
+          <div class="field-verify-card">
+            <div class="field-title">Digital Photograph</div>
+            <div class="field-val">
+              {% if customer.digital_photo %}
+                <div class="d-flex gap-2 mb-2">
+                  <a href="{{ customer.digital_photo.url }}" target="_blank" class="btn btn-sm btn-outline-success flex-fill">
+                    <i class="bi bi-eye me-1"></i> View Photo
+                  </a>
+                  <a href="{{ customer.digital_photo.url }}" download class="btn btn-sm btn-success flex-fill">
+                    <i class="bi bi-download me-1"></i> Download
+                  </a>
+                </div>
+              {% else %}
+                <span class="badge bg-secondary mb-2 d-inline-block">Not Uploaded</span>
+              {% endif %}
+            </div>
+            <div class="control-group">
+              <select name="field_status_digital_photo" class="form-select form-select-sm mb-2 field-status-select">
+                <option value="approved" {% if customer.field_statuses.digital_photo == 'approved' or not customer.field_statuses.digital_photo %}selected{% endif %}>✅ Approve Document</option>
+                <option value="rejected" {% if customer.field_statuses.digital_photo == 'rejected' %}selected{% endif %}>❌ Reject / Re-upload Required</option>
+              </select>
+              <input type="text" name="remark_digital_photo" class="form-control form-control-sm" placeholder="Reason if rejected..." value="{{ customer.rollback_remarks.digital_photo|default:'' }}">
+            </div>
+          </div>
+
           <!-- Passport Scan Doc -->
           <div class="field-verify-card">
             <div class="field-title">Passport Scan</div>
             <div class="field-val">
               {% if customer.passport_scan %}
-                <a href="{{ customer.passport_scan.url }}" target="_blank" class="btn btn-sm btn-outline-success w-100 mb-2">
-                  <i class="bi bi-eye me-1"></i> View Document Scan
-                </a>
+                <div class="d-flex gap-2 mb-2">
+                  <a href="{{ customer.passport_scan.url }}" target="_blank" class="btn btn-sm btn-outline-success flex-fill">
+                    <i class="bi bi-eye me-1"></i> View Scan
+                  </a>
+                  <a href="{{ customer.passport_scan.url }}" download class="btn btn-sm btn-success flex-fill">
+                    <i class="bi bi-download me-1"></i> Download
+                  </a>
+                </div>
               {% else %}
                 <span class="badge bg-secondary mb-2 d-inline-block">Not Uploaded</span>
               {% endif %}
@@ -294,35 +360,19 @@
             </div>
           </div>
 
-          <!-- Passport Photo Doc -->
-          <div class="field-verify-card">
-            <div class="field-title">Passport Photo</div>
-            <div class="field-val">
-              {% if customer.passport_photo %}
-                <a href="{{ customer.passport_photo.url }}" target="_blank" class="btn btn-sm btn-outline-success w-100 mb-2">
-                  <i class="bi bi-eye me-1"></i> View Passport Photo
-                </a>
-              {% else %}
-                <span class="badge bg-secondary mb-2 d-inline-block">Not Uploaded</span>
-              {% endif %}
-            </div>
-            <div class="control-group">
-              <select name="field_status_passport_photo" class="form-select form-select-sm mb-2 field-status-select">
-                <option value="approved" {% if customer.field_statuses.passport_photo == 'approved' or not customer.field_statuses.passport_photo %}selected{% endif %}>✅ Approve Document</option>
-                <option value="rejected" {% if customer.field_statuses.passport_photo == 'rejected' %}selected{% endif %}>❌ Reject / Re-upload Required</option>
-              </select>
-              <input type="text" name="remark_passport_photo" class="form-control form-control-sm" placeholder="Reason if rejected..." value="{{ customer.rollback_remarks.passport_photo|default:'' }}">
-            </div>
-          </div>
-
           <!-- CNIC Front Doc -->
           <div class="field-verify-card">
             <div class="field-title">CNIC Front</div>
             <div class="field-val">
               {% if customer.cnic_front %}
-                <a href="{{ customer.cnic_front.url }}" target="_blank" class="btn btn-sm btn-outline-success w-100 mb-2">
-                  <i class="bi bi-eye me-1"></i> View CNIC Front
-                </a>
+                <div class="d-flex gap-2 mb-2">
+                  <a href="{{ customer.cnic_front.url }}" target="_blank" class="btn btn-sm btn-outline-success flex-fill">
+                    <i class="bi bi-eye me-1"></i> View CNIC Front
+                  </a>
+                  <a href="{{ customer.cnic_front.url }}" download class="btn btn-sm btn-success flex-fill">
+                    <i class="bi bi-download me-1"></i> Download
+                  </a>
+                </div>
               {% else %}
                 <span class="badge bg-secondary mb-2 d-inline-block">Not Uploaded</span>
               {% endif %}
@@ -341,9 +391,14 @@
             <div class="field-title">CNIC Back</div>
             <div class="field-val">
               {% if customer.cnic_back %}
-                <a href="{{ customer.cnic_back.url }}" target="_blank" class="btn btn-sm btn-outline-success w-100 mb-2">
-                  <i class="bi bi-eye me-1"></i> View CNIC Back
-                </a>
+                <div class="d-flex gap-2 mb-2">
+                  <a href="{{ customer.cnic_back.url }}" target="_blank" class="btn btn-sm btn-outline-success flex-fill">
+                    <i class="bi bi-eye me-1"></i> View CNIC Back
+                  </a>
+                  <a href="{{ customer.cnic_back.url }}" download class="btn btn-sm btn-success flex-fill">
+                    <i class="bi bi-download me-1"></i> Download
+                  </a>
+                </div>
               {% else %}
                 <span class="badge bg-secondary mb-2 d-inline-block">Not Uploaded</span>
               {% endif %}
@@ -359,7 +414,6 @@
 
         </div>
 
-        <!-- Submit Review Button -->
         <div class="d-flex justify-content-end align-items-center gap-3 pt-3 border-top">
           <button type="submit" class="btn btn-green-submit">
             <i class="bi bi-shield-check me-2"></i> Save Field Review Decisions
@@ -388,9 +442,14 @@
             <strong>e-Ticket Uploaded!</strong>
             <p class="mb-0"><small>Notes: {{ ticket.notes|default:"No extra notes provided." }}</small></p>
           </div>
-          <a href="{{ ticket.ticket_file.url }}" target="_blank" class="btn btn-sm btn-green-submit">
-            Download Ticket
-          </a>
+          <div class="d-flex gap-2">
+            <a href="{{ ticket.ticket_file.url }}" target="_blank" class="btn btn-sm btn-outline-success">
+              <i class="bi bi-eye me-1"></i> View Ticket
+            </a>
+            <a href="{{ ticket.ticket_file.url }}" download class="btn btn-sm btn-green-submit">
+              <i class="bi bi-download me-1"></i> Download Ticket
+            </a>
+          </div>
         </div>
       {% else %}
         <p class="text-muted mb-3">Upload e-Ticket once passenger details & documents are verified.</p>

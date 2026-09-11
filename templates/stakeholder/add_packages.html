@@ -32,14 +32,14 @@
     .agency-label {
         font-size: 0.8rem;
         font-weight: 700;
-        color: #198754;
+        color:  #065f46;
         letter-spacing: 1px;
         text-transform: uppercase;
     }
 
     .agency-name {
         margin: 5px 0 0 0;
-        color: #0f5132;
+        color: #065f46;
         font-weight: 700;
         font-size: 1.5rem;
     }
@@ -107,7 +107,7 @@
     .field-box input:focus,
     .field-box select:focus,
     .field-box textarea:focus {
-        border-color: #198754;
+        border-color: #31a074;;
         box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.15);
     }
 
@@ -143,12 +143,12 @@
     }
 
     .pill:hover {
-        border-color: #198754;
+        border-color: #31a074;
         background: #f0fdf4;
     }
 
     .pill input[type="checkbox"] {
-        accent-color: #198754;
+        accent-color:  #31a074;
         width: 16px;
         height: 16px;
     }
@@ -171,7 +171,7 @@
 
     .upload-zone label {
         cursor: pointer;
-        color: #198754;
+        color: #31a074;
         font-weight: 600;
         font-size: 0.95rem;
         display: block;
@@ -213,7 +213,7 @@
 
     .btn-publish {
         padding: 10px 26px;
-        background: #198754;
+        background: #065f46;
         color: #ffffff;
         border: none;
         border-radius: 6px;
@@ -226,7 +226,7 @@
     }
 
     .btn-publish:hover {
-        background: #146c43;
+        background: #31a074;
     }
 
     @media (max-width: 768px) {
@@ -427,6 +427,25 @@
 </div>
 
 <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const today = new Date().toISOString().split('T')[0];
+    const departureInput = document.getElementById('departure_date');
+    const deadlineInput = document.getElementById('application_deadline');
+
+    if (departureInput) {
+        departureInput.min = today;
+        departureInput.addEventListener('change', function () {
+            if (deadlineInput) {
+                deadlineInput.max = this.value;
+            }
+        });
+    }
+
+    if (deadlineInput) {
+        deadlineInput.min = today;
+    }
+});
+
 // Image Preview
 function previewBannerImage(input) {
     const prompt = document.getElementById('upload-prompt');

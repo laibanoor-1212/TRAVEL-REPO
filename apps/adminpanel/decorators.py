@@ -1,8 +1,9 @@
 from django.shortcuts import redirect
 from django.contrib import messages
 from functools import wraps
+from django.utils import timezone
 
-#
+
 def admin_required(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
@@ -24,7 +25,7 @@ def user_required(view_func):
     def _wrapped_view(request, *args, **kwargs):
         if not request.user.is_authenticated:
             messages.info(request, "Please login first.")
-            return redirect('accounts:login')  # Aapka regular user login URL
+            return redirect('accounts:login')
             
         # AGAR ADMIN/SUPERUSER AANE KI KOSHISH KARE TO USKO BLOCK KAREIN
         if request.user.is_superuser:

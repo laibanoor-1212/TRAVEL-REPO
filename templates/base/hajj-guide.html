@@ -6,165 +6,94 @@
 <link rel="stylesheet" href="{% static 'css/hajj-guide.css' %}">
 
 <div class="guide-page">
-
-    <!-- ================= HERO SECTION ================= -->
-
     <section class="guide-hero">
-
         <div class="guide-hero-overlay"></div>
-
         <div class="guide-hero-content">
-
-            <span class="hero-badge">
-                <i class="fas fa-kaaba"></i>
-                YOUR HAJJ COMPANION
-            </span>
-
             <h1>
                 Complete <span>Hajj Guide</span>
             </h1>
-
             <div class="arabic-text">
                 لَبَّيْكَ اللَّهُمَّ لَبَّيْكَ
             </div>
-
             <p>
                 A simple and reliable step-by-step guide to help you
                 understand every stage of your Hajj journey with
                 confidence, devotion and ease.
             </p>
-
-            <a href="#journey" class="hero-btn">
-                Start Your Journey
-                <i class="fas fa-arrow-down"></i>
-            </a>
-
         </div>
-
         <div class="hero-decoration hero-decoration-one"></div>
         <div class="hero-decoration hero-decoration-two"></div>
-
     </section>
-
-
-    <!-- ================= INTRODUCTION ================= -->
-
     <section class="guide-intro">
-
         <div class="intro-icon">
             <i class="fas fa-kaaba"></i>
         </div>
-
         <div class="intro-content">
-
             <span class="section-label">
                 HAJJ MADE SIMPLE
             </span>
-
             <h2>
                 Your Journey to the
                 <span>House of Allah</span>
             </h2>
-
             <p>
                 Hajj is one of the greatest acts of worship and a deeply
                 spiritual journey. Safar-e-Haram provides clear and
                 easy-to-follow guidance for each important stage of Hajj.
             </p>
-
             <p>
                 Explore each stage through detailed reading material and
                 prepare yourself before beginning your sacred journey.
             </p>
-
         </div>
-
     </section>
-
-
-    <!-- ================= JOURNEY SECTION ================= -->
-
     <section class="journey-section" id="journey">
-
         <div class="section-heading">
-
             <span class="section-label">
                 STEP BY STEP
             </span>
-
             <h2>
                 Explore Your
                 <span>Hajj Journey</span>
             </h2>
-
             <p>
                 Follow each step in order and learn everything you need
                 to know for a smooth and meaningful Hajj.
             </p>
-
         </div>
 
-
-        <!-- ================= CARDS ================= -->
-
         <div class="card-grid">
-
-
-            <!-- ================= 01 IHRAM ================= -->
-
             <div class="guide-card">
-
                 <div class="card-image">
-
-                    <img
-                        src="{% static 'images/ihram.jpeg' %}"
-                        alt="Ihram"
-                    >
-
+                    <img src="{% static 'images/ihram.jpeg' %}" alt="Ihram" >
                     <div class="image-overlay"></div>
-
                     <span class="step-number">
                         01
                     </span>
-
                     <div class="card-content">
-
                         <span class="card-label">
                             STEP 01
                         </span>
-
                         <h3>
                             Ihram
                         </h3>
-
                         <p>
                             Learn about the preparation, intention and
                             important rules of entering Ihram for Hajj.
                         </p>
-
-                        <a
-                            href="{% url 'base:ahram' %}"
-                            class="read-btn"
-                        >
+                        <a href="{% url 'base:ahram' %}"class="read-btn">
                             <i class="fas fa-book-open"></i>
                             Read
                         </a>
-
                     </div>
-
                 </div>
-
             </div>
-
-
-            <!-- ================= 02 MINA ================= -->
-
             <div class="guide-card">
 
                 <div class="card-image">
 
                     <img
-                        src="{% static 'images/mina.jpg' %}"
+                        src="{% static 'images/mina.jpeg' %}"
                         alt="Mina"
                     >
 
@@ -202,9 +131,6 @@
                 </div>
 
             </div>
-
-
-            <!-- ================= 03 ARAFAT ================= -->
 
             <div class="guide-card">
 
@@ -250,9 +176,6 @@
 
             </div>
 
-
-            <!-- ================= 04 MUZDALIFAH ================= -->
-
             <div class="guide-card">
 
                 <div class="card-image">
@@ -296,9 +219,6 @@
                 </div>
 
             </div>
-
-
-            <!-- ================= 05 RAMI ================= -->
 
             <div class="guide-card">
 
@@ -344,15 +264,12 @@
 
             </div>
 
-
-            <!-- ================= 06 QURBANI ================= -->
-
             <div class="guide-card">
 
                 <div class="card-image">
 
                     <img
-                        src="{% static 'images/qurbani.jpg' %}"
+                        src="{% static 'images/qurbani.png' %}"
                         alt="Qurbani"
                     >
 
@@ -390,9 +307,6 @@
                 </div>
 
             </div>
-
-
-            <!-- ================= 07 TAWAF IFADA ================= -->
 
             <div class="guide-card">
 
@@ -437,9 +351,6 @@
                 </div>
 
             </div>
-
-
-            <!-- ================= 08 TAWAF WIDA ================= -->
 
             <div class="guide-card">
 
@@ -490,9 +401,6 @@
 
     </section>
 
-
-    <!-- ================= HOW IT WORKS ================= -->
-
     <section class="guide-help">
 
         <div class="section-heading">
@@ -510,9 +418,6 @@
 
 
         <div class="help-grid">
-
-
-            <!-- HELP CARD 01 -->
 
             <div class="help-card">
 
@@ -535,9 +440,6 @@
 
             </div>
 
-
-            <!-- HELP CARD 02 -->
-
             <div class="help-card">
 
                 <div class="help-number">
@@ -558,9 +460,6 @@
                 </p>
 
             </div>
-
-
-            <!-- HELP CARD 03 -->
 
             <div class="help-card">
 
@@ -586,9 +485,6 @@
         </div>
 
     </section>
-
-
-    <!-- ================= FINAL CTA ================= -->
 
     <section class="guide-cta">
 

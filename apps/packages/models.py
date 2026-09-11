@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.text import slugify
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.timezone import now
-from datetime import date
+from datetime import date, datetime, timedelta
 from django.conf import settings
 
 class PackageType(models.Model):
@@ -15,7 +15,12 @@ class PackageType(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
+        
         super().save(*args, **kwargs)
+
+        # UPDATE 1: Agar PackageType inactive hoga, toh uske saare active packages automatically 'inactive' ho jayenge
+        if not self.is_active:
+            self.packages.filter(status='active').update(status='inactive')
 
     def __str__(self):
         return self.name
@@ -45,7 +50,11 @@ class Package(models.Model):
     )
     name = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, blank=True)
-    package_type = models.ForeignKey(PackageType, on_delete=models.CASCADE)
+    package_type = models.ForeignKey(
+        PackageType, 
+        on_delete=models.PROTECT, 
+        related_name='packages'
+    )
     tier = models.CharField(max_length=20, choices=TIER_CHOICES, default='standard')
     country = models.CharField(max_length=100, default='Saudi Arabia')
     city = models.CharField(max_length=100, blank=True, null=True, default='Makkah')
@@ -86,11 +95,26 @@ class Package(models.Model):
         return max(0, self.total_seats - self.booked_seats)
 
     @property
+    def return_date(self):
+        if self.departure_date and self.duration_days:
+            return self.departure_date + timedelta(days=self.duration_days)
+        return None
+
+    @property
     def is_available(self):
         today = date.today()
         has_seats = self.seats_left() > 0
-        not_expired = self.application_deadline >= today
-        return self.status == 'active' and has_seats and not_expired
+        deadline_valid = self.application_deadline >= today
+        departure_valid = self.departure_date >= today
+        type_is_active = self.package_type.is_active if self.package_type else False
+
+        return (
+            self.status == 'active' 
+            and type_is_active 
+            and has_seats 
+            and deadline_valid 
+            and departure_valid
+        )
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -101,8 +125,13 @@ class Package(models.Model):
             self.slug = f"{orig_slug}-{counter}"
             counter += 1
 
-        if self.seats_left() <= 0:
+        today = date.today()
+        if self.package_type and not self.package_type.is_active:
+            self.status = 'inactive'
+        elif self.seats_left() <= 0:
             self.status = 'closed'
+        elif self.application_deadline < today or self.departure_date < today:
+            self.status = 'inactive'
 
         super().save(*args, **kwargs)
 

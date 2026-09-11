@@ -12,20 +12,20 @@ html {
 .text-section .main-title {
     font-size: 55px;
     font-weight: 700;
-    color:#064e3b;
+    color: #065f46;
 }
 
 .text-section .subtitle {
     font-size: 22px;
     margin-top: 10px;
-    color:#064e3b;
+    color:#065f46;
 }
 
 .toggle-buttons span {
     font-size: 18px;
     margin-right: 20px;
     cursor: pointer;
-    color:#064e3b;
+    color:#31a074;
 }
 
 .toggle-buttons .active {
@@ -91,7 +91,7 @@ html {
 }
 
 .nav-box.active {
-    background:#064e3b;
+    background:#065f46;
     color: white;
 }
 

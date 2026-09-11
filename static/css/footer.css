@@ -1,6 +1,3 @@
-/* ==========================================
-   SAFAR-E-HARAM ARCH BLEND FOOTER
-   ========================================== */
 
 html {
     height: 100%;
@@ -22,7 +19,7 @@ main {
 /* Base Wrapper */
 .footer-wrapper {
     position: relative !important;
-    background: linear-gradient(180deg, #04392a 0%, #065f46 100%) !important;
+    background: linear-gradient(145deg,#065f46 0%, #31a074 100%) !important;
     color: #ffffff !important;
     font-family: 'Poppins', sans-serif !important;
     width: 100% !important;

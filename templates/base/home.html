@@ -49,12 +49,35 @@
 
       <div class="hero-action-buttons">
         <a href="{% url 'base:hajj_packages' %}" class="btn-customer">Find a Package</a>
-        <a href="{% url 'stakeholder:create_profile' %}" class="btn-agent">Register as Agent</a>
+        {% if user.is_authenticated %}
+    {% if user.role == 'user' %}
+        <!-- اگر Customer لاگ ان ہے تو وہ کلک کرنے پر Access Denied والے پیج پر چلا جائے گا -->
+        <a href="{% url 'base:no_acess' %}" class="btn-agent">
+            <i class="fas fa-user-tie"></i> Register as Agent
+        </a>
+    {% elif user.role == 'stakeholder' %}
+        <!-- اگر Agent/Stakeholder لاگ ان ہے -->
+        {% if user.stakeholder_profile.is_kyc_completed %}
+            <!-- KYC مکمل ہے تو ڈیش بورڈ کا بٹن -->
+            <a href="{% url 'stakeholder:dashboard' %}" class="btn-agent">
+                <i class="fas fa-tachometer-alt"></i> Agent Dashboard
+            </a>
+        {% else %}
+            <!-- KYC باقی ہے تو KYC کا بٹن -->
+            <a href="{% url 'stakeholder:KYC' %}" class="btn-agent">
+                <i class="fas fa-id-card"></i> Complete KYC
+            </a>
+        {% endif %}
+    {% endif %}
+{% else %}
+ 
+    <a href="{% url 'accounts:register' %}" class="btn-agent">
+        <i class="fas fa-user-plus"></i> Register as Agent
+    </a>
+{% endif %}
       </div>
     </div>
 
-    <!-- Deep Curve Transparent SVG Divider Restored -->
-    <!-- Wave Curve SVG Divider -->
 <div class="custom-shape-divider-bottom">
   <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
     <path d="M0,0 C150,90 350,-40 500,50 C650,140 900,10 1200,60 L1200,120 L0,120 Z" class="shape-fill"></path>

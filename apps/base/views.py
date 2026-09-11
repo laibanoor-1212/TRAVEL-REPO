@@ -27,6 +27,8 @@ def home(request):
 def about(request):
     return render(request, 'base/about.html')
 
+def no_acess(request):
+    return render(request, 'base/no-acess.html')
 
 
 # Dynamic Guide Views
@@ -164,6 +166,8 @@ def global_search(request):
         return redirect('base:agent_list')
     packages_url = reverse('base:hajj_packages')
     return redirect(f"{packages_url}?q={query}")
+
+
 def hajj_packages(request):
     today = timezone.now().date()
     packages = Package.objects.filter(
@@ -174,7 +178,9 @@ def hajj_packages(request):
 
     query = request.GET.get('q', '').strip()
     category_filter = request.GET.get('category', '').strip()
-    type_filter = request.GET.get('type', '').strip()
+    # URL Parameter se type le rahe hain (e.g. ?type=Umrah ya ?type=Hajj)
+    type_param = request.GET.get('type', '').strip()
+    tier_filter = request.GET.get('tier', '').strip()
     agent_id = request.GET.get('agent_id', '').strip()
 
     if agent_id:
@@ -188,7 +194,7 @@ def hajj_packages(request):
         except AgentKYC.DoesNotExist:
             packages = packages.none()
 
-    elif query:
+    if query:
         packages = packages.filter(
             Q(name__icontains=query) |
             Q(description__icontains=query) |
@@ -198,15 +204,23 @@ def hajj_packages(request):
             Q(package_type__name__icontains=query)
         )
 
+    # Agar URL mein ?type=Hajj ya ?type=Umrah pass hua hai toh DB filter lagayen
+    if type_param and type_param.lower() != 'all':
+        packages = packages.filter(package_type__name__icontains=type_param)
+
     if category_filter:
         packages = packages.filter(package_type__name__iexact=category_filter)
 
-    if type_filter:
-        packages = packages.filter(tier__iexact=type_filter)
+    if tier_filter:
+        packages = packages.filter(tier__iexact=tier_filter)
+
+    package_types = PackageType.objects.filter(is_active=True)
 
     context = {
         'packages': packages,
+        'package_types': package_types,
         'search_query': query,
+        'selected_type': type_param,  # URL parameter context mein bhej rahe hain
     }
     return render(request, 'packages/hajjpackages.html', context)
 def contactus(request):

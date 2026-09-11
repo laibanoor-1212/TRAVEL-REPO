@@ -24,10 +24,10 @@
     }
 
     /* Dynamic Status Colors */
-    .tag-refunded { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }      /* Green */
-    .tag-processing { background: #fef9c3; color: #a16207; border: 1px solid #fde047; }    /* Yellow */
-    .tag-cancelled { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }     /* Red */
-    .tag-default { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }       /* Gray */
+    .tag-refunded { background: #dcfce7; color: #065f46; border: 1px solid #86efac; }     
+    .tag-processing { background: #fef9c3; color: #a16207; border: 1px solid #fde047; }   
+    .tag-cancelled { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }    
+    .tag-default { background: #f1f5f9; color: #31a074; border: 1px solid #cbd5e1; }     
 
     .cancel-table {
         width: 100%;
@@ -37,7 +37,7 @@
 
     .cancel-table th {
         background: #f8fafc;
-        color: #64748b;
+        color: #31a074;
         text-align: left;
         padding: 14px 16px;
         font-size: 12px;
@@ -52,12 +52,12 @@
         padding: 14px 16px;
         border-bottom: 1px solid #f1f5f9;
         font-size: 13px;
-        color: #0f172a;
+        color:  #0f291e;
         vertical-align: middle;
     }
 
     .reason-text {
-        color: #64748b;
+        color:#0f291e;
         font-style: italic;
         font-size: 13px;
         max-width: 280px;
@@ -66,7 +66,7 @@
     }
 
     .btn-view-link {
-        color: var(--primary-green, #059669);
+        color: var(--primary-green,#31a074);
         text-decoration: none;
         font-weight: 700;
         padding: 6px 12px;
@@ -87,7 +87,7 @@
     .empty-state {
         text-align: center;
         padding: 40px 20px;
-        color: #94a3b8;
+        color: #f8fafc;
     }
 
     .empty-state i {
@@ -100,15 +100,15 @@
 <div class="cancel-container">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <div>
-            <h2 style="color: var(--primary-green, #059669); margin: 0 0 5px 0; font-size: 20px; font-weight: 800;">
+            <h2 style="color: var(--primary-green,#31a074); margin: 0 0 5px 0; font-size: 20px; font-weight: 800;">
                 Cancelled Bookings
             </h2>
-            <p style="color: #64748b; font-size: 13px; margin: 0;">
+            <p style="color:#0f291e; font-size: 13px; margin: 0;">
                 View customer cancellations, refund processing status, and penalty deductions.
             </p>
         </div>
         <div style="text-align: right;">
-            <span style="font-size: 13px; color: #64748b;">
+            <span style="font-size: 13px; color:#31a074">
                 Total Cancellations: <strong>{{ total_cancellations|default:0 }}</strong>
             </span>
         </div>

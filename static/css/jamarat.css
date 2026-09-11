@@ -18,7 +18,7 @@
 }
 
 .breadcrumb a {
-    color: #0f5132;
+    color:  #065f46;
     text-decoration: none;
     font-weight: 600;
 }
@@ -44,7 +44,7 @@
 }
 
 .title-box {
-    background: #0f5132;
+    background: #065f46;
     color: white;
     text-align: center;
     padding: 12px 25px;
@@ -77,7 +77,7 @@
 
 .guidelines li::before {
     content: "•";
-    color: #ffd700;
+    color: #31a074;
     font-weight: bold;
     display: inline-block;
     width: 1em;
@@ -98,7 +98,7 @@
 
 .grave {
     flex: 1 1 30%;
-    background: #0f5132;
+    background: #065f46;
     color: white;
     text-align: center;
     padding: 35px 15px;
@@ -125,7 +125,7 @@
 
 .label {
     font-size: 11px;
-    color: #ffd700;
+    color: #31a074;
     text-transform: uppercase;
     letter-spacing: 1px;
     display: block;
@@ -147,7 +147,7 @@
 }
 
 .navigation-box h2 {
-    color: #0f5132;
+    color: #065f46;;
     margin-bottom: 20px;
     font-size: 26px;
 }
@@ -170,7 +170,7 @@
 }
 
 .navigation-box a:hover {
-    color: #0f5132;
+    color: #31a074;
     padding-left: 8px;
 }
 

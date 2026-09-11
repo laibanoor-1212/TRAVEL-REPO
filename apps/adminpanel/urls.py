@@ -33,6 +33,7 @@ urlpatterns = [
    path('payments/<int:payment_id>/refund/', views.admin_refund_payment, name='admin_refund_payment'),
     path('package-types/add/', views.add_package_type, name='add_package_type'),
     path('package-types/delete/<int:pk>/', views.delete_package_type, name='delete_package_type'),
+    path('package-type/toggle/<int:pk>/', views.toggle_package_type, name='toggle_package_type'),
     path('admin-dashboard/commission-setting/', views.set_commission, name='set_commission'),
     path('settings/', views.admin_settings_view, name='admin_settings'),
     path('settings/change-password/', 

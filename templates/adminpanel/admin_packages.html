@@ -4,8 +4,8 @@
 {% block content %}
 <style>
     :root {
-        --primary-green: #0b7a47; 
-        --light-green: #eef7f0;
+        --primary-green:  #065f46;
+        --light-green: #31a074;
         --pure-white: #ffffff;
         --danger-red: #d63031;
         --warning-orange: #f39c12;
@@ -118,19 +118,25 @@
                         <td>
                             <div class="agent-wrapper">
                                 <strong>{% firstof pkg.agency.agency_name pkg.user.agency_name pkg.agent.username pkg.user.username "Registered Agent" %}</strong>
-                                <span class="small-info">📧 {% firstof pkg.agency.email pkg.user.email "N/A" %}</span>
+                                <span class="small-info"> {% firstof pkg.agency.email pkg.user.email "N/A" %}</span>
                             </div>
                         </td>
                         <td>
-                            <span class="small-info">🛫 {{ pkg.start_date|date:"d M Y"|default:"N/A" }}</span>
-                            <span class="small-info">🛬 {{ pkg.end_date|date:"d M Y"|default:"N/A" }}</span>
+                            <span class="small-info">
+                                <i class="fas fa-plane-departure" style="color: var(--sub-sec); margin-right: 4px;"></i>
+                                {% firstof pkg.start_date|date:"d M Y" pkg.departure_date|date:"d M Y" "N/A" %}
+                            </span>
+                            <span class="small-info">
+                                <i class="fas fa-plane-arrival" style="color: var(--primary-color); margin-right: 4px;"></i>
+                                {% firstof pkg.end_date|date:"d M Y" pkg.return_date|date:"d M Y" "N/A" %}
+                            </span>
                         </td>
                         <td><span class="badge badge-active">Active</span></td>
                         <td style="text-align: center;">
                             <div style="display: flex; gap: 6px; justify-content: center;">
                                 <a href="{% url 'packages:packages_detail' pkg.id %}" class="btn-action btn-blue">View Details</a>
                                 <a href="{% url 'adminpanel:block_package' pkg.id %}" class="btn-action btn-orange" onclick="return confirm('Are you sure you want to block this package?')">Block</a>
-                                <a href="{% url 'adminpanel:remove_package' pkg.id %}" class="btn-action btn-red" onclick="return confirm('Delete permanently?')">Remove</a>
+                                <a href="{% url 'adminpanel:remove_package' pkg.id %}" class="btn-action btn-red" onclick="return confirm('Delete permanently?')">Inactive</a>
                             </div>
                         </td>
                     </tr>
@@ -165,7 +171,7 @@
                         <td>
                             <div class="agent-wrapper">
                                 <strong>{% firstof pkg.agency.agency_name pkg.user.agency_name pkg.agent.username pkg.user.username "Registered Agent" %}</strong>
-                                <span class="small-info">📧 {% firstof pkg.agency.email pkg.user.email "N/A" %}</span>
+                                <span class="small-info"> {% firstof pkg.agency.email pkg.user.email "N/A" %}</span>
                             </div>
                         </td>
                         <td>

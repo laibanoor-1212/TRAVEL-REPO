@@ -1,6 +1,3 @@
-/* =========================================
-   SAFAR-E-HARAM - UMRAH GUIDE
-========================================= */
 
 * {
     box-sizing: border-box;
@@ -22,12 +19,6 @@ body {
     width: 100%;
     overflow: hidden;
 }
-
-
-/* =========================================
-   HERO SECTION
-========================================= */
-
 .guide-hero {
     position: relative;
     min-height: 540px;
@@ -41,13 +32,15 @@ body {
     background:
         linear-gradient(
             135deg,
-            rgba(7, 53, 34, 0.94),
-            rgba(15, 81, 50, 0.82)
+            #065f46,
+             #31a074
         ),
         url("../images/miqat.jpg");
 
     background-size: cover;
     background-position: center;
+    border-bottom-left-radius: 20%;
+    border-bottom-right-radius: 20%;
 
     overflow: hidden;
 }
@@ -116,11 +109,11 @@ body {
 }
 
 .guide-hero h1 span {
-    color: #b7e4c7;
+    color: #31a074;
 }
 
 .arabic-text {
-    color: #d8f3dc;
+    color:  #31a074;
 
     font-size: 25px;
 
@@ -153,7 +146,7 @@ body {
 
     background: #ffffff;
 
-    color: #0f5132;
+    color: #065f46;
 
     text-decoration: none;
 
@@ -167,7 +160,7 @@ body {
 
 .hero-btn:hover {
     background: #d8f3dc;
-    color: #0b3d25;
+    color: #31a074; 
 
     transform: translateY(-3px);
 }
@@ -195,12 +188,6 @@ body {
     right: -130px;
     top: -130px;
 }
-
-
-/* =========================================
-   INTRODUCTION
-========================================= */
-
 .guide-intro {
     max-width: 1100px;
 
@@ -266,7 +253,7 @@ body {
 .intro-content h2,
 .section-heading h2,
 .guide-cta h2 {
-    color: #123b2a;
+    color:  #065f46;
 
     font-size: 34px;
 
@@ -278,7 +265,7 @@ body {
 .intro-content h2 span,
 .section-heading h2 span,
 .guide-cta h2 span {
-    color: #25855a;
+    color: #31a074;
 }
 
 .intro-content p {
@@ -290,11 +277,6 @@ body {
 
     margin-bottom: 10px;
 }
-
-
-/* =========================================
-   JOURNEY SECTION
-========================================= */
 
 .journey-section {
     max-width: 1200px;
@@ -317,17 +299,12 @@ body {
 }
 
 .section-heading p {
-    color: #64748b;
+    color: #31a074;
 
     font-size: 15px;
 
     line-height: 1.7;
 }
-
-
-/* =========================================
-   CARDS
-========================================= */
 
 .card-grid {
     display: grid;
@@ -413,7 +390,7 @@ body {
 
     background: rgba(255,255,255,0.95);
 
-    color: #0f5132;
+    color:  #065f46;
 
     border-radius: 50%;
 
@@ -429,7 +406,7 @@ body {
 }
 
 .card-label {
-    color: #25855a;
+    color:  #31a074;
 
     font-size: 10px;
 
@@ -439,7 +416,7 @@ body {
 }
 
 .card-content h3 {
-    color: #14251d;
+    color:  #065f46;
 
     font-size: 22px;
 
@@ -447,7 +424,7 @@ body {
 }
 
 .card-content p {
-    color: #64748b;
+    color:  #065f46;
 
     font-size: 13.5px;
 
@@ -455,12 +432,6 @@ body {
 
     min-height: 68px;
 }
-
-
-/* =========================================
-   CARD BUTTONS
-========================================= */
-
 .card-buttons {
     display: flex;
 
@@ -493,13 +464,13 @@ body {
 }
 
 .read-btn {
-    background: #0f5132;
+    background: #065f46;
 
     color: #ffffff;
 }
 
 .read-btn:hover {
-    background: #0b3d25;
+    background:#31a074;
 }
 
 .listen-btn {
@@ -515,11 +486,6 @@ body {
 
     transform: translateY(-2px);
 }
-
-
-/* =========================================
-   HOW IT WORKS
-========================================= */
 
 .guide-help {
     background: #f0f7f2;
@@ -596,7 +562,7 @@ body {
 }
 
 .help-card h3 {
-    color: #173c2b;
+    color: #31a074;
 
     font-size: 18px;
 
@@ -604,51 +570,32 @@ body {
 }
 
 .help-card p {
-    color: #64748b;
-
+    color:  #065f46;
     font-size: 13px;
-
     line-height: 1.7;
 }
-
-
-/* =========================================
-   CTA
-========================================= */
-
 .guide-cta {
     max-width: 1100px;
-
     margin: 80px auto;
-
     padding: 65px 30px;
-
     text-align: center;
-
     border-radius: 28px;
-
     background:
         linear-gradient(
             135deg,
-            #0b3d25,
-            #0f5132
+            #065f46,
+             #31a074
         );
-
     position: relative;
-
     overflow: hidden;
 }
 
 .guide-cta::before {
     content: "";
-
     position: absolute;
-
     width: 300px;
     height: 300px;
-
     border-radius: 50%;
-
     border: 1px solid rgba(255,255,255,0.08);
 
     left: -150px;
@@ -677,7 +624,7 @@ body {
 }
 
 .guide-cta .section-label {
-    color: #b7e4c7;
+    color:  #31a074;
 }
 
 .guide-cta h2 {
@@ -687,9 +634,8 @@ body {
 }
 
 .guide-cta h2 span {
-    color: #b7e4c7;
+    color:  #31a074;
 }
-
 .guide-cta p {
     max-width: 650px;
 
@@ -714,7 +660,7 @@ body {
 
     background: #ffffff;
 
-    color: #0f5132;
+    color: #065f46;
 
     border-radius: 50px;
 
@@ -733,15 +679,10 @@ body {
     transform: translateY(-3px);
 }
 
-
-/* =========================================
-   FOOTER
-========================================= */
-
 .footer-wrapper {
     position: relative;
 
-    background: #0b3d25;
+    background:  #065f46;;
 
     color: white;
 
@@ -875,11 +816,6 @@ body {
 
     font-size: 12px;
 }
-
-
-/* =========================================
-   RESPONSIVE
-========================================= */
 
 @media (max-width: 1000px) {
 

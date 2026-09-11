@@ -35,6 +35,7 @@
     <link rel="stylesheet" href="{% static 'css/contactus.css' %}">
     <link rel="stylesheet" href="{% static 'css/iran.css' %}">
     <link rel="stylesheet" href="{% static 'css/iraq.css' %}">
+    <link rel="stylesheet" href="{% static 'css/hajjpackages.css' %}">
 
     {% if request.resolver_match.url_name == 'login' or request.resolver_match.url_name == 'register' or '/login' in request.path or '/signup' in request.path or '/register' in request.path %}
     <style>
@@ -67,7 +68,7 @@
               <i class="fas fa-bars"></i>
             </div>
 
-            <!-- Main Menu (Contains Links + Auth/Profile Options inside) -->
+            <!-- Main Menu -->
             <div class="menu" id="menu">
               <ul class="nav-links">
                 <li><a href="{% url 'base:home' %}">Home</a></li>
@@ -84,20 +85,33 @@
                   </ul>
                 </li>
 
+                <!-- Packages Dynamic Dropdown -->
                 <li class="dropdown">
                   <a href="#">Packages ▾</a>
                   <ul class="dropdown-menu">
-                    <li><a href="{% url 'base:hajj_packages' %}">Umrah packages</a></li>
-                    <li><a href="#">Package Details</a></li>
-                    <li><a href="#">Booking</a></li>
-                    <li><a href="{% url 'base:agent_list' %}">Travel Agents List</a></li>
+                    <li><a class="dropdown-item" href="{% url 'base:hajj_packages' %}">All Packages</a></li>
+                    
+                    <!-- Dynamic package types loop with ?type parameter -->
+                    {% for pkg_type in package_types %}
+                      <li>
+                        <a class="dropdown-item" href="{% url 'base:hajj_packages' %}?type={{ pkg_type.name|default:pkg_type|urlencode }}">
+                          {{ pkg_type.name|default:pkg_type|title }}
+                        </a>
+                      </li>
+                    {% empty %}
+                      <!-- Fallback Hardcoded Links with URL parameters -->
+                      <li><a class="dropdown-item" href="{% url 'base:hajj_packages' %}?type=Hajj">Hajj Packages</a></li>
+                      <li><a class="dropdown-item" href="{% url 'base:hajj_packages' %}?type=Umrah">Umrah Packages</a></li>
+                      <li><a class="dropdown-item" href="{% url 'base:hajj_packages' %}?type=Iraq">Iraq Ziyarat</a></li>
+                      <li><a class="dropdown-item" href="{% url 'base:hajj_packages' %}?type=Iran">Iran Ziyarat</a></li>
+                    {% endfor %}
                   </ul>
                 </li>
 
                 <li><a href="{% url 'base:ziyarat' %}">Ziyarat</a></li>
                 <li><a href="{% url 'base:contactus' %}">Contact Us</a></li>
 
-                <!-- CONDITIONAL AUTH / PROFILE INTEGRATED DIRECTLY IN NAV LINKS -->
+                <!-- Auth/Profile Links -->
                 {% if user.is_authenticated %}
                   <li class="dropdown user-nav-item">
                     <a href="javascript:void(0)" class="profile-toggle-btn">

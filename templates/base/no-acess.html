@@ -1,12 +1,26 @@
 {% extends "base/base.html" %}
 {% load static %}
-{% block content %}  
-   <link rel="stylesheet" href="{% static 'css/no-acess.css' %}">
-   <div class="lock-wrapper">
-  <div class="lock"></div>
-<div class="message">
-  <h1>Access to this page is restricted</h1>
-  <p>Please check with the site admin if you believe this is a mistake.</p>
+
+{% block content %}
+<div style="max-width: 600px; margin: 80px auto; padding: 40px; background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+    
+    <div style="width: 70px; height: 70px; background: #fef2f2; color: #dc2626; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; font-size: 30px;">
+        <i class="fas fa-user-lock"></i>
+    </div>
+    <h2 style="color: #065f46; font-size: 1.6rem; font-weight: 800; margin-bottom: 12px;">
+        Access Restricted
+    </h2>
+    <p style="color: #4b5563; font-size: 15px; line-height: 1.6; margin-bottom: 28px;">
+        You are currently logged in with a <strong>Customer Account</strong>. To access the Agent portal and submit KYC verification, you must first register or switch to an <strong>Agent / Stakeholder Account</strong>.
+    </p>
+    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <a href="{% url 'accounts:logout' %}" class="btn" style="background-color:red; color: #ffffff; padding: 12px 24px; border-radius: 10px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+            <i class="fas fa-user-plus"></i> logout
+        </a>
+        <a href="{% url 'customers:user_dashboard' %}" class="btn" style="background-color: #f1f5f9; color: #475569; padding: 12px 24px; border-radius: 10px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+            <i class="fas fa-arrow-left"></i> Return to Dashboard
+        </a>
+    </div>
+
 </div>
-   </div>
-{% endblock content %}
+{% endblock %}

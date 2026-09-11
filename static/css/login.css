@@ -13,6 +13,52 @@ nav, .navbar, footer {
     font-family: 'Poppins', sans-serif;
 }
 
+.back-to-home-btn {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    z-index: 100;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 30px;
+    color: #ffffff;
+    font-size: 0.88rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.back-to-home-btn i {
+    font-size: 0.95rem;
+    transition: transform 0.3s ease;
+}
+
+.back-to-home-btn:hover {
+    background: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.back-to-home-btn:hover i {
+    transform: translateX(-4px);
+}
+@media (max-width: 768px) {
+    .back-to-home-btn {
+        top: 16px;
+        left: 16px;
+        padding: 8px 14px;
+        font-size: 0.8rem;
+    }
+}
 .auth-bg-layer {
     position: absolute;
     inset: 0;

@@ -18,7 +18,7 @@
 }
 
 .breadcrumb a {
-    color: #0f5132;
+    color:#065f46;
     text-decoration: none;
     font-weight: 600;
 }
@@ -44,7 +44,7 @@
 }
 
 .title-box {
-    background: #0f5132;
+    background:#065f46;
     color: white;
     text-align: center;
     padding: 12px 25px;
@@ -82,7 +82,7 @@
 
 .info-card {
     flex: 1;
-    background: #0f5132;
+    background: #065f46;
     color: white;
     text-align: center;
     padding: 35px 15px;
@@ -97,7 +97,7 @@
 
 .label {
     font-size: 11px;
-    color: #ffd700;
+    color: #0f291e;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
@@ -117,7 +117,7 @@
 }
 
 .navigation-box h2 {
-    color: #0f5132;
+    color: #065f46;
     margin-bottom: 20px;
     font-size: 26px;
 }
@@ -139,7 +139,7 @@
 }
 
 .navigation-box a:hover {
-    color: #0f5132;
+    color:#065f46;
     padding-left: 8px;
 }
 

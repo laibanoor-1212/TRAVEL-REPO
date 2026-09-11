@@ -5,344 +5,38 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<style>
-    :root {
-        --theme-bg: #f8fafc;
-        --theme-card-bg: #ffffff;
-        --primary-green: #10b981;
-        --primary-green-dark: #059669;
-        --light-green-bg: #ecfdf5;
-        --border-green: #a7f3d0;
-        --text-dark: #0f172a;
-        --text-muted: #64748b;
-        --border-gray: #e2e8f0;
-    }
-
-    body {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        background-color: var(--theme-bg);
-        color: var(--text-dark);
-        margin: 0;
-        padding: 0;
-    }
-
-    /* HERO BANNER WITH CUSTOM BACKGROUND IMAGE */
-    .hero-banner-section {
-        position: relative;
-        width: 100%;
-        height: 340px;
-        background: linear-gradient(rgba(6, 78, 59, 0.70), rgba(6, 78, 59, 0.70)), 
-                    url("{% static 'images/kabbanight.jpg' %}") center/cover no-repeat;
-        background-color: #064e3b; 
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding-bottom: 40px;
-        box-sizing: border-box;
-    }
-
-    .hero-banner-title {
-        color: #ffffff;
-        font-size: 2.5rem;
-        font-weight: 800;
-        margin: 0;
-        letter-spacing: -0.5px;
-        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    }
-
-    /* Floating Search Card */
-    .search-wrapper-container {
-        max-width: 1240px;
-        margin: 0 auto;
-        padding: 0 20px;
-        position: relative;
-        top: -45px;
-        z-index: 10;
-    }
-
-    .floating-search-card {
-        background: #ffffff;
-        border-radius: 16px;
-        border: 1px solid var(--border-gray);
-        padding: 16px 20px;
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr auto;
-        gap: 16px;
-        align-items: center;
-        box-shadow: 0 10px 30px rgba(16, 185, 129, 0.08);
-    }
-
-    .search-field-group {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 8px 12px;
-        border-right: 1px solid var(--border-gray);
-    }
-
-    .search-field-group:last-of-type {
-        border-right: none;
-    }
-
-    .search-field-group i {
-        font-size: 1.1rem;
-        color: var(--primary-green);
-    }
-
-    .search-field-input-box {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-    }
-
-    .search-field-input-box label {
-        font-size: 0.75rem;
-        font-weight: 700;
-        color: var(--text-muted);
-        text-transform: uppercase;
-        margin-bottom: 2px;
-    }
-
-    .clean-select-input {
-        border: none;
-        outline: none;
-        background: transparent;
-        font-size: 0.95rem;
-        font-weight: 700;
-        color: var(--primary-green-dark);
-        cursor: pointer;
-        padding: 0;
-        width: 100%;
-    }
-
-    .search-action-btn {
-        background: var(--primary-green);
-        color: #ffffff;
-        border: none;
-        padding: 14px 32px;
-        border-radius: 10px;
-        font-size: 0.95rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        height: 100%;
-    }
-
-    .search-action-btn:hover {
-        background: var(--primary-green-dark);
-    }
-
-    /* Main Content */
-    .catalog-main-content {
-        max-width: 1240px;
-        margin: -10px auto 60px auto;
-        padding: 0 20px;
-    }
-
-    .theme-filter-row {
-        background: #ffffff;
-        border: 1px solid var(--border-gray);
-        border-radius: 14px;
-        padding: 16px 20px;
-        margin-bottom: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .filter-pills-group {
-        display: flex;
-        gap: 12px;
-    }
-
-    .theme-select-control {
-        background: var(--light-green-bg);
-        border: 1px solid var(--border-green);
-        color: var(--primary-green-dark);
-        padding: 8px 16px;
-        border-radius: 8px;
-        font-size: 0.88rem;
-        font-weight: 700;
-        outline: none;
-    }
-
-    .results-heading-box h2 {
-        font-size: 1.4rem;
-        font-weight: 800;
-        margin: 0;
-    }
-
-    .clear-btn-theme {
-        background: rgba(239, 68, 68, 0.1);
-        border: 1px solid rgba(239, 68, 68, 0.2);
-        color: #ef4444;
-        padding: 8px 14px;
-        border-radius: 8px;
-        font-size: 0.82rem;
-        font-weight: 700;
-        cursor: pointer;
-    }
-
-    /* Cards Layout */
-    .packages-grid-layout {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-        gap: 24px;
-    }
-
-    .theme-tour-card {
-        background: #ffffff;
-        border: 1px solid var(--border-gray);
-        border-radius: 16px;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        transition: transform 0.25s ease;
-    }
-
-    .theme-tour-card:hover {
-        transform: translateY(-4px);
-        border-color: var(--border-green);
-    }
-
-    .card-image-box {
-        position: relative;
-        height: 190px;
-    }
-
-    .card-image-box img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .badge-agency {
-        position: absolute;
-        top: 12px;
-        left: 12px;
-        background: rgba(255, 255, 255, 0.95);
-        color: var(--text-dark);
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-size: 0.72rem;
-        font-weight: 700;
-    }
-
-    .badge-type {
-        position: absolute;
-        top: 12px;
-        right: 12px;
-        background: var(--primary-green);
-        color: #ffffff;
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-size: 0.72rem;
-        font-weight: 800;
-        text-transform: uppercase;
-    }
-
-    .card-body-content {
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        flex-grow: 1;
-    }
-
-    .card-body-content h3 {
-        font-size: 1.15rem;
-        font-weight: 700;
-        margin: 0 0 12px 0;
-    }
-
-    .price-text {
-        font-size: 1.3rem;
-        font-weight: 800;
-        color: var(--primary-green-dark);
-        margin-bottom: 14px;
-    }
-
-    .card-details-list {
-        list-style: none;
-        padding: 0;
-        margin: 0 0 20px 0;
-        font-size: 0.85rem;
-        color: var(--text-muted);
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    .card-details-list li {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .card-details-list i {
-        color: var(--primary-green);
-    }
-
-    .card-footer-actions {
-        margin-top: auto;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-    }
-
-    .btn-theme-outline {
-        border: 1px solid var(--border-gray);
-        color: var(--text-dark);
-        background: #ffffff;
-        padding: 10px;
-        border-radius: 8px;
-        font-size: 0.85rem;
-        font-weight: 700;
-        text-align: center;
-        text-decoration: none;
-    }
-
-    .btn-theme-fill {
-        background: var(--primary-green);
-        color: #ffffff;
-        padding: 10px;
-        border-radius: 8px;
-        font-size: 0.85rem;
-        font-weight: 700;
-        text-align: center;
-        text-decoration: none;
-    }
-
-    .empty-state-box {
-        grid-column: 1 / -1;
-        text-align: center;
-        padding: 50px 20px;
-        color: var(--text-muted);
-        background: #ffffff;
-        border-radius: 16px;
-        border: 1px dashed var(--border-green);
-    }
-</style>
 
 <div class="hero-banner-section">
-    <h1 class="hero-banner-title">All Tours Search</h1>
+    <h1 class="hero-banner-title">
+        {% if selected_type %}{{ selected_type|title }} Packages{% else %}All Tours Search{% endif %}
+    </h1>
 </div>
 
 <div class="search-wrapper-container">
     <div class="floating-search-card">
+        <!-- Dynamic Package Type Dropdown -->
         <div class="search-field-group">
             <i class="fa-solid fa-compass"></i>
             <div class="search-field-input-box">
-                <label>Package Type</label>
-                <select id="packageTypeSelect" class="clean-select-input">
-                    <option value="All">All Packages</option>
-                    <option value="hajj">Hajj Packages</option>
-                    <option value="umrah">Umrah Packages</option>
+                <label for="packageTypeSelect">Package Type</label>
+                <select id="packageTypeSelect" name="type" class="clean-select-input">
+                    <option value="All" {% if not selected_type or selected_type|lower == 'all' %}selected{% endif %}>
+                        All Packages
+                    </option>
+                    
+                    {% for pkg_type in package_types %}
+                        <!-- Sirf Active Package Types hi Render honge -->
+                        {% if pkg_type.is_active %}
+                            <option value="{{ pkg_type.name }}" 
+                                {% if selected_type and selected_type|lower == pkg_type.name|lower %}selected{% endif %}>
+                                {{ pkg_type.name|title }}
+                            </option>
+                        {% endif %}
+                    {% endfor %}
                 </select>
             </div>
         </div>
 
-        <!-- OPERATORS DROPDOWN -->
         <div class="search-field-group">
             <i class="fa-solid fa-building-user"></i>
             <div class="search-field-input-box">
@@ -375,7 +69,6 @@
             </div>
         </div>
 
-        <!-- Direct Click Search Trigger -->
         <button type="button" class="search-action-btn" id="searchSubmitBtn">
             Search
         </button>
@@ -409,7 +102,7 @@
         {% for package in packages %}
             <div class="theme-tour-card"
                  data-operator="{% if package.agency.stakeholder_profile and package.agency.stakeholder_profile.agency_name %}{{ package.agency.stakeholder_profile.agency_name }}{% elif package.agency.agency_name %}{{ package.agency.agency_name }}{% else %}{{ package.agency.username|default:package.agency }}{% endif %}"
-                 data-package-type="{{ package.package_type.name|default:package.package_type|default:'hajj'|lower }}"
+                 data-package-type="{{ package.package_type.name|default:package.package_type|default:'' }}"
                  data-tier="{{ package.tier|default:''|lower }}"
                  data-price="{{ package.price }}">
 
@@ -424,18 +117,20 @@
                             {{ package.agency.username|default:"Agency" }}
                         {% endif %}
                     </span>
-                    <span class="badge-type">{{ package.package_type|default:"Hajj" }}</span>
+                    <span class="badge-type">{{ package.package_type.name|default:package.package_type|default:"Tour" }}</span>
                 </div>
 
                 <div class="card-body-content">
                     <h3>{{ package.name }}</h3>
                     <div class="price-text">PKR {{ package.price }}</div>
 
-                         <ul class="card-details-list">
-                            <li><i class="fa-regular fa-clock"></i> {{ package.duration_days|default:"14" }} Days</li>
-                            <li><i class="fa-solid fa-hotel"></i> Hotel Included</li>
-                            <li><i class="fa-solid fa-chair"></i> {{ package.seats_left }} Seats Left</li>
-                        </ul>
+                    <ul class="card-details-list">
+                        <li><i class="fa-regular fa-clock"></i> {{ package.duration_days|default:"14" }} Days</li>
+                        <li><i class="fa-regular fa-calendar-check"></i> <strong>Start:</strong> {{ package.departure_date|date:"d M Y"|default:"N/A" }}</li>
+                        <li><i class="fa-regular fa-calendar-xmark"></i> <strong>End:</strong> {{ package.return_date|date:"d M Y"|default:"N/A" }}</li>
+                        <li><i class="fa-solid fa-hotel"></i> Hotel Included</li>
+                        <li><i class="fa-solid fa-chair"></i> {{ package.seats_left }} Seats Left</li>
+                    </ul>
 
                     <div class="card-footer-actions">
                         <a href="{% url 'packages:packages_detail' package.id %}" class="btn-theme-outline">Details</a>
@@ -445,7 +140,7 @@
             </div>
         {% empty %}
             <div class="empty-state-box">
-                <p>No tours found in database.</p>
+                <p>No tours found for this selection.</p>
             </div>
         {% endfor %}
 
@@ -466,6 +161,25 @@
         const resultsCounter = document.getElementById('resultsCounter');
         const noFilterMatchState = document.getElementById('noFilterMatchState');
         const allPackageCards = document.querySelectorAll('.theme-tour-card');
+        
+        // URL Parameter Read Karne Ke Liye
+        const urlParams = new URLSearchParams(window.location.search);
+        const selectedTypeFromUrl = urlParams.get('type');
+
+        // URL parameter ke mutabiq Select Option ko auto-select karna
+        if (selectedTypeFromUrl && packageTypeSelect) {
+            const decodedType = decodeURIComponent(selectedTypeFromUrl).toLowerCase().trim();
+            let matched = false;
+            Array.from(packageTypeSelect.options).forEach(option => {
+                const optVal = option.value.toLowerCase().trim();
+                if (optVal.includes(decodedType) || decodedType.includes(optVal)) {
+                    packageTypeSelect.value = option.value;
+                    matched = true;
+                }
+            });
+        }
+
+        // Duplicate operators remove karna dropdown se
         if (operatorSelect) {
             const seenValues = new Set();
             Array.from(operatorSelect.options).forEach(option => {
@@ -477,6 +191,7 @@
                 }
             });
         }
+
         function runSearchFilter() {
             let selectedType = packageTypeSelect ? packageTypeSelect.value.toLowerCase().trim() : "all";
             let selectedOperator = operatorSelect ? operatorSelect.value.toLowerCase().trim() : "all";
@@ -493,65 +208,54 @@
 
                 let isMatch = true;
 
-                // 1. Package Type Check
-                if (selectedType !== "all" && !cardType.includes(selectedType)) {
-                    isMatch = false;
+                if (selectedType !== "all") {
+                    if (!cardType.includes(selectedType) && !selectedType.includes(cardType)) {
+                        isMatch = false;
+                    }
                 }
 
-                // 2. Operator Check
                 if (selectedOperator !== "all") {
                     if (!cardOperator.includes(selectedOperator) && !selectedOperator.includes(cardOperator)) {
                         isMatch = false;
                     }
                 }
 
-                // 3. Category / Tier Check
                 if (selectedTier !== "all" && !cardTier.includes(selectedTier)) {
                     isMatch = false;
                 }
 
-                // 4. Budget / Price Check
                 if (selectedPrice === "Under 300000" && cardPrice >= 300000) isMatch = false;
                 if (selectedPrice === "300000 - 1000000" && (cardPrice < 300000 || cardPrice > 1000000)) isMatch = false;
                 if (selectedPrice === "Above 1000000" && cardPrice <= 1000000) isMatch = false;
 
-                // Display Toggle
                 card.style.display = isMatch ? "flex" : "none";
                 if (isMatch) matchedCount++;
             });
 
-            // Update Result Count
             if (resultsCounter) {
                 resultsCounter.textContent = matchedCount + " tour" + (matchedCount === 1 ? "" : "s") + " found";
             }
 
-            // Empty state display toggle
             if (noFilterMatchState) {
                 noFilterMatchState.style.display = (allPackageCards.length > 0 && matchedCount === 0) ? "block" : "none";
             }
         }
 
-        // Event Listeners for Live Filter
         if (packageTypeSelect) packageTypeSelect.addEventListener('change', runSearchFilter);
         if (operatorSelect) operatorSelect.addEventListener('change', runSearchFilter);
         if (priceSelect) priceSelect.addEventListener('change', runSearchFilter);
         if (tierSelect) tierSelect.addEventListener('change', runSearchFilter);
 
-        // Search Button Trigger
         if (searchSubmitBtn) {
             searchSubmitBtn.addEventListener('click', runSearchFilter);
         }
 
-        // Reset Button Event
         if (clearFiltersBtn) {
             clearFiltersBtn.addEventListener('click', function() {
-                if (packageTypeSelect) packageTypeSelect.value = "All";
-                if (operatorSelect) operatorSelect.value = "All";
-                if (priceSelect) priceSelect.value = "All";
-                if (tierSelect) tierSelect.value = "All";
-                runSearchFilter();
+                window.location.href = "{% url 'base:hajj_packages' %}";
             });
         }
+
         runSearchFilter();
     });
 </script>

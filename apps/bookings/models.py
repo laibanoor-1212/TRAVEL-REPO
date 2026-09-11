@@ -60,6 +60,10 @@ class BookingCustomers(models.Model):
         ('resubmitted', 'Resubmitted by User'),
         ('rollback', 'Rollback Requested'),
     ]
+    GENDER_CHOICES = [
+        ('Male', 'Male'),
+        ('Female', 'Female'),
+    ]
     
     booking = models.ForeignKey(Bookings, on_delete=models.CASCADE, related_name='customer_profiles')
     full_name = models.CharField(max_length=255)
@@ -67,10 +71,13 @@ class BookingCustomers(models.Model):
     cnic = models.CharField(max_length=30)
     email = models.EmailField(blank=True, null=True)
     address = models.TextField(blank=True, null=True)
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True, null=True)
+    date_of_birth = models.DateField(blank=True, null=True)
     passport_number = models.CharField(max_length=50, blank=True, null=True)
+    passport_issue_date = models.DateField(blank=True, null=True)
     passport_expiry = models.DateField(blank=True, null=True)
     passport_scan = models.FileField(upload_to='booking/passports/', blank=True, null=True)
-    passport_photo = models.ImageField(upload_to='booking/photos/', blank=True, null=True)
+    digital_photo = models.ImageField(upload_to='booking/photos/', blank=True, null=True)
     cnic_front = models.ImageField(upload_to='booking/cnic/front/', blank=True, null=True)
     cnic_back = models.ImageField(upload_to='booking/cnic/back/', blank=True, null=True)
 

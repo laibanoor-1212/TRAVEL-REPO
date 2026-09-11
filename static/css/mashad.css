@@ -18,7 +18,7 @@
 }
 
 .breadcrumb a {
-    color: #0d7436;
+    color: #065f46;
     text-decoration: none;
     font-weight: 500;
 }
@@ -30,7 +30,7 @@
 }
 
 .title-box {
-    background: #0d7436;
+    background:#065f46;
     color: white;
     padding: 10px 25px;
     border-radius: 8px;
@@ -60,7 +60,7 @@
 
 .guidelines li::before {
     content: "•";
-    color: gold;
+    color:#0f291e;;
     position: absolute;
     left: 0;
 }
@@ -78,7 +78,7 @@
 .grave {
     flex: 1;
     min-width: 200px;
-    background: #0d7436;
+    background: #065f46;
     color: white;
     padding: 25px;
     border-radius: 20px;
@@ -91,7 +91,7 @@
 }
 
 .label {
-    color: gold;
+    color:#065f46;
     font-size: 13px;
     display: block;
     margin-top: 8px;

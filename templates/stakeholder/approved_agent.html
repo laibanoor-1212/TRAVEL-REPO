@@ -38,8 +38,6 @@
     
     <h2>Congratulations!</h2>
     <p>Your agent profile and documents have been <strong>successfully approved</strong>. You can now access all features of the portal.</p>
-
-    <!-- 🔥 ADMIN COMMENT SECTION ADDED -->
     {% if agentkyc.admin_comment %}
         <div style="
             margin-top:20px;
@@ -47,7 +45,7 @@
             border-radius:10px;
             background:#f0f9ff;
             border:1px solid #bae6fd;
-            color:#0c4a6e;
+            color: #31a074;
             font-weight:600;
         ">
             <strong>Admin Message:</strong>
@@ -63,7 +61,7 @@
 
     <div class="action-buttons">
         <button class="btn-dashboard">
-          <li><a href="{% url 'stakeholder:stakeholder_dashboard' %}" style="color: #d9534f !important;">go to dashboard</a></li>
+          <a href="{% url 'stakeholder:stakeholder_dashboard' %}" style=" list-style-type: style none;text-decoration: none; color:white !important;">Go to dashboard</a></li>
         </button>
     </div>
 

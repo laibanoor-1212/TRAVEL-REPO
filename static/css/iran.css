@@ -19,7 +19,7 @@
   position: absolute;
   width: 100%;
   height: 100%;
-  background:rgb(45, 95, 56);
+  background: #065f46;
 }
 
 .hero-content {
@@ -48,7 +48,7 @@
 }
 
 .intro-text h2 {
-  color: #065f46;
+  color: #31a074;;
   font-size: 30px;
 }
 

@@ -12,8 +12,6 @@
 <body>
 
 <div class="card">
-
-    <!-- 🔥 MESSAGES BLOCK ADDED -->
     {% if messages %}
         <div style="margin-bottom:15px;">
             {% for message in messages %}
@@ -23,7 +21,7 @@
                     margin-bottom:10px;
                     font-weight:600;
                     background:#fff8e1;
-                    color:#8a6d3b;
+                    color: #31a074;
                     border:1px solid #ffe08a;
                 ">
                     {{ message }}
@@ -44,7 +42,7 @@
             <i class="fas fa-headset"></i> Contact Us for Details
         </button>
 
-        <a href="{% url 'logout' %}" style="color:#d9534f; display:block; margin-top:10px;">
+        <a href="{% url 'accounts:logout' %}" style="color:#d9534f; display:block; margin-top:10px;">
             Logout
         </a>
     </div>

@@ -23,7 +23,7 @@
     }
 
     .btn-action-primary {
-        background: #155c3b;
+        background: #065f46;
         color: #ffffff;
         padding: 10px 18px;
         border-radius: 8px;
@@ -50,14 +50,11 @@
         align-items: center;
         gap: 8px;
     }
-
-    /* Stats Counter Grid */
     .stats-counter-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 16px;
     }
-
     .stat-card {
         background: #ffffff;
         border-radius: 12px;
@@ -68,7 +65,6 @@
         align-items: center;
         box-shadow: 0 2px 6px rgba(0,0,0,0.02);
     }
-
     .stat-number {
         font-size: 24px;
         font-weight: 700;
@@ -92,14 +88,11 @@
         justify-content: center;
         font-size: 18px;
     }
-
-    /* Active Booking Box */
     .active-booking-card {
         background: #ffffff;
         border-radius: 12px;
         border: 1px solid #eaedf0;
         padding: 24px;
-        border-left: 5px solid #155c3b;
     }
 
     .booking-card-header {
@@ -134,8 +127,6 @@
         font-weight: 600;
         color: #2c3e50;
     }
-
-    /* Payment & Escrow Split Section */
     .finance-split-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -158,8 +149,6 @@
     .badge-success { background: #e8f5e9; color: #2e7d32; }
     .badge-warning { background: #fff8e1; color: #f57f17; }
     .badge-info { background: #e3f2fd; color: #1565c0; }
-
-    /* Highlights Section */
     .cards-container {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -218,8 +207,6 @@
         align-items: center;
         gap: 8px;
     }
-
-    /* Support Banner */
     .support-banner {
         background: linear-gradient(135deg, #155c3b 0%, #0f452c 100%);
         color: #ffffff;
@@ -234,11 +221,10 @@
 </style>
 
 <div class="overview-wrapper">
-    
-    <!-- Header Section -->
+
     <div class="dashboard-header">
         <div>
-            <h2 style="color: #2c3e50; font-weight: 600; margin: 0; font-size: 22px;">
+            <h2 style="color:#065f46; font-weight: 600; margin: 0; font-size: 22px;">
                 Assalam-o-Alaikum, {{ request.user.first_name|default:request.user.username }}!
             </h2>
             <p style="color: #666; margin: 4px 0 0; font-size: 13px;">
@@ -263,7 +249,7 @@
                 <div class="stat-label">Total Bookings</div>
                 <div class="stat-number">{{ total_bookings_count|default:0 }}</div>
             </div>
-            <div class="stat-icon-wrapper" style="background: #eaf2ed; color: #155c3b;">
+            <div class="stat-icon-wrapper" style="background: #eaf2ed; color:3065f;">
                 <i class="fa-solid fa-suitcase"></i>
             </div>
         </div>
@@ -273,7 +259,7 @@
                 <div class="stat-label">Active / Upcoming</div>
                 <div class="stat-number">{{ active_bookings_count|default:0 }}</div>
             </div>
-            <div class="stat-icon-wrapper" style="background: #e3f2fd; color: #1976d2;">
+            <div class="stat-icon-wrapper" style="background: #e3f2fd; color:#31a074;">
                 <i class="fa-solid fa-clock-rotate-left"></i>
             </div>
         </div>
@@ -283,7 +269,7 @@
                 <div class="stat-label">Completed Trips</div>
                 <div class="stat-number">{{ completed_bookings_count|default:0 }}</div>
             </div>
-            <div class="stat-icon-wrapper" style="background: #e8f5e9; color: #2e7d32;">
+            <div class="stat-icon-wrapper" style="background: #e8f5e9; color: #0f291e;">
                 <i class="fa-solid fa-circle-check"></i>
             </div>
         </div>
@@ -293,7 +279,7 @@
                 <div class="stat-label">Tickets Issued</div>
                 <div class="stat-number">{{ tickets_count|default:0 }}</div>
             </div>
-            <div class="stat-icon-wrapper" style="background: #fff3e0; color: #e67e22;">
+            <div class="stat-icon-wrapper" style="background: #fff3e0; color: #065f46;">
                 <i class="fa-solid fa-ticket"></i>
             </div>
         </div>
@@ -309,7 +295,7 @@
                     {{ active_booking.package.title|default:"Umrah Package" }}
                 </h3>
             </div>
-            <a href="{% url 'customers:user_bookings' %}" style="color: #155c3b; font-size: 13px; font-weight: 600; text-decoration: none;">
+            <a href="{% url 'customers:user_bookings' %}" style="color: #065f46; font-size: 13px; font-weight: 600; text-decoration: none;">
                 View Booking <i class="fa-solid fa-arrow-right"></i>
             </a>
         </div>
@@ -330,7 +316,7 @@
             <div class="detail-item">
                 <label>Booking Status</label>
                 <span>
-                    <i class="fa-solid fa-circle-dot" style="color: #27ae60; font-size: 10px;"></i>
+                    <i class="fa-solid fa-circle-dot" style="color: #31a074; font-size: 10px;"></i>
                     {{ active_booking.get_status_display|default:active_booking.status|title }}
                 </span>
             </div>
@@ -338,9 +324,9 @@
                 <label>Visa & Passport</label>
                 <span>
                     {% if active_booking.visa_status == 'approved' %}
-                        <span style="color: #2e7d32;"><i class="fa-solid fa-check-double"></i> Approved</span>
+                        <span style="color: #31a074;"><i class="fa-solid fa-check-double"></i> Approved</span>
                     {% else %}
-                        <span style="color: #e67e22;"><i class="fa-solid fa-spinner"></i> {{ active_booking.visa_status|default:"In Progress"|title }}</span>
+                        <span style="color: #31a074;"><i class="fa-solid fa-spinner"></i> {{ active_booking.visa_status|default:"In Progress"|title }}</span>
                     {% endif %}
                 </span>
             </div>
@@ -378,24 +364,24 @@
             </div>
 
             <!-- Escrow Hold Amount -->
-            <div class="finance-card" style="border-top: 3px solid #1e429f;">
+            <div class="finance-card" style="border-top: 3px solid #31a074;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 12px; font-weight: 600; color: #1e429f;">ESCROW HOLD (SAFE)</span>
+                    <span style="font-size: 12px; font-weight: 600; color:#31a074;">ESCROW HOLD (SAFE)</span>
                     <span class="badge-status badge-info">Protected</span>
                 </div>
-                <div style="font-size: 22px; font-weight: 700; color: #1e429f; margin-top: 8px;">
+                <div style="font-size: 22px; font-weight: 700; color: #31a074; margin-top: 8px;">
                     PKR {{ escrow_hold_amount|default:"0.00" }}
                 </div>
                 <p style="font-size: 11px; color: #666; margin: 6px 0 0;">Held in escrow until travel verification</p>
             </div>
 
             <!-- Escrow Released Amount -->
-            <div class="finance-card" style="border-top: 3px solid #2e7d32;">
+            <div class="finance-card" style="border-top: 3px solid #31a074;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 12px; font-weight: 600; color: #2e7d32;">RELEASED TO AGENCY</span>
+                    <span style="font-size: 12px; font-weight: 600; color:#31a074;">RELEASED TO AGENCY</span>
                     <span class="badge-status badge-success">Completed</span>
                 </div>
-                <div style="font-size: 22px; font-weight: 700; color: #2e7d32; margin-top: 8px;">
+                <div style="font-size: 22px; font-weight: 700; color:#31a074; margin-top: 8px;">
                     PKR {{ escrow_released_amount|default:"0.00" }}
                 </div>
                 <p style="font-size: 11px; color: #666; margin: 6px 0 0;">Released after successful service delivery</p>
@@ -406,7 +392,7 @@
     <!-- Package Destination Highlights -->
     <div>
         <div style="margin-bottom: 14px; font-weight: 600; font-size: 16px; color: #2c3e50; display: flex; align-items: center; gap: 8px;">
-            <i class="fa-solid fa-map-location-dot" style="color: #155c3b;"></i> Sacred Destinations Covered
+            <i class="fa-solid fa-map-location-dot" style="color:#31a074;"></i> Sacred Destinations Covered
         </div>
 
         <div class="cards-container">
@@ -414,14 +400,14 @@
             <div class="location-card">
                 <div class="image-box">
                     <img src="{% static '/images/umrah.jpeg' %}" alt="Makkah" onerror="this.src='https://images.unsplash.com/photo-1591604466107-ec97de577aff?auto=format&fit=crop&q=80&w=600'">
-                    <span class="location-tag" style="background: #27ae60;">Makkah Mukarramah</span>
+                    <span class="location-tag" style="background:#31a074;">Makkah Mukarramah</span>
                 </div>
                 <div class="card-body">
                     <h4 style="margin: 0; color: #2c3e50; font-size: 15px;">Umrah Services</h4>
                     <ul class="check-list">
-                        <li><i class="fa-solid fa-check-circle" style="color: #27ae60;"></i> Guided Tawaaf & Sa'ee</li>
-                        <li><i class="fa-solid fa-check-circle" style="color: #27ae60;"></i> Ziyarat Places Covered</li>
-                        <li><i class="fa-solid fa-check-circle" style="color: #27ae60;"></i> Hotel Transport Included</li>
+                        <li><i class="fa-solid fa-check-circle" style="color:#31a074;"></i> Guided Tawaaf & Sa'ee</li>
+                        <li><i class="fa-solid fa-check-circle" style="color:#31a074;"></i> Ziyarat Places Covered</li>
+                        <li><i class="fa-solid fa-check-circle" style="color: #31a074;"></i> Hotel Transport Included</li>
                     </ul>
                 </div>
             </div>
@@ -435,9 +421,9 @@
                 <div class="card-body">
                     <h4 style="margin: 0; color: #2c3e50; font-size: 15px;">Ziyarat & Stay</h4>
                     <ul class="check-list">
-                        <li><i class="fa-solid fa-check-circle" style="color: #155c3b;"></i> Rowdah Visit Assistance</li>
-                        <li><i class="fa-solid fa-check-circle" style="color: #155c3b;"></i> Masjid Quba & Uhud Visit</li>
-                        <li><i class="fa-solid fa-check-circle" style="color: #155c3b;"></i> Close to Haram Accommodation</li>
+                        <li><i class="fa-solid fa-check-circle" style="color: #065f46;"></i> Rowdah Visit Assistance</li>
+                        <li><i class="fa-solid fa-check-circle" style="color: #065f46;"></i> Masjid Quba & Uhud Visit</li>
+                        <li><i class="fa-solid fa-check-circle" style="color: #065f46;"></i> Close to Haram Accommodation</li>
                     </ul>
                 </div>
             </div>
@@ -446,14 +432,14 @@
             <div class="location-card">
                 <div class="image-box">
                     <img src="{% static '/images/iraq_ziyarat.jpeg' %}" alt="Iraq Ziyarat" onerror="this.src='https://images.unsplash.com/photo-1548625149-fc4a29cf7092?auto=format&fit=crop&q=80&w=600'">
-                    <span class="location-tag" style="background: #e67e22;">Iraq Ziyarat</span>
+                    <span class="location-tag" style="background: #065f46;">Iraq Ziyarat</span>
                 </div>
                 <div class="card-body">
                     <h4 style="margin: 0; color: #2c3e50; font-size: 15px;">Najaf & Karbala</h4>
                     <ul class="check-list">
-                        <li><i class="fa-solid fa-check-circle" style="color: #e67e22;"></i> Imam Ali (A.S) Shrine - Najaf</li>
-                        <li><i class="fa-solid fa-check-circle" style="color: #e67e22;"></i> Imam Hussain (A.S) - Karbala</li>
-                        <li><i class="fa-solid fa-check-circle" style="color: #e67e22;"></i> Kufa & Kazmain Ziyarat</li>
+                        <li><i class="fa-solid fa-check-circle" style="color: #0f291e;"></i> Imam Ali (A.S) Shrine - Najaf</li>
+                        <li><i class="fa-solid fa-check-circle" style="color: #0f291e;"></i> Imam Hussain (A.S) - Karbala</li>
+                        <li><i class="fa-solid fa-check-circle" style="color: #0f291e;"></i> Kufa & Kazmain Ziyarat</li>
                     </ul>
                 </div>
             </div>

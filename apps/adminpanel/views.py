@@ -25,6 +25,8 @@ from django.http import HttpResponse, JsonResponse
 from django.core.serializers import serialize
 from django.core.exceptions import ValidationError
 from .forms import SystemPreferenceForm
+from django.db.models import ProtectedError,F
+from django.utils import timezone
 
 # Utils Email Module Imports
 from utils.emails import (
@@ -282,19 +284,21 @@ def unblock_package(request, pkg_id):
     messages.success(request, f"Package #{package.id} is now live again.")
     return redirect('adminpanel:admin_packages')
 
-
 @user_passes_test(is_platform_admin)
 @admin_required
 def remove_package(request, pkg_id):
     package = get_object_or_404(Package, id=pkg_id)
+    
+    if hasattr(package, 'is_active'):
+        package.is_active = False
+    if hasattr(package, 'status'):
+        package.status = 'inactive' 
+    package.save()
     agent = getattr(package, 'agent', None) or getattr(package, 'agency', None)
-
     if agent and 'send_package_status_email' in globals():
-        send_package_status_email(agent, package, 'removed')
+        send_package_status_email(agent, package, 'deactivated')
 
-    package.delete()
-
-    messages.error(request, "Package has been permanently removed from the system.")
+    messages.warning(request, f"Package '{package.title if hasattr(package, 'title') else package.id}' has been deactivated (soft removed). Connected bookings remain safe.")
     return redirect('adminpanel:admin_packages')
 @admin_required
 def admin_customer(request):
@@ -557,11 +561,16 @@ def add_package_type(request):
     if request.method == "POST":
         name = request.POST.get('name', '').strip()
         description = request.POST.get('description', '').strip()
+        image = request.FILES.get('image')
 
         if name:
             pkg_type, created = PackageType.objects.get_or_create(
                 name=name,
-                defaults={'description': description}
+                defaults={
+                    'description': description,
+                    'image': image,
+                    'is_active': True
+                }
             )
             if created:
                 messages.success(request, f"Package Type '{name}' added successfully.")
@@ -570,16 +579,35 @@ def add_package_type(request):
             return redirect('adminpanel:add_package_type') 
         else:
             messages.error(request, "Package Type name is mandatory.")
+
     package_types = PackageType.objects.all().order_by('-id')
     return render(request, 'adminpanel/package_type.html', {'package_types': package_types})
+
+
+@admin_required
+@user_passes_test(is_admin_user, login_url='adminpanel:admin_login')
+def toggle_package_type(request, pk):
+    pkg_type = get_object_or_404(PackageType, pk=pk)
+    pkg_type.is_active = not pkg_type.is_active  # Toggle true/false
+    pkg_type.save()
+    
+    status_text = "activated" if pkg_type.is_active else "deactivated"
+    messages.success(request, f"Package Type '{pkg_type.name}' is now {status_text}.")
+        
+    return redirect('adminpanel:add_package_type')
+
 
 @admin_required
 @user_passes_test(is_admin_user, login_url='adminpanel:admin_login')
 def delete_package_type(request, pk):
     package_type = get_object_or_404(PackageType, pk=pk)
     type_name = package_type.name
-    package_type.delete()
-    messages.success(request, f"Package Type '{type_name}' successfully deleted.")
+    package_type.is_active = False
+    package_type.save()
+    if hasattr(package_type, 'packages'):
+        package_type.packages.update(is_active=False)
+
+    messages.warning(request, f"Package Type '{type_name}' and all its connected packages have been deactivated.")
     return redirect('adminpanel:add_package_type')
 
 @admin_required

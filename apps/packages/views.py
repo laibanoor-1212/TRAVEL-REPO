@@ -16,6 +16,8 @@ from utils.emails import (
 
 @login_required
 def create_packages(request):
+    package_types = PackageType.objects.filter(is_active=True)
+
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
         package_type_id = request.POST.get('package_type')
@@ -38,37 +40,63 @@ def create_packages(request):
         transport = request.POST.get('transport') == 'on'
         ziyarat = request.POST.get('ziyarat') == 'on'
         meals = request.POST.get('meals') == 'on'
-
         banner_file = request.FILES.get('banner')
+
+        # 1. Required Fields Check
         if not name or not package_type_id or not price or not departure_date_str:
             messages.error(request, "Tamam zaroori (Required) fields fill karein.")
-            return render(request, 'stakeholder/create_package.html', {
-                'package_types': PackageType.objects.filter(is_active=True)
+            return render(request, 'stakeholder/add_packages.html', {
+                'package_types': package_types,
+                'request_data': request.POST
             })
 
+        # 2. Price Validation
         try:
             price_val = float(price)
             if price_val < 100000 or price_val > 2500000:
-                messages.error(request, "Price  is between PKR 100,000  and PKR 2,500,000.")
-                return render(request, 'stakeholder/create_package.html', {
-                    'package_types': PackageType.objects.filter(is_active=True)
+                messages.error(request, "Price must be between PKR 100,000 and PKR 2,500,000.")
+                return render(request, 'stakeholder/add_packages.html', {
+                    'package_types': package_types,
+                    'request_data': request.POST
                 })
         except ValueError:
             messages.error(request, "Sahi price enter karein.")
-            return render(request, 'stakeholder/create_package.html', {
-                'package_types': PackageType.objects.filter(is_active=True)
+            return render(request, 'stakeholder/add_packages.html', {
+                'package_types': package_types,
+                'request_data': request.POST
             })
 
+        # 3. Date Parsing & Validations
         package_type = get_object_or_404(PackageType, id=package_type_id)
         departure_date = parse_date(departure_date_str)
         application_deadline = parse_date(application_deadline_str) if application_deadline_str else departure_date
+        today = date.today()
 
-        if application_deadline and departure_date and application_deadline > departure_date:
-            messages.error(request, "Application deadline is not after departure date")
-            return render(request, 'stakeholder/create_package.html', {
-                'package_types': PackageType.objects.filter(is_active=True)
+        # Date 1: Departure date past check
+        if departure_date and departure_date < today:
+            messages.error(request, " past departure date is not valid ")
+            return render(request, 'stakeholder/add_packages.html', {
+                'package_types': package_types,
+                'request_data': request.POST
             })
 
+        # Date 2: Application deadline past check
+        if application_deadline and application_deadline < today:
+            messages.error(request, "past application deadline is not acceptable")
+            return render(request, 'stakeholder/add_packages.html', {
+                'package_types': package_types,
+                'request_data': request.POST
+            })
+
+        # Date 3: Deadline after Departure check
+        if application_deadline and departure_date and application_deadline > departure_date:
+            messages.error(request, "Application deadline cannot be after the departure date.")
+            return render(request, 'stakeholder/add_packages.html', {
+                'package_types': package_types,
+                'request_data': request.POST
+            })
+
+        # 4. Save Logic
         try:
             package = Package(
                 agency=request.user, 
@@ -96,16 +124,19 @@ def create_packages(request):
                 package.banner = banner_file
             package.save()
 
-            messages.success(request, f"Package '{package.name}' is created sucessfully!")
+            messages.success(request, f"Package '{package.name}' is created successfully!")
             return redirect('packages:manage_packages')
 
         except Exception as e:
-            messages.error(request, f"error in saving package: {str(e)}")
-    package_types = PackageType.objects.filter(is_active=True)
+            messages.error(request, f"Error in saving package: {str(e)}")
+            return render(request, 'stakeholder/add_packages.html', {
+                'package_types': package_types,
+                'request_data': request.POST
+            })
+
     return render(request, 'stakeholder/add_packages.html', {
         'package_types': package_types
     })
-
 @login_required
 def update_package(request, pk):
     package = get_object_or_404(Package, pk=pk, agency=request.user)
