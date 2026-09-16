@@ -9,15 +9,15 @@ from django.db.models import Count, F, Q, Sum
 from django.shortcuts import get_object_or_404, redirect, render
 from adminpanel.models import Complaint
 from base.decorators import kyc_approved_required, role_required
-from bookings.models import BookingCustomers, Bookings, BookingStatusHistory, Ticket
+from bookings.models import BookingCustomers, Bookings, BookingStatusHistory, Ticket, BookingChat
 from notifications.models import Notification
 from packages.models import Package, PackageType
 from payments import services
 from payments.models import Payment
 from .forms import KYCAgentForm
 from .models import AgentKYC
+from adminpanel.models import AdminAgentChat
 
-# Email Utility Helpers Import
 from utils.emails import (
     send_admin_new_agent_alert,
     send_complaint_submitted_emails,
@@ -54,8 +54,6 @@ def agent_kyc_view(request):
             obj.user = user
             obj.kyc_status = 'pending'
             obj.save()
-
-            # Trigger email notification to Admin for new KYC request
             send_admin_new_agent_alert(
                 agent_name=user.get_full_name() or user.username,
                 agent_email=user.email,
@@ -363,6 +361,16 @@ def agent_upload_ticket(request, booking_id):
             ticket_file=ticket_file,
             notes=notes,
         )
+        Notification.objects.create(
+            recipient=booking.user,
+            sender=request.user,
+            title="Ticket Uploaded",
+            message=f"Agent has uploaded your flight ticket for booking #{booking.id}. Please review and approve.",
+            notification_type='flight_ticket_uploaded',
+            priority='high',
+            redirect_url=f"/customers/booking/{booking.id}/",
+            icon="fa-solid fa-plane-departure"
+        )
 
         try:
             services.mark_ticket_uploaded(payment)
@@ -440,7 +448,13 @@ def booking_detail(request, booking_id):
 def manage_booking(request):
     bookings_list = Bookings.objects.filter(
         package__agency=request.user
-    ).exclude(status='refund_requested').select_related('package', 'user', 'payment').order_by('-created_at')
+    ).exclude(status='refund_requested').annotate(
+        unread_chats_count=Count(
+            'chats',
+            filter=~Q(chats__sender=request.user) & Q(chats__is_read=False),
+            distinct=True
+        )
+    ).select_related('package', 'user').order_by('-created_at')
     
     status_filter = request.GET.get('status')
     if status_filter:
@@ -449,7 +463,7 @@ def manage_booking(request):
     search_query = request.GET.get('search')
     if search_query:
         bookings_list = bookings_list.filter(
-            Q(id__icontains=search_query) | Q(user__username__icontains=search_query)
+            Q(booking_id__icontains=search_query) | Q(user__username__icontains=search_query)
         )
         
     all_bookings = Bookings.objects.filter(package__agency=request.user).exclude(status='refund_requested')
@@ -464,14 +478,20 @@ def manage_booking(request):
         'cancelled': all_bookings.filter(status='cancelled').count(),
     }
 
+    # Sidebar ya navbar ke liye overall total unread notifications (agar chahiye hon)
+    total_unread_notifications = BookingChat.objects.filter(
+        booking__package__agency=request.user,
+        is_read=False
+    ).exclude(sender=request.user).count()
+
     context = {
         'bookings': bookings_list,
         'stats': stats,
         'current_status': status_filter or '',
         'search_query': search_query or '',
+        'total_unread_notifications': total_unread_notifications,
     }
     return render(request, 'stakeholder/manage_booking.html', context)
-
 
 @login_required(login_url="/auth/login/")
 def update_booking_status(request, booking_id):
@@ -494,8 +514,13 @@ def update_booking_status(request, booking_id):
             )
             Notification.objects.create(
                 recipient=booking.user,
+                sender=request.user,
                 title="Visa Processing Started",
-                message=f"Your visa processing for Booking #{booking.id} has been initiated."
+                message=f"Your visa processing for Booking #{booking.id} has been initiated.",
+                notification_type='admin_broadcast',
+                priority='medium',
+                redirect_url=f"/customers/booking/{booking.id}/",
+                icon="fa-solid fa-passport"
             )
 
             send_booking_status_email(
@@ -532,13 +557,16 @@ def update_booking_status(request, booking_id):
                     changed_by=request.user,
                     comments="e-Ticket uploaded by agent.",
                 )
-
                 Notification.objects.create(
                     recipient=booking.user,
+                    sender=request.user,
                     title="Ticket Issued",
-                    message=f"Ticket uploaded for Booking #{booking.id}. Please review and approve in your dashboard."
+                    message=f"Ticket uploaded for Booking #{booking.id}. Please review and approve in your dashboard.",
+                    notification_type='flight_ticket_uploaded',
+                    priority='high',
+                    redirect_url=f"/customers/booking/{booking.id}/",
+                    icon="fa-solid fa-ticket"
                 )
-
                 send_ticket_uploaded_notification(
                     customer_email=booking.user.email,
                     customer_name=booking.user.get_full_name() or booking.user.username,
@@ -561,8 +589,13 @@ def update_booking_status(request, booking_id):
             )
             Notification.objects.create(
                 recipient=booking.user,
+                sender=request.user,
                 title="Booking Cancelled",
-                message=f"Your cancellation request for Booking #{booking.id} has been approved."
+                message=f"Your cancellation request for Booking #{booking.id} has been approved.",
+                notification_type='admin_broadcast',
+                priority='high',
+                redirect_url=f"/customers/booking/{booking.id}/",
+                icon="fa-solid fa-ban"
             )
 
             send_booking_status_email(
@@ -589,8 +622,13 @@ def update_booking_status(request, booking_id):
             )
             Notification.objects.create(
                 recipient=booking.user,
+                sender=request.user,
                 title="Cancellation Request Rejected",
-                message=f"Your cancellation request for Booking #{booking.id} was rejected by the agent."
+                message=f"Your cancellation request for Booking #{booking.id} was rejected by the agent.",
+                notification_type='admin_broadcast',
+                priority='medium',
+                redirect_url=f"/customers/booking/{booking.id}/",
+                icon="fa-solid fa-circle-xmark"
             )
 
             send_booking_status_email(
@@ -683,8 +721,13 @@ def verify_booking_doc(request, customer_id):
         customer.save()
         Notification.objects.create(
             recipient=booking.user,
+            sender=request.user,
             title="Document Verification Update",
-            message=notif_msg
+            message=notif_msg,
+            notification_type='admin_broadcast',
+            priority='high' if has_rejection else 'medium',
+            redirect_url=f"/customers/booking/{booking.id}/",
+            icon="fa-solid fa-file-circle-check" if not has_rejection else "fa-solid fa-file-circle-exclamation"
         )
 
         messages.success(request, f"Verification decisions saved for {customer.full_name}.")
@@ -736,3 +779,65 @@ def cancelled_booking(request):
     return render(request, 'stakeholder/cancelled_booking.html', context)
 
 
+@login_required(login_url='/auth/login/')
+def agent_booking_chat_view(request, booking_id):
+    booking = get_object_or_404(Bookings, id=booking_id)
+    
+    # Security check: Agency user ya booking owner check
+    is_agency_owner = hasattr(booking.package, 'agency') and booking.package.agency == request.user
+    if not request.user.is_staff and not is_agency_owner and booking.user != request.user:
+        return redirect('base:home')
+
+    booking.chats.exclude(sender=request.user).filter(is_read=False).update(is_read=True)
+
+    # 2. Messages fetch karein
+    chats = booking.chats.order_by('timestamp')
+    
+    if request.method == 'POST':
+        message_text = request.POST.get('message')
+        if message_text:
+            BookingChat.objects.create(
+                booking=booking,
+                sender=request.user,
+                message=message_text,
+                is_read=False 
+            )
+            recipient_user = booking.user if request.user != booking.user else (booking.package.agency if booking.package else None)
+            if recipient_user:
+                Notification.objects.create(
+                    recipient=recipient_user,
+                    sender=request.user,
+                    title="New Message Received",
+                    message=f"You received a new message regarding Booking #{booking.id}.",
+                    notification_type='admin_broadcast',
+                    priority='medium',
+                    redirect_url=f"/customers/booking/{booking.id}/",
+                    icon="fa-solid fa-comments"
+                )
+            return redirect('stakeholder:booking_chat', booking_id=booking.id)
+               
+    context = {'booking': booking, 'chats': chats}
+    return render(request, 'stakeholder/booking_chat.html', context)
+
+@login_required(login_url='/auth/login/')
+def admin_support_chat(request):
+    # Logged-in agent ki sari chats fetch karein
+    chats = AdminAgentChat.objects.filter(agent=request.user).order_by('created_at')
+    
+    # Jab agent page khole toh admin ke bheje huay unread messages ko 'read' mark kar dein
+    chats.filter(is_read=False).exclude(sender=request.user).update(is_read=True)
+    
+    if request.method == 'POST':
+        message_text = request.POST.get('message')
+        if message_text and message_text.strip():
+            AdminAgentChat.objects.create(
+                agent=request.user,
+                sender=request.user, # Sender agent khud hai
+                message=message_text.strip()
+            )
+            return redirect('stakeholder:admin_support_chat') # Apne URL name ke mutabiq adjust kar lein
+            
+    context = {
+        'chats': chats,
+    }
+    return render(request, 'stakeholder/admin_support_chat.html', context)

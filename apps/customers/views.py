@@ -13,10 +13,9 @@ from base.decorators import role_required
 from django.db.models import Sum, Count, Q
 from payments.models import Payment
 from bookings.models import BookingCustomers, BookingStatusHistory
+from notifications.models import Notification 
 
 from adminpanel.decorators import user_required
-
-# --- EMAIL IMPORTS (ADDED FOR UTILS INTEGRATION) ---
 from utils.emails import (
     send_complaint_submitted_emails,
     send_ticket_approved_notification,
@@ -124,10 +123,15 @@ def customer_kyc(request):
     return render(request, 'customer/customer_kyc.html', {'profile': profile})
 
 
-@user_required
 @login_required(login_url='/auth/login/')
 def user_bookings(request):
-    current_user_bookings = Bookings.objects.filter(user=request.user).order_by('-created_at')
+    current_user_bookings = Bookings.objects.filter(user=request.user).annotate(
+        unread_chats_count=Count(
+            'chats',
+            filter=~Q(chats__sender=request.user) & Q(chats__is_read=False)
+        )
+    ).select_related('package', 'payment').order_by('-created_at')
+    
     context = {
         'bookings': current_user_bookings
     }
@@ -279,9 +283,24 @@ def approve_ticket(request, booking_id):
             ticket.customer_rejection_reason = None 
             ticket.save()
 
+            # --- ADDED: Notification for Ticket Approved ---
+            agent_obj = getattr(getattr(booking, 'package', None), 'agency', None) or getattr(getattr(booking, 'package', None), 'agent', None)
+            if agent_obj:
+                Notification.objects.create(
+                    recipient=agent_obj,
+                    sender=request.user,
+                    title="Ticket Approved",
+                    message=f"Customer has approved the ticket for booking #{booking.id}.",
+                    notification_type='flight_ticket_uploaded', # ya appropriate type
+                    priority='medium',
+                    redirect_url=f"/agents/bookings/{booking.id}/",
+                    icon="fa-solid fa-plane-departure"
+                )
+            # ----------------------------------------------
+
             # Trigger Email to Agent/Admin
             try:
-                agent_email = getattr(getattr(getattr(booking, 'package', None), 'agent', None), 'email', None)
+                agent_email = getattr(agent_obj, 'email', None) if agent_obj else None
                 send_ticket_approved_notification(
                     agent_email=agent_email,
                     customer_name=request.user.get_full_name() or request.user.username,
@@ -309,9 +328,24 @@ def reject_ticket_view(request, booking_id):
             ticket.customer_rejection_reason = reason
             ticket.save()
 
+            # --- ADDED: Notification for Ticket Rejected ---
+            agent_obj = getattr(getattr(booking, 'package', None), 'agency', None) or getattr(getattr(booking, 'package', None), 'agent', None)
+            if agent_obj:
+                Notification.objects.create(
+                    recipient=agent_obj,
+                    sender=request.user,
+                    title="Ticket Rejected",
+                    message=f"Customer rejected the ticket for booking #{booking.id}. Reason: {reason}",
+                    notification_type='flight_ticket_uploaded',
+                    priority='high',
+                    redirect_url=f"/agents/bookings/{booking.id}/",
+                    icon="fa-solid fa-plane-slash"
+                )
+            # ---------------------------------------------
+
             # Trigger Email to Agent/Admin
             try:
-                agent_email = getattr(getattr(getattr(booking, 'package', None), 'agent', None), 'email', None)
+                agent_email = getattr(agent_obj, 'email', None) if agent_obj else None
                 send_ticket_rejected_notification(
                     agent_email=agent_email,
                     customer_name=request.user.get_full_name() or request.user.username,
@@ -327,22 +361,33 @@ def reject_ticket_view(request, booking_id):
             
         return redirect('customers:user_ticket')
 
-
 @user_required
 @login_required
 def manage_booking_request(request, booking_id):
-    booking = get_object_or_404(Bookings, id=booking_id)
+    # Lookup using numeric ID or String booking_id dynamically
+    if str(booking_id).isdigit():
+        booking = get_object_or_404(Bookings, id=booking_id)
+    else:
+        booking = get_object_or_404(Bookings, booking_id=booking_id)
+
     is_customer = booking.user == request.user
     is_admin = request.user.is_staff or getattr(request.user, 'role', '') == 'admin'
 
     if not (is_customer or is_admin):
-        messages.error(request, "Aap ke paas is booking ko manage karne ki permission nahi hai.")
+        messages.error(request, "You do not have access to manage this booking.")
         return redirect('customers:user_bookings')
 
     if request.method == "POST":
         action_type = request.POST.get("action_type")
         reason = request.POST.get("reason")
-        agent_email = getattr(getattr(getattr(booking, 'package', None), 'agent', None), 'email', None)
+        
+        # Safe lookup for agency/agent email & object
+        agent_email = None
+        agent_obj = None
+        if hasattr(booking, 'package') and booking.package:
+            agent_obj = getattr(booking.package, 'agency', None) or getattr(booking.package, 'agent', None)
+            if agent_obj:
+                agent_email = getattr(agent_obj, 'email', None)
 
         if action_type == "cancel":
             old_status = booking.status
@@ -361,13 +406,27 @@ def manage_booking_request(request, booking_id):
                 remarks=reason or "Cancellation requested by customer"
             )
 
+            # --- ADDED: Notification for Booking Cancellation ---
+            if agent_obj:
+                Notification.objects.create(
+                    recipient=agent_obj,
+                    sender=request.user,
+                    title="Booking Cancelled",
+                    message=f"Customer cancelled booking #{booking.id}.",
+                    notification_type='admin_broadcast', # ya appropriate type
+                    priority='high',
+                    redirect_url=f"/agents/bookings/{booking.id}/",
+                    icon="fa-solid fa-ban"
+                )
+            # --------------------------------------------------
+
             # Email Notification
             try:
                 send_booking_action_email(
                     action_type="cancel",
                     customer_email=request.user.email,
                     customer_name=request.user.get_full_name() or request.user.username,
-                    booking_id=booking.id,
+                    booking_id=booking.booking_id or booking.id,
                     agent_email=agent_email,
                     reason=reason or ""
                 )
@@ -382,6 +441,8 @@ def manage_booking_request(request, booking_id):
                 payment = booking.payment
                 
                 if payment.payment_status in ['held_in_escrow', 'paid']:
+                    old_status = booking.status  # Store BEFORE mutating status
+                    
                     payment.payment_status = 'refund_requested' 
                     payment.refund_reason = reason
                     payment.save()
@@ -392,11 +453,25 @@ def manage_booking_request(request, booking_id):
 
                     BookingStatusHistory.objects.create(
                         booking=booking,
-                        old_status=booking.status,
+                        old_status=old_status,
                         new_status="refund_requested",
                         changed_by=request.user,
                         remarks=reason or "Refund requested by customer"
                     )
+
+                    # --- ADDED: Notification for Refund Claimed ---
+                    if agent_obj:
+                        Notification.objects.create(
+                            recipient=agent_obj,
+                            sender=request.user,
+                            title="Refund Claimed",
+                            message=f"Customer claimed a refund for booking #{booking.id}.",
+                            notification_type='refund_claimed',
+                            priority='urgent',
+                            redirect_url=f"/agents/bookings/{booking.id}/",
+                            icon="fa-solid fa-rotate-left"
+                        )
+                    # ---------------------------------------------
 
                     # Email Notification
                     try:
@@ -404,18 +479,18 @@ def manage_booking_request(request, booking_id):
                             action_type="refund",
                             customer_email=request.user.email,
                             customer_name=request.user.get_full_name() or request.user.username,
-                            booking_id=booking.id,
+                            booking_id=booking.booking_id or booking.id,
                             agent_email=agent_email,
                             reason=reason or ""
                         )
                     except Exception:
                         pass
 
-                    messages.success(request, "Refund request successfully submited. Admin review it.")
+                    messages.success(request, "Refund request successfully submitted for Admin review.")
                 else:
-                    messages.error(request, "In this payment status refund request is not able to submit.")
+                    messages.error(request, "Current payment status does not allow refund requests.")
             else:
-                messages.error(request, "this booking do not have valid payment record.")
+                messages.error(request, "This booking does not have a valid payment record.")
 
             return redirect('customers:user_bookings')
 
@@ -425,13 +500,12 @@ def manage_booking_request(request, booking_id):
             booking.customer_note = reason
             booking.save()
 
-            # Email Notification
             try:
                 send_booking_action_email(
                     action_type="extend",
                     customer_email=request.user.email,
                     customer_name=request.user.get_full_name() or request.user.username,
-                    booking_id=booking.id,
+                    booking_id=booking.booking_id or booking.id,
                     agent_email=agent_email,
                     reason=reason or "",
                     new_date=new_date or ""
@@ -439,23 +513,43 @@ def manage_booking_request(request, booking_id):
             except Exception:
                 pass
 
-            messages.success(request, "Date extension request submited.")
+            messages.success(request, "Date extension request submitted.")
             return redirect('customers:user_bookings')
 
     return redirect('customers:user_bookings')
 
 
-@user_required
 @login_required(login_url='/auth/login/')
 def booking_detail(request, booking_id):
-    booking = get_object_or_404(Bookings, pk=booking_id, user=request.user)
+    # Support both database numeric ID and String booking_id (e.g. SEH-BKG-00001)
+    if str(booking_id).isdigit():
+        booking = get_object_or_404(Bookings, pk=booking_id)
+    else:
+        booking = get_object_or_404(Bookings, booking_id=booking_id)
+
+    # Permission check for Customer or Admin/Agency access
+    is_customer = booking.user == request.user
+    is_admin = request.user.is_staff or getattr(request.user, 'role', '') in ['admin', 'agency']
+    
+    if not (is_customer or is_admin):
+        messages.error(request, "You do not have permission to view this booking.")
+        return redirect('customers:user_bookings')
+
+    # Fetch all travelers linked to this booking
     customers = BookingCustomers.objects.filter(booking=booking)
     
+    # Fetch additional custom uploaded files/fields if related_name or foreign key exists
+    custom_documents = getattr(booking, 'documents', None)
+    if custom_documents and hasattr(custom_documents, 'all'):
+        custom_documents = custom_documents.all()
+    else:
+        custom_documents = []
+
     return render(request, 'customer/booking_detail.html', {
         'booking': booking,
-        'customers': customers
+        'customers': customers,
+        'custom_documents': custom_documents,
     })
-
 
 @user_required
 @login_required(login_url='/auth/login/')
@@ -519,8 +613,24 @@ def update_booking_docs(request, booking_id):
             changed_by=request.user,
             remarks="Customer re-submitted rejected documents/details for verification."
         )
+
+        # --- ADDED: Notification for Documents Resubmitted ---
+        agent_obj = getattr(getattr(booking, 'package', None), 'agency', None) or getattr(getattr(booking, 'package', None), 'agent', None)
+        if agent_obj:
+            Notification.objects.create(
+                recipient=agent_obj,
+                sender=request.user,
+                title="Documents Resubmitted",
+                message=f"Customer has re-submitted documents for booking #{booking.id}.",
+                notification_type='agent_new_booking',
+                priority='medium',
+                redirect_url=f"/agents/bookings/{booking.id}/",
+                icon="fa-solid fa-file-arrow-up"
+            )
+        # ---------------------------------------------------
+
         try:
-            agent_email = getattr(getattr(getattr(booking, 'package', None), 'agent', None), 'email', None)
+            agent_email = getattr(agent_obj, 'email', None) if agent_obj else None
             send_docs_resubmitted_email(
                 customer_name=request.user.get_full_name() or request.user.username,
                 booking_id=booking.id,

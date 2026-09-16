@@ -12,5 +12,6 @@ path('<int:booking_id>/raast-payment/', views.raast_payment_page, name='raast_pa
 path('<int:booking_id>/upload-proof/', views.upload_raast_proof, name='upload_raast_proof'),
 path('<int:booking_id>/payment_status/', views.payment_status, name='payment_status'),
 path('success/<slug:slug>/', views.booking_success, name='booking_success'),
+path('booking/<int:booking_id>/chat/', views.booking_chat, name='booking_chat'),
 
 ]

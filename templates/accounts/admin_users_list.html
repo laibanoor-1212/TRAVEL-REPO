@@ -98,28 +98,24 @@
 
     .search-box {
         position: relative;
+        display: flex;
+        align-items: center;
     }
-
     .search-box input {
-        padding: 10px 16px;
-        padding-left: 36px;
-        border: 1px solid var(--border-color);
-        border-radius: 6px;
-        font-size: 14px;
-        width: 240px;
-        outline: none;
+        padding-right: 38px !important;
     }
-
-    .search-box::before {
-        content: "🔍";
+    .search-submit-btn {
         position: absolute;
-        left: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 13px;
+        right: 8px;
+        background: none;
+        border: none;
+        cursor: pointer;
         color: var(--text-light);
+        font-size: 13px;
     }
-
+    .search-submit-btn:hover {
+        color: var(--primary-green);
+    }
     .filter-btn {
         background-color: var(--bg-white);
         border: 1px solid var(--border-color);
@@ -265,6 +261,68 @@
         color: var(--bg-white);
         border-color: var(--primary-green);
     }
+    /* ===== RESPONSIVE MEDIA QUERIES FOR USERS REGISTRY ===== */
+    @media (max-width: 992px) {
+        .dashboard-container {
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .dashboard-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .controls-area {
+            width: 100%;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .search-box {
+            width: 100%;
+        }
+
+        .search-box input {
+            width: 100%;
+        }
+
+        .filter-btn, .add-user-btn {
+            flex: 1;
+            text-align: center;
+        }
+
+        .tabs-wrapper {
+            overflow-x: auto;
+            white-space: nowrap;
+            padding-bottom: 5px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .user-table th, .user-table td {
+            padding: 12px 10px;
+            font-size: 13px;
+        }
+
+        .table-footer {
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+            text-align: center;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .title-area h2 {
+            font-size: 20px;
+        }
+        
+        .controls-area {
+            flex-direction: column;
+            align-items: stretch;
+        }
+    }
 </style>
 
 <div class="dashboard-container">
@@ -277,10 +335,14 @@
         <div class="controls-area">
             <form method="GET" action="{% url 'accounts:admin_manage_users' %}" class="search-box">
                 <input type="hidden" name="tab" value="{{ active_tab }}">
-                <input type="text" name="search" placeholder="Search by email..." value="{{ search_query }}">
+                <i class="fas fa-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 13px; color: var(--text-light);"></i>
+                <input type="text" name="search" placeholder="Search by email..." value="{{ search_query }}" style="padding-left: 36px;">
+                <button type="submit" class="search-submit-btn" title="Search">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
             </form>
-            <button class="filter-btn">⚙️ Filter</button>
-            <button class="add-user-btn">+ Add User</button>
+            <button class="filter-btn"> Filter</button>
+            <button class="add-user-btn">Add User</button>
         </div>
     </div>
 
@@ -350,12 +412,12 @@
                         
                         <div id="dropdown-{{ user.id }}" class="dropdown-menu">
                             {% if user.is_active %}
-                                <a href="{% url 'accounts:change_user_status' user.id 'deactivate' %}?tab={{ active_tab }}">⏸ Deactivate</a>
-                                <a href="{% url 'accounts:change_user_status' user.id 'suspend' %}?tab={{ active_tab }}" class="suspend-link">🚫 Suspend Account</a>
+                                <a href="{% url 'accounts:change_user_status' user.id 'deactivate' %}?tab={{ active_tab }}">Deactivate</a>
+                                <a href="{% url 'accounts:change_user_status' user.id 'suspend' %}?tab={{ active_tab }}" class="suspend-link">Suspend Account</a>
                             {% else %}
-                                <a href="{% url 'accounts:change_user_status' user.id 'activate' %}?tab={{ active_tab }}">✔️ Activate User</a>
+                                <a href="{% url 'accounts:change_user_status' user.id 'activate' %}?tab={{ active_tab }}">Activate User</a>
                                 {% if user.is_approved %}
-                                    <a href="{% url 'accounts:change_user_status' user.id 'suspend' %}?tab={{ active_tab }}" class="suspend-link">🚫 Suspend Account</a>
+                                    <a href="{% url 'accounts:change_user_status' user.id 'suspend' %}?tab={{ active_tab }}" class="suspend-link">Suspend Account</a>
                                 {% endif %}
                             {% endif %}
                         </div>

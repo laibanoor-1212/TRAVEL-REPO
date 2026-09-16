@@ -32,7 +32,7 @@
     .agency-label {
         font-size: 0.8rem;
         font-weight: 700;
-        color:  #065f46;
+        color: #065f46;
         letter-spacing: 1px;
         text-transform: uppercase;
     }
@@ -107,7 +107,7 @@
     .field-box input:focus,
     .field-box select:focus,
     .field-box textarea:focus {
-        border-color: #31a074;;
+        border-color: #31a074;
         box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.15);
     }
 
@@ -148,7 +148,7 @@
     }
 
     .pill input[type="checkbox"] {
-        accent-color:  #31a074;
+        accent-color: #31a074;
         width: 16px;
         height: 16px;
     }
@@ -242,7 +242,7 @@
             <div class="agency-info">
                 <span class="agency-label">CREATE NEW PACKAGE</span>
                 <h2 class="agency-name">
-                    {% if request.user.agent_kyc.agency_name %}
+                    {% if request.user.agent_kyc and request.user.agent_kyc.agency_name %}
                         {{ request.user.agent_kyc.agency_name }}
                     {% else %}
                         {{ request.user.username }}
@@ -277,11 +277,11 @@
                     <div class="input-grid-2">
                         <div class="field-box">
                             <label>Agency Name</label>
-                            <input type="text" value="{{ request.user.agent_kyc.agency_name|default:request.user.username }}" readonly class="locked-input">
+                            <input type="text" value="{% if request.user.agent_kyc %}{{ request.user.agent_kyc.agency_name|default:request.user.username }}{% else %}{{ request.user.username }}{% endif %}" readonly class="locked-input">
                         </div>
                         <div class="field-box">
                             <label>DTS License Number</label>
-                            <input type="text" value="{{ request.user.agent_kyc.dts_no|default:'N/A' }}" readonly class="locked-input">
+                            <input type="text" value="{% if request.user.agent_kyc %}{{ request.user.agent_kyc.dts_no|default:'N/A' }}{% else %}N/A{% endif %}" readonly class="locked-input">
                         </div>
                     </div>
                 </div>
@@ -446,7 +446,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-// Image Preview
 function previewBannerImage(input) {
     const prompt = document.getElementById('upload-prompt');
     const preview = document.getElementById('banner-preview');
@@ -476,9 +475,10 @@ function resetImagePreview() {
                         <span>Click to upload package banner image (JPG, PNG)</span>`;
 }
 
-// Dynamic field management based on Package Type
 function handleTypeChange() {
     const select = document.getElementById('package_type_select');
+    if (!select || select.selectedIndex < 0) return;
+    
     const selectedOption = select.options[select.selectedIndex];
     const typeName = (selectedOption.getAttribute('data-typename') || selectedOption.text).toLowerCase();
 
@@ -535,7 +535,6 @@ function handleTypeChange() {
     }
 }
 
-// Client-side Date Validation
 document.getElementById('packageForm').addEventListener('submit', function(e) {
     const departureDate = document.getElementById('departure_date').value;
     const deadlineDate = document.getElementById('application_deadline').value;

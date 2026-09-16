@@ -99,3 +99,92 @@ html {
 .imgtawaf{
     margin-left:220px;
 }
+
+@media (max-width: 1200px) {
+    .ahram-hero {
+        gap: 30px;
+        padding: 40px 5%;
+    }
+    
+    .image-collage img {
+        width: 170px;
+    }
+    
+    .imgtawaf {
+        margin-left: 0;
+    }
+}
+
+
+@media (max-width: 992px) {
+    .ahram-hero {
+        flex-direction: column;
+        text-align: center;
+        padding: 30px 5%;
+    }
+
+    .text-section .main-title {
+        font-size: 40px;
+    }
+
+    .text-section .subtitle {
+        font-size: 18px;
+    }
+
+    .image-collage {
+        margin-top: 40px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .img1, .img2, .img3 {
+        transform: none !important;
+    }
+
+    .image-collage img {
+        width: 180px;
+    }
+    .bottom-nav {
+        justify-content: flex-start;
+        overflow-x: auto;
+        gap: 12px;
+        padding: 12px 5%;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .bottom-nav::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+@media (max-width: 576px) {
+    .text-section .main-title {
+        font-size: 30px;
+    }
+
+    .text-section .subtitle {
+        font-size: 15px;
+    }
+
+    .toggle-buttons span {
+        font-size: 14px;
+        margin-right: 10px;
+    }
+
+    .image-collage {
+        gap: 10px;
+    }
+
+    .image-collage img {
+        width: 45%; 
+    }
+
+    .content-area {
+        padding: 20px 4%;
+    }
+
+    .nav-box {
+        padding: 10px 16px;
+        font-size: 13px;
+    }
+}

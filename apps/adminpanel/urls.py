@@ -12,6 +12,7 @@ urlpatterns = [
     path("reset_confirm/<uidb64>/<token>/",views.admin_reset_password_confirm, name="reset_confirm"),
     path('agent_requests',views.agent_requests,name='agent_requests'),
   path('review/<int:pk>/', views.review_agent, name='review_agent'),
+  path('chat/<int:agent_id>/', views.admin_agent_chat_room, name='admin_agent_chat_room'),
   path('packages/monitoring/', views.admin_packages, name='admin_packages'),
     path('packages/<int:pkg_id>/block/', views.block_package, name='block_package'),
     path('packages/<int:pkg_id>/unblock/', views.unblock_package, name='unblock_package'),

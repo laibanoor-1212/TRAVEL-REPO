@@ -28,6 +28,7 @@ from .forms import SystemPreferenceForm
 from django.db.models import ProtectedError,F
 from django.utils import timezone
 
+from .models import AdminAgentChat 
 # Utils Email Module Imports
 from utils.emails import (
     send_password_change_email,
@@ -137,10 +138,11 @@ def admin_dashboard(request):
     stakeholders_qs = CustomUser.objects.filter(role='stakeholder')
     pending_agents = stakeholders_qs.filter(is_approved=False).count()
     verified_agents = stakeholders_qs.filter(is_approved=True).count()
-    total_pilgrims = CustomUser.objects.filter(role='customer').count()
+    total_users = CustomUser.objects.count()
     active_packages = Package.objects.filter(status='active').count()
     pending_bookings = Bookings.objects.filter(status='pending').count()
     completed_bookings = Bookings.objects.filter(status='completed').count()
+    escrow_hold_count = EscrowTransaction.objects.filter(status=EscrowTransaction.Status.HELD).count()
     escrow_agg = EscrowTransaction.objects.filter(
         status=EscrowTransaction.Status.HELD
     ).aggregate(Sum('held_amount'))
@@ -152,17 +154,16 @@ def admin_dashboard(request):
     context = {
         'pending_agents': pending_agents,
         'verified_agents': verified_agents,
-        'total_pilgrims': total_pilgrims,
+        'total_users': total_users,
         'active_packages': active_packages,
         'pending_bookings': pending_bookings,
         'completed_bookings': completed_bookings,
-        'total_escrow': total_escrow,
+        'escrow_hold_count': escrow_hold_count,
         'total_revenue': total_revenue,
         'stakeholders_qs': stakeholders_qs,
     }
 
     return render(request, 'adminpanel/admin_dashboard.html', context)
-
 @admin_required
 def agent_requests(request):
     pending_count = AgentKYC.objects.filter(kyc_status='pending').count()
@@ -170,7 +171,14 @@ def agent_requests(request):
     rejected_count = AgentKYC.objects.filter(kyc_status='rejected').count()
     approved_count = AgentKYC.objects.filter(kyc_status='approved').count()
 
-    requests = AgentKYC.objects.all().order_by('-submitted_at')
+    # User field ko filter aur annotate karein taake profile.user valid ho
+    requests = AgentKYC.objects.filter(user__isnull=False).select_related('user').annotate(
+    unread_messages_count=Count(
+        'user__adminagentchat', # Or 'user__admin_chats' depending on your model set up
+        filter=Q(user__adminagentchat__is_read=False) & ~Q(user__adminagentchat__sender=request.user)
+    )
+)
+
     return render(
         request,
         'adminpanel/agent_requests.html',
@@ -316,43 +324,31 @@ def customer_detail(request, profile_id):
         'selected_packages': selected_packages
     }
     return render(request, 'adminpanel/admin_customer_details.html', context)
-
-@admin_required
-@login_required
 def admin_bookings(request):
     view_id = request.GET.get('view_id')
     payment_id = request.GET.get('payment_id')
-    all_bookings = Bookings.objects.select_related(
-        'user', 
-        'package'
-    ).prefetch_related(
-        'customer_profiles',  
-        'status_history',    
-        'documents'           
-    ).all()
+
+    bookings = Bookings.objects.all().order_by('-id')
 
     selected_booking_details = None
     selected_booking_payment = None
 
     if view_id:
-        selected_booking_details = get_object_or_404(
-            Bookings.objects.select_related('user', 'package').prefetch_related('customer_profiles', 'documents'),
-            id=view_id
-        )
+        selected_booking_details = Bookings.objects.filter(id=view_id).first()
 
     if payment_id:
-        selected_booking_payment = get_object_or_404(
-            Bookings.objects.select_related('user', 'package'),
-            id=payment_id
-        )
+        booking_obj = Bookings.objects.filter(id=payment_id).first()
+        if booking_obj:
+            selected_booking_payment = getattr(booking_obj, 'payment', None) or getattr(booking_obj, 'bookingpayment', None)
 
     context = {
-        'bookings': all_bookings,
+        'bookings': bookings,
         'selected_booking_details': selected_booking_details,
         'selected_booking_payment': selected_booking_payment,
     }
 
     return render(request, 'adminpanel/admin_booking.html', context)
+
 
 @admin_required
 def update_booking_status(request, booking_id):
@@ -810,3 +806,35 @@ def admin_release_payout(request, payment_id):
             messages.error(request, f"Failed to release payout: {e}")
 
     return redirect('adminpanel:payment_list')
+
+ 
+
+@login_required
+def admin_agent_chat_room(request, agent_id):
+    agent = get_object_or_404(User, id=agent_id)
+    admin = request.user
+
+    if request.method == 'POST':
+        message_text = request.POST.get('message', '').strip()
+        
+        if message_text:
+            # agent_id/agent pass karna zaroori hai taake null value IntegrityError na aaye
+            AdminAgentChat.objects.create(
+                agent=agent,
+                admin=admin,
+                sender=request.user,
+                receiver=agent,
+                message=message_text,
+            )
+            return redirect('adminpanel:admin_agent_chat_room', agent_id=agent.id)
+
+    chats = AdminAgentChat.objects.filter(
+        agent=agent, 
+        admin=admin
+    ).order_by('created_at') # ya timestamp field jo aapke model me ho
+
+    context = {
+        'agent': agent,
+        'chats': chats,
+    }
+    return render(request, 'adminpanel/admin_agent_chat_room.html', context)

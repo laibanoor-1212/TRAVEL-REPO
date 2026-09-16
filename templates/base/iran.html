@@ -3,24 +3,33 @@
 
 {% block content %}
 
-<div class="iran-container">
+<div class="guide-page">
 
-  <section class="iran-hero">
-    <div class="overlay"></div>
-    <div class="hero-content">
-      <h1>Iran Ziyarat Guide</h1>
+  <!-- HERO SECTION WITH DECORATIVE OVERLAYS -->
+  <section class="guide-hero">
+    <div class="guide-hero-overlay"></div>
+    <div class="hero-decoration hero-decoration-one"></div>
+    <div class="hero-decoration hero-decoration-two"></div>
+    
+    <div class="guide-hero-content">
+      <h1>Iran Ziyarat <span>Guide</span></h1>
+      <div class="arabic-text">اَللَّهُمَّ صَلِّ عَلَى عَلِيِّ بْنِ مُوسَى الرِّضَا الْمُرْتَضَى</div>
       <p>
-        Explore the sacred shrines of Iran including Mashhad and Qom.
+        Explore the sacred shrines of Iran including Mashhad and Qom. 
         A complete spiritual journey filled with peace, knowledge, and devotion.
       </p>
+     
     </div>
   </section>
 
-</div>
-
-  <section class="iran-intro">
-    <div class="intro-text">
-      <h2>What is Iran Ziyarat?</h2>
+ 
+  <section id="intro" class="guide-intro">
+    <div class="intro-icon">
+      <i class="fas fa-mosque"></i>
+    </div>
+    <div class="intro-content">
+      <span class="section-label">OVERVIEW</span>
+      <h2>What is <span>Iran Ziyarat?</span></h2>
       <p>
         Iran Ziyarat includes visiting sacred shrines of Ahlul Bayt (AS), 
         especially the shrine of Imam رضا (AS) in Mashhad and Hazrat Masuma (SA) in Qom.
@@ -30,95 +39,110 @@
         connection with the family of the Prophet (PBUH).
       </p>
     </div>
-
-    <div class="intro-images">
-      <img src="{% static 'images/mashad1.png' %}">
-      <img src="{% static 'images/qom.png' %}">
-    </div>
   </section>
 
-  <section class="iran-places">
-    <h2>Major Ziyarat Places</h2>
+  <!-- MAJOR PLACES SECTION -->
+  <section class="journey-section">
+    <div class="section-heading">
+      <span class="section-label">DESTINATIONS</span>
+      <h2>Major <span>Ziyarat Places</span></h2>
+      <p>Discover the key spiritual destinations across Iran.</p>
+    </div>
 
-    <div class="places-grid">
+    <div class="card-grid">
 
-      <div class="place-card">
-        <img src="{% static 'images/mashad1.png' %}">
-        <div class="place-overlay">
+      <div class="guide-card">
+        <div class="card-image">
+          <img src="{% static 'images/mashad1.png' %}" alt="Mashhad">
+          <div class="image-overlay"></div>
+        </div>
+        <div class="card-content">
+          <span class="card-label">HOLY SHRINE</span>
           <h3>Mashhad</h3>
-          <p>Imam رضا (A.S) Shrine</p>
-          <a href="{% url 'base:mashad' %}" class="button">Explanation</a>
+          <p>Imam رضا (A.S) Shrine - The primary center of spiritual pilgrimage in Iran.</p>
+          <a href="{% url 'base:mashad' %}" class="read-btn">Explanation <i class="fas fa-arrow-right"></i></a>
         </div>
       </div>
 
-      <div class="place-card">
-        <img src="{% static 'images/qom.png' %}">
-        <div class="place-overlay">
+      <div class="guide-card">
+        <div class="card-image">
+          <img src="{% static 'images/qom.png' %}" alt="Qom">
+          <div class="image-overlay"></div>
+        </div>
+        <div class="card-content">
+          <span class="card-label">HOLY SHRINE</span>
           <h3>Qom</h3>
-          <p>Bibi Fatima Masuma (S.A)</p>
-          <a href="{% url 'base:qom' %}" class="button">Explanation</a>
+          <p>Bibi Fatima Masuma (S.A) - Pure sanctuary of knowledge and blessing.</p>
+          <a href="{% url 'base:qom' %}" class="read-btn">Explanation <i class="fas fa-arrow-right"></i></a>
         </div>
       </div>
 
-      <div class="place-card">
-        <img src="{% static 'images/tehran.png' %}">
-        <div class="place-overlay">
+      <div class="guide-card">
+        <div class="card-image">
+          <img src="{% static 'images/tehran.png' %}" alt="Tehran">
+          <div class="image-overlay"></div>
+        </div>
+        <div class="card-content">
+          <span class="card-label">CAPITAL & CENTERS</span>
           <h3>Tehran</h3>
-          <p>Important Islamic centers</p>
-          <a href="{% url 'base:tehran' %}" class="button">Explanation</a>
+          <p>Important Islamic centers and prominent historical ziyaarat sites.</p>
+          <a href="{% url 'base:tehran' %}" class="read-btn">Explanation <i class="fas fa-arrow-right"></i></a>
         </div>
       </div>
 
     </div>
   </section>
 
-  <section class="iran-steps">
-    <h2>Your Ziyarat Journey</h2>
+  <!-- STEPS SECTION -->
+  <section class="journey-section">
+    <div class="section-heading">
+      <span class="section-label">GUIDE STEPS</span>
+      <h2>Your <span>Ziyarat Journey</span></h2>
+    </div>
 
-    <div class="steps-grid">
-
-      <div class="step">
-        <span>01</span>
-        <h4>Preparation</h4>
+    <div class="help-grid">
+      <div class="help-card">
+        <div class="help-number">01</div>
+        <div class="help-icon"><i class="fas fa-heart"></i></div>
+        <h3>Preparation</h3>
         <p>Prepare spiritually with intention (niyyah) and duas.</p>
       </div>
 
-      <div class="step">
-        <span>02</span>
-        <h4>Travel & Arrival</h4>
+      <div class="help-card">
+        <div class="help-number">02</div>
+        <div class="help-icon"><i class="fas fa-plane"></i></div>
+        <h3>Travel & Arrival</h3>
         <p>Reach Mashhad or Qom and settle near shrine.</p>
       </div>
 
-      <div class="step">
-        <span>03</span>
-        <h4>Ziyarat Rituals</h4>
+      <div class="help-card">
+        <div class="help-number">03</div>
+        <div class="help-icon"><i class="fas fa-pray"></i></div>
+        <h3>Ziyarat Rituals</h3>
         <p>Recite Ziyarat, offer prayers, seek blessings.</p>
       </div>
-
-      <div class="step">
-        <span>04</span>
-        <h4>Reflection</h4>
-        <p>Spend time in ibadah and spiritual connection.</p>
-      </div>
-
     </div>
   </section>
 
-  <section class="iran-duas">
-    <h2>Important Ziyarat Duas</h2>
+  <!-- DUAS SECTION -->
+  <section class="guide-cta">
+    <div class="cta-content">
+      <span class="section-label">RECIPES OF BLESSINGS</span>
+      <h2>Important <span>Ziyarat Duas</span></h2>
+      
+      <div style="margin: 20px 0;">
+        <p style="direction: rtl; font-size: 1.8rem; color: #ffffff; font-family: serif; margin-bottom: 5px;">
+          اَلسَّلَامُ عَلَيْكَ يَا عَلِيَّ بْنَ مُوسَى الرِّضَا
+        </p>
+        <p style="color: #b7e4c7; font-weight: 600;">Peace be upon you, O Ali ibn Musa al-Ridha.</p>
+      </div>
 
-    <div class="dua-box">
-      <p style="direction: rtl; font-size: 1.5rem;">
-        اَلسَّلَامُ عَلَيْكَ يَا عَلِيَّ بْنَ مُوسَى الرِّضَا
-      </p>
-      <p><strong>Peace be upon you, O Ali ibn Musa al-Ridha.</strong></p>
-    </div>
-
-    <div class="dua-box">
-      <p style="direction: rtl; font-size: 1.5rem;">
-        اَلسَّلَامُ عَلَيْكِ يَا فَاطِمَةَ الْمَعْصُومَة
-      </p>
-      <p><strong>Peace be upon you, O Fatima Masuma.</strong></p>
+      <div style="margin-top: 25px;">
+        <p style="direction: rtl; font-size: 1.8rem; color: #ffffff; font-family: serif; margin-bottom: 5px;">
+          اَلسَّلَامُ عَلَيْكِ يَا فَاطِمَةَ الْمَعْصُومَة
+        </p>
+        <p style="color: #b7e4c7; font-weight: 600;">Peace be upon you, O Fatima Masuma.</p>
+      </div>
     </div>
   </section>
 

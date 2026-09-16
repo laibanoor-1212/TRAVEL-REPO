@@ -1,6 +1,6 @@
 {% extends 'customer/user_layout.html' %}
 {% load static %}
-{% block title %}Booking Details #{{ booking.id }} - Safar-e-Haram{% endblock %}
+{% block title %}Booking Details #{{ booking.booking_id|default:booking.id }} - Safar-e-Haram{% endblock %}
 
 {% block content %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -56,7 +56,7 @@
     display: block;
   }
 
-  /* Status Badges Matching Table Theme */
+  /* Status Badges */
   .status-badge {
     padding: 6px 14px;
     border-radius: 50px;
@@ -138,6 +138,12 @@
   .grid-3 {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+  }
+
+  .grid-4 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 14px;
   }
 
@@ -283,9 +289,9 @@
     </div>
     {% endif %}
 
-    <!-- Package Details -->
-    <div class="section-title"><i class="fa-solid fa-box-archive"></i> Package & Agency Overview</div>
-    <div class="grid-2">
+    <!-- 1. Package & Financial Breakdown -->
+    <div class="section-title"><i class="fa-solid fa-receipt"></i> Package & Payment Details</div>
+    <div class="grid-4">
       <div class="info-box">
         <span class="field-label">Package Name</span>
         <span class="field-value" style="color: var(--primary-green);">{{ booking.package.name }}</span>
@@ -296,20 +302,21 @@
       </div>
       <div class="info-box">
         <span class="field-label">Departure Date</span>
-        <span class="field-value">{{ booking.package.departure_date|date:"d M, Y" }}</span>
+        <span class="field-value">{{ booking.package.departure_date|date:"d M, Y"|default:"N/A" }}</span>
       </div>
       <div class="info-box">
-        <span class="field-label">Total Travelers</span>
-        <span class="field-value">{{ customers|length }} Person(s)</span>
+        <span class="field-label">Total Amount</span>
+        <span class="field-value">PKR {{ booking.total_amount|default:"0" }}</span>
       </div>
     </div>
 
-    <!-- Traveler Information -->
-    <div class="section-title"><i class="fa-solid fa-users-gear"></i> Detailed Traveler Information</div>
+    <!-- 2. Detailed Traveler Information -->
+    <div class="section-title"><i class="fa-solid fa-users-gear"></i> Detailed Traveler Information ({{ customers|length }})</div>
     <div style="display: flex; flex-direction: column; gap: 20px;">
       {% for customer in customers %}
-      <div class="info-box {% if booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}{% if customer.verification_status == 'rejected' %}doc-card-rejected{% endif %}{% endif %}" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 20px; border-radius: 10px;">
+      <div class="info-box {% if booking.status in 'rollback,action_required,reupload,docs_needed' %}{% if customer.verification_status == 'rejected' %}doc-card-rejected{% endif %}{% endif %}" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 20px; border-radius: 10px;">
         
+        <!-- Traveler Card Header -->
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px; margin-bottom: 16px;">
           <div style="display: flex; align-items: center; gap: 10px;">
             <span style="background: var(--primary-green); color: white; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">
@@ -328,140 +335,189 @@
           </div>
         </div>
 
-        <div class="grid-3" style="margin-bottom: 16px;">
+        <!-- Personal Info Grid -->
+        <div class="grid-4" style="margin-bottom: 16px;">
           <div>
             <span class="field-label">Full Name</span>
-            <span class="field-value">{{ customer.full_name }}</span>
+            <span class="field-value">{{ customer.full_name|default:"-" }}</span>
           </div>
 
-          <div class="{% if booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}{% if not customer.cnic %}missing-field{% endif %}{% endif %}">
+          <div class="{% if booking.status in 'rollback,action_required,reupload,docs_needed' and not customer.cnic %}missing-field{% endif %}">
             <span class="field-label">CNIC Number</span>
             {% if customer.cnic %}
               <span class="field-value">{{ customer.cnic }}</span>
-            {% elif booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
+            {% elif booking.status in 'rollback,action_required,reupload,docs_needed' %}
               <span class="text-missing"><i class="fa-solid fa-circle-exclamation"></i> Missing CNIC</span>
             {% else %}
               <span class="field-value" style="color: var(--text-muted);">-</span>
             {% endif %}
           </div>
 
-          <div class="{% if booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}{% if not customer.phone_number %}missing-field{% endif %}{% endif %}">
+          <div class="{% if booking.status in 'rollback,action_required,reupload,docs_needed' and not customer.phone_number %}missing-field{% endif %}">
             <span class="field-label">Phone Number</span>
             {% if customer.phone_number %}
               <span class="field-value">{{ customer.phone_number }}</span>
-            {% elif booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
+            {% elif booking.status in 'rollback,action_required,reupload,docs_needed' %}
               <span class="text-missing"><i class="fa-solid fa-circle-exclamation"></i> Missing Phone</span>
             {% else %}
               <span class="field-value" style="color: var(--text-muted);">-</span>
             {% endif %}
           </div>
 
-          <div class="{% if booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}{% if not customer.email %}missing-field{% endif %}{% endif %}">
+          <div class="{% if booking.status in 'rollback,action_required,reupload,docs_needed' and not customer.email %}missing-field{% endif %}">
             <span class="field-label">Email Address</span>
             {% if customer.email %}
               <span class="field-value">{{ customer.email }}</span>
-            {% elif booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
+            {% elif booking.status in 'rollback,action_required,reupload,docs_needed' %}
               <span class="text-missing"><i class="fa-solid fa-circle-exclamation"></i> Missing Email</span>
             {% else %}
               <span class="field-value" style="color: var(--text-muted);">-</span>
             {% endif %}
           </div>
+
+          <div>
+            <span class="field-label">Gender</span>
+            <span class="field-value">{{ customer.gender|default:"-"|capfirst }}</span>
+          </div>
+
+          <div>
+            <span class="field-label">Date of Birth</span>
+            <span class="field-value">{{ customer.date_of_birth|date:"d M, Y"|default:"-" }}</span>
+          </div>
+
+          <div>
+            <span class="field-label">Relationship / Type</span>
+            <span class="field-value">{{ customer.relationship|default:"Primary / Self" }}</span>
+          </div>
         </div>
 
-        <!-- Passport Details -->
-        {% if customer.passport_number or customer.passport_expiry or booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
+        <!-- Passport Details Grid -->
         <div style="background: var(--bg-light); padding: 12px 16px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 16px;">
           <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase;">
             <i class="fa-solid fa-passport" style="color: var(--primary-green);"></i> Passport Details
           </div>
           <div class="grid-3">
-            <div class="{% if booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}{% if not customer.passport_number %}missing-field{% endif %}{% endif %}">
+            <div class="{% if booking.status in 'rollback,action_required,reupload,docs_needed' and not customer.passport_number %}missing-field{% endif %}">
               <span class="field-label">Passport Number</span>
               {% if customer.passport_number %}
                 <span class="field-value">{{ customer.passport_number }}</span>
-              {% elif booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
+              {% elif booking.status in 'rollback,action_required,reupload,docs_needed' %}
                 <span class="text-missing"><i class="fa-solid fa-circle-exclamation"></i> Missing Passport No.</span>
+              {% else %}
+                <span class="field-value" style="color: var(--text-muted);">-</span>
               {% endif %}
             </div>
 
-            <div class="{% if booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}{% if not customer.passport_expiry %}missing-field{% endif %}{% endif %}">
+            <div class="{% if booking.status in 'rollback,action_required,reupload,docs_needed' and not customer.passport_expiry %}missing-field{% endif %}">
               <span class="field-label">Passport Expiry Date</span>
               {% if customer.passport_expiry %}
                 <span class="field-value">{{ customer.passport_expiry|date:"d M, Y" }}</span>
-              {% elif booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
+              {% elif booking.status in 'rollback,action_required,reupload,docs_needed' %}
                 <span class="text-missing"><i class="fa-solid fa-circle-exclamation"></i> Missing Expiry Date</span>
+              {% else %}
+                <span class="field-value" style="color: var(--text-muted);">-</span>
               {% endif %}
+            </div>
+
+            <div>
+              <span class="field-label">Nationality</span>
+              <span class="field-value">{{ customer.nationality|default:"Pakistani" }}</span>
             </div>
           </div>
         </div>
-        {% endif %}
 
-        <!-- Submitted Documents -->
+        <!-- Submitted Documents (With Fallbacks for Both Database Field Names) -->
         <div style="background: var(--bg-light); padding: 14px; border-radius: 8px; border: 1px dashed #cbd5e1;">
           <span class="field-label" style="margin-bottom: 10px;">Submitted Documents:</span>
           <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            
+            <!-- CNIC Front -->
             {% if customer.cnic_front %}
               <a href="{{ customer.cnic_front.url }}" target="_blank" class="doc-link">
                 <i class="fa-solid fa-id-card"></i> CNIC Front
               </a>
-            {% elif booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
+            {% elif booking.status in 'rollback,action_required,reupload,docs_needed' %}
               <span class="missing-field text-missing"><i class="fa-solid fa-circle-xmark"></i> CNIC Front Missing</span>
             {% endif %}
 
+            <!-- CNIC Back -->
             {% if customer.cnic_back %}
               <a href="{{ customer.cnic_back.url }}" target="_blank" class="doc-link">
                 <i class="fa-solid fa-id-card"></i> CNIC Back
               </a>
-            {% elif booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
+            {% elif booking.status in 'rollback,action_required,reupload,docs_needed' %}
               <span class="missing-field text-missing"><i class="fa-solid fa-circle-xmark"></i> CNIC Back Missing</span>
             {% endif %}
 
+            <!-- Passport Scan -->
             {% if customer.passport_scan %}
               <a href="{{ customer.passport_scan.url }}" target="_blank" class="doc-link">
                 <i class="fa-solid fa-passport"></i> Passport Scan
               </a>
-            {% elif booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
+            {% elif booking.status in 'rollback,action_required,reupload,docs_needed' %}
               <span class="missing-field text-missing"><i class="fa-solid fa-circle-xmark"></i> Passport Scan Missing</span>
             {% endif %}
 
-            {% if customer.passport_photo %}
-              <a href="{{ customer.passport_photo.url }}" target="_blank" class="doc-link">
-                <i class="fa-solid fa-image"></i> Passport Photo
+            <!-- Digital Photo / Passport Photo (Fallback Check) -->
+            {% if customer.digital_photo %}
+              <a href="{{ customer.digital_photo.url }}" target="_blank" class="doc-link">
+                <i class="fa-solid fa-image"></i> Digital Photo
               </a>
-            {% elif booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
-              <span class="missing-field text-missing"><i class="fa-solid fa-circle-xmark"></i> Passport Photo Missing</span>
+            {% elif customer.passport_photo %}
+              <a href="{{ customer.passport_photo.url }}" target="_blank" class="doc-link">
+                <i class="fa-solid fa-image"></i> Digital Photo
+              </a>
+            {% elif booking.status in 'rollback,action_required,reupload,docs_needed' %}
+              <span class="missing-field text-missing"><i class="fa-solid fa-circle-xmark"></i> Photo Missing</span>
             {% endif %}
+
           </div>
         </div>
 
         <!-- Rejection Remarks -->
-        {% if booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
-          {% if customer.rejection_reason %}
+        {% if booking.status in 'rollback,action_required,reupload,docs_needed' and customer.rejection_reason %}
           <div style="color: #b91c1c; font-size: 13px; margin-top: 14px; background: #fef2f2; padding: 12px; border-radius: 8px; border: 1px solid #fca5a5;">
             <strong style="display: block; margin-bottom: 2px;"><i class="fa-solid fa-circle-exclamation"></i> Agent Remarks:</strong> 
             {{ customer.rejection_reason }}
           </div>
-          {% endif %}
         {% endif %}
 
       </div>
       {% endfor %}
     </div>
 
-    <!-- Custom Requirements / Extra Documents -->
-    {% if booking.documents and booking.documents.all %}
+    <!-- 3. Notes & Special Requests Section -->
+    {% if booking.customer_note or booking.admin_note %}
+    <div class="section-title"><i class="fa-solid fa-comment-dots"></i> Notes & Special Requests</div>
+    <div class="grid-2">
+      {% if booking.customer_note %}
+      <div class="info-box">
+        <span class="field-label">Customer Note / Special Request</span>
+        <span class="field-value">{{ booking.customer_note }}</span>
+      </div>
+      {% endif %}
+      
+      {% if booking.admin_note %}
+      <div class="info-box" style="border-left: 4px solid #f97316;">
+        <span class="field-label" style="color: #c2410c;">Agent / Admin Remarks</span>
+        <span class="field-value">{{ booking.admin_note }}</span>
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- 4. Custom Requirements / Extra Documents -->
+    {% if custom_documents or booking.documents and booking.documents.all %}
     <div class="section-title"><i class="fa-solid fa-file-circle-check"></i> Additional Custom Requirements</div>
     <div style="display: flex; flex-direction: column; gap: 12px;">
-      {% for doc in booking.documents.all %}
-      <div class="info-box {% if booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}{% if doc.status == 'rejected' %}doc-card-rejected{% endif %}{% endif %}" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+      {% for doc in custom_documents|default:booking.documents.all %}
+      <div class="info-box {% if booking.status in 'rollback,action_required,reupload,docs_needed' %}{% if doc.status == 'rejected' %}doc-card-rejected{% endif %}{% endif %}" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
         <div>
-          <strong style="color: var(--text-dark); font-size: 14px;">{{ doc.field_name }}</strong>
-          {% if booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
-            {% if doc.status == 'rejected' and doc.rejection_reason %}
-              <div style="color: #dc2626; font-size: 12px; margin-top: 4px; font-weight: 600;">
-                <i class="fa-solid fa-xmark"></i> Reason: {{ doc.rejection_reason }}
-              </div>
-            {% endif %}
+          <strong style="color: var(--text-dark); font-size: 14px;">{{ doc.field_name|default:doc.name }}</strong>
+          {% if booking.status in 'rollback,action_required,reupload,docs_needed' and doc.status == 'rejected' and doc.rejection_reason %}
+            <div style="color: #dc2626; font-size: 12px; margin-top: 4px; font-weight: 600;">
+              <i class="fa-solid fa-xmark"></i> Reason: {{ doc.rejection_reason }}
+            </div>
           {% endif %}
         </div>
 
@@ -471,7 +527,7 @@
           {% elif doc.text_value %}
             <span style="color: var(--text-dark); font-size: 13px; background: #e2e8f0; padding: 4px 10px; border-radius: 6px; font-weight: 600;">{{ doc.text_value }}</span>
           {% else %}
-            {% if booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
+            {% if booking.status in 'rollback,action_required,reupload,docs_needed' %}
               <span class="text-missing" style="font-size: 12px;"><i class="fa-solid fa-circle-xmark"></i> Missing</span>
             {% endif %}
           {% endif %}
@@ -489,8 +545,8 @@
     </div>
     {% endif %}
 
-    <!-- Action Button -->
-    {% if booking.status == 'rollback' or booking.status == 'action_required' or booking.status == 'reupload' or booking.status == 'docs_needed' %}
+    <!-- Action Button for Document Updates -->
+    {% if booking.status in 'rollback,action_required,reupload,docs_needed' %}
     <div style="margin-top: 32px; text-align: right; border-top: 2px solid #f1f5f9; padding-top: 24px;">
       <a href="{% url 'customers:update_booking_docs' booking.id %}" class="btn-action-main btn-danger-fix">
         <i class="fa-solid fa-upload"></i> Upload / Fix Missing Documents

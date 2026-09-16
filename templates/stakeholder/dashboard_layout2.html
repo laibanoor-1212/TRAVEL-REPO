@@ -404,6 +404,20 @@
       .user-menu-btn:hover {
         background: #f8fafc;
       }
+      .mobile-menu-btn {
+        display: none;
+        background: transparent;
+        border: 1px solid var(--border-color);
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--primary-green);
+        font-size: 1.1rem;
+        margin-right: 12px;
+      }
 
       .user-avatar {
         width: 34px; 
@@ -478,12 +492,20 @@
         border-left: 4px solid var(--danger); 
         color: var(--danger); 
       }
-
-      @media (max-width: 768px) {
+      .brand-logo-img {
+        width: 38px;
+        height: 38px;
+        object-fit: contain;
+        border-radius: 8px;
+      }
+     @media (max-width: 768px) {
         .nav-search { display: none; }
         .sidebar { left: -260px; width: var(--sidebar-width) !important; }
-        .sidebar.mobile-show { left: 0; }
+        .sidebar.mobile-show { left: 0; box-shadow: 10px 0 30px rgba(0,0,0,0.3); }
         .main-wrapper { margin-left: 0 !important; }
+        .mobile-menu-btn { display: flex; }
+        .navbar { padding: 0 14px; }
+        .main-content { padding: 16px; }
       }
     </style>
   </head>
@@ -493,9 +515,7 @@
       <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
           <a href="{% url 'stakeholder:stakeholder_dashboard' %}" class="portal-brand">
-            <div class="brand-icon">
-              <i class="fa-solid fa-kaaba"></i>
-            </div>
+            <img src="{% static 'images/logo.png' %}" alt="Safar-e-Haram Logo" class="brand-logo-img">
             <span class="portal-title">Safar-e-Haram</span>
           </a>
           <button class="toggle-btn" onclick="toggleSidebar()" title="Toggle Menu">
@@ -561,10 +581,16 @@
 
       <div class="main-wrapper" id="mainWrapper">
         <nav class="navbar">
-          <div class="nav-search">
-            <i class="fas fa-magnifying-glass"></i>
-            <input type="text" placeholder="Search packages, bookings, IDs..." />
+          <div style="display: flex; align-items: center;">
+            <button class="mobile-menu-btn" onclick="toggleSidebar()" title="Open Menu">
+              <i class="fas fa-bars"></i>
+            </button>
+            <div class="nav-search">
+              <i class="fas fa-magnifying-glass"></i>
+              <input type="text" placeholder="Search packages, bookings, IDs..." />
+            </div>
           </div>
+    
 
           <div class="nav-right">
             <div class="notification-dropdown-wrapper" style="position: relative;">
@@ -703,7 +729,7 @@
       window.onclick = function (event) {
         if (window.innerWidth <= 768) {
           const sidebar = document.getElementById("sidebar");
-          if (sidebar && !sidebar.contains(event.target) && sidebar.classList.contains("mobile-show")) {
+          if (sidebar && !sidebar.contains(event.target) && !event.target.closest('.mobile-menu-btn') && sidebar.classList.contains("mobile-show")) {
             sidebar.classList.remove("mobile-show");
           }
         }

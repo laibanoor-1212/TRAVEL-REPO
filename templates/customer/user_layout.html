@@ -28,6 +28,7 @@
         }
 
         /* --- COLLAPSIBLE SIDEBAR --- */
+       /* --- SIDEBAR BASE STYLING --- */
         .sidebar {
             width: var(--sidebar-full-width);
             background-color: var(--brand-color);
@@ -36,13 +37,39 @@
             position: fixed;
             top: 0;
             left: 0;
-            z-index: 100;
-            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000; /* Z-index barha diya hai taake yeh sabse oper rahe */
+            transition: transform 0.3s ease-in-out, width 0.3s ease;
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
 
+        /* --- RESPONSIVE MEDIA QUERIES FOR MOBILE --- */
+        @media screen and (max-width: 992px) {
+            /* By default mobile par sidebar screen se bahar hogi */
+            .sidebar {
+                transform: translateX(-100%);
+                width: var(--sidebar-full-width);
+            }
+
+            /* Jab toggle click ho aur body par yeh class aaye, toh sidebar screen par aa jaye */
+            body.sidebar-mobile-open .sidebar {
+                transform: translateX(0) !important;
+            }
+
+            /* Mobile par main container poori width lega */
+            .main-container {
+                margin-left: 0 !important;
+                width: 100% !important;
+            }
+
+            .browse-btn span {
+                display: none; 
+            }
+            .browse-btn {
+                padding: 8px 10px;
+            }
+        }
         /* Collapsed State */
         body.sidebar-closed .sidebar {
             width: var(--sidebar-collapsed-width);
@@ -235,6 +262,7 @@
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
         }
+        
     </style>
 </head>
 <body>
@@ -391,9 +419,13 @@
     </div>
 
     <script>
-        function toggleSidebar() {
-            document.body.classList.toggle('sidebar-closed');
-        }
+       function toggleSidebar() {
+    if (window.innerWidth <= 992) {
+        document.body.classList.toggle('sidebar-mobile-open');
+    } else {
+        document.body.classList.toggle('sidebar-closed');
+    }
+}
 
         function toggleDropdown(id, event) {
             event.stopPropagation();

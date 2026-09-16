@@ -154,8 +154,8 @@
   <div class="stat-card">
     <div class="stat-icon"><i class="bi bi-people"></i></div>
     <div>
-      <div class="stat-value">{{ total_pilgrims|default:0 }}</div>
-      <div class="stat-title">Total Pilgrims</div>
+      <div class="stat-value">{{ total_users|default:0 }}</div>
+      <div class="stat-title">Total Users</div>
     </div>
   </div>
 
@@ -205,8 +205,8 @@
   <div class="stat-card">
     <div class="stat-icon"><i class="bi bi-safe"></i></div>
     <div>
-      <div class="stat-value">Rs {{ escrow_balance|default:0 }}</div>
-      <div class="stat-title">Escrow Held</div>
+     <div class="stat-value">{{ escrow_hold_count|default:0 }}</div>
+      <div class="stat-title">Escrow Held Bookings</div>
     </div>
   </div>
 
@@ -218,11 +218,8 @@
     </div>
   </div>
 </section>
-
-<!-- ===== ACTIONS + QUICK VERIFICATION TABLE ===== -->
 <section class="row g-3">
 
-  <!-- ADMIN QUICK ACTIONS -->
   <div class="col-lg-5">
     <div class="card h-100">
       <div class="section-title">
@@ -239,7 +236,7 @@
           </div>
         </a>
 
-        <a href="" class="action-card">
+        <a href="{% url 'adminpanel:admin_bookings'%}" class="action-card">
           <div class="action-icon"><i class="bi bi-list-check"></i></div>
           <div>
             <div class="action-title">Bookings</div>
@@ -247,7 +244,7 @@
           </div>
         </a>
 
-        <a href="" class="action-card">
+        <a href="{% url 'adminpanel:admin_payments_list'%}" class="action-card">
           <div class="action-icon"><i class="bi bi-cash-stack"></i></div>
           <div>
             <div class="action-title">Escrow Payments</div>
@@ -255,7 +252,7 @@
           </div>
         </a>
 
-        <a href="" class="action-card">
+        <a href="{% url 'adminpanel:admin_packages'%}" class="action-card">
           <div class="action-icon"><i class="bi bi-box-seam"></i></div>
           <div>
             <div class="action-title">Packages</div>
@@ -267,7 +264,6 @@
     </div>
   </div>
 
-  <!-- PENDING AGENT VERIFICATIONS TABLE -->
   <div class="col-lg-7">
     <div class="card h-100">
       <div class="section-title justify-content-between">

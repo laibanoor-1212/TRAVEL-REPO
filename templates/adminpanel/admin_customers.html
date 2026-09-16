@@ -175,19 +175,84 @@
         transform: translateY(-1px);
     }
 
+    /* Fix for Search & Total Submissions responsiveness */
+    .identity-panel > div:last-child {
+        flex: 1;
+        min-width: 260px;
+    }
     .search-input-field {
-        padding: 12px 20px;
-        border-radius: 25px;
-        border: 1px solid #cbd5e1;
-        width: 300px;
-        outline: none;
-        font-size: 14px;
+        flex: 1;
+        min-width: 180px;
+        width: auto !important;
+    }
+    @media (max-width: 768px) {
+        .identity-panel {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .identity-panel > div:last-child {
+            width: 100% !important;
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 12px !important;
+        }
+        .search-input-field {
+            width: 100% !important;
+        }
+        .counter-badge-box {
+            width: 100%;
+            justify-content: center;
+        }
     }
 
     .empty-state-container {
         text-align: center;
         padding: 40px;
         color: #94a3b8;
+    }
+    /* Responsive adjustments for all screen sizes */
+    @media (max-width: 1200px) {
+        .identity-panel {
+            padding: 20px;
+        }
+    }
+
+    @media (max-width: 992px) { /* Tablets & Small Laptops */
+        .identity-panel {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 15px;
+        }
+        .identity-panel > div:last-child {
+            width: 100%;
+            justify-content: space-between;
+        }
+        .search-input-field {
+            width: 100% !important;
+            flex: 1;
+        }
+    }
+
+    @media (max-width: 576px) { /* Mobile Phones */
+        .identity-title {
+            font-size: 22px;
+        }
+        .identity-panel > div:last-child {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 10px;
+        }
+        .counter-badge-box {
+            width: 100%;
+            justify-content: center;
+        }
+        .table-outer-card {
+            padding: 12px;
+        }
+        .data-table td, .data-table th {
+            padding: 12px 10px;
+            font-size: 12px;
+        }
     }
 </style>
 

@@ -5,6 +5,7 @@ from packages.models import Package
 from customers.models import CustomerProfile
 
 
+
 class Bookings(models.Model):
     
     STATUS_CHOICES = [
@@ -37,10 +38,18 @@ class Bookings(models.Model):
         ordering = ['-created_at']
 
     def save(self, *args, **kwargs):
-
         if not self.booking_id:
-            last_id = Bookings.objects.count() + 1
-            self.booking_id = f"SEH-BKG-{last_id:05d}"
+            # Query highest numeric ID in table instead of count()
+            last_booking = Bookings.objects.order_by('-id').first()
+            next_num = (last_booking.id + 1) if last_booking else 1
+            candidate_id = f"SEH-BKG-{next_num:05d}"
+
+            # Loop ensures duplicate key constraint is never violated
+            while Bookings.objects.filter(booking_id=candidate_id).exists():
+                next_num += 1
+                candidate_id = f"SEH-BKG-{next_num:05d}"
+
+            self.booking_id = candidate_id
 
         if not self.slug:
             self.slug = slugify(self.booking_id)
@@ -162,4 +171,13 @@ class BookingDocument(models.Model):
         return f"{self.booking.id} - {self.field_name}"
 
 
+class BookingChat(models.Model):
+    booking = models.ForeignKey(Bookings, on_delete=models.CASCADE, related_name='chats')
+    sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    message = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Chat on Booking #{self.booking.id} by {self.sender}"
 

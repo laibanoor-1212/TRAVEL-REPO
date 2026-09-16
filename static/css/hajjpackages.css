@@ -17,28 +17,31 @@
     }
 
     .hero-banner-section {
-        position: relative;
-        width: 100%;
-        height: 340px;
-        background: linear-gradient( #065f46,#31a074), 
-                    url("{% static 'images/kabbanight.jpg' %}") center/cover no-repeat;
-        background-color: var(--primary-color); 
+    position: relative;
+    width: 100%;
+    height: 320px;
+    
+    /* Dark gradient overlay zaroori hai taake white text bilkul saaf nazar aaye */
+  background: linear-gradient(rgba(6, 95, 70, 0.75), rgba(15, 41, 30, 0.85)), 
+                url("../images/travelagent2.jpeg") center 75% / cover no-repeat;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 50px;
+    box-sizing: border-box;
+}
 
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding-bottom: 40px;
-        box-sizing: border-box;
-    }
-
-    .hero-banner-title {
-        color: var(--text-white);
-        font-size: 2.5rem;
-        font-weight: 800;
-        margin: 0;
-        letter-spacing: -0.5px;
-        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    }
+.hero-banner-title {
+    color: #ffffff;
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin: 0;
+    text-align: center;
+    /* Text Shadow taake text image par pop out kare */
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    z-index: 2;
+}
 
     .search-wrapper-container {
         max-width: 1240px;
@@ -310,3 +313,81 @@
         border-radius: 16px;
         border: 1px dashed var(--border-light);
     }
+    @media (max-width: 992px) {
+    .floating-search-card {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .search-field-group:nth-child(2) {
+        border-right: none;
+    }
+
+    .search-action-btn {
+        grid-column: span 2;
+        padding: 12px;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-banner-section {
+        height: 260px;
+    }
+
+    .hero-banner-title {
+        font-size: 1.8rem;
+    }
+
+    .search-wrapper-container {
+        top: -30px;
+        padding: 0 15px;
+    }
+
+    .floating-search-card {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 16px;
+    }
+
+    .search-field-group {
+        border-right: none;
+        border-bottom: 1px solid var(--border-light);
+        padding-bottom: 10px;
+    }
+
+    .search-field-group:last-of-type {
+        border-bottom: none;
+    }
+
+    .search-action-btn {
+        grid-column: span 1;
+    }
+
+    .theme-filter-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .filter-pills-group {
+        width: 100%;
+        flex-direction: row;
+    }
+
+    .theme-select-control {
+        flex: 1;
+    }
+
+    .packages-grid-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-banner-title {
+        font-size: 1.5rem;
+    }
+
+    .card-footer-actions {
+        grid-template-columns: 1fr;
+    }
+}

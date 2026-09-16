@@ -58,6 +58,46 @@
     .tab-content { display: none; }
     .tab-content.active { display: block; animation: fadeIn 0.2s ease; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    /* ===== RESPONSIVE CSS FIX ===== */
+    .table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .data-table {
+        min-width: 800px;
+    }
+
+    /* Header search/filter responsive layout */
+    @media (max-width: 992px) {
+        .container > div:nth-of-type(2) {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 15px !important;
+        }
+        .container > div:nth-of-type(2) > div:last-child {
+            width: 100% !important;
+            flex-direction: column !important;
+            gap: 10px !important;
+        }
+        #typeFilter, #pkgSearch {
+            width: 100% !important;
+            box-sizing: border-box;
+        }
+        .tab-menu {
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .container {
+            padding: 10px !important;
+        }
+        .tab-link {
+            padding: 10px 14px;
+            font-size: 13px;
+        }
+    }
 </style>
 
 <div class="container" style="padding: 20px;">

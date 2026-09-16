@@ -78,6 +78,15 @@ def tawaf_wida(request):
 
 def iran(request):
     return render(request, 'base/iran.html', get_guide_context('iran', 'Iran Ziyarat'))
+    
+def iraq(request):
+    return render(request, 'base/iraq.html', get_guide_context('iraq', 'Iraq Ziyarat'))
+def najaf(request):
+    return render(request, 'base/najaf.html', get_guide_context('najaf', 'najaf'))
+def kazmin(request):
+    return render(request, 'base/kazmin.html', get_guide_context('kazmin', 'kazmin'))
+def samarra(request):
+    return render(request, 'base/samarra.html', get_guide_context('samarra', 'samarra'))
 
 def mashad(request):
     return render(request, 'base/mashad.html', get_guide_context('mashad', 'Mashad Ziyarat'))

@@ -6,108 +6,75 @@ from django.utils.text import slugify
 from django.utils import timezone
 from django.db.models import F
 from .models import Package
+from stakeholder.models import AgentKYC
 from django.utils.dateparse import parse_date
 from .models import Package, PackageType
+from decimal import Decimal
+from datetime import datetime
 from utils.emails import (
     send_package_created_emails,
     send_package_updated_emails,
     send_package_deleted_emails,
 )
-
 @login_required
 def create_packages(request):
-    package_types = PackageType.objects.filter(is_active=True)
+    agent_kyc = AgentKYC.objects.filter(user=request.user).first()
+    package_types = PackageType.objects.all()
 
     if request.method == 'POST':
-        name = request.POST.get('name', '').strip()
-        package_type_id = request.POST.get('package_type')
-        tier = request.POST.get('tier', 'standard')
-        country = request.POST.get('country', 'Saudi Arabia').strip()
-        city = request.POST.get('city', 'Makkah').strip()
-        
-        price = request.POST.get('price')
-        total_seats = request.POST.get('total_seats', 50)
-        duration_days = request.POST.get('duration_days', 15)
-        
-        departure_date_str = request.POST.get('departure_date')
-        application_deadline_str = request.POST.get('application_deadline')
-        
-        makkah_hotel = request.POST.get('makkah_hotel', '').strip() or None
-        madinah_hotel = request.POST.get('madinah_hotel', '').strip() or None
-        description = request.POST.get('description', '').strip()
-        visa = request.POST.get('visa') == 'on'
-        ticket = request.POST.get('ticket') == 'on'
-        transport = request.POST.get('transport') == 'on'
-        ziyarat = request.POST.get('ziyarat') == 'on'
-        meals = request.POST.get('meals') == 'on'
-        banner_file = request.FILES.get('banner')
-
-        # 1. Required Fields Check
-        if not name or not package_type_id or not price or not departure_date_str:
-            messages.error(request, "Tamam zaroori (Required) fields fill karein.")
-            return render(request, 'stakeholder/add_packages.html', {
-                'package_types': package_types,
-                'request_data': request.POST
-            })
-
-        # 2. Price Validation
         try:
-            price_val = float(price)
-            if price_val < 100000 or price_val > 2500000:
-                messages.error(request, "Price must be between PKR 100,000 and PKR 2,500,000.")
-                return render(request, 'stakeholder/add_packages.html', {
-                    'package_types': package_types,
-                    'request_data': request.POST
+            name = request.POST.get('name')
+            package_type_id = request.POST.get('package_type')
+            price_raw = request.POST.get('price')
+            total_seats_raw = request.POST.get('total_seats')
+            duration_days_raw = request.POST.get('duration_days')
+            departure_date_raw = request.POST.get('departure_date')
+            application_deadline_raw = request.POST.get('application_deadline')
+
+            if not all([name, package_type_id, price_raw, total_seats_raw, duration_days_raw, departure_date_raw]):
+                messages.error(request, "Please fill in all required (*) fields.")
+                return render(request, 'stakeholder/create_package.html', {
+                    'agent_kyc': agent_kyc,
+                    'package_types': package_types
                 })
-        except ValueError:
-            messages.error(request, "Sahi price enter karein.")
-            return render(request, 'stakeholder/add_packages.html', {
-                'package_types': package_types,
-                'request_data': request.POST
-            })
 
-        # 3. Date Parsing & Validations
-        package_type = get_object_or_404(PackageType, id=package_type_id)
-        departure_date = parse_date(departure_date_str)
-        application_deadline = parse_date(application_deadline_str) if application_deadline_str else departure_date
-        today = date.today()
+            price = Decimal(price_raw)
+            total_seats = int(total_seats_raw)
+            duration_days = int(duration_days_raw)
 
-        # Date 1: Departure date past check
-        if departure_date and departure_date < today:
-            messages.error(request, " past departure date is not valid ")
-            return render(request, 'stakeholder/add_packages.html', {
-                'package_types': package_types,
-                'request_data': request.POST
-            })
+            departure_date = datetime.strptime(departure_date_raw, '%Y-%m-%d').date()
+            application_deadline = (
+                datetime.strptime(application_deadline_raw, '%Y-%m-%d').date()
+                if application_deadline_raw else None
+            )
 
-        # Date 2: Application deadline past check
-        if application_deadline and application_deadline < today:
-            messages.error(request, "past application deadline is not acceptable")
-            return render(request, 'stakeholder/add_packages.html', {
-                'package_types': package_types,
-                'request_data': request.POST
-            })
+            package_type = PackageType.objects.get(id=package_type_id)
 
-        # Date 3: Deadline after Departure check
-        if application_deadline and departure_date and application_deadline > departure_date:
-            messages.error(request, "Application deadline cannot be after the departure date.")
-            return render(request, 'stakeholder/add_packages.html', {
-                'package_types': package_types,
-                'request_data': request.POST
-            })
+            country = request.POST.get('country', 'Saudi Arabia')
+            city = request.POST.get('city', 'Makkah')
+            tier = request.POST.get('tier', 'standard')
+            makkah_hotel = request.POST.get('makkah_hotel', '')
+            madinah_hotel = request.POST.get('madinah_hotel', '')
+            description = request.POST.get('description', '')
 
-        # 4. Save Logic
-        try:
-            package = Package(
-                agency=request.user, 
+            visa = request.POST.get('visa') == 'on'
+            ticket = request.POST.get('ticket') == 'on'
+            transport = request.POST.get('transport') == 'on'
+            ziyarat = request.POST.get('ziyarat') == 'on'
+            meals = request.POST.get('meals') == 'on'
+
+            banner_image = request.FILES.get('banner')
+
+            Package.objects.create(
+                agency=request.user,
                 name=name,
                 package_type=package_type,
-                tier=tier,
                 country=country,
                 city=city,
-                price=price_val,
-                total_seats=int(total_seats) if total_seats else 50,
-                duration_days=int(duration_days) if duration_days else 15,
+                price=price,
+                tier=tier,
+                total_seats=total_seats,
+                duration_days=duration_days,
                 departure_date=departure_date,
                 application_deadline=application_deadline,
                 makkah_hotel=makkah_hotel,
@@ -117,26 +84,25 @@ def create_packages(request):
                 transport=transport,
                 ziyarat=ziyarat,
                 meals=meals,
-                description=description if description else 'Package details coming soon...',
-                status='active',
+                description=description,
+                banner=banner_image
             )
-            if banner_file:
-                package.banner = banner_file
-            package.save()
 
-            messages.success(request, f"Package '{package.name}' is created successfully!")
+            messages.success(request, "Package published successfully!")
             return redirect('packages:manage_packages')
 
+        except PackageType.DoesNotExist:
+            messages.error(request, "Selected Package Type is invalid.")
+        except ValueError:
+            messages.error(request, "Please enter valid numeric values and dates (YYYY-MM-DD).")
         except Exception as e:
-            messages.error(request, f"Error in saving package: {str(e)}")
-            return render(request, 'stakeholder/add_packages.html', {
-                'package_types': package_types,
-                'request_data': request.POST
-            })
+            messages.error(request, f"Server Error: {str(e)}")
 
-    return render(request, 'stakeholder/add_packages.html', {
-        'package_types': package_types
-    })
+    context = {
+        'agent_kyc': agent_kyc,
+        'package_types': package_types,
+    }
+    return render(request, 'stakeholder/add_packages.html', context)
 @login_required
 def update_package(request, pk):
     package = get_object_or_404(Package, pk=pk, agency=request.user)

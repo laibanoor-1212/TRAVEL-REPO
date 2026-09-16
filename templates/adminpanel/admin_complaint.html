@@ -66,6 +66,44 @@
     .status-select:focus { outline: none; border-color: var(--primary-green); }
 
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    /* ===== COMPLAINTS DESK RESPONSIVE FIX ===== */
+    @media (max-width: 900px) {
+        .commission-container, div[style*="display: flex; justify-content: space-between"] {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 15px !important;
+        }
+        #complaintSearch {
+            width: 100% !important;
+        }
+        .tab-menu {
+            overflow-x: auto;
+            white-space: nowrap;
+            width: 100%;
+            padding-bottom: 5px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        div[style*="padding: 20px"] {
+            padding: 10px !important;
+        }
+        h2 {
+            font-size: 22px !important;
+        }
+        .tab-link {
+            padding: 10px 15px;
+            font-size: 13px;
+        }
+        .table-section-header {
+            font-size: 13px;
+            padding: 10px 12px;
+        }
+        .data-table th, .data-table td {
+            padding: 10px 12px;
+            font-size: 12px;
+        }
+    }
 </style>
 
 <div style="padding: 20px; font-family: sans-serif;">
