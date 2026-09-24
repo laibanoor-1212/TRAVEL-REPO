@@ -16,6 +16,8 @@ from .models import Complaint, SystemSetting, GuidePage
 from payments.models import EscrowTransaction, CommissionSetting, PaymentRelease, Payment, PaymentProof, PaymentStatusLog, PaymentStatus
 from apps.accounts.models import CustomUser
 import json
+from notifications.models import Notification
+from django.utils import timezone
 from .decorators import admin_required
 from django.views.decorators.http import require_POST
 from django.db.models import Sum, Count, Q
@@ -33,6 +35,7 @@ from .models import AdminAgentChat
 from utils.emails import (
     send_password_change_email,
     send_booking_status_email,
+    send_payment_status_email,
     
 )
 
@@ -444,7 +447,11 @@ def admin_payments_list(request):
 @admin_required
 def admin_payment_detail(request, payment_id):
     payment = get_object_or_404(Payment, id=payment_id)
-    context = {'payment': payment}
+    proofs = payment.proofs.all() if hasattr(payment, 'proofs') else PaymentProof.objects.filter(payment=payment)
+    context = {
+        'payment': payment,
+        'proofs': proofs,  
+    }
     return render(request, 'adminpanel/payment_detail.html', context)
 
 @admin_required
@@ -481,15 +488,36 @@ def admin_verify_proof(request, proof_id):
         try:
             services.verify_raast_proof(proof, verified_by=request.user)
 
-            if proof.payment and proof.payment.user:
-                send_payment_status_email(proof.payment.user, proof.payment, 'proof_verified')
+            if proof.payment and proof.payment.customer:
+                Notification.objects.create(
+                    recipient=proof.payment.customer,
+                    sender=request.user,
+                    title="Payment Verified",
+                    message=f"Your payment proof for Booking #{proof.payment.booking_id} has been verified.",
+                    notification_type='payment_verified',
+                    priority='medium',
+                    redirect_url=f"/bookings/status/{proof.payment.booking_id}/",
+                    icon="fa-solid fa-circle-check"
+                )
+                if proof.payment.customer.email:
+                    try:
+                        from django.core.mail import send_mail
+                        from django.conf import settings
+                        send_mail(
+                            subject=f"Payment Verified - Booking #{proof.payment.booking_id}",
+                            message=f"Hello {proof.payment.customer.username},\n\nYour payment proof for Booking #{proof.payment.booking_id} has been verified successfully.",
+                            from_email=settings.DEFAULT_FROM_EMAIL,
+                            recipient_list=[proof.payment.customer.email],
+                            fail_silently=True
+                        )
+                    except Exception:
+                        pass
 
             messages.success(request, "Proof verified successfully! Payment is now held in escrow.")
         except (ValueError, PermissionError) as e:
             messages.error(request, f"Proof verification failed: {e}")
 
-    return redirect('adminpanel:payment_detail', payment_id=proof.payment_id)
-
+    return redirect('adminpanel:admin_payment_detail', payment_id=proof.payment_id)
 @admin_required
 def admin_reject_proof(request, proof_id):
     proof = get_object_or_404(PaymentProof, pk=proof_id)

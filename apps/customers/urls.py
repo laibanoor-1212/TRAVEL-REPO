@@ -1,10 +1,8 @@
 from django.urls import path
 from . import views
-app_name='customers'
 from django.views.generic import TemplateView
+app_name='customers'
 
-
-   
 urlpatterns = [
    
     path("customer_kyc/",views.customer_kyc,name="customer_kyc"),
@@ -22,5 +20,6 @@ path('booking/<int:booking_id>/reject-ticket/', views.reject_ticket_view, name='
     path('detail/<int:booking_id>/', views.booking_detail, name='booking_detail'),
     path('request/<int:booking_id>/', views.manage_booking_request, name='manage_booking_request'),
   path('my-booking/<int:booking_id>/update-docs/', views.update_booking_docs, name='update_booking_docs'),
+  path('<int:payment_id>/receipt/', views.customer_payment_receipt, name='customer_payment_receipt'),
     
 ]

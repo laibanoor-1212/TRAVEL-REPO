@@ -1,0 +1,443 @@
+{% extends 'customer/user_layout.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --emerald-800: #065f46;
+        --emerald-700: #047857;
+        --emerald-600: #059669;
+        --emerald-500: #10b981;
+        --emerald-100: #d1fae5;
+        --emerald-50: #ecfdf5;
+        --slate-900: #0f172a;
+        --slate-800: #1e293b;
+        --slate-600: #475569;
+        --slate-100: #f1f5f9;
+        --slate-50: #f8fafc;
+        --card-radius: 20px;
+    }
+
+    body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background-color: #f3f4f6;
+        color: var(--slate-900);
+    }
+
+    /* Modern Banner Header */
+    .page-hero-banner {
+        background: linear-gradient(135deg, var(--emerald-800) 0%, var(--emerald-600) 100%);
+        border-radius: var(--card-radius);
+        padding: 28px 32px;
+        color: #ffffff;
+        box-shadow: 0 10px 30px -5px rgba(5, 150, 105, 0.3);
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-hero-banner::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.08);
+        pointer-events: none;
+    }
+
+    /* Premium UI Cards */
+    .glass-card {
+        background: #ffffff;
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        border-radius: var(--card-radius);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.03), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: hidden;
+        margin-bottom: 24px;
+    }
+
+    .glass-card:hover {
+        box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.07);
+    }
+
+    .glass-card .card-header-custom {
+        padding: 20px 24px;
+        background: #ffffff;
+        border-bottom: 1px solid var(--slate-100);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .card-header-title {
+        font-weight: 700;
+        font-size: 16px;
+        color: var(--slate-900);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .card-header-title i {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: var(--emerald-50);
+        color: var(--emerald-600);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+    }
+
+    /* Form Inputs */
+    .form-control-custom {
+        border: 1.5px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        background-color: var(--slate-50);
+    }
+
+    .form-control-custom:focus {
+        background-color: #ffffff;
+        border-color: var(--emerald-500);
+        box-shadow: 0 0 0 4px var(--emerald-100);
+        outline: none;
+    }
+
+    /* Drag & Drop File Input Box */
+    .file-upload-wrapper {
+        border: 2px dashed #cbd5e1;
+        border-radius: 14px;
+        padding: 24px;
+        text-align: center;
+        background: var(--slate-50);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .file-upload-wrapper:hover {
+        border-color: var(--emerald-500);
+        background: var(--emerald-50);
+    }
+
+    .file-upload-wrapper input[type="file"] {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .upload-icon-circle {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: #ffffff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 12px;
+        color: var(--emerald-600);
+        font-size: 20px;
+    }
+
+    /* Primary Action Button */
+    .btn-submit-green {
+        background: linear-gradient(135deg, var(--emerald-700) 0%, var(--emerald-600) 100%);
+        color: #ffffff;
+        border: none;
+        border-radius: 12px;
+        padding: 14px 24px;
+        font-weight: 700;
+        font-size: 15px;
+        letter-spacing: 0.3px;
+        box-shadow: 0 8px 20px -4px rgba(5, 150, 105, 0.4);
+        transition: all 0.25s ease;
+    }
+
+    .btn-submit-green:hover {
+        background: linear-gradient(135deg, var(--emerald-800) 0%, var(--emerald-700) 100%);
+        color: #ffffff;
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px -4px rgba(5, 150, 105, 0.5);
+    }
+
+    /* Receipt Cards in Timeline */
+    .receipt-item-card {
+        background: #ffffff;
+        border: 1px solid var(--slate-100);
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 16px;
+        transition: all 0.2s ease;
+    }
+
+    .receipt-item-card:hover {
+        border-color: var(--emerald-100);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+    }
+
+    /* Status Pill Badges */
+    .status-pill {
+        padding: 6px 16px;
+        border-radius: 50px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .status-verified {
+        background: #dcfce7;
+        color: #15803d;
+        border: 1px solid #bbf7d0;
+    }
+
+    .status-pending {
+        background: #fef3c7;
+        color: #b45309;
+        border: 1px solid #fde68a;
+    }
+
+    .status-rejected {
+        background: #fee2e2;
+        color: #b91c1c;
+        border: 1px solid #fca5a5;
+    }
+
+    /* Image Preview Modal Trigger */
+    .receipt-img-box {
+        position: relative;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid var(--slate-100);
+        max-width: 140px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .receipt-img-box img {
+        width: 100%;
+        height: 100px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .receipt-img-box:hover img {
+        transform: scale(1.08);
+    }
+
+    /* Table Details Clean */
+    .info-table td {
+        padding: 10px 0;
+        vertical-align: middle;
+    }
+</style>
+
+<div class="container-fluid px-4 py-4">
+    <!-- Header Banner -->
+    <div class="page-hero-banner d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h3 class="fw-extrabold mb-1 d-flex align-items-center gap-2">
+                <i class="fa-solid fa-receipt fs-4"></i> Payment Receipt & Verification
+            </h3>
+            <p class="mb-0 text-white-50 small">Track status and upload proofs for Booking <strong>#{{ payment.booking.id }}</strong></p>
+        </div>
+        <a href="{% url 'customers:booking_detail' payment.booking.id %}" class="btn btn-light rounded-pill px-4 font-weight-bold text-success btn-sm shadow-sm">
+            <i class="fa-solid fa-arrow-left me-1"></i> Back to Booking
+        </a>
+    </div>
+
+    <!-- Django Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show border-0 shadow-sm mb-4 rounded-4" role="alert">
+                <i class="fa-solid {% if message.tags == 'error' %}fa-circle-exclamation text-danger{% else %}fa-circle-check text-success{% endif %} me-2 fs-5"></i> {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="row g-4">
+        <!-- Left Column: Payment Summary & Upload -->
+        <div class="col-lg-6">
+            <!-- Payment Summary Card -->
+            <div class="glass-card">
+                <div class="card-header-custom">
+                    <span class="card-header-title">
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                        Payment Details
+                    </span>
+                    <span class="badge bg-light text-dark fw-bold border px-3 py-2 rounded-pill">ID: #{{ payment.id }}</span>
+                </div>
+                <div class="card-body p-4">
+                    <table class="table table-borderless info-table mb-0">
+                        <tbody>
+                            <tr>
+                                <td class="text-muted font-weight-medium">Package:</td>
+                                <td class="fw-bold text-dark text-end">{{ payment.booking.package.title|default:"Umrah Package" }}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted font-weight-medium">Amount:</td>
+                                <td class="fs-4 text-success fw-bold text-end">{{ payment.amount }} {{ payment.currency }}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted font-weight-medium">Payment Method:</td>
+                                <td class="text-end">
+                                    <span class="badge bg-emerald-50 text-success border border-emerald-100 px-3 py-1 rounded-pill text-uppercase fw-bold">
+                                        {{ payment.get_payment_method_display }}
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted font-weight-medium">Escrow Protection:</td>
+                                <td class="text-end">
+                                    {% if payment.escrow_status == 'held_in_escrow' %}
+                                        <span class="status-pill status-verified"><i class="fa-solid fa-shield-halved"></i> Held in Escrow</span>
+                                    {% elif payment.escrow_status == 'released' %}
+                                        <span class="status-pill status-verified"><i class="fa-solid fa-check-double"></i> Released</span>
+                                    {% else %}
+                                        <span class="status-pill status-pending"><i class="fa-solid fa-clock"></i> {{ payment.get_escrow_status_display }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Upload Receipt Card -->
+            <div class="glass-card">
+                <div class="card-header-custom">
+                    <span class="card-header-title">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        Upload Receipt / Screenshot
+                    </span>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" enctype="multipart/form-data" action="{% url 'bookings:upload_raast_proof' payment.id %}">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-dark small">Transaction Reference / TRX ID <span class="text-danger">*</span></label>
+                            <input type="text" name="transaction_reference" class="form-control form-control-custom" placeholder="e.g. TRX-987654321" required>
+                            <span class="text-muted small d-block mt-1">Provide the reference number shown on your bank/Raast confirmation page.</span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-dark small">Receipt Attachment / Image <span class="text-danger">*</span></label>
+                            <div class="file-upload-wrapper">
+                                <div class="upload-icon-circle">
+                                    <i class="fa-solid fa-image"></i>
+                                </div>
+                                <h6 class="fw-bold mb-1 text-dark">Click or Drag & Drop File Here</h6>
+                                <p class="text-muted small mb-0">Supports JPG, PNG, PDF (Max 5MB)</p>
+                                <input type="file" name="screenshot" accept="image/*,.pdf" required id="proofFileInput" onchange="updateFileName(this)">
+                            </div>
+                            <small id="fileNameDisplay" class="text-success fw-bold d-block mt-2 text-center"></small>
+                        </div>
+
+                        <button type="submit" class="btn btn-submit-green w-100 shadow">
+                            <i class="fa-solid fa-paper-plane me-2"></i> Submit Proof for Verification
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Timeline & Submitted Proofs -->
+        <div class="col-lg-6">
+            <div class="glass-card h-100">
+                <div class="card-header-custom">
+                    <span class="card-header-title">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        Verification History
+                    </span>
+                    <span class="badge bg-light text-dark border px-3 py-1 rounded-pill fw-bold">{{ proofs|length }} Submitted</span>
+                </div>
+                <div class="card-body p-4">
+                    {% for proof in proofs %}
+                        <div class="receipt-item-card">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <span class="text-muted small d-block mb-1">Transaction Ref:</span>
+                                    <code class="fw-bold fs-6 text-dark bg-light px-3 py-1 rounded-2 border">{{ proof.transaction_reference }}</code>
+                                </div>
+                                <div>
+                                    {% if proof.is_verified %}
+                                        <span class="status-pill status-verified"><i class="fa-solid fa-circle-check"></i> Verified</span>
+                                    {% elif proof.rejection_reason %}
+                                        <span class="status-pill status-rejected"><i class="fa-solid fa-circle-xmark"></i> Rejected</span>
+                                    {% else %}
+                                        <span class="status-pill status-pending"><i class="fa-solid fa-hourglass-half"></i> In Review</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <p class="text-muted small mb-3">
+                                <i class="fa-regular fa-calendar-check me-1 text-success"></i> Uploaded on {{ proof.uploaded_at|date:"d M Y, H:i" }}
+                            </p>
+
+                            {% if proof.rejection_reason %}
+                                <div class="p-3 bg-danger-subtle text-danger rounded-3 border border-danger-subtle small mb-3">
+                                    <strong class="d-block mb-1"><i class="fa-solid fa-circle-exclamation me-1"></i> Rejection Reason:</strong>
+                                    {{ proof.rejection_reason }}
+                                </div>
+                            {% endif %}
+
+                            {% if proof.screenshot %}
+                                <div class="d-flex align-items-center gap-3 mt-3 pt-3 border-top">
+                                    <div class="receipt-img-box">
+                                        <a href="{{ proof.screenshot.url }}" target="_blank">
+                                            <img src="{{ proof.screenshot.url }}" alt="Receipt Screenshot">
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <a href="{{ proof.screenshot.url }}" target="_blank" class="btn btn-sm btn-outline-success rounded-pill font-weight-bold">
+                                            <i class="fa-solid fa-expand me-1"></i> View Full Attachment
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% empty %}
+                        <div class="text-center py-5">
+                            <div class="upload-icon-circle mb-3" style="width: 70px; height: 70px; font-size: 28px;">
+                                <i class="fa-solid fa-receipt text-muted"></i>
+                            </div>
+                            <h6 class="fw-bold text-dark">No Receipts Uploaded Yet</h6>
+                            <p class="text-muted small max-w-xs mx-auto mb-0">Use the form on the left to submit your payment receipt for admin verification.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateFileName(input) {
+        const display = document.getElementById('fileNameDisplay');
+        if (input.files && input.files[0]) {
+            display.innerHTML = '<i class="fa-solid fa-file-circle-check me-1"></i> Selected: ' + input.files[0].name;
+        } else {
+            display.innerHTML = '';
+        }
+    }
+</script>
+{% endblock %}

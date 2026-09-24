@@ -110,7 +110,7 @@ class CustomUserRegistrationForm(UserCreationForm):
             if not phone:
                 raise forms.ValidationError("Phone number is required for agents.")
 
-            # Spaces ya brackets clear karein
+            # Spaces ya brackets clear karna
             phone = re.sub(r'[\s\-\(\)]', '', phone.strip())
             
             # Accepts: Local Pakistani (03001234567) OR International Format (+966512345678, +923001234567)

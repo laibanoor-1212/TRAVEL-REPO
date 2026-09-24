@@ -227,33 +227,39 @@
                                 {% endif %}
                             </div>
                         </div>
-
-                        <!-- Document Download Section -->
                         <div class="sh-doc-section">
-                            <p class="sh-doc-title">📄 Agent Documents</p>
-                            <div class="sh-btn-flex">
-                                {% if booking.ticket.ticket_file %}
+                            <p class="sh-doc-title"> Agent Documents</p>
+                            {% if booking.ticket.ticket_file %}
+                                <div class="sh-btn-flex" style="margin-bottom: 8px;">
                                     <a href="{{ booking.ticket.ticket_file.url }}" target="_blank" class="sh-btn-doc sh-btn-doc-main">
-                                        👁️ View Ticket
+                                        View Ticket
                                     </a>
-                                {% endif %}
+                                    <a href="{{ booking.ticket.ticket_file.url }}" download class="sh-btn-doc sh-btn-doc-side">
+                                        Download
+                                    </a>
+                                </div>
+                            {% endif %}
 
-                                {% if booking.ticket.visa_file %}
-                                    <a href="{{ booking.ticket.visa_file.url }}" target="_blank" class="sh-btn-doc sh-btn-doc-side">
-                                        👁️ Visa Doc
+                            
+                            {% if booking.ticket.visa_file %}
+                                <div class="sh-btn-flex">
+                                    <a href="{{ booking.ticket.visa_file.url }}" target="_blank" class="sh-btn-doc sh-btn-doc-main">
+                                        View Visa
                                     </a>
-                                {% endif %}
-                            </div>
+                                    <a href="{{ booking.ticket.visa_file.url }}" download class="sh-btn-doc sh-btn-doc-side">
+                                        Download
+                                    </a>
+                                </div>
+                            {% endif %}
                         </div>
 
-                        <!-- Rejection Alerts -->
                         {% if booking.ticket.customer_rejection_reason %}
                             <div class="sh-rejection-alert">
                                 <strong>Rejection Reason:</strong> {{ booking.ticket.customer_rejection_reason }}
                             </div>
                         {% endif %}
 
-                        <!-- INLINE REJECT BOX -->
+                        
                         <div id="rejectBox-{{ booking.id }}" class="sh-inline-box" style="display: none;">
                             <form method="POST" action="{% url 'customers:reject_ticket' booking.id %}" style="margin: 0;">
                                 {% csrf_token %}
@@ -266,8 +272,6 @@
                             </form>
                         </div>
                     </div>
-
-                    <!-- Footer Action Forms -->
                     <div class="sh-card-footer">
                         {% if not booking.ticket.customer_approved %}
                             <button type="button" class="sh-btn-action-reject" onclick="toggleRejectBox('{{ booking.id }}')">
@@ -282,7 +286,7 @@
                             </form>
                         {% else %}
                             <span style="color: #15803d; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
-                                ✓ Verified on {{ booking.ticket.customer_approved_at|date:"d M, Y" }}
+                                 Verified on {{ booking.ticket.customer_approved_at|date:"d M, Y" }}
                             </span>
                         {% endif %}
                     </div>
@@ -291,9 +295,8 @@
             {% endfor %}
         </div>
     {% else %}
-        <!-- Empty State -->
         <div style="background: white; border: 2px dashed #cbd5e1; padding: 40px; text-align: center; border-radius: 12px; max-w: 450px; margin: 40px auto;">
-            <div style="font-size: 36px; margin-bottom: 10px;">🎫</div>
+            <div style="font-size: 36px; margin-bottom: 10px;"></div>
             <h3 style="margin: 0 0 6px 0; color: #0f5132; font-size: 18px;">No Travel Documents Found</h3>
             <p style="margin: 0; color: #64748b; font-size: 13px;">Once your agent uploads your ticket or visa copies, they will instantly appear here.</p>
         </div>

@@ -13,9 +13,7 @@ class KYCAgentForm(forms.ModelForm):
        
         if self.instance and self.instance.kyc_status == 'rollback':
          
-            allowed_fields = [f.strip() for f in self.instance.rejected_fields.split(',') if f.strip()]
-            
-          
+            allowed_fields = [f.strip() for f in self.instance.rejected_fields.split(',') if f.strip()]          
             for field_name in self.fields:
                 if field_name not in allowed_fields:
                     self.fields[field_name].disabled = True

@@ -105,12 +105,12 @@ def book_package(request, package_id):
             package.booked_seats += person_count
             package.save()
 
-            # --- ADDED: Notification for Booking Creation ---
+        
             Notification.objects.create(
                 recipient=request.user,
                 sender=request.user,
                 title="Booking Created",
-                message=f"Your booking #{booking.id} for {package.title} has been successfully created.",
+                message=f"Your booking #{booking.id} for {package.name} has been successfully created.",
                 notification_type='booking_created',
                 priority='medium',
                 redirect_url=f"/bookings/status/{booking.id}/",
@@ -121,13 +121,13 @@ def book_package(request, package_id):
                     recipient=package.agency,
                     sender=request.user,
                     title="New Booking Received",
-                    message=f"You received a new booking #{booking.id} for package {package.title}.",
+                    message=f"You received a new booking #{booking.id} for package {package.name}.",
                     notification_type='agent_new_booking',
                     priority='high',
                     redirect_url=f"/agents/bookings/{booking.id}/",
                     icon="fa-solid fa-suitcase"
                 )
-            # -----------------------------------------------
+            
 
             messages.success(request, "Booking request successfully submitted!")
             return redirect('bookings:choose_payment_method', booking_id=booking.id)
@@ -229,8 +229,6 @@ def confirm_stripe_payment(request, booking_id):
  
         booking.status = 'pending'
         booking.save()
-
-        # --- ADDED: Notification for Stripe Payment Verified ---
         Notification.objects.create(
             recipient=request.user,
             sender=request.user,
@@ -241,7 +239,6 @@ def confirm_stripe_payment(request, booking_id):
             redirect_url=f"/bookings/status/{booking.id}/",
             icon="fa-solid fa-check-circle"
         )
-        # ------------------------------------------------------
     except ValueError as e:
         payment.payment_status = PaymentStatus.FAILED
         payment.save()
@@ -300,8 +297,6 @@ def upload_raast_proof(request, booking_id):
         )
         booking.status = 'pending'
         booking.save()
-
-        # --- ADDED: Notification for Raast Proof Submission ---
         Notification.objects.create(
             recipient=request.user,
             sender=request.user,
@@ -312,9 +307,9 @@ def upload_raast_proof(request, booking_id):
             redirect_url=f"/bookings/status/{booking.id}/",
             icon="fa-solid fa-receipt"
         )
-        # -----------------------------------------------------
+     
 
-        messages.success(request, "Payment proof is submitted Admin ki wait for admin verfication.")
+        messages.success(request, "Payment proof is submitted Admin wait for admin verfication.")
         return redirect('bookings:payment_status', booking_id=booking.id)
 
     return redirect('bookings:raast_payment', booking_id=booking.id)

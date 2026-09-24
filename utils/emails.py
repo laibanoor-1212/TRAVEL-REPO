@@ -3,6 +3,10 @@ from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from django.core.mail import send_mail
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +19,6 @@ ADMIN_EMAILS = getattr(
 
 
 def send_custom_email(subject, recipient_list, template_name, context):
-    """Generic Base Function to send HTML & Plain Text Emails Safely"""
     if not recipient_list:
         return False
 
@@ -49,11 +52,37 @@ def send_custom_email(subject, recipient_list, template_name, context):
         logger.error(f"Email sending failed: {str(e)}")
         return False
 
+def send_payment_status_email(user, payment, status_type, reason=None):
+    if not user or not user.email:
+        return
 
-# ==============================================================================
-# SECTION 1: ADMIN NOTIFICATION ALERTS (Admin ko milne wali emails)
-# ==============================================================================
+    subject_map = {
+        'proof_verified': f"Payment Verified for Booking #{payment.booking_id}",
+        'proof_rejected': f"Payment Proof Rejected for Booking #{payment.booking_id}",
+        'refunded': f"Refund Processed for Booking #{payment.booking_id}",
+        'released': f"Payment Released for Booking #{payment.booking_id}",
+    }
 
+    message_map = {
+        'proof_verified': f"Hello {user.username},\n\nYour payment proof for Booking #{payment.booking_id} has been verified successfully. Funds are held in escrow.",
+        'proof_rejected': f"Hello {user.username},\n\nYour payment proof for Booking #{payment.booking_id} was rejected.\nReason: {reason or 'Invalid proof document.'}\nPlease re-upload a valid proof.",
+        'refunded': f"Hello {user.username},\n\nPayment for Booking #{payment.booking_id} has been refunded.\nReason: {reason or 'N/A'}",
+        'released': f"Hello {user.username},\n\nPayment for Booking #{payment.booking_id} has been released.",
+    }
+
+    subject = subject_map.get(status_type, f"Payment Update - Booking #{payment.booking_id}")
+    message = message_map.get(status_type, f"Hello {user.username},\n\nYour payment status has been updated.")
+
+    try:
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[user.email],
+            fail_silently=True
+        )
+    except Exception as e:
+        print(f"Failed to send email: {e}")
 def send_password_change_email(user):
     subject = "Security Alert: Password Changed Successfully"
     message = f"Hello {user.username},\n\nYour account password has been changed successfully. If you did not make this change, please contact support immediately."
@@ -67,7 +96,6 @@ def send_password_change_email(user):
         fail_silently=False,
     )
 def send_admin_new_agent_alert(agent_name, agent_email, agency_name=""):
-    """1. Naya Agent Jab Register/KYC Submit Kare"""
     context = {
         "agent_name": agent_name,
         "agent_email": agent_email,
@@ -82,7 +110,6 @@ def send_admin_new_agent_alert(agent_name, agent_email, agency_name=""):
 
 
 def send_admin_new_package_alert(package_title, agent_name, price=""):
-    """2. Agent Jab Naya Package Create Kare"""
     context = {
         "package_title": package_title,
         "agent_name": agent_name,
@@ -97,7 +124,6 @@ def send_admin_new_package_alert(package_title, agent_name, price=""):
 
 
 def send_admin_new_booking_alert(booking_id, customer_name, package_title, amount=""):
-    """3. Customer Jab Nayi Booking Kare"""
     context = {
         "booking_id": booking_id,
         "customer_name": customer_name,
@@ -113,7 +139,6 @@ def send_admin_new_booking_alert(booking_id, customer_name, package_title, amoun
 
 
 def send_admin_refund_request_alert(booking_id, customer_name, amount="", reason=""):
-    """4. Customer Refund ya Cancellation Request Bheje"""
     context = {
         "booking_id": booking_id,
         "customer_name": customer_name,
@@ -131,7 +156,6 @@ def send_admin_refund_request_alert(booking_id, customer_name, amount="", reason
 def send_complaint_submitted_emails(
     user_email, user_name, complaint_id, complaint_type, subject_text, description=""
 ):
-    """5. Customer Complaint Submit Kare (Customer Confirmation + Admin Alert)"""
     context = {
         "user_name": user_name,
         "user_email": user_email,
@@ -158,13 +182,8 @@ def send_complaint_submitted_emails(
     )
 
 
-# ==============================================================================
-# SECTION 2: AGENT NOTIFICATION EMAILS (Agent ko milne wali emails)
-# ==============================================================================
-
 
 def send_agent_account_status_email(agent_email, agent_name, is_approved, reason=""):
-    """6. Admin Jab Agent Account Approve, Reject ya Rollback Kare"""
     context = {
         "agent_name": agent_name,
         "is_approved": is_approved,
@@ -183,7 +202,6 @@ def send_agent_account_status_email(agent_email, agent_name, is_approved, reason
 def send_new_booking_agent_notification(
     agent_email, agent_name, booking_id, package_title, customer_name
 ):
-    """7. Agent ke Package par Nayi Booking Aaye"""
     context = {
         "agent_name": agent_name,
         "booking_id": booking_id,
@@ -199,7 +217,6 @@ def send_new_booking_agent_notification(
 
 
 def send_docs_resubmitted_email(customer_name, booking_id, agent_email=None):
-    """8. Customer Document Dobara (Re-submit) Kare (Agent + Admin Alert)"""
     context = {"customer_name": customer_name, "booking_id": booking_id}
     recipients = ADMIN_EMAILS.copy()
     if agent_email:
@@ -214,7 +231,6 @@ def send_docs_resubmitted_email(customer_name, booking_id, agent_email=None):
 
 
 def send_ticket_approved_notification(agent_email, customer_name, booking_id):
-    """9. Customer Ticket Approve Kar De (Agent + Admin Alert)"""
     context = {"customer_name": customer_name, "booking_id": booking_id}
     recipients = [agent_email] + ADMIN_EMAILS if agent_email else ADMIN_EMAILS
     return send_custom_email(
@@ -226,7 +242,6 @@ def send_ticket_approved_notification(agent_email, customer_name, booking_id):
 
 
 def send_ticket_rejected_notification(agent_email, customer_name, booking_id, reason):
-    """10. Customer Ticket Reject Kar De (Agent + Admin Alert)"""
     context = {
         "customer_name": customer_name,
         "booking_id": booking_id,
@@ -240,16 +255,9 @@ def send_ticket_rejected_notification(agent_email, customer_name, booking_id, re
         context,
     )
 
-
-# ==============================================================================
-# SECTION 3: CUSTOMER NOTIFICATION EMAILS (Customer ko milne wali emails)
-# ==============================================================================
-
-
 def send_booking_status_email(
     customer_email, customer_name, booking_id, new_status, remarks=""
 ):
-    """11. Booking Status Change Ho (Confirmed, Completed, Cancelled, Pending)"""
     context = {
         "customer_name": customer_name,
         "booking_id": booking_id,
@@ -267,7 +275,6 @@ def send_booking_status_email(
 def send_document_status_update_email(
     customer_email, customer_name, booking_id, status, rejection_reason=""
 ):
-    """12. Uploaded Documents Status Update (Approved / Rejected by Agent)"""
     context = {
         "customer_name": customer_name,
         "booking_id": booking_id,
@@ -285,7 +292,6 @@ def send_document_status_update_email(
 def send_ticket_uploaded_notification(
     customer_email, customer_name, booking_id, agent_name
 ):
-    """13. Agent Ticket Upload/Issue Kare"""
     context = {
         "customer_name": customer_name,
         "booking_id": booking_id,
@@ -308,7 +314,6 @@ def send_booking_action_email(
     reason="",
     new_date="",
 ):
-    """14. Customer ki Cancellation, Extension, ya Refund Action Update"""
     context = {
         "action_type": action_type,
         "customer_name": customer_name,
@@ -344,12 +349,9 @@ def send_booking_action_email(
     )
 
 
-# ==============================================================================
-# SECTION 4: PAYMENT & ESCROW NOTIFICATION EMAILS
-# ==============================================================================
+
 
 def send_payment_escrow_held_email(customer_email, customer_name, booking_id, amount):
-    """Triggered when customer submits payment and funds enter escrow."""
     context = {
         "customer_name": customer_name,
         "booking_id": booking_id,
@@ -372,7 +374,6 @@ def send_payment_escrow_held_email(customer_email, customer_name, booking_id, am
 
 
 def send_payment_released_emails(customer_email, customer_name, agent_email, agent_name, booking_id, amount):
-    """Triggered when Admin releases funds from escrow to the Agent."""
     context = {
         "customer_name": customer_name,
         "agent_name": agent_name,
@@ -396,14 +397,8 @@ def send_payment_released_emails(customer_email, customer_name, agent_email, age
         context=context,
     )
 
-from django.core.mail import send_mail
-from django.conf import settings
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
 
 def get_admin_emails():
-    """Helper function to fetch active superuser/admin email addresses."""
     admin_emails = list(
         User.objects.filter(is_superuser=True, is_active=True)
         .exclude(email='')
@@ -442,7 +437,6 @@ def send_package_created_emails(user, package):
 
 
 def send_package_updated_emails(user, package):
-    """Send notification emails when a package is updated."""
     from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@example.com')
 
     # 1. User Notification Email
@@ -469,7 +463,6 @@ def send_package_updated_emails(user, package):
 
 
 def send_package_deleted_emails(user, package):
-    """Send notification emails when a package status is changed to inactive/deleted."""
     from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@example.com')
 
     # 1. User Notification Email

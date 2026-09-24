@@ -75,7 +75,7 @@
                 <li><a href="{% url 'base:about' %}">About</a></li>
 
                 <li class="dropdown">
-                  <a href="#">Guide ▾</a>
+                  <a href="#">Guide <span class="arrow-icon">&#9662;</span></a>
                   <ul class="dropdown-menu">
                     <li><a href="{% url 'base:Guide' %}">Umrah guide</a></li>
                     <li><a href="{% url 'base:hajj-guide' %}">Hajj guide</a></li>
@@ -87,11 +87,9 @@
 
                 <!-- Packages Dynamic Dropdown -->
                 <li class="dropdown">
-                  <a href="#">Packages ▾</a>
+                  <a href="{% url 'base:hajj_packages'%}">Packages <span class="arrow-icon">&#9662;</span></a>
                   <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="{% url 'base:hajj_packages' %}">All Packages</a></li>
-                    
-                    <!-- Dynamic package types loop with ?type parameter -->
                     {% for pkg_type in package_types %}
                       <li>
                         <a class="dropdown-item" href="{% url 'base:hajj_packages' %}?type={{ pkg_type.name|default:pkg_type|urlencode }}">
@@ -99,12 +97,12 @@
                         </a>
                       </li>
                     {% empty %}
-                      <!-- Fallback Hardcoded Links with URL parameters -->
                       <li><a class="dropdown-item" href="{% url 'base:hajj_packages' %}?type=Hajj">Hajj Packages</a></li>
                       <li><a class="dropdown-item" href="{% url 'base:hajj_packages' %}?type=Umrah">Umrah Packages</a></li>
                       <li><a class="dropdown-item" href="{% url 'base:hajj_packages' %}?type=Iraq">Iraq Ziyarat</a></li>
                       <li><a class="dropdown-item" href="{% url 'base:hajj_packages' %}?type=Iran">Iran Ziyarat</a></li>
                     {% endfor %}
+                    <li><a class="dropdown-item" href="{% url 'base:agent_list' %}">Travel agents</a></li>
                   </ul>
                 </li>
 
@@ -115,7 +113,7 @@
                 {% if user.is_authenticated %}
                   <li class="dropdown user-nav-item">
                     <a href="javascript:void(0)" class="profile-toggle-btn">
-                      <i class="fas fa-user-circle user-minimal-icon"></i> Account ▾
+                      <i class="fas fa-user-circle user-minimal-icon"></i> Account<span class="arrow-icon">&#9662;</span>
                     </a>
                     <ul class="dropdown-menu user-dropdown-menu">
                       <li class="user-meta">

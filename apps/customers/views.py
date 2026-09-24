@@ -14,6 +14,7 @@ from django.db.models import Sum, Count, Q
 from payments.models import Payment
 from bookings.models import BookingCustomers, BookingStatusHistory
 from notifications.models import Notification 
+from payments.models import Payment, PaymentProof
 
 from adminpanel.decorators import user_required
 from utils.emails import (
@@ -433,7 +434,7 @@ def manage_booking_request(request, booking_id):
             except Exception:
                 pass
 
-            messages.success(request, "Aap ki booking cancellation request successfully submit ho gayi hai.")
+            messages.success(request, "your booking cancellation request successfully submitted.")
             return redirect('customers:user_bookings')
 
         elif action_type == "refund":
@@ -459,7 +460,7 @@ def manage_booking_request(request, booking_id):
                         remarks=reason or "Refund requested by customer"
                     )
 
-                    # --- ADDED: Notification for Refund Claimed ---
+                    # --- Notification for Refund Claimed ---
                     if agent_obj:
                         Notification.objects.create(
                             recipient=agent_obj,
@@ -521,7 +522,6 @@ def manage_booking_request(request, booking_id):
 
 @login_required(login_url='/auth/login/')
 def booking_detail(request, booking_id):
-    # Support both database numeric ID and String booking_id (e.g. SEH-BKG-00001)
     if str(booking_id).isdigit():
         booking = get_object_or_404(Bookings, pk=booking_id)
     else:
@@ -535,10 +535,7 @@ def booking_detail(request, booking_id):
         messages.error(request, "You do not have permission to view this booking.")
         return redirect('customers:user_bookings')
 
-    # Fetch all travelers linked to this booking
     customers = BookingCustomers.objects.filter(booking=booking)
-    
-    # Fetch additional custom uploaded files/fields if related_name or foreign key exists
     custom_documents = getattr(booking, 'documents', None)
     if custom_documents and hasattr(custom_documents, 'all'):
         custom_documents = custom_documents.all()
@@ -613,8 +610,6 @@ def update_booking_docs(request, booking_id):
             changed_by=request.user,
             remarks="Customer re-submitted rejected documents/details for verification."
         )
-
-        # --- ADDED: Notification for Documents Resubmitted ---
         agent_obj = getattr(getattr(booking, 'package', None), 'agency', None) or getattr(getattr(booking, 'package', None), 'agent', None)
         if agent_obj:
             Notification.objects.create(
@@ -627,7 +622,7 @@ def update_booking_docs(request, booking_id):
                 redirect_url=f"/agents/bookings/{booking.id}/",
                 icon="fa-solid fa-file-arrow-up"
             )
-        # ---------------------------------------------------
+       
 
         try:
             agent_email = getattr(agent_obj, 'email', None) if agent_obj else None
@@ -645,4 +640,14 @@ def update_booking_docs(request, booking_id):
     return render(request, 'customer/update_docs.html', {
         'booking': booking,
         'customers': customers
+    })
+
+@login_required
+def customer_payment_receipt(request, payment_id):
+    payment = get_object_or_404(Payment, id=payment_id, customer=request.user)
+    proofs = PaymentProof.objects.filter(payment=payment).order_by('-uploaded_at')
+
+    return render(request, 'customer/payment_receipts.html', {
+        'payment': payment,
+        'proofs': proofs,
     })
