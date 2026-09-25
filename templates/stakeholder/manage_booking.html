@@ -22,12 +22,70 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
   }
 
   .page-title {
     color: var(--primary-green);
-    font-weight: 700;
+    font-weight: 600;
+     font-size: 1.6rem;
     margin: 0;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  /* Search Bar Styles */
+  .search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-wrapper i {
+    position: absolute;
+    left: 12px;
+    color: #64748b;
+    font-size: 0.9rem;
+  }
+
+  .search-input {
+    padding: 8px 12px 8px 36px;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    font-size: 0.88rem;
+    outline: none;
+    transition: all 0.2s ease;
+    width: 220px;
+    background: #ffffff;
+  }
+
+  .search-input:focus {
+    border-color: var(--accent-green);
+    box-shadow: 0 0 0 3px rgba(49, 160, 116, 0.15);
+  }
+
+  /* Status Filter Dropdown Styles */
+  .filter-select {
+    padding: 8px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    font-size: 0.88rem;
+    outline: none;
+    background: #ffffff;
+    color: var(--text-dark);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .filter-select:focus {
+    border-color: var(--accent-green);
+    box-shadow: 0 0 0 3px rgba(49, 160, 116, 0.15);
   }
 
   .count-badge {
@@ -37,6 +95,7 @@
     border-radius: 20px;
     font-weight: 600;
     font-size: 0.88rem;
+    white-space: nowrap;
   }
 
   .table-card {
@@ -53,17 +112,19 @@
     text-align: left;
   }
 
+  /* Header Color Removed - Clean Light Header Style */
   .custom-table thead {
-    background: var(--primary-green);
-    color: #ffffff;
+    background-color: transparent;
   }
 
   .custom-table th {
     padding: 14px 18px;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    color: #475569;
+    border-bottom: 2px solid var(--border-color);
   }
 
   .custom-table td {
@@ -83,15 +144,17 @@
     gap: 4px;
     text-transform: uppercase;
   }
+  
+
 
   .st-resubmitted { background: #e0e7ff; color: #3730a3; border: 1px solid #c7d2fe; }
   .st-approved    { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
-  .st-action      { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
-  .st-rejected    { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+  .st-action      { background: #fef3c7; color:  #a16207; border: 1px solid #fde047; }
+  .st-rejected    { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
   .st-pending     { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
-  .st-ticket      { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
-
-  /* Action Buttons Wrapper to keep them side by side */
+  .st-ticket      { background: #ecfdf5; color: #31a074;  border: 1px solid #a7f3d0; }
+  
+  /* Action Buttons Wrapper */
   .action-buttons-group {
     display: flex;
     align-items: center;
@@ -122,15 +185,34 @@
 
 <div class="bk-container">
   <div class="page-header">
-    <h2 class="page-title"><i class="bi bi-journal-check me-2"></i>Manage Package Bookings</h2>
-    <span class="count-badge">
-      Total Bookings: {{ bookings.count }}
-    </span>
+    <h2 class="page-title"><i class="bi bi-journal-check me-2"></i>Manage Bookings</h2>
+    <div class="header-actions">
+      <!-- Search Input Bar -->
+      <div class="search-wrapper">
+        <i class="bi bi-search"></i>
+        <input type="text" id="bookingSearchInput" class="search-input" placeholder="Search bookings..." onkeyup="filterTable()">
+      </div>
+
+      <!-- Status Filter Dropdown -->
+      <select id="statusFilter" class="filter-select" onchange="filterTable()">
+        <option value="all">All Statuses</option>
+        <option value="resubmitted">Resubmitted</option>
+        <option value="action_required">Action Required</option>
+        <option value="approved">Approved / Confirmed</option>
+        <option value="ticket_issued">Ticket Issued / Completed</option>
+        <option value="rejected">Rejected / Cancelled</option>
+        <option value="pending">Pending Review</option>
+      </select>
+
+      <span class="count-badge">
+        Total Bookings: {{ bookings.count }}
+      </span>
+    </div>
   </div>
 
   <div class="table-card">
     <div style="overflow-x: auto;">
-      <table class="custom-table">
+      <table class="custom-table" id="bookingsTable">
         <thead>
           <tr>
             <th>Booking ID</th>
@@ -143,7 +225,7 @@
         </thead>
         <tbody>
           {% for booking in bookings %}
-          <tr>
+          <tr class="booking-row" data-status="{{ booking.status|lower }}">
             <td>
               <strong style="color: var(--primary-green);">#{{ booking.booking_id|default:booking.id }}</strong>
             </td>
@@ -189,7 +271,6 @@
               {% endif %}
             </td>
             <td style="text-align: center;">
-              <!-- Wrapped inside a flex group so buttons stay side-by-side -->
               <div class="action-buttons-group">
                 <a href="{% url 'stakeholder:booking_detail' booking.id %}" class="btn-action-view">
                   <i class="bi bi-eye"></i> Review
@@ -216,9 +297,68 @@
             </td>
           </tr>
           {% endfor %}
+
+          <tr id="noResultsRow" style="display: none;">
+            <td colspan="6" style="text-align: center; padding: 30px; color: #64748b;">
+              <i class="bi bi-search fs-3 d-block mb-2"></i>
+              No matching bookings found.
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
   </div>
 </div>
+
+<script>
+  function filterTable() {
+    let searchValue = document.getElementById('bookingSearchInput').value.toLowerCase().trim();
+    let selectedStatus = document.getElementById('statusFilter').value.toLowerCase();
+    let rows = document.querySelectorAll('#bookingsTable tbody tr.booking-row');
+    let noResultsRow = document.getElementById('noResultsRow');
+    let visibleCount = 0;
+
+    rows.forEach(function(row) {
+      let rowText = row.textContent.toLowerCase();
+      let rowStatus = (row.getAttribute('data-status') || '').trim().toLowerCase();
+
+      let matchesSearch = rowText.indexOf(searchValue) > -1;
+      let matchesStatus = false;
+
+      // Status mapping to support multiple status variations
+      if (selectedStatus === 'all') {
+        matchesStatus = true;
+      } else if (selectedStatus === 'approved') {
+        matchesStatus = (rowStatus === 'approved' || rowStatus === 'confirmed');
+      } else if (selectedStatus === 'ticket_issued') {
+        matchesStatus = (rowStatus === 'ticket_issued' || rowStatus === 'completed');
+      } else if (selectedStatus === 'action_required') {
+        matchesStatus = (rowStatus === 'action_required' || rowStatus === 'rollback' || rowStatus === 'rejected_fields');
+      } else if (selectedStatus === 'resubmitted') {
+        matchesStatus = (rowStatus === 'resubmitted' || rowStatus === 'under_review');
+      } else if (selectedStatus === 'rejected') {
+        matchesStatus = (rowStatus === 'rejected' || rowStatus === 'cancelled');
+      } else if (selectedStatus === 'pending') {
+        matchesStatus = (rowStatus === 'pending' || rowStatus === 'pending_review' || rowStatus === '');
+      } else {
+        matchesStatus = rowStatus.indexOf(selectedStatus) > -1;
+      }
+
+      if (matchesSearch && matchesStatus) {
+        row.style.display = '';
+        visibleCount++;
+      } else {
+        row.style.display = 'none';
+      }
+    });
+
+    if (noResultsRow) {
+      if (visibleCount === 0 && rows.length > 0) {
+        noResultsRow.style.display = '';
+      } else {
+        noResultsRow.style.display = 'none';
+      }
+    }
+  }
+</script>
 {% endblock %}

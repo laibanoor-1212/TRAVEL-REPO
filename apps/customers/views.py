@@ -28,7 +28,11 @@ from utils.emails import (
 
 @login_required(login_url='/auth/login/')
 def user_profile_view(request):
-    profile, created = CustomerProfile.objects.get_or_create(user=request.user)
+    # Fix 1: Default dictionary pass karein taake get_or_create ke waqt cnic_number Null jaye
+    profile, created = CustomerProfile.objects.get_or_create(
+        user=request.user,
+        defaults={'cnic_number': None}
+    )
     
     if request.method == 'POST':
         # Personal Fields
@@ -45,7 +49,8 @@ def user_profile_view(request):
         profile.province = request.POST.get('province')
         profile.city = request.POST.get('city')
         profile.address = request.POST.get('address')
-        profile.cnic_number = request.POST.get('cnic_number')
+        cnic = request.POST.get('cnic_number')
+        profile.cnic_number = cnic if cnic and cnic.strip() else None
         
         # Preferences & Emergency Contact
         profile.emergency_contact_name = request.POST.get('emergency_contact_name')
@@ -75,8 +80,6 @@ def user_profile_view(request):
         'saved_packages': saved_packages
     }
     return render(request, 'customer/user_profile.html', context)
-
-
 @user_required
 @login_required(login_url='/auth/login/')
 def customer_kyc(request):
@@ -610,6 +613,7 @@ def update_booking_docs(request, booking_id):
             changed_by=request.user,
             remarks="Customer re-submitted rejected documents/details for verification."
         )
+
         agent_obj = getattr(getattr(booking, 'package', None), 'agency', None) or getattr(getattr(booking, 'package', None), 'agent', None)
         if agent_obj:
             Notification.objects.create(

@@ -45,7 +45,7 @@ class CustomerProfile(models.Model):
     province = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
     address = models.TextField()
-    cnic_number = models.CharField(max_length=20,unique=True)
+    cnic_number = models.CharField(max_length=20,unique=True,null=True,blank=True)
     cnic_front = models.ImageField(upload_to='customer_profile/cnic/')
     cnic_back = models.ImageField(upload_to='customer_profile/cnic/')
     profile_picture = models.ImageField(upload_to='customer_profile/profile/',blank=True,null=True)

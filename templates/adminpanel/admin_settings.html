@@ -6,14 +6,16 @@
         padding: 2rem;
         background-color: #f8fafc;
         min-height: 100vh;
+        width: 100%;
+        box-sizing: border-box;
     }
     .settings-header {
         margin-bottom: 2rem;
     }
-    .settings-header h1 {
+    .settings-header h2 {
         font-size: 1.75rem;
-        font-weight: 700;
-        color: #0f172a;
+        font-weight: 600;
+        color: #31a074;
     }
     .settings-header p {
         color: #64748b;
@@ -21,8 +23,9 @@
     }
     .settings-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: 1.5rem;
+        width: 100%;
     }
     .card {
         background: white;
@@ -30,6 +33,7 @@
         border-radius: 12px;
         padding: 1.5rem;
         box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        box-sizing: border-box;
     }
     .card-title {
         font-size: 1.1rem;
@@ -81,7 +85,7 @@
         border-radius: 8px;
         border: 1px solid #f1f5f9;
     }
-    .form-control {
+    .form-control, .form-box select, .form-box input {
         width: 100%;
         padding: 0.55rem 0.75rem;
         border: 1px solid #cbd5e1;
@@ -89,6 +93,7 @@
         margin-top: 0.25rem;
         margin-bottom: 0.85rem;
         background: white;
+        box-sizing: border-box;
     }
     .btn-action {
         background-color: #15803d;
@@ -107,11 +112,22 @@
     .icon-green { color: #16a34a; }
     .icon-orange { color: #d97706; }
     .icon-red { color: #dc2626; }
+
+    @media (min-width: 1024px) {
+        .settings-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    @media (min-width: 1400px) {
+        .settings-grid {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
 </style>
 
 <div class="settings-container">
     <div class="settings-header">
-        <h1>Admin Platform Settings</h1>
+        <h2>Admin Platform Settings</h2>
         <p>Manage security credentials, platform preferences, and maintenance controls.</p>
     </div>
 

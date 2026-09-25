@@ -273,15 +273,68 @@
   .modal-footer { display: flex; justify-content: flex-end; gap: 10px; }
   .btn-modal-cancel { padding: 8px 14px; border: 1px solid #cbd5e1; background: #fff; border-radius: 6px; cursor: pointer; font-weight: 600; }
   .btn-modal-submit { padding: 8px 14px; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
-</style>
 
+  /* Search Container Styles */
+  .search-filter-wrapper {
+    margin-bottom: 20px;
+    margin-top:30px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .search-input-group {
+    position: relative;
+    flex: 1;
+    max-width: 450px;
+  }
+
+  .search-input-group i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 1rem;
+  }
+
+  .search-input-group input {
+    width: 100%;
+    padding: 10px 14px 10px 40px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    outline: none;
+    transition: all 0.2s ease;
+    background: #ffffff;
+  }
+
+  .search-input-group input:focus {
+    border-color: var(--accent-green);
+    box-shadow: 0 0 0 3px rgba(49, 160, 116, 0.15);
+  }
+
+</style>
+<div class="search-filter-wrapper">
+    <div class="search-input-group">
+      <i class="bi bi-search"></i>
+      <input 
+        type="text" 
+        id="bookingSearchInput" 
+        placeholder="Search by Booking ID, Customer Name, Email, or Status..." 
+        onkeyup="filterBookingTable()"
+      />
+    </div>
+  </div>
 <div class="bookings-wrapper">
   <div class="booking-header">
     <h2>My Bookings</h2>
+    
     <a href="/" class="btn-new-booking">
       <i class="fa-solid fa-plus"></i> New Booking
     </a>
   </div>
+
 
   <div class="booking-card">
     {% if bookings %}
@@ -440,6 +493,12 @@
           </td>
           </tr>
           {% endfor %}
+           <tr id="noResultsRow" style="display: none;">
+            <td colspan="6" style="text-align: center; padding: 30px; color: #64748b;">
+              <i class="bi bi-search fs-3 d-block mb-2"></i>
+              No matching bookings found.
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -552,5 +611,28 @@
       closeAllMenus();
     }
   });
+  function filterPackageTable() {
+  const query = document.getElementById('bookingSearchInput').value.toLowerCase().trim();
+  const rows = document.querySelectorAll('.package-row');
+  let matchCount = 0;
+
+  rows.forEach(row => {
+    const rowText = row.textContent.toLowerCase();
+    
+    if (rowText.includes(query)) {
+      row.style.display = '';
+      matchCount++;
+    } else {
+      row.style.display = 'none';
+    }
+  });
+
+  const noResultsRow = document.getElementById('noResultsRow');
+  if (matchCount === 0 && rows.length > 0) {
+    noResultsRow.style.display = '';
+  } else {
+    noResultsRow.style.display = 'none';
+  }
+}
 </script>
 {% endblock %}

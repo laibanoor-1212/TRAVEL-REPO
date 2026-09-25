@@ -174,13 +174,13 @@ def agent_requests(request):
     rejected_count = AgentKYC.objects.filter(kyc_status='rejected').count()
     approved_count = AgentKYC.objects.filter(kyc_status='approved').count()
 
-    # User field ko filter aur annotate karein taake profile.user valid ho
+    # 'user__sent_admin_chats' use kiya gaya hai kyunki user ki taraf se aayi chat messages sent_admin_chats mein hoti hain
     requests = AgentKYC.objects.filter(user__isnull=False).select_related('user').annotate(
-    unread_messages_count=Count(
-        'user__adminagentchat', # Or 'user__admin_chats' depending on your model set up
-        filter=Q(user__adminagentchat__is_read=False) & ~Q(user__adminagentchat__sender=request.user)
+        unread_messages_count=Count(
+            'user__sent_admin_chats',
+            filter=Q(user__sent_admin_chats__is_read=False) & ~Q(user__sent_admin_chats__sender=request.user)
+        )
     )
-)
 
     return render(
         request,
@@ -193,7 +193,6 @@ def agent_requests(request):
             'requests': requests,
         }
     )
-
 @admin_required
 def review_agent(request, pk):
     profile = get_object_or_404(AgentKYC, pk=pk)

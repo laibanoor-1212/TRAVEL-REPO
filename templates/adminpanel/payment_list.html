@@ -4,7 +4,8 @@
 {% block content %}
 <style>
     :root {
-        --primary-green: #0b7a47; 
+        --primary-green: #064e3b;
+        --accent-green:  #31a074;
         --pure-white: #ffffff;
         --danger-red: #d63031;
         --warning-orange: #f39c12;
@@ -78,7 +79,7 @@
     }
 
     .data-table th { 
-        background: var(--primary-green); 
+        background: var(--accent-green); 
         color: white; 
         padding: 10px 12px; 
         font-size: 10px; 
@@ -145,11 +146,11 @@
         white-space: nowrap;
     }
 
-    .bg-released { background: #dcfce7; color: #15803d; }
-    .bg-failed { background: #fee2e2; color: #b91c1c; }
-    .bg-escrow-hold { background: #fef3c7; color: #b45309; }
+    .bg-released { background:  #d1fae5; color: #065f46; }
+    .bg-failed { background:  #fee2e2; color: #b91c1c;  }
+    .bg-escrow-hold { background: #f1f5f9; color: #475569; }
     .bg-neutral { background: #f1f5f9; color: #475569; }
-
+  
     .btn-action {
         padding: 5px 10px; 
         border-radius: 6px; 
@@ -165,7 +166,7 @@
         white-space: nowrap;
     }
 
-    .btn-blue { background: var(--primary-green); }
+    .btn-blue { background: var(--accent-green); }
     .btn-outline-clear { background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
     .btn-outline-clear:hover { background: #e2e8f0; }
 </style>
@@ -181,7 +182,7 @@
 
     <div class="header-row">
         <div>
-            <h2 style="color: var(--primary-green); font-weight: 800; margin: 0; font-size: 22px;">Payments — Escrow Management</h2>
+            <h2 style="color: var(--accent-green); font-weight: 600; margin: 0; font-size: 22px;">Payments — Escrow Management</h2>
             <p style="color: #64748b; margin: 3px 0 0; font-size: 12px;">Audit transactional records, track approvals, agent payout requests, and refunds.</p>
         </div>
         <input type="text" id="paymentSearch" placeholder="Search Payments, Customer, Agent..." onkeyup="searchPaymentsTable()" class="search-input-box">

@@ -2,32 +2,275 @@
 {% load static %}
 
 {% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    /* --- Main Container & Typography --- */
+    #payments-page {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 0 20px;
+        font-family: 'Poppins', 'Segoe UI', sans-serif;
+    }
+
+    .management-header {
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        margin-bottom: 25px;
+    }
+
+    .management-header h2 {
+        font-size: 1.6rem;
+        color: #0f5132;
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .management-header p {
+        color: #6c757d;
+        margin: 4px 0 0 0;
+        font-size: 0.9rem;
+    }
+
+    /* --- Search Bar Container --- */
+    .search-filter-wrapper {
+        margin-bottom: 20px;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .search-input-group {
+        position: relative;
+        flex: 1;
+        max-width: 450px;
+    }
+
+    .search-input-group i {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 0.95rem;
+    }
+
+    .search-input-group input {
+        width: 100%;
+        padding: 10px 14px 10px 40px;
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        outline: none;
+        transition: all 0.2s ease;
+        background: #ffffff;
+    }
+
+    .search-input-group input:focus {
+        border-color: #198754;
+        box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.15);
+    }
+
+    /* --- Card & Data Table Design --- */
+    .card {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+        border: 1px solid #e6efe9;
+        overflow: hidden;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        font-size: 0.95rem;
+    }
+
+    .custom-table th {
+        background-color: #f8f9fa;
+        padding: 16px 20px;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.78rem;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #dee2e6;
+        color: #155c3b;
+    }
+
+    .custom-table td {
+        padding: 16px 20px;
+        border-bottom: 1px solid #f1f3f5;
+        color: #334155;
+        vertical-align: middle;
+    }
+
+    .custom-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .custom-table tbody tr:hover td {
+        background-color: #fdfdfd;
+    }
+
+    /* --- Badges & Text Styling --- */
+    .booking-badge {
+        font-family: monospace;
+        font-weight: 700;
+        color: #2c3e50;
+        background-color: #edf2f7;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.85rem;
+    }
+
+    .price-text {
+        font-weight: 600;
+        color: #0f5132;
+    }
+
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 14px;
+        border-radius: 30px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        text-transform: capitalize;
+    }
+
+    .status-pill.status-released {
+        background-color: #d1fae5;
+        color: #065f46;
+    }
+ 
+    .status-pill.status-hold, .status-pill.status-pending {
+        background-color: #f1f5f9;
+        color: #475569;
+    }
+    .status-pill.status-cancelled {
+        background-color: #fee2e2;
+        color: #b91c1c;
+    }
+
+    .status-pill.status-waiting {
+        background-color: #fff3cd;
+        color: #a16207;
+    }
+
+    /* --- Action Buttons --- */
+    .btn-send-ticket {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background-color: #198754;
+        color: #ffffff !important;
+        padding: 8px 14px;
+        border-radius: 6px;
+        font-size: 0.88rem;
+        font-weight: 500;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: all 0.2s ease;
+    }
+
+    .btn-send-ticket:hover {
+        background-color: #146c43;
+    }
+
+    .btn-request-payout {
+        background-color: #0b7a47;
+        color: #ffffff;
+        border: none;
+        padding: 8px 14px;
+        border-radius: 6px;
+        font-size: 0.88rem;
+        font-weight: 500;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.2s ease;
+    }
+
+    .btn-request-payout:hover {
+        background-color: #085d36;
+    }
+
+    .btn-payout-disabled {
+        background-color: #e9ecef !important;
+        color: #6c757d !important;
+        border: 1px solid #ced4da !important;
+        padding: 8px 14px;
+        border-radius: 6px;
+        font-size: 0.88rem;
+        font-weight: 500;
+        cursor: not-allowed !important;
+        pointer-events: none; 
+        opacity: 0.7; 
+        white-space: nowrap;
+        user-select: none;
+    }
+
+    /* --- Empty State --- */
+    .empty-row {
+        text-align: center;
+        padding: 40px !important;
+        color: #8c98a5;
+    }
+
+    .empty-row i {
+        font-size: 2rem;
+        margin-bottom: 8px;
+        display: block;
+        color: #dee2e6;
+    }
+</style>
 
 <div id="payments-page">
-    <div style="margin-bottom: 20px;">
-        <h2>Payment Transactions</h2>
-        <p style="color: #666;">Track your earnings and escrow status</p>
+
+    <div class="management-header">
+        <div>
+            <h2>Payment Transactions</h2>
+            <p>Track your earnings and escrow status</p>
+        </div>
     </div>
 
-    <div class="payment-card">
-        {% if payments %}
-        <div style="overflow-x: auto;">
-            <table class="payment-table">
+    <!-- Live Search Section -->
+    <div class="search-filter-wrapper">
+        <div class="search-input-group">
+            <i class="fas fa-search"></i>
+            <input 
+                type="text" 
+                id="paymentSearchInput" 
+                placeholder="Search Booking ID, Customer, TRX ID, Amount, Status..." 
+                onkeyup="filterPayments()"
+            />
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="table-responsive">
+            <table class="custom-table">
                 <thead>
                     <tr>
                         <th style="width: 12%;">Booking ID</th>
                         <th style="width: 14%;">Transaction ID</th>
-                        <th style="width: 13%;">Customer</th>
-                        <th style="width: 10%;">Amount</th>
-                        <th style="width: 14%;">Payment Method</th>
-                        <th style="width: 13%;">Escrow Status</th>
+                        <th style="width: 15%;">Customer</th>
+                        <th style="width: 12%;">Amount</th>
+                        <th style="width: 16%;">Payment Method</th>
+                        <th style="width: 14%;">Escrow Status</th>
                         <th style="width: 10%;">Date</th>
-                        <th style="width: 14%;">Action</th>
+                        <th style="width: 15%;">Action</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="paymentTableBody">
                     {% for payment in payments %}
-                    <tr>
+                    <tr class="payment-row">
                         <!-- 1. BOOKING ID -->
                         <td>
                             <span class="booking-badge">#BK-{{ payment.booking.id }}</span>
@@ -44,40 +287,49 @@
                             {% endif %}
                         </td>
 
+                        <!-- 3. CUSTOMER -->
                         <td><strong>{{ payment.customer.get_full_name|default:payment.customer.username }}</strong></td>
-                        <td class="amount">PKR {{ payment.amount }}</td>
+
+                        <!-- 4. AMOUNT -->
+                        <td><span class="price-text">PKR {{ payment.amount }}</span></td>
+
+                        <!-- 5. PAYMENT METHOD -->
                         <td>
-                            <span class="status-badge {% if payment.payment_status == 'released' %}status-released{% elif payment.payment_status in 'cancelled,refunded' %}status-cancelled{% else %}status-hold{% endif %}">
+                            <span class="status-pill {% if payment.payment_status == 'released' %}status-released{% elif payment.payment_status in 'cancelled,refunded' %}status-cancelled{% else %}status-hold{% endif %}">
+                                <i class="fas fa-circle" style="font-size: 0.4rem; margin-right: 6px; vertical-align: middle;"></i>
                                 {{ payment.get_payment_method_display }} — {{ payment.get_payment_status_display }}
                             </span>
                         </td>
+
+                        <!-- 6. ESCROW STATUS -->
                         <td>
-                            <span class="status-badge {% if payment.escrow_status == 'released' %}status-released{% elif payment.escrow_status == 'held_in_escrow' %}status-pending{% else %}status-hold{% endif %}">
+                            <span class="status-pill {% if payment.escrow_status == 'released' %}status-released{% elif payment.escrow_status == 'held_in_escrow' %}status-pending{% else %}status-hold{% endif %}">
+                                <i class="fas fa-circle" style="font-size: 0.4rem; margin-right: 6px; vertical-align: middle;"></i>
                                 {{ payment.get_escrow_status_display }}
                             </span>
                         </td>
+
+                        <!-- 7. DATE -->
                         <td>{{ payment.created_at|date:"d M Y" }}</td>
                         
-                     
+                        <!-- 8. ACTION -->
                         <td>
                             {% if payment.payout_status == 'released' or payment.is_payout_released or payment.escrow_status == 'released' %}
-                               
-                                <button class="btn-payout-disabled" disabled title="Payout for this booking has already been released">
-                                    <i class="fas fa-check-circle"></i> Payout Released
+                               <button class="btn-payout-disabled" disabled title="Payout for this booking has already been released">
+                                    <i class="fas fa-check-circle"></i> Released
                                 </button>
 
                             {% elif not payment.booking.ticket %}
                                 <a href="{% url 'stakeholder:agent_upload_ticket' payment.booking.id %}" class="btn-send-ticket">
-                                    Send Ticket
+                                    <i class="fas fa-paper-plane"></i> Send Ticket
                                 </a>
 
                             {% elif payment.payout_status == 'requested' or payment.is_payout_requested %}
-                                <span class="status-badge status-waiting">
-                                    <i class="fas fa-clock"></i> Payout Requested (Waiting)
+                                <span class="status-pill status-waiting">
+                                    <i class="fas fa-clock" style="margin-right: 4px;"></i> Requested
                                 </span>
 
                             {% else %}
-                        
                                 <form action="{% url 'stakeholder:agent_request_payout' payment.id %}" method="POST" class="payout-form" style="margin: 0; display: inline-block;">
                                     {% csrf_token %}
                                     <button type="submit" class="btn-request-payout">
@@ -87,94 +339,29 @@
                             {% endif %}
                         </td>
                     </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="empty-row">
+                            <i class="fas fa-receipt"></i>
+                            No payment transactions found.
+                        </td>
+                    </tr>
                     {% endfor %}
+
+                    <tr id="noSearchResults" style="display: none;">
+                        <td colspan="8" class="empty-row">
+                            <i class="fas fa-search"></i>
+                            No matching payment transactions found
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
-        {% else %}
-        <div style="text-align: center; padding: 40px; color: #7f8c8d;">
-            <p>No payment transactions yet.</p>
-        </div>
-        {% endif %}
     </div>
 </div>
 
-<style>
-    .booking-badge {
-        font-family: monospace;
-        font-weight: 700;
-        color: #2c3e50;
-        background-color: #edf2f7;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-size: 13px;
-    }
-
-    .status-cancelled {
-        background-color: #fdecea;
-        color: #c0392b;
-    }
-    
-    .status-waiting {
-        background-color: #fff3cd;
-        color: #856404;
-        border: 1px solid #ffeeba;
-        padding: 6px 12px;
-        border-radius: 6px;
-        font-size: 12px;
-        font-weight: 600;
-        display: inline-block;
-        white-space: nowrap;
-    }
-    .btn-send-ticket {
-        display: inline-block;
-        background-color: #198754;
-        color: #fff;
-        padding: 6px 14px;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: 600;
-        text-decoration: none;
-        white-space: nowrap;
-    }
-    .btn-send-ticket:hover {
-        background-color: #146c43;
-        color: #fff;
-    }
-
-    .btn-request-payout {
-        background-color: #0b7a47;
-        color: #ffffff;
-        border: none;
-        padding: 6px 14px;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: 600;
-        cursor: pointer;
-        white-space: nowrap;
-        transition: all 0.2s ease;
-    }
-    .btn-request-payout:hover {
-        background-color: #085d36;
-    }
-    .btn-payout-disabled {
-        background-color: #e9ecef !important;
-        color: #6c757d !important;
-        border: 1px solid #ced4da !important;
-        padding: 6px 14px;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: 600;
-        cursor: not-allowed !important;
-        pointer-events: none; 
-        opacity: 0.65; 
-        filter: blur(0.3px);
-        white-space: nowrap;
-        user-select: none;
-    }
-</style>
-
 <script>
+    // Submitting state handler
     document.querySelectorAll('.payout-form').forEach(form => {
         form.addEventListener('submit', function() {
             const btn = this.querySelector('.btn-request-payout');
@@ -182,6 +369,32 @@
             btn.innerText = 'Submitting...';
         });
     });
+
+    // Live search function
+    function filterPayments() {
+        const query = document.getElementById('paymentSearchInput').value.toLowerCase().trim();
+        const rows = document.querySelectorAll('.payment-row');
+        const noResultsRow = document.getElementById('noSearchResults');
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            const rowText = row.textContent.toLowerCase();
+            if (rowText.includes(query)) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        if (noResultsRow) {
+            if (visibleCount === 0 && rows.length > 0) {
+                noResultsRow.style.display = '';
+            } else {
+                noResultsRow.style.display = 'none';
+            }
+        }
+    }
 </script>
 
 {% endblock %}

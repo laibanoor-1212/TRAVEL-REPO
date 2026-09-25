@@ -295,7 +295,7 @@
         margin-left: var(--sidebar-collapsed-width);
       }
 
-      /* Top Navbar - Clean & Filled with Action Items */
+      /* Top Navbar - Clean Layout */
       .navbar {
         height: var(--navbar-height);
         background: var(--pure-white);
@@ -307,6 +307,12 @@
         position: sticky;
         top: 0;
         z-index: 900;
+      }
+
+      .nav-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
       }
 
       /* Navbar Search Bar */
@@ -323,8 +329,8 @@
 
       .nav-search:focus-within {
         background: var(--pure-white);
-        border-color: var(--accent-green);
-        box-shadow: 0 0 0 3px rgba(27, 122, 78, 0.1);
+        border-color: var(--sidebar-accent);
+        box-shadow: 0 0 0 3px rgba(49, 160, 116, 0.15);
       }
 
       .nav-search i {
@@ -404,6 +410,7 @@
       .user-menu-btn:hover {
         background: #f8fafc;
       }
+
       .mobile-menu-btn {
         display: none;
         background: transparent;
@@ -416,7 +423,6 @@
         cursor: pointer;
         color: var(--primary-green);
         font-size: 1.1rem;
-        margin-right: 12px;
       }
 
       .user-avatar {
@@ -492,13 +498,15 @@
         border-left: 4px solid var(--danger); 
         color: var(--danger); 
       }
+
       .brand-logo-img {
         width: 38px;
         height: 38px;
         object-fit: contain;
         border-radius: 8px;
       }
-     @media (max-width: 768px) {
+
+      @media (max-width: 768px) {
         .nav-search { display: none; }
         .sidebar { left: -260px; width: var(--sidebar-width) !important; }
         .sidebar.mobile-show { left: 0; box-shadow: 10px 0 30px rgba(0,0,0,0.3); }
@@ -581,17 +589,22 @@
 
       <div class="main-wrapper" id="mainWrapper">
         <nav class="navbar">
-          <div style="display: flex; align-items: center;">
+          <!-- Left side: Toggle button (mobile) + Search bar -->
+          <div class="nav-left">
             <button class="mobile-menu-btn" onclick="toggleSidebar()" title="Open Menu">
               <i class="fas fa-bars"></i>
             </button>
             <div class="nav-search">
               <i class="fas fa-magnifying-glass"></i>
-              <input type="text" placeholder="Search packages, bookings, IDs..." />
+              <input 
+                type="text" 
+                id="navPageSearch" 
+                placeholder="Search pages (Bookings, Packages, Payments...)" 
+              />
             </div>
           </div>
-    
 
+          <!-- Right side: Notifications + User Profile -->
           <div class="nav-right">
             <div class="notification-dropdown-wrapper" style="position: relative;">
               <button class="bell-btn" onclick="toggleNotificationMenu(event)" title="Notifications">
@@ -735,6 +748,29 @@
         }
         closeAllMenus();
       };
+      
+  document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('navPageSearch');
+    if (!searchInput) return;
+
+    // Sidebar ke sabhi links ko retrieve karen
+    const sidebarLinks = Array.from(document.querySelectorAll('.sidebar-nav-list a'));
+
+    searchInput.addEventListener('input', function (e) {
+      const query = e.target.value.toLowerCase().trim();
+
+      sidebarLinks.forEach(link => {
+        const linkText = link.textContent.toLowerCase();
+        // Agar query match ho to link dikhayen, varna hide kar dein
+        if (query === "" || linkText.includes(query)) {
+          link.style.display = 'flex';
+        } else {
+          link.style.display = 'none';
+        }
+      });
+    });
+  });
+
     </script>
   </body>
 </html>

@@ -30,10 +30,10 @@
                 <div class="alert alert-danger border-0 shadow-sm rounded-3 p-4 mb-4 d-md-flex justify-content-between align-items-center">
                     <div class="mb-3 mb-md-0">
                         <h5 class="alert-heading fw-bold mb-1"><i class="bi bi-exclamation-octagon-fill me-2"></i>Payment Incomplete!</h5>
-                        <p class="mb-0 text-dark opacity-75">Aapki booking abhi incomplete hai. Process poora karne ke liye payment dobara start karein.</p>
+                        <p class="mb-0 text-dark opacity-75">your booking is incomplete try again</p>
                     </div>
                     <div>
-                        <a href="{% url 'bookings:retry_payment' booking.id %}" class="btn btn-danger fw-bold px-4 py-2 text-nowrap rounded-3 shadow-sm">
+                        <a href="{% url 'bookings:choose_payment_method' booking.id %}" class="btn btn-danger fw-bold px-4 py-2 text-nowrap rounded-3 shadow-sm">
                             <i class="bi bi-arrow-repeat me-1"></i> Try Again / Pay Now
                         </a>
                     </div>

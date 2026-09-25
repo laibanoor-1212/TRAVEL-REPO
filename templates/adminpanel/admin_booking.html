@@ -20,6 +20,8 @@
         padding: 24px;
         background-color: var(--light-bg);
         min-height: 100vh;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     /* Page Header */
@@ -32,8 +34,8 @@
 
     .page-title {
         font-size: 24px;
-        font-weight: 700;
-        color: var(--text-dark);
+        font-weight: 600;
+        color: var(--primary-green);
         margin: 0;
         display: flex;
         align-items: center;
@@ -116,28 +118,36 @@
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
         border: 1px solid var(--border-color);
         overflow: hidden;
+        width: 100%;
+    }
+
+    .table-wrapper {
+        width: 100%;
+        overflow-x: auto;
     }
 
     .custom-table {
         width: 100%;
         border-collapse: collapse;
         text-align: left;
+        table-layout: auto;
     }
 
     .custom-table th {
         background-color: #f8fafc;
-        padding: 14px 18px;
-        font-size: 12px;
+        padding: 12px 10px;
+        font-size: 11px;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         color: var(--dark-green);
         border-bottom: 1px solid var(--border-color);
+        white-space: nowrap;
     }
 
     .custom-table td {
-        padding: 16px 18px;
-        font-size: 13px;
+        padding: 12px 10px;
+        font-size: 12px;
         color: var(--text-dark);
         border-bottom: 1px solid #f1f5f9;
         vertical-align: middle;
@@ -148,37 +158,48 @@
     }
 
     .small-id {
-        font-size: 11px;
+        font-size: 10px;
         color: var(--text-muted);
+        display: block;
     }
 
     /* Badges */
     .badge {
-        padding: 6px 12px;
+        padding: 4px 8px;
         border-radius: 20px;
         font-size: 11px;
         font-weight: 600;
         display: inline-block;
         text-transform: capitalize;
+        white-space: nowrap;
     }
 
-    .bg-pending { background-color: #fef3c7; color: #92400e; }
+    .bg-pending { background-color: #fef3c7; color: #475569; }
     .bg-confirmed { background-color: var(--light-green); color: var(--dark-green); border: 1px solid #a7f3d0; }
-    .bg-cancelled { background-color: #fee2e2; color: #991b1b; }
-    .bg-completed { background-color: #e0e7ff; color: #3730a3; }
+    .bg-cancelled { background-color: #fee2e2; color: #b91c1c; }
+    .bg-completed { background-color: #e0e7ff; color: #065f46; border: 1px solid #fca5a5; }
     .bg-default { background-color: #f1f5f9; color: #475569; }
 
     /* Action Buttons */
+    .action-group {
+        display: flex;
+        gap: 4px;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: nowrap;
+    }
+
     .btn-action {
-        padding: 7px 14px;
+        padding: 5px 8px;
         border-radius: 6px;
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 600;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
-        gap: 6px;
+        gap: 4px;
         transition: all 0.2s;
+        white-space: nowrap;
     }
 
     .btn-green {
@@ -195,10 +216,10 @@
     .btn-outline-dark:hover { background-color: #f8fafc; color: var(--text-dark); }
 
     .status-select {
-        padding: 6px 10px;
+        padding: 4px 6px;
         border-radius: 6px;
         font-weight: 600;
-        font-size: 12px;
+        font-size: 11px;
         border: 1px solid var(--border-color);
         color: var(--text-dark);
         background-color: #ffffff;
@@ -216,18 +237,10 @@
         color: var(--text-muted);
         font-weight: 500;
     }
-    .table-wrapper {
-        width: 100%;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-    .custom-table {
-        min-width: 900px; 
-    }
 
     @media (max-width: 768px) {
         .booking-container {
-            padding: 10px !important;
+            padding: 12px !important;
         }
         .page-header {
             flex-direction: column;
@@ -251,7 +264,7 @@
         </h2>
     </div>
 
-    <!-- Original Layout Compatible Tabs -->
+    <!-- Tabs -->
     <div class="tabs-nav">
         <button class="tab-btn active" onclick="switchTab(event, 'tab-all')">
             <i class="fa-solid fa-list"></i> All Bookings
@@ -259,73 +272,73 @@
         </button>
     </div>
 
-    <!-- TAB 1: ALL BOOKINGS (Full original table data layout) -->
+    <!-- TAB 1: ALL BOOKINGS -->
     <div id="tab-all" class="tab-pane active">
         <div class="table-card">
             <div class="table-wrapper">
-            <table class="custom-table">
-                <thead>
-                    <tr>
-                        <th>Booking Reference</th>
-                        <th>User / Customer</th>
-                        <th>Package Name</th>
-                        <th style="text-align: center;">Persons</th>
-                        <th>Total Amount</th>
-                        <th>Status</th>
-                        <th style="text-align: center;">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for booking in bookings %}
-                    <tr>
-                        <td>
-                            <b>#{{ booking.booking_id|default:booking.id }}</b><br>
-                            <span class="small-id">System ID: {{ booking.id }}</span>
-                        </td>
-                        <td><strong>{{ booking.user.email|default:booking.user.username|default:"N/A" }}</strong></td>
-                        <td><b>{{ booking.package.name|default:"N/A" }}</b></td>
-                        <td style="text-align: center;">{{ booking.total_persons|default:1 }}</td>
-                        <td><b style="color: var(--primary-green);">Rs. {{ booking.total_amount|default:0 }}</b></td>
-                        <td>
-                            <span class="badge 
-                                {% if booking.status|lower == 'pending' or booking.status|lower == 'submitted' or booking.status|lower == 'processing' %}bg-pending
-                                {% elif booking.status|lower == 'confirmed' or booking.status|lower == 'active' or booking.status|lower == 'paid' %}bg-confirmed
-                                {% elif booking.status|lower == 'completed' %}bg-completed
-                                {% elif booking.status|lower == 'cancelled' %}bg-cancelled
-                                {% else %}bg-default{% endif %}">
-                                {{ booking.get_status_display|default:booking.status|default:"Pending" }}
-                            </span>
-                        </td>
-                        <td>
-                            <div style="display: flex; gap: 6px; justify-content: center; align-items: center;">
-                                <a href="{% url 'adminpanel:admin_bookings' %}?view_id={{ booking.id }}" class="btn-action btn-green" title="View Profile">
-                                    <i class="fa-solid fa-users"></i> Profile
-                                </a>
-                                <a href="{% url 'adminpanel:admin_bookings' %}?payment_id={{ booking.id }}" class="btn-action btn-outline-dark" title="View Payment">
-                                    <i class="fa-solid fa-wallet"></i> Payment
-                                </a>
-                                <form action="{% url 'adminpanel:update_booking_status' booking.id %}" method="POST" style="margin: 0;">
-                                    {% csrf_token %}
-                                    <select name="status" onchange="this.form.submit()" class="status-select">
-                                        <option value="pending" {% if booking.status|lower == 'pending' %}selected{% endif %}>Pending</option>
-                                        <option value="processing" {% if booking.status|lower == 'processing' %}selected{% endif %}>Processing</option>
-                                        <option value="submitted" {% if booking.status|lower == 'submitted' %}selected{% endif %}>Submitted</option>
-                                        <option value="confirmed" {% if booking.status|lower == 'confirmed' %}selected{% endif %}>Confirmed</option>
-                                        <option value="completed" {% if booking.status|lower == 'completed' %}selected{% endif %}>Completed</option>
-                                        <option value="cancelled" {% if booking.status|lower == 'cancelled' %}selected{% endif %}>Cancelled</option>
-                                    </select>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="7" class="empty-row">No bookings records found in the database.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Booking Reference</th>
+                            <th>User / Customer</th>
+                            <th>Package Name</th>
+                            <th style="text-align: center;">Persons</th>
+                            <th>Total Amount</th>
+                            <th>Status</th>
+                            <th style="text-align: center;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in bookings %}
+                        <tr>
+                            <td>
+                                <b>#{{ booking.booking_id|default:booking.id }}</b>
+                                <span class="small-id">System ID: {{ booking.id }}</span>
+                            </td>
+                            <td><strong>{{ booking.user.email|default:booking.user.username|default:"N/A" }}</strong></td>
+                            <td><b>{{ booking.package.name|default:"N/A" }}</b></td>
+                            <td style="text-align: center;">{{ booking.total_persons|default:1 }}</td>
+                            <td><b style="color: var(--primary-green);">Rs. {{ booking.total_amount|default:0 }}</b></td>
+                            <td>
+                                <span class="badge 
+                                    {% if booking.status|lower == 'pending' or booking.status|lower == 'submitted' or booking.status|lower == 'processing' %}bg-pending
+                                    {% elif booking.status|lower == 'confirmed' or booking.status|lower == 'active' or booking.status|lower == 'paid' %}bg-confirmed
+                                    {% elif booking.status|lower == 'completed' %}bg-completed
+                                    {% elif booking.status|lower == 'cancelled' %}bg-cancelled
+                                    {% else %}bg-default{% endif %}">
+                                    {{ booking.get_status_display|default:booking.status|default:"Pending" }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="action-group">
+                                    <a href="{% url 'adminpanel:admin_bookings' %}?view_id={{ booking.id }}" class="btn-action btn-green" title="View Profile">
+                                        <i class="fa-solid fa-users"></i> Profile
+                                    </a>
+                                    <a href="{% url 'adminpanel:admin_bookings' %}?payment_id={{ booking.id }}" class="btn-action btn-outline-dark" title="View Payment">
+                                        <i class="fa-solid fa-wallet"></i> Payment
+                                    </a>
+                                    <form action="{% url 'adminpanel:update_booking_status' booking.id %}" method="POST" style="margin: 0;">
+                                        {% csrf_token %}
+                                        <select name="status" onchange="this.form.submit()" class="status-select">
+                                            <option value="pending" {% if booking.status|lower == 'pending' %}selected{% endif %}>Pending</option>
+                                            <option value="processing" {% if booking.status|lower == 'processing' %}selected{% endif %}>Processing</option>
+                                            <option value="submitted" {% if booking.status|lower == 'submitted' %}selected{% endif %}>Submitted</option>
+                                            <option value="confirmed" {% if booking.status|lower == 'confirmed' %}selected{% endif %}>Confirmed</option>
+                                            <option value="completed" {% if booking.status|lower == 'completed' %}selected{% endif %}>Completed</option>
+                                            <option value="cancelled" {% if booking.status|lower == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                                        </select>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="empty-row">No bookings records found in the database.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
