@@ -212,8 +212,6 @@ def hajj_packages(request):
             Q(agency__agency_name__icontains=query) |
             Q(package_type__name__icontains=query)
         )
-
-    # Agar URL mein ?type=Hajj ya ?type=Umrah pass hua hai toh DB filter lagayen
     if type_param and type_param.lower() != 'all':
         packages = packages.filter(package_type__name__icontains=type_param)
 
