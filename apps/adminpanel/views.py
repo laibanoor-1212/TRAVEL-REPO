@@ -438,8 +438,6 @@ def update_booking_status(request, booking_id):
                     changed_by=request.user,
                     remarks="Status updated via Admin Control Center."
                 )
-
-            # Customer & Agent Email Notifications with Error Safeguard
             try:
                 if booking.user:
                     send_booking_status_email(
@@ -454,7 +452,6 @@ def update_booking_status(request, booking_id):
                         new_status=new_status
                     )
             except Exception as e:
-                # Email fail hone par bhi status successfully save rahega
                 pass
 
             messages.success(request, f"Booking #{booking.booking_id} status successfully set to '{booking.get_status_display()}'")
@@ -538,12 +535,9 @@ def admin_refund_payment(request, payment_id):
             payment.booking.save()
 
         payment.save()
-
-        # Customer Email Notification
         if payment.user:
             send_payment_status_email(payment.user, payment, 'refunded', reason)
             
-        # Agent Email Notification
         if hasattr(payment, 'agent') and payment.agent:
             send_payment_status_email(payment.agent, payment, 'refunded', reason)
 
@@ -686,12 +680,29 @@ def toggle_package_type(request, pk):
     pkg_type = get_object_or_404(PackageType, pk=pk)
     pkg_type.is_active = not pkg_type.is_active  # Toggle true/false
     pkg_type.save()
+
+    today = timezone.now().date()
+
+    if pkg_type.is_active:
+      
+        Package.objects.filter(
+            package_type=pkg_type,
+            application_deadline__gte=today,
+            booked_seats__lt=F('total_seats')
+        ).update(is_active=True, status='active')
+
+        Package.objects.filter(
+            package_type=pkg_type,
+            application_deadline__lt=today
+        ).update(is_active=False, status='inactive')
+    else:
+      
+        Package.objects.filter(package_type=pkg_type).update(is_active=False, status='inactive')
     
     status_text = "activated" if pkg_type.is_active else "deactivated"
     messages.success(request, f"Package Type '{pkg_type.name}' is now {status_text}.")
         
     return redirect('adminpanel:add_package_type')
-
 
 @admin_required
 @user_passes_test(is_admin_user, login_url='adminpanel:admin_login')
@@ -700,12 +711,15 @@ def delete_package_type(request, pk):
     type_name = package_type.name
     package_type.is_active = False
     package_type.save()
+
+    # Packages ke status ko bhi 'inactive' update karen
     if hasattr(package_type, 'packages'):
-        package_type.packages.update(is_active=False)
+        package_type.packages.update(is_active=False, status='inactive')
+    else:
+        Package.objects.filter(package_type=package_type).update(is_active=False, status='inactive')
 
     messages.warning(request, f"Package Type '{type_name}' and all its connected packages have been deactivated.")
     return redirect('adminpanel:add_package_type')
-
 @admin_required
 @user_passes_test(is_admin_user, login_url='adminpanel:admin_login')
 def set_commission(request):

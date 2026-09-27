@@ -7,7 +7,7 @@ def notification_context(request):
         unread_count = user_notifications.filter(is_read=False).count()
         
         return {
-            'notifications': user_notifications[:10],  # Top 5 notifications for dropdown
+            'notifications': user_notifications[:20],  # Top 20 notifications for dropdown
             'unread_count': unread_count,
         }
     

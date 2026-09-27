@@ -18,3 +18,5 @@ class ContactQueryAdmin(admin.ModelAdmin):
     search_fields = ('name', 'email', 'message')
     readonly_fields = ('name', 'email', 'category', 'message', 'created_at')
     list_editable = ('is_resolved',)
+
+

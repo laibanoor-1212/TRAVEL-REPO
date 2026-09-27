@@ -5,7 +5,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-
 <div class="hero-banner-section">
     <h1 class="hero-banner-title">
         {% if selected_type %}{{ selected_type|title }} Packages{% else %}All Tours Search{% endif %}
@@ -14,6 +13,15 @@
 
 <div class="search-wrapper-container">
     <div class="floating-search-card">
+        <!-- Live Search Text Field -->
+        <div class="search-field-group">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <div class="search-field-input-box">
+                <label for="searchInputField">Search Packages</label>
+                <input type="text" id="searchInputField" class="clean-select-input" placeholder="Search by name, city, operator..." value="{{ search_query|default:'' }}">
+            </div>
+        </div>
+
         <!-- Dynamic Package Type Dropdown -->
         <div class="search-field-group">
             <i class="fa-solid fa-compass"></i>
@@ -23,9 +31,7 @@
                     <option value="All" {% if not selected_type or selected_type|lower == 'all' %}selected{% endif %}>
                         All Packages
                     </option>
-                    
                     {% for pkg_type in package_types %}
-                        <!-- Sirf Active Package Types hi Render honge -->
                         {% if pkg_type.is_active %}
                             <option value="{{ pkg_type.name }}" 
                                 {% if selected_type and selected_type|lower == pkg_type.name|lower %}selected{% endif %}>
@@ -37,10 +43,37 @@
             </div>
         </div>
 
+        <!-- Departure City Dropdown Filter -->
+        <div class="search-field-group">
+            <i class="fa-solid fa-plane-departure"></i>
+            <div class="search-field-input-box">
+                <label for="departureCitySelect">Departure City</label>
+                <select id="departureCitySelect" name="city" class="clean-select-input">
+                    <option value="All" {% if not selected_city or selected_city|lower == 'all' %}selected{% endif %}>
+                        All Departure Cities
+                    </option>
+                    {% if available_cities %}
+                        {% for c in available_cities %}
+                            <option value="{{ c }}" {% if selected_city|lower == c|lower %}selected{% endif %}>
+                                {{ c }}
+                            </option>
+                        {% endfor %}
+                    {% else %}
+                        {% for pkg in packages %}
+                            {% if pkg.city %}
+                                <option value="{{ pkg.city|title }}">{{ pkg.city|title }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </select>
+            </div>
+        </div>
+
+        <!-- Operator Dropdown -->
         <div class="search-field-group">
             <i class="fa-solid fa-building-user"></i>
             <div class="search-field-input-box">
-                <label>Operator</label>
+                <label for="operatorSelect">Operator</label>
                 <select id="operatorSelect" class="clean-select-input">
                     <option value="All">All Operators</option>
                     {% for pkg in packages %}
@@ -56,10 +89,11 @@
             </div>
         </div>
 
+        <!-- Budget Dropdown -->
         <div class="search-field-group">
             <i class="fa-solid fa-wallet"></i>
             <div class="search-field-input-box">
-                <label>Budget</label>
+                <label for="priceSelect">Budget</label>
                 <select id="priceSelect" class="clean-select-input">
                     <option value="All">All Prices</option>
                     <option value="Under 300000">Under PKR 300,000</option>
@@ -68,10 +102,6 @@
                 </select>
             </div>
         </div>
-
-        <button type="button" class="search-action-btn" id="searchSubmitBtn">
-            Search
-        </button>
     </div>
 </div>
 
@@ -101,8 +131,10 @@
     <div class="packages-grid-layout">
         {% for package in packages %}
             <div class="theme-tour-card"
+                 data-title="{{ package.name|default:'' }}"
                  data-operator="{% if package.agency.stakeholder_profile and package.agency.stakeholder_profile.agency_name %}{{ package.agency.stakeholder_profile.agency_name }}{% elif package.agency.agency_name %}{{ package.agency.agency_name }}{% else %}{{ package.agency.username|default:package.agency }}{% endif %}"
                  data-package-type="{{ package.package_type.name|default:package.package_type|default:'' }}"
+                 data-departure-city="{{ package.city|default:''|lower }}"
                  data-tier="{{ package.tier|default:''|lower }}"
                  data-price="{{ package.price }}">
 
@@ -125,11 +157,12 @@
                     <div class="price-text">PKR {{ package.price }}</div>
 
                     <ul class="card-details-list">
+                        <li><i class="fa-solid fa-plane-departure"></i> <strong>Departure From:</strong> {{ package.city|default:"Not Specified" }}</li>
                         <li><i class="fa-regular fa-clock"></i> {{ package.duration_days|default:"14" }} Days</li>
                         <li><i class="fa-regular fa-calendar-check"></i> <strong>Start:</strong> {{ package.departure_date|date:"d M Y"|default:"N/A" }}</li>
-                        <li><i class="fa-regular fa-calendar-xmark"></i> <strong>End:</strong> {{ package.return_date|date:"d M Y"|default:"N/A" }}</li>
-                        <li><i class="fa-solid fa-hotel"></i> Hotel Included</li>
-                        <li><i class="fa-solid fa-chair"></i> {{ package.seats_left }} Seats Left</li>
+                        <li><i class="fa-regular fa-calendar-xmark"></i> <strong>Deadline:</strong> {{ package.application_deadline|date:"d M Y"|default:"N/A" }}</li>
+                        <li><i class="fa-solid fa-hotel"></i> {% if package.makkah_hotel %}{{ package.makkah_hotel }}{% else %}Hotel Included{% endif %}</li>
+                        <li><i class="fa-solid fa-chair"></i> {{ package.total_seats|default:"0" }} Seats Available</li>
                     </ul>
 
                     <div class="card-footer-actions">
@@ -152,48 +185,47 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+        const searchInputField = document.getElementById('searchInputField');
         const packageTypeSelect = document.getElementById('packageTypeSelect');
+        const departureCitySelect = document.getElementById('departureCitySelect');
         const operatorSelect = document.getElementById('operatorSelect');
         const priceSelect = document.getElementById('priceSelect');
         const tierSelect = document.getElementById('tierSelect');
-        const searchSubmitBtn = document.getElementById('searchSubmitBtn');
         const clearFiltersBtn = document.getElementById('clearFiltersBtn');
         const resultsCounter = document.getElementById('resultsCounter');
         const noFilterMatchState = document.getElementById('noFilterMatchState');
         const allPackageCards = document.querySelectorAll('.theme-tour-card');
         
-        // URL Parameter Read Karne Ke Liye
-        const urlParams = new URLSearchParams(window.location.search);
-        const selectedTypeFromUrl = urlParams.get('type');
-
-        // URL parameter ke mutabiq Select Option ko auto-select karna
-        if (selectedTypeFromUrl && packageTypeSelect) {
-            const decodedType = decodeURIComponent(selectedTypeFromUrl).toLowerCase().trim();
-            let matched = false;
-            Array.from(packageTypeSelect.options).forEach(option => {
-                const optVal = option.value.toLowerCase().trim();
-                if (optVal.includes(decodedType) || decodedType.includes(optVal)) {
-                    packageTypeSelect.value = option.value;
-                    matched = true;
+        // Dynamic Deduplication for Departure City Dropdown
+        if (departureCitySelect) {
+            const seenCities = new Set();
+            Array.from(departureCitySelect.options).forEach(option => {
+                const val = option.value.trim().toLowerCase();
+                if (val !== "all" && seenCities.has(val)) {
+                    option.remove();
+                } else if (val !== "all") {
+                    seenCities.add(val);
                 }
             });
         }
 
-        // Duplicate operators remove karna dropdown se
+        // Dynamic Deduplication for Operator Select Options
         if (operatorSelect) {
-            const seenValues = new Set();
+            const seenOperators = new Set();
             Array.from(operatorSelect.options).forEach(option => {
                 const val = option.value.trim().toLowerCase();
-                if (val !== "all" && seenValues.has(val)) {
+                if (val !== "all" && seenOperators.has(val)) {
                     option.remove();
-                } else {
-                    seenValues.add(val);
+                } else if (val !== "all") {
+                    seenOperators.add(val);
                 }
             });
         }
 
         function runSearchFilter() {
+            let searchQuery = searchInputField ? searchInputField.value.toLowerCase().trim() : "";
             let selectedType = packageTypeSelect ? packageTypeSelect.value.toLowerCase().trim() : "all";
+            let selectedCity = departureCitySelect ? departureCitySelect.value.toLowerCase().trim() : "all";
             let selectedOperator = operatorSelect ? operatorSelect.value.toLowerCase().trim() : "all";
             let selectedPrice = priceSelect ? priceSelect.value : "All";
             let selectedTier = tierSelect ? tierSelect.value.toLowerCase().trim() : "all";
@@ -201,29 +233,44 @@
             let matchedCount = 0;
 
             allPackageCards.forEach(card => {
+                let cardTitle = (card.dataset.title || "").toLowerCase().trim();
                 let cardType = (card.dataset.packageType || "").toLowerCase().trim();
+                let cardCity = (card.dataset.departureCity || "").toLowerCase().trim();
                 let cardOperator = (card.dataset.operator || "").toLowerCase().trim();
                 let cardTier = (card.dataset.tier || "").toLowerCase().trim();
                 let cardPrice = parseFloat(card.dataset.price) || 0;
 
                 let isMatch = true;
 
-                if (selectedType !== "all") {
-                    if (!cardType.includes(selectedType) && !selectedType.includes(cardType)) {
+                // Live Text Search Input Filter
+                if (searchQuery !== "") {
+                    let cardContentText = (card.textContent || "").toLowerCase();
+                    if (!cardContentText.includes(searchQuery) && !cardTitle.includes(searchQuery) && !cardCity.includes(searchQuery) && !cardOperator.includes(searchQuery)) {
                         isMatch = false;
                     }
                 }
 
-                if (selectedOperator !== "all") {
-                    if (!cardOperator.includes(selectedOperator) && !selectedOperator.includes(cardOperator)) {
-                        isMatch = false;
-                    }
+                // Package Type Filter
+                if (selectedType !== "all" && !cardType.includes(selectedType) && !selectedType.includes(cardType)) {
+                    isMatch = false;
                 }
 
+                // Departure City Filter
+                if (selectedCity !== "all" && cardCity !== selectedCity) {
+                    isMatch = false;
+                }
+
+                // Operator Filter
+                if (selectedOperator !== "all" && !cardOperator.includes(selectedOperator) && !selectedOperator.includes(cardOperator)) {
+                    isMatch = false;
+                }
+
+                // Category / Tier Filter
                 if (selectedTier !== "all" && !cardTier.includes(selectedTier)) {
                     isMatch = false;
                 }
 
+                // Budget Filter
                 if (selectedPrice === "Under 300000" && cardPrice >= 300000) isMatch = false;
                 if (selectedPrice === "300000 - 1000000" && (cardPrice < 300000 || cardPrice > 1000000)) isMatch = false;
                 if (selectedPrice === "Above 1000000" && cardPrice <= 1000000) isMatch = false;
@@ -241,18 +288,22 @@
             }
         }
 
+        if (searchInputField) searchInputField.addEventListener('input', runSearchFilter);
         if (packageTypeSelect) packageTypeSelect.addEventListener('change', runSearchFilter);
+        if (departureCitySelect) departureCitySelect.addEventListener('change', runSearchFilter);
         if (operatorSelect) operatorSelect.addEventListener('change', runSearchFilter);
         if (priceSelect) priceSelect.addEventListener('change', runSearchFilter);
         if (tierSelect) tierSelect.addEventListener('change', runSearchFilter);
 
-        if (searchSubmitBtn) {
-            searchSubmitBtn.addEventListener('click', runSearchFilter);
-        }
-
         if (clearFiltersBtn) {
             clearFiltersBtn.addEventListener('click', function() {
-                window.location.href = "{% url 'base:hajj_packages' %}";
+                if (searchInputField) searchInputField.value = "";
+                if (packageTypeSelect) packageTypeSelect.value = "All";
+                if (departureCitySelect) departureCitySelect.value = "All";
+                if (operatorSelect) operatorSelect.value = "All";
+                if (priceSelect) priceSelect.value = "All";
+                if (tierSelect) tierSelect.value = "All";
+                runSearchFilter();
             });
         }
 

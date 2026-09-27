@@ -311,14 +311,18 @@
                         </div>
                     </div>
 
-                    <div class="input-grid-2" style="margin-bottom: 15px;">
+                    <div class="input-grid-3" style="margin-bottom: 15px;">
                         <div class="field-box">
-                            <label>Country *</label>
-                            <input type="text" name="country" id="country_input" value="Saudi Arabia" placeholder="e.g. Saudi Arabia, UAE, Turkey" required>
+                            <label>Departure City *</label>
+                            <input type="text" name="departure_city" id="departure_city_input" placeholder="e.g. Lahore / Karachi / Islamabad" required>
                         </div>
                         <div class="field-box">
-                            <label>City / Region</label>
-                            <input type="text" name="city" id="city_input" value="Makkah" placeholder="e.g. Makkah / Dubai / Istanbul">
+                            <label>Destination Country *</label>
+                            <input type="text" name="country" id="country_input" value="Saudi Arabia" placeholder="e.g. Saudi Arabia, Iraq, Turkey" required>
+                        </div>
+                        <div class="field-box">
+                            <label>Destination City / Region</label>
+                            <input type="text" name="city" id="city_input" value="Makkah" placeholder="e.g. Makkah / Najaf / Istanbul">
                         </div>
                     </div>
 
@@ -342,7 +346,7 @@
                         </div>
                     </div>
 
-                    <div class="input-grid-3">
+                    <div class="input-grid-3" style="margin-bottom: 15px;">
                         <div class="field-box">
                             <label>Duration (Days) *</label>
                             <input type="number" name="duration_days" placeholder="15" value="15" min="1" required>
@@ -354,6 +358,37 @@
                         <div class="field-box">
                             <label>Application Deadline</label>
                             <input type="date" name="application_deadline" id="application_deadline">
+                        </div>
+                    </div>
+
+                    <!-- Additional Flight & Logistics Details -->
+                    <div class="input-grid-3" style="margin-bottom: 15px;">
+                        <div class="field-box">
+                            <label>Airline Name</label>
+                            <input type="text" name="airline_name" placeholder="e.g. PIA / Saudi Arabian Airlines / Iraqi Airways">
+                        </div>
+                        <div class="field-box">
+                            <label>Flight Type</label>
+                            <select name="flight_type">
+                                <option value="direct">Direct Flight</option>
+                                <option value="connecting">Connecting Flight</option>
+                            </select>
+                        </div>
+                        <div class="field-box" id="distance_box">
+                            <label id="distance_label">Distance to Holy Site / Center (Meters)</label>
+                            <input type="number" name="hotel_distance_meters" placeholder="e.g. 500" min="0">
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Stay Nights Section -->
+                    <div class="input-grid-2" id="nights_container">
+                        <div class="field-box" id="nights_box_1">
+                            <label id="label_nights_1">Makkah Nights</label>
+                            <input type="number" name="makkah_nights" id="input_nights_1" placeholder="e.g. 7" min="0">
+                        </div>
+                        <div class="field-box" id="nights_box_2">
+                            <label id="label_nights_2">Madinah Nights</label>
+                            <input type="number" name="madinah_nights" id="input_nights_2" placeholder="e.g. 7" min="0">
                         </div>
                     </div>
                 </div>
@@ -384,6 +419,8 @@
                             <label class="pill"><input type="checkbox" name="transport" checked> Transport Included</label>
                             <label class="pill" id="pill_ziyarat"><input type="checkbox" name="ziyarat" checked> Ziyarat Tour</label>
                             <label class="pill" id="pill_meals"><input type="checkbox" name="meals"> Meals / Buffet</label>
+                            <label class="pill"><input type="checkbox" name="laundry"> Laundry Service</label>
+                            <label class="pill"><input type="checkbox" name="guide"> Tour Guide</label>
                         </div>
                     </div>
                 </div>
@@ -489,47 +526,95 @@ function handleTypeChange() {
     const labelHotel2 = document.getElementById('label_hotel_2');
     const inputHotel1 = document.getElementById('input_hotel_1');
     const inputHotel2 = document.getElementById('input_hotel_2');
+    const hotelBox1 = document.getElementById('hotel_box_1');
     const hotelBox2 = document.getElementById('hotel_box_2');
+
+    const nightsContainer = document.getElementById('nights_container');
+    const nightsBox1 = document.getElementById('nights_box_1');
+    const nightsBox2 = document.getElementById('nights_box_2');
+    const labelNights1 = document.getElementById('label_nights_1');
+    const labelNights2 = document.getElementById('label_nights_2');
+    const inputNights1 = document.getElementById('input_nights_1');
+    const inputNights2 = document.getElementById('input_nights_2');
+
+    const distanceBox = document.getElementById('distance_box');
+    const distanceLabel = document.getElementById('distance_label');
 
     const pillZiyarat = document.getElementById('pill_ziyarat');
 
+    // 1. HAJJ / UMRAH PACKAGES
     if (typeName.includes('hajj') || typeName.includes('umrah')) {
         countryInput.value = "Saudi Arabia";
         cityInput.value = "Makkah";
         cityInput.placeholder = "e.g. Makkah / Madinah";
         
+        hotelBox1.style.display = "flex";
+        hotelBox2.style.display = "flex";
         labelHotel1.innerHTML = `<i class="fas fa-kaaba"></i> Makkah Hotel`;
         labelHotel2.innerHTML = `<i class="fas fa-mosque"></i> Madinah Hotel`;
         inputHotel1.placeholder = "e.g. Pullman Zamzam Makkah";
         inputHotel2.placeholder = "e.g. Anwar Al Madinah Movenpick";
-        
-        hotelBox2.style.display = "flex";
+
+        nightsContainer.style.display = "grid";
+        nightsBox1.style.display = "flex";
+        nightsBox2.style.display = "flex";
+        labelNights1.innerText = "Makkah Nights";
+        labelNights2.innerText = "Madinah Nights";
+        inputNights1.name = "makkah_nights";
+        inputNights2.name = "madinah_nights";
+
+        distanceBox.style.display = "flex";
+        distanceLabel.innerText = "Distance to Haram / Masjid An-Nabawi (Meters)";
+
         pillZiyarat.style.display = "inline-flex";
 
+    // 2. IRAN / IRAQ / ZIYARAT PACKAGES
     } else if (typeName.includes('ziyarat') || typeName.includes('iran') || typeName.includes('iraq')) {
         countryInput.value = "Iraq";
         cityInput.value = "Najaf";
-        cityInput.placeholder = "e.g. Najaf / Karbala";
+        cityInput.placeholder = "e.g. Najaf / Karbala / Mashhad";
         
+        hotelBox1.style.display = "flex";
+        hotelBox2.style.display = "flex";
         labelHotel1.innerHTML = `<i class="fas fa-hotel"></i> Najaf Hotel`;
         labelHotel2.innerHTML = `<i class="fas fa-hotel"></i> Karbala Hotel`;
         inputHotel1.placeholder = "e.g. Al-Kawthar Hotel";
         inputHotel2.placeholder = "e.g. Baron Hotel Karbala";
 
-        hotelBox2.style.display = "flex";
+        nightsContainer.style.display = "grid";
+        nightsBox1.style.display = "flex";
+        nightsBox2.style.display = "flex";
+        labelNights1.innerText = "Najaf Nights";
+        labelNights2.innerText = "Karbala Nights";
+        inputNights1.name = "najaf_nights";
+        inputNights2.name = "karbala_nights";
+
+        distanceBox.style.display = "flex";
+        distanceLabel.innerText = "Distance to Shrine / Haram (Meters)";
+
         pillZiyarat.style.display = "inline-flex";
 
+    // 3. INTERNATIONAL / OTHER TOURS
     } else {
         countryInput.value = "";
         countryInput.placeholder = "e.g. UAE, Turkey, Malaysia";
         cityInput.value = "";
         cityInput.placeholder = "e.g. Dubai, Istanbul, Baku";
 
+        hotelBox1.style.display = "flex";
         labelHotel1.innerHTML = `<i class="fas fa-hotel"></i> Primary Hotel / Resort`;
         inputHotel1.placeholder = "e.g. 4-Star Hotel / Resort Name";
 
+        // Makkah/Madinah/Karbala extra hotel fields hidden
         hotelBox2.style.display = "none";
         inputHotel2.value = ""; 
+
+        // Specific nights hidden for general international tours
+        nightsContainer.style.display = "none";
+        inputNights1.value = "";
+        inputNights2.value = "";
+
+        distanceBox.style.display = "none";
 
         pillZiyarat.style.display = "none";
     }

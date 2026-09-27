@@ -5,53 +5,52 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 {% block content %}
-<!-- <h1>Total Types: {{ package_types|length }}</h1> -->
 <div class="page-container">
     <div class="form-wizard">
+        
+        <!-- Header Section -->
         <div class="wizard-header">
             <div class="agency-info">
-                <span class="agency-label">EDIT PACKAGE</span>
+                <span class="agency-label">VERIFIED AGENCY | EDIT PACKAGE</span>
                 <h2 class="agency-name">{{ package.name }}</h2>
+            </div>
+            <div class="wizard-progress">
+                <div class="progress-step active">1. Core Info</div>
+                <div class="progress-step active">2. Logistics</div>
+                <div class="progress-step active">3. Services & Pricing</div>
             </div>
         </div>
 
         <form method="POST" enctype="multipart/form-data" class="stepped-form">
             {% csrf_token %}
 
+            <!-- Section 1: Agency Verification & Core Specs -->
             <div class="form-part">
                 <div class="part-title">
                     <span class="part-number">1</span>
-                    <h3>Agency Verification</h3>
+                    <h3>Agency Verification & Core Specs</h3>
                 </div>
                 <div class="part-body">
                     <div class="input-grid-2">
                         <div class="field-box">
-                            <label>Agency Name</label>
+                            <label><i class="fas fa-building"></i> Agency Name</label>
                             <input type="text" value="{{ request.user.stakeholder_profile.agency_name }}" readonly class="locked-input">
                         </div>
                         <div class="field-box">
-                            <label>License Number</label>
+                            <label><i class="fas fa-id-card"></i> License Number</label>
                             <input type="text" value="{{ request.user.stakeholder_profile.license_number }}" readonly class="locked-input">
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <div class="form-part">
-                <div class="part-title">
-                    <span class="part-number">2</span>
-                    <h3>Package Specifications</h3>
-                </div>
-                <div class="part-body">
-                    <div class="field-box full-width">
-                        <label>Package Name</label>
+                    <div class="field-box full-width" style="margin-top: 15px;">
+                        <label><i class="fas fa-box"></i> Package Name</label>
                         <input type="text" name="name" value="{{ package.name }}" placeholder="e.g. Premium 15 Days Umrah Group" required>
                     </div>
-                    
-                    <div class="input-grid-3" style="margin-bottom: 15px;">
+
+                    <div class="input-grid-3" style="margin-top: 15px;">
                         <div class="field-box">
-                            <label>Package Type</label>
-                            <select name="package_type" required style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc;">
+                            <label><i class="fas fa-tags"></i> Package Type</label>
+                            <select name="package_type" required class="custom-select">
                                 <option value="" disabled>Select Type</option>
                                 {% for type in package_types %}
                                     <option value="{{ type.id }}" {% if package.package_type.id == type.id %}selected{% endif %}>{{ type.name }}</option>
@@ -59,8 +58,8 @@
                             </select>
                         </div>
                         <div class="field-box">
-                            <label>Package Tier</label>
-                            <select name="tier" required style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc;">
+                            <label><i class="fas fa-star"></i> Package Tier</label>
+                            <select name="tier" required class="custom-select">
                                 <option value="economy" {% if package.tier == 'economy' %}selected{% endif %}>Economy</option>
                                 <option value="standard" {% if package.tier == 'standard' %}selected{% endif %}>Standard</option>
                                 <option value="vip" {% if package.tier == 'vip' %}selected{% endif %}>VIP</option>
@@ -68,99 +67,163 @@
                             </select>
                         </div>
                         <div class="field-box">
-                            <label>Country</label>
+                            <label><i class="fas fa-globe"></i> Country</label>
                             <input type="text" name="country" value="{{ package.country }}" placeholder="e.g. Saudi Arabia" required>
                         </div>
                     </div>
 
-                    <div class="input-grid-3">
+                    <div class="input-grid-2" style="margin-top: 15px;">
                         <div class="field-box">
-                            <label>City / Region</label>
-                            <input type="text" name="city" value="{{ package.city }}" placeholder="e.g. Makkah / Karbala">
+                            <label><i class="fas fa-city"></i> City / Region</label>
+                            <input type="text" name="city" value="{{ package.city }}" placeholder="e.g. Makkah / Madinah / Karbala">
                         </div>
                         <div class="field-box">
-                            <label>Price (PKR)</label>
-                            <input type="number" name="price" value="{{ package.price }}" min="100000" max="2500000" placeholder="0.00" required>
-                        </div>
-                        <div class="field-box">
-                            <label>Total Seats / Capacity</label>
+                            <label><i class="fas fa-users"></i> Total Seats / Capacity</label>
                             <input type="number" name="total_seats" value="{{ package.total_seats }}" placeholder="e.g. 50" required>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Section 2: Accommodation, Dates & Flight Details -->
             <div class="form-part">
                 <div class="part-title">
-                    <span class="part-number">3</span>
-                    <h3>Accommodation & Dates</h3>
+                    <span class="part-number">2</span>
+                    <h3>Accommodation, Dates & Logistics</h3>
                 </div>
                 <div class="part-body">
                     <div class="input-grid-3" style="margin-bottom: 15px;">
                         <div class="field-box">
-                            <label>Duration days</label>
+                            <label><i class="fas fa-clock"></i> Duration (Days)</label>
                             <input type="number" name="duration_days" value="{{ package.duration_days }}" placeholder="15" required>
                         </div>
                         <div class="field-box">
-                            <label>Departure Date</label>
+                            <label><i class="fas fa-plane-departure"></i> Departure Date</label>
                             <input type="date" name="departure_date" value="{{ package.departure_date|date:'Y-m-d' }}" required>
                         </div>
                         <div class="field-box">
-                            <label>Application Deadline</label>
+                            <label><i class="fas fa-calendar-times"></i> Application Deadline</label>
                             <input type="date" name="application_deadline" value="{{ package.application_deadline|date:'Y-m-d' }}" required>
+                        </div>
+                    </div>
+
+                    <div class="input-grid-2" style="margin-bottom: 15px;">
+                        <div class="field-box">
+                            <label><i class="fas fa-mosque"></i> Makkah Hotel</label>
+                            <input type="text" name="makkah_hotel" value="{{ package.makkah_hotel }}" placeholder="Hotel Name & Distance">
+                        </div>
+                        <div class="field-box">
+                            <label><i class="fas fa-kaaba"></i> Madinah Hotel</label>
+                            <input type="text" name="madinah_hotel" value="{{ package.madinah_hotel }}" placeholder="Hotel Name & Distance">
                         </div>
                     </div>
 
                     <div class="input-grid-2">
                         <div class="field-box">
-                            <label><i class="fas fa-mosque"></i> Makkah Hotel</label>
-                            <input type="text" name="makkah_hotel" value="{{ package.makkah_hotel }}" placeholder="Hotel Name">
+                            <label><i class="fas fa-plane"></i> Airline Name</label>
+                            <input type="text" name="airline_name" value="{{ package.airline_name }}" placeholder="e.g. Saudi Arabian Airlines / PIA">
                         </div>
                         <div class="field-box">
-                            <label><i class="fas fa-kaaba"></i> Madinah Hotel</label>
-                            <input type="text" name="madinah_hotel" value="{{ package.madinah_hotel }}" placeholder="Hotel Name">
-                        </div>
-                    </div>
-
-                    <div class="services-selection" style="margin-top: 15px;">
-                        <label>Included Services:</label>
-                        <div class="pill-group">
-                            <label class="pill"><input type="checkbox" name="visa" {% if package.visa %}checked{% endif %}> Visa</label>
-                            <label class="pill"><input type="checkbox" name="ticket" {% if package.ticket %}checked{% endif %}> Ticket</label>
-                            <label class="pill"><input type="checkbox" name="transport" {% if package.transport %}checked{% endif %}> Transport</label>
-                            <label class="pill"><input type="checkbox" name="ziyarat" {% if package.ziyarat %}checked{% endif %}> Ziyarat</label>
+                            <label><i class="fas fa-exchange-alt"></i> Flight Type</label>
+                            <select name="flight_type" class="custom-select">
+                                <option value="direct" {% if package.flight_type == 'direct' %}selected{% endif %}>Direct Flight</option>
+                                <option value="connecting" {% if package.flight_type == 'connecting' %}selected{% endif %}>Connecting Flight</option>
+                            </select>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Section 3: Services Included -->
+            <div class="form-part">
+                <div class="part-title">
+                    <span class="part-number">3</span>
+                    <h3>Included Services</h3>
+                </div>
+                <div class="part-body">
+                    <div class="services-selection">
+                        <label class="services-title">Select included services:</label>
+                        <div class="pill-group">
+                            <label class="pill">
+                                <input type="checkbox" name="visa" {% if package.visa %}checked{% endif %}> 
+                                <i class="fas fa-passport"></i> Visa Processing
+                            </label>
+                            <label class="pill">
+                                <input type="checkbox" name="ticket" {% if package.ticket %}checked{% endif %}> 
+                                <i class="fas fa-ticket-alt"></i> Flight Ticket
+                            </label>
+                            <label class="pill">
+                                <input type="checkbox" name="transport" {% if package.transport %}checked{% endif %}> 
+                                <i class="fas fa-bus"></i> Transport
+                            </label>
+                            <label class="pill">
+                                <input type="checkbox" name="ziyarat" {% if package.ziyarat %}checked{% endif %}> 
+                                <i class="fas fa-map-marked-alt"></i> Ziyarat
+                            </label>
+                            <label class="pill">
+                                <input type="checkbox" name="meals" {% if package.meals %}checked{% endif %}> 
+                                <i class="fas fa-utensils"></i> Meals
+                            </label>
+                            <label class="pill">
+                                <input type="checkbox" name="guide" {% if package.guide %}checked{% endif %}> 
+                                <i class="fas fa-user-tie"></i> Religious Guide
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Pricing Breakdown & Media -->
             <div class="form-part">
                 <div class="part-title">
                     <span class="part-number">4</span>
-                    <h3>Media & Poster</h3>
+                    <h3>Pricing Breakdown & Media</h3>
                 </div>
                 <div class="part-body">
-                    <div class="field-box">
-                        <label>Detailed Itinerary / Description</label>
-                        <textarea name="description" rows="4" placeholder="Describe the package flow..." required>{{ package.description }}</textarea>
+                    <div class="input-grid-2" style="margin-bottom: 15px;">
+                        <div class="field-box">
+                            <label><i class="fas fa-money-bill-wave"></i> Price Per Person (PKR)</label>
+                            <input type="number" name="price" value="{{ package.price }}" min="100000" max="5000000" placeholder="0.00" required>
+                        </div>
+                        <div class="field-box">
+                            <label><i class="fas fa-hand-holding-usd"></i> Advance Deposit (PKR)</label>
+                            <input type="number" name="advance_amount" value="{{ package.advance_amount }}" placeholder="e.g. 50000">
+                        </div>
                     </div>
-                    
+
+                    <div class="field-box full-width" style="margin-bottom: 15px;">
+                        <label><i class="fas fa-align-left"></i> Detailed Itinerary / Description</label>
+                        <textarea name="description" rows="5" placeholder="Describe the day-by-day package flow..." required>{{ package.description }}</textarea>
+                    </div>
+
+                    <!-- Current Banner Info -->
                     {% if package.banner %}
-                    <div style="margin-top: 10px; margin-bottom: 10px; font-size: 0.85rem; color: #64748b;">
-                        <p>Current Banner: <a href="{{ package.banner.url }}" target="_blank" style="color: #198754; font-weight: 500;">View Existing Image</a></p>
+                    <div class="current-media-preview" style="margin-bottom: 12px; font-size: 0.9rem; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                        <span>Current Banner: </span>
+                        <a href="{{ package.banner.url }}" target="_blank" style="color: #10b981; font-weight: 600; text-decoration: none;">
+                            <i class="fas fa-external-link-alt"></i> View Existing Image
+                        </a>
                     </div>
                     {% endif %}
 
                     <div class="upload-zone">
-                        <input type="file" name="banner" id="banner">
-                        <label for="banner"><i class="fas fa-image"></i> Click to Upload New Package Banner (Leave empty to keep current)</label>
+                        <input type="file" name="banner" id="banner" accept="image/*">
+                        <label for="banner">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Click to Upload New Package Banner (Leave empty to keep current)</span>
+                        </label>
                     </div>
                 </div>
             </div>
 
+            <!-- Form Actions -->
             <div class="form-footer-actions">
-                <a href="javascript:history.back()" class="btn-clear" style="text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">Cancel</a>
-                <button type="submit" class="btn-publish">Update Package Details</button>
+                <a href="javascript:history.back()" class="btn-clear">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+                <button type="submit" class="btn-publish">
+                    <i class="fas fa-save"></i> Update Package Details
+                </button>
             </div>
         </form>
     </div>

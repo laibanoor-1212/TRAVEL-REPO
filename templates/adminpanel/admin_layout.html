@@ -292,6 +292,107 @@ body {
   .main { margin-left: 0 !important; padding: 15px; padding-top: 85px; }
   .sidebar-overlay.show { display: block; }
 }
+
+    
+#notificationMenu .noti-header,
+.notification-menu .noti-header {
+    background-color: #059669 !important; /* Emerald Green Header */
+    color: #ffffff !important;
+    padding: 10px 15px;
+    border-bottom: 1px solid #047857;
+}
+
+#notificationMenu .noti-header h4,
+.notification-menu .noti-header h4 {
+    color: #ffffff !important;
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+/* 2. Dropdown Notification Links Fix (Blue/Purple Links Remover) */
+#notif-list a,
+#notif-list a:visited,
+#notif-list a:hover,
+#notif-list a:active,
+#notif-list a:focus {
+    color: inherit !important;
+    text-decoration: none !important;
+}
+
+/* 3. Notification Item Cards inside Dropdown */
+.green-noti-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 12px 16px;
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #f0fdf4;
+    text-decoration: none !important;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Hover Effect inside Dropdown */
+.green-noti-item:hover {
+    background-color: #f0fdf4 !important; /* Soft Mint Hover Background */
+    border-left: 4px solid #059669 !important;
+}
+
+/* Inside Icon Circle */
+.green-noti-icon {
+    width: 36px;
+    height: 36px;
+    background-color: #ecfdf5 !important;
+    color: #059669 !important; /* Green Icon */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    flex-shrink: 0;
+    font-size: 0.95rem;
+}
+
+.green-noti-item:hover .green-noti-icon {
+    background-color: #059669 !important;
+    color: #ffffff !important;
+}
+
+/* Text Content inside Dropdown */
+.green-noti-title {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #064e3b !important; /* Dark Green Text */
+    margin-bottom: 3px;
+    line-height: 1.2;
+}
+
+.green-noti-desc {
+    font-size: 0.8rem;
+    color: #374151 !important;
+    margin-bottom: 5px;
+    line-height: 1.35;
+}
+
+.green-noti-time {
+    font-size: 0.72rem;
+    color: #059669 !important;
+    font-weight: 500;
+}
+
+/* Dropdown Footer Link */
+#notificationMenu a.view-all-link,
+.notification-menu a.view-all-link {
+    color: #059669 !important;
+    font-weight: 600;
+    text-decoration: none !important;
+}
+
+#notificationMenu a.view-all-link:hover,
+.notification-menu a.view-all-link:hover {
+    color: #047857 !important;
+    text-decoration: underline !important;
+}
+  
 </style>
 </head>
 

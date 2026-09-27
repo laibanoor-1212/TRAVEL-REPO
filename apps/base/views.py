@@ -7,6 +7,7 @@ from stakeholder.models import AgentKYC
 from django.db.models import Q, F
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
+from django.contrib import messages
 
 # Helper function to fetch page content dynamically
 def get_guide_context(page_slug, page_title):
@@ -232,10 +233,17 @@ def hajj_packages(request):
     return render(request, 'packages/hajjpackages.html', context)
 def contactus(request):
     if request.method == 'POST':
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        category = request.POST.get('category')
-        message = request.POST.get('message')
+        name = request.POST.get('name', '').strip()
+        email = request.POST.get('email', '').strip()
+        
+        # Agar HTML mein field ka naam 'subject' hai to ye usay capture kar le ga
+        category = (request.POST.get('category') or request.POST.get('subject') or '').strip()
+        message = request.POST.get('message', '').strip()
+
+        if not all([name, email, category, message]):
+            messages.error(request, "Please fill in all required fields.")
+            return redirect('base:contactus')
+
         ContactMessage.objects.create(
             name=name,
             email=email,
@@ -244,9 +252,10 @@ def contactus(request):
         )
 
         messages.success(request, "Your message has been sent successfully! Our team will contact you soon.")
-        return redirect('base:contactus')  
+        return redirect('base:contactus')
 
     return render(request, 'base/contactus.html')
+
 def agent_list(request):
     query = request.GET.get('q', '').strip()
     service_filter = request.GET.get('service', '')

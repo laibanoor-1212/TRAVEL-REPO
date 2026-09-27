@@ -42,6 +42,13 @@ class Package(models.Model):
         ('luxury', 'Luxury'),
     ]
 
+    SHARING_CHOICES = [
+        ('sharing', 'Sharing'),
+        ('quad', 'Quad (4 Beds)'),
+        ('triple', 'Triple (3 Beds)'),
+        ('double', 'Double (2 Beds)'),
+    ]
+
     agency = models.ForeignKey(
         settings.AUTH_USER_MODEL, 
         on_delete=models.CASCADE, 
@@ -56,9 +63,13 @@ class Package(models.Model):
         related_name='packages'
     )
     tier = models.CharField(max_length=20, choices=TIER_CHOICES, default='standard')
+    
+    # Locations & Cities
     country = models.CharField(max_length=100, default='Saudi Arabia')
     city = models.CharField(max_length=100, blank=True, null=True, default='Makkah')
+    departure_city = models.CharField(max_length=100, default='Lahore') # Departure City
 
+    # Pricing & Occupancy
     price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
@@ -68,21 +79,33 @@ class Package(models.Model):
             MaxValueValidator(2500000)
         ]
     )
+    sharing_type = models.CharField(max_length=20, choices=SHARING_CHOICES, default='quad')
 
+    # Seats & Dates
     total_seats = models.PositiveIntegerField(default=50)
     booked_seats = models.PositiveIntegerField(default=0)
     departure_date = models.DateField(default=now)
     application_deadline = models.DateField(default=now)
-
     duration_days = models.PositiveIntegerField(default=15)
+
+    # Hotels & Distance
     makkah_hotel = models.CharField(max_length=255, blank=True, null=True)
+    makkah_distance_meters = models.PositiveIntegerField(blank=True, null=True, help_text="Distance in meters")
     madinah_hotel = models.CharField(max_length=255, blank=True, null=True)
+    madinah_distance_meters = models.PositiveIntegerField(blank=True, null=True, help_text="Distance in meters")
+
+    # Inclusions (Services)
     visa = models.BooleanField(default=False)
     ticket = models.BooleanField(default=False)
     transport = models.BooleanField(default=False)
     ziyarat = models.BooleanField(default=False)
     meals = models.BooleanField(default=False) 
 
+    # Flight Details
+    airline_name = models.CharField(max_length=100, blank=True, null=True)
+    is_direct_flight = models.BooleanField(default=True)
+
+    # Other Details
     description = models.TextField(default='Package details coming soon...')
     banner = models.ImageField(upload_to='package_banners/', default='package_banners/default.jpg')
 
@@ -90,7 +113,7 @@ class Package(models.Model):
     view_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     def seats_left(self):
         return max(0, self.total_seats - self.booked_seats)
 
