@@ -1,6 +1,7 @@
 {% extends 'adminpanel/admin_layout.html' %}
 {% load static %}
-{% block title %}Chat with {{ agent.username }} - Admin Panel{% endblock %}
+
+{% block title %}Chat with {{ agent.username }} | Admin Panel{% endblock %}
 
 {% block content %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -166,13 +167,25 @@
     <div class="chat-body" id="chatBody">
         {% if chats %}
             {% for chat in chats %}
-                <div class="message-bubble {% if chat.sender == request.user %}sent{% else %}received{% endif %}">
-                    <span class="message-sender">
-                        {% if chat.sender == request.user %}You (Admin){% else %}{{ agent.username }}{% endif %}
-                    </span>
-                    {{ chat.message }}
-                    <span class="message-time">{{ chat.created_at|date:"d M, H:i" }}</span>
-                </div>
+                {% if chat.sender == request.user or chat.sender_id == request.user.id %}
+                    <!-- Admin Bheja Hua Message -->
+                    <div class="message-bubble sent">
+                        <span class="message-sender">You (Admin)</span>
+                        {{ chat.message }}
+                        <span class="message-time">
+                            {{ chat.created_at|date:"d M, H:i" }}
+                        </span>
+                    </div>
+                {% else %}
+                    <!-- Agent Bheja Hua Message -->
+                    <div class="message-bubble received">
+                        <span class="message-sender">{{ agent.get_full_name|default:agent.username }}</span>
+                        {{ chat.message }}
+                        <span class="message-time">
+                            {{ chat.created_at|date:"d M, H:i" }}
+                        </span>
+                    </div>
+                {% endif %}
             {% endfor %}
         {% else %}
             <div style="text-align: center; color: #64748b; margin-top: auto; margin-bottom: auto;">
@@ -196,6 +209,8 @@
 <script>
     // Automatically scroll down to the latest message
     const chatBody = document.getElementById('chatBody');
-    chatBody.scrollTop = chatBody.scrollHeight;
+    if (chatBody) {
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
 </script>
 {% endblock %}

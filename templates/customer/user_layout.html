@@ -27,8 +27,6 @@
             display: flex;
         }
 
-        /* --- COLLAPSIBLE SIDEBAR --- */
-       /* --- SIDEBAR BASE STYLING --- */
         .sidebar {
             width: var(--sidebar-full-width);
             background-color: var(--brand-color);
@@ -37,27 +35,23 @@
             position: fixed;
             top: 0;
             left: 0;
-            z-index: 1000; /* Z-index barha diya hai taake yeh sabse oper rahe */
+            z-index: 1000;
             transition: transform 0.3s ease-in-out, width 0.3s ease;
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
 
-        /* --- RESPONSIVE MEDIA QUERIES FOR MOBILE --- */
         @media screen and (max-width: 992px) {
-            /* By default mobile par sidebar screen se bahar hogi */
             .sidebar {
                 transform: translateX(-100%);
                 width: var(--sidebar-full-width);
             }
 
-            /* Jab toggle click ho aur body par yeh class aaye, toh sidebar screen par aa jaye */
             body.sidebar-mobile-open .sidebar {
                 transform: translateX(0) !important;
             }
 
-            /* Mobile par main container poori width lega */
             .main-container {
                 margin-left: 0 !important;
                 width: 100% !important;
@@ -70,18 +64,17 @@
                 padding: 8px 10px;
             }
         }
-        /* Collapsed State */
+
         body.sidebar-closed .sidebar {
             width: var(--sidebar-collapsed-width);
         }
 
-        /* LOGO SECTION ADJUSTMENTS */
         .logo-section {
             padding: 12px 16px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
-            height: 75px; /* Container height slightly increased for larger logo */
+            height: 75px;
             box-sizing: border-box;
         }
 
@@ -95,10 +88,9 @@
             width: 100%;
         }
 
-        /* Enlarged Logo Style */
         .logo-img {
-            height: 42px; /* Increased logo height */
-            width: 42px;  /* Increased logo width */
+            height: 42px;
+            width: 42px;
             object-fit: contain;
             flex-shrink: 0;
             transition: all 0.3s ease;
@@ -167,7 +159,6 @@
             transition: opacity 0.2s ease;
         }
 
-        /* Hide Text Label when Collapsed */
         body.sidebar-closed .nav-item span {
             opacity: 0;
             display: none;
@@ -183,7 +174,6 @@
             color: #ffffff;
         }
 
-        /* --- DYNAMIC MAIN CONTENT WRAPPER --- */
         .main-container {
             margin-left: var(--sidebar-full-width);
             width: calc(100% - var(--sidebar-full-width));
@@ -196,13 +186,12 @@
             width: calc(100% - var(--sidebar-collapsed-width));
         }
 
-        /* Top Navbar */
         .top-navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 0 25px;
-            height: 75px; /* Matched with logo section height */
+            height: 75px;
             background: #ffffff;
             border-bottom: 1px solid #eaedf0;
             position: sticky;
@@ -262,14 +251,114 @@
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
         }
-        
+        /* ==========================================
+   DROPDOWN INSIDE ONLY (Green & White Theme)
+   ========================================== */
+
+/* 1. Dropdown Container Header/Footer Overrides */
+#notificationMenu .noti-header,
+.notification-menu .noti-header {
+    background-color: #059669 !important; /* Emerald Green Header */
+    color: #ffffff !important;
+    padding: 10px 15px;
+    border-bottom: 1px solid #047857;
+}
+
+#notificationMenu .noti-header h4,
+.notification-menu .noti-header h4 {
+    color: #ffffff !important;
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+/* 2. Dropdown Notification Links Fix (Blue/Purple Links Remover) */
+#notif-list a,
+#notif-list a:visited,
+#notif-list a:hover,
+#notif-list a:active,
+#notif-list a:focus {
+    color: inherit !important;
+    text-decoration: none !important;
+}
+
+/* 3. Notification Item Cards inside Dropdown */
+.green-noti-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 12px 16px;
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #f0fdf4;
+    text-decoration: none !important;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Hover Effect inside Dropdown */
+.green-noti-item:hover {
+    background-color: #f0fdf4 !important; /* Soft Mint Hover Background */
+    border-left: 4px solid #059669 !important;
+}
+
+/* Inside Icon Circle */
+.green-noti-icon {
+    width: 36px;
+    height: 36px;
+    background-color: #ecfdf5 !important;
+    color: #059669 !important; /* Green Icon */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    flex-shrink: 0;
+    font-size: 0.95rem;
+}
+
+.green-noti-item:hover .green-noti-icon {
+    background-color: #059669 !important;
+    color: #ffffff !important;
+}
+
+/* Text Content inside Dropdown */
+.green-noti-title {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #064e3b !important; /* Dark Green Text */
+    margin-bottom: 3px;
+    line-height: 1.2;
+}
+
+.green-noti-desc {
+    font-size: 0.8rem;
+    color: #374151 !important;
+    margin-bottom: 5px;
+    line-height: 1.35;
+}
+
+.green-noti-time {
+    font-size: 0.72rem;
+    color: #059669 !important;
+    font-weight: 500;
+}
+
+/* Dropdown Footer Link */
+#notificationMenu a.view-all-link,
+.notification-menu a.view-all-link {
+    color: #059669 !important;
+    font-weight: 600;
+    text-decoration: none !important;
+}
+
+#notificationMenu a.view-all-link:hover,
+.notification-menu a.view-all-link:hover {
+    color: #047857 !important;
+    text-decoration: underline !important;
+}
     </style>
 </head>
 <body>
 
-    <!-- Icon-Safe Collapsible Sidebar -->
     <aside class="sidebar" id="userSidebar">
-        <!-- Brand Logo & Title -->
         <div class="logo-section">
             <a href="/">
                 <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/201/201623.png'">
@@ -329,7 +418,6 @@
             </a>
         </nav>
 
-        <!-- Sidebar Exit Link -->
         <div style="border-top: 1px solid rgba(255,255,255,0.1); padding: 5px 0;">
             <a href="/" class="nav-item" style="color: #a3b8ad; font-size: 13px;" title="Go to Home">
                 <i class="fa-solid fa-house"></i>
@@ -338,9 +426,7 @@
         </div>
     </aside>
 
-    <!-- Main Container -->
     <div class="main-container">
-        <!-- Top Navbar -->
         <nav class="top-navbar">
             <div style="display: flex; align-items: center; gap: 15px;">
                 <button class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Toggle Sidebar">
@@ -358,39 +444,43 @@
                     <i class="fa-solid fa-magnifying-glass"></i> Browse Packages
                 </a>
 
-                <!-- Notifications -->
+                <!-- Notifications Dropdown Area -->
                 <div style="position: relative; cursor: pointer;" onclick="toggleDropdown('notifDropdown', event)">
                     <i class="fa-solid fa-bell" style="font-size: 18px; color: #6c757d;"></i>
-                    {% if unread_count > 0 %}
-                        <span style="position: absolute; top: -6px; right: -6px; background: #dc3545; color: white; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold;">
-                            {{ unread_count }}
-                        </span>
-                    {% endif %}
+                    
+                    <span id="notif-badge" style="position: absolute; top: -6px; right: -6px; background: #dc3545; color: white; border-radius: 50%; width: 16px; height: 16px; display: {% if unread_count > 0 %}flex{% else %}none{% endif %}; align-items: center; justify-content: center; font-size: 10px; font-weight: bold;">
+                        {{ unread_count|default:0 }}
+                    </span>
                     
                     <div class="dropdown-menu-box" id="notifDropdown" style="width: 290px;">
                         <div style="padding: 12px 16px; background: #f8faf9; font-weight: 600; border-bottom: 1px solid #eee; color: var(--brand-color); font-size: 13px;">
                             Notifications
                         </div>
-                        <div style="max-height: 280px; overflow-y: auto;">
-                            {% if notifications %}
-                                {% for noti in notifications %}
-                                    <a href="{% url 'notifications:mark_as_read' noti.slug %}" style="display: flex; gap: 10px; padding: 12px; text-decoration: none; color: #333; border-bottom: 1px solid #f1f1f1;">
-                                        <i class="fa-solid fa-info-circle" style="color: var(--brand-color); margin-top: 2px;"></i>
-                                        <div>
-       
-                                            <b style="font-size: 12px; display: block;">{{ noti.title }}</b>
-                                            <span style="font-size: 11px; color: #666;">{{ noti.message|truncatechars:45 }}</span>
+                        
+                        <div id="notif-list" style="max-height: 280px; overflow-y: auto;">
+                        {% if notifications %}
+                            {% for noti in notifications %}
+                                <a href="{% if noti.slug %}{% url 'notifications:mark_as_read' noti.slug %}{% else %}#{% endif %}" style="display: flex; gap: 10px; padding: 12px; text-decoration: none; color: #333; border-bottom: 1px solid #f1f1f1; align-items: flex-start;">
+                                    <i class="fa-solid fa-info-circle" style="color: var(--brand-color); margin-top: 2px; flex-shrink: 0;"></i>
+                                    <div style="flex-grow: 1;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                                            <b style="font-size: 12px; color: #2c3e50;">{{ noti.title }}</b>
+                                            <span style="font-size: 10px; color: #888; white-space: nowrap; margin-left: 5px;">
+                                                {{ noti.created_at|date:"d M, h:i A" }}
+                                            </span>
                                         </div>
-                                    </a>
-                                {% endfor %}
-                            {% else %}
-                                <div style="padding: 20px; text-align: center; color: #888; font-size: 12px;">No new notifications</div>
-                            {% endif %}
-                        </div>
+                                        <span style="font-size: 11px; color: #666; display: block; margin-top: 2px;">{{ noti.message|truncatechars:45 }}</span>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        {% else %}
+                            <div style="padding: 20px; text-align: center; color: #888; font-size: 12px;">No new notifications</div>
+                        {% endif %}
+                    </div>
                     </div>
                 </div>
 
-                <!-- Profile Dropdown -->
+                <!-- Profile Dropdown Area -->
                 <div style="position: relative; border-left: 1px solid #eee; padding-left: 15px;">
                     <div onclick="toggleDropdown('userDropdown', event)" style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
                         <div style="text-align: right;">
@@ -426,13 +516,13 @@
     </div>
 
     <script>
-       function toggleSidebar() {
-    if (window.innerWidth <= 992) {
-        document.body.classList.toggle('sidebar-mobile-open');
-    } else {
-        document.body.classList.toggle('sidebar-closed');
-    }
-}
+        function toggleSidebar() {
+            if (window.innerWidth <= 992) {
+                document.body.classList.toggle('sidebar-mobile-open');
+            } else {
+                document.body.classList.toggle('sidebar-closed');
+            }
+        }
 
         function toggleDropdown(id, event) {
             event.stopPropagation();
@@ -452,6 +542,67 @@
             document.getElementById('notifDropdown').style.display = 'none';
             document.getElementById('userDropdown').style.display = 'none';
         }
+function fetchNotifications() {
+    fetch('/notifications/api/')
+        .then(response => response.json())
+        .then(data => {
+            if (!data) return;
+
+            // 1. Badge Update
+            const badge = document.getElementById('notif-badge');
+            if (badge) {
+                if (data.count > 0) {
+                    badge.innerText = data.count;
+                    badge.style.display = 'inline-block';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+
+            // 2. Green & White Styled Dropdown List
+            const listContainer = document.getElementById('notif-list');
+            if (listContainer) {
+                if (data.notifications && data.notifications.length > 0) {
+                    let html = '';
+                    data.notifications.forEach(notif => {
+                        let timeStamp = notif.created_at || '';
+                        let iconClass = 'fas fa-bell';
+                        
+                        const msg = ((notif.title || '') + ' ' + (notif.message || '')).toLowerCase();
+                        if (msg.includes('booking')) iconClass = 'fas fa-calendar-check';
+                        else if (msg.includes('ticket') || msg.includes('complaint')) iconClass = 'fas fa-ticket-alt';
+                        else if (msg.includes('cancel')) iconClass = 'fas fa-times-circle';
+
+                        html += `
+                            <a href="/notifications/mark-as-read/${notif.slug}/" class="green-noti-item">
+                                <div class="green-noti-icon">
+                                    <i class="${iconClass}"></i>
+                                </div>
+                                <div class="green-noti-content">
+                                    <div class="green-noti-title">${notif.title || 'Notification'}</div>
+                                    <div class="green-noti-desc">${notif.message || ''}</div>
+                                    <div class="green-noti-time"><i class="far fa-clock me-1"></i>${timeStamp}</div>
+                                </div>
+                            </a>
+                        `;
+                    });
+                    listContainer.innerHTML = html;
+                } else {
+                    listContainer.innerHTML = `
+                        <div class="green-no-noti">
+                            <i class="fas fa-check-circle mb-2" style="font-size: 1.5rem; color: #10b981;"></i>
+                            <p class="m-0">No unread notifications</p>
+                        </div>`;
+                }
+            }
+        })
+        .catch(err => console.error('Notification Fetch Error:', err));
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    fetchNotifications();
+    setInterval(fetchNotifications, 10000);
+});
     </script>
 </body>
 </html>

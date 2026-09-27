@@ -32,7 +32,8 @@ urlpatterns = [
     path('packages/', include('packages.urls')),
  
     path('bookings/', include('bookings.urls')),
-    path('notifications/', include('notifications.urls')),
+  path('notifications/', include('notifications.urls', namespace='notifications')),
+  
     
 
 ]

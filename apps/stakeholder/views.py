@@ -17,7 +17,10 @@ from payments.models import Payment
 from .forms import KYCAgentForm
 from .models import AgentKYC
 from adminpanel.models import AdminAgentChat
-
+from django.utils.timezone import now
+from django.urls import reverse
+from django.contrib.auth import get_user_model
+User = get_user_model()
 from utils.emails import (
     send_admin_new_agent_alert,
     send_complaint_submitted_emails,
@@ -779,65 +782,132 @@ def cancelled_booking(request):
     return render(request, 'stakeholder/cancelled_booking.html', context)
 
 
-@login_required(login_url='/auth/login/')
+@login_required(login_url="/auth/login/")
 def agent_booking_chat_view(request, booking_id):
     booking = get_object_or_404(Bookings, id=booking_id)
-    
+
     # Security check: Agency user ya booking owner check
-    is_agency_owner = hasattr(booking.package, 'agency') and booking.package.agency == request.user
-    if not request.user.is_staff and not is_agency_owner and booking.user != request.user:
-        return redirect('base:home')
+    is_agency_owner = (
+        hasattr(booking.package, "agency")
+        and booking.package.agency == request.user
+    )
+    if (
+        not request.user.is_staff
+        and not is_agency_owner
+        and booking.user != request.user
+    ):
+        return redirect("base:home")
 
-    booking.chats.exclude(sender=request.user).filter(is_read=False).update(is_read=True)
+    # 1. Mark Chat Messages as Read
+    booking.chats.exclude(sender=request.user).filter(is_read=False).update(
+        is_read=True
+    )
 
-    # 2. Messages fetch karein
-    chats = booking.chats.order_by('timestamp')
-    
-    if request.method == 'POST':
-        message_text = request.POST.get('message')
+    # 2. 👇 AGENT/USER DASHBOARD NOTIFICATION READ MARK KAREIN
+    Notification.objects.filter(
+        recipient=request.user,
+        notification_type="new_chat_message",
+        redirect_url__icontains=str(booking.id),
+        is_read=False,
+    ).update(is_read=True, is_seen=True, read_at=now())
+
+    # Messages fetch karein
+    chats = booking.chats.order_by("timestamp")
+
+    if request.method == "POST":
+        message_text = request.POST.get("message", "").strip()
         if message_text:
             BookingChat.objects.create(
                 booking=booking,
                 sender=request.user,
                 message=message_text,
-                is_read=False 
+                is_read=False,
             )
-            recipient_user = booking.user if request.user != booking.user else (booking.package.agency if booking.package else None)
+
+            # Determine Recipient (Customer or Agency)
+            recipient_user = (
+                booking.user
+                if request.user != booking.user
+                else (booking.package.agency if booking.package else None)
+            )
+
             if recipient_user:
+                # Customer side URL / Agency side URL dynamic target
+                redirect_target = (
+                    reverse(
+                        "stakeholder:booking_chat",
+                        kwargs={"booking_id": booking.id},
+                    )
+                    if recipient_user == getattr(booking.package, "agency", None)
+                    else f"/customers/booking/{booking.id}/"
+                )
+
+                # Create Notification for Recipient
                 Notification.objects.create(
                     recipient=recipient_user,
                     sender=request.user,
-                    title="New Message Received",
-                    message=f"You received a new message regarding Booking #{booking.id}.",
-                    notification_type='admin_broadcast',
-                    priority='medium',
-                    redirect_url=f"/customers/booking/{booking.id}/",
-                    icon="fa-solid fa-comments"
+                    title="New Booking Message",
+                    message=f"New message from {request.user.username} on Booking #{booking.id}.",
+                    notification_type="new_chat_message",
+                    priority="high",
+                    redirect_url=redirect_target,
+                    icon="fa-solid fa-comments",
                 )
-            return redirect('stakeholder:booking_chat', booking_id=booking.id)
-               
-    context = {'booking': booking, 'chats': chats}
-    return render(request, 'stakeholder/booking_chat.html', context)
 
-@login_required(login_url='/auth/login/')
+            return redirect("stakeholder:booking_chat", booking_id=booking.id)
+
+    context = {"booking": booking, "chats": chats}
+    return render(request, "stakeholder/booking_chat.html", context)
+
+
+@login_required(login_url="/auth/login/")
 def admin_support_chat(request):
-    # Logged-in agent ki sari chats fetch karein
-    chats = AdminAgentChat.objects.filter(agent=request.user).order_by('created_at')
-    
-    # Jab agent page khole toh admin ke bheje huay unread messages ko 'read' mark kar dein
-    chats.filter(is_read=False).exclude(sender=request.user).update(is_read=True)
-    
-    if request.method == 'POST':
-        message_text = request.POST.get('message')
-        if message_text and message_text.strip():
+    current_agent = request.user
+
+   
+    chats = AdminAgentChat.objects.filter(agent=current_agent).order_by("created_at")
+    chats.filter(is_read=False).exclude(sender=current_agent).update(is_read=True)
+    Notification.objects.filter(
+        recipient=current_agent,
+        notification_type="new_chat_message",
+        is_read=False,
+    ).update(is_read=True, is_seen=True, read_at=now())
+
+    if request.method == "POST":
+        message_text = request.POST.get("message", "").strip()
+        if message_text:
             AdminAgentChat.objects.create(
-                agent=request.user,
-                sender=request.user, # Sender agent khud hai
-                message=message_text.strip()
+                agent=current_agent, sender=current_agent, message=message_text
             )
-            return redirect('stakeholder:admin_support_chat') # Apne URL name ke mutabiq adjust kar lein
-            
+
+            admins = User.objects.filter(
+                Q(is_superuser=True) | Q(is_staff=True) | Q(role="admin")
+            ).distinct()
+
+            admin_chat_url = reverse(
+                "adminpanel:admin_agent_chat_room",
+                kwargs={"agent_id": current_agent.id},
+            )
+
+            for admin in admins:
+                Notification.objects.create(
+                    recipient=admin,
+                    sender=current_agent,
+                    title=f"Support Chat: {current_agent.get_full_name() or current_agent.username}",
+                    message=(
+                        message_text[:70] + "..."
+                        if len(message_text) > 70
+                        else message_text
+                    ),
+                    notification_type="new_chat_message",
+                    priority="urgent",
+                    redirect_url=admin_chat_url,
+                    icon="fa-solid fa-headset",
+                )
+
+            return redirect("stakeholder:admin_support_chat")
+
     context = {
-        'chats': chats,
+        "chats": chats,
     }
-    return render(request, 'stakeholder/admin_support_chat.html', context)
+    return render(request, "stakeholder/admin_support_chat.html", context)

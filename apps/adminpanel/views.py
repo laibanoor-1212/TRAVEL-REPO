@@ -16,7 +16,6 @@ from .models import Complaint, SystemSetting, GuidePage
 from payments.models import EscrowTransaction, CommissionSetting, PaymentRelease, Payment, PaymentProof, PaymentStatusLog, PaymentStatus
 from apps.accounts.models import CustomUser
 import json
-from notifications.models import Notification
 from django.utils import timezone
 from .decorators import admin_required
 from django.views.decorators.http import require_POST
@@ -27,16 +26,17 @@ from django.http import HttpResponse, JsonResponse
 from django.core.serializers import serialize
 from django.core.exceptions import ValidationError
 from .forms import SystemPreferenceForm
-from django.db.models import ProtectedError,F
-from django.utils import timezone
-
+from django.db.models import ProtectedError, F
+from django.db import transaction
+from django.urls import reverse
 from .models import AdminAgentChat 
+from django.utils.timezone import now
+
 # Utils Email Module Imports
 from utils.emails import (
     send_password_change_email,
     send_booking_status_email,
     send_payment_status_email,
-    
 )
 
 def is_admin_user(user):
@@ -167,32 +167,41 @@ def admin_dashboard(request):
     }
 
     return render(request, 'adminpanel/admin_dashboard.html', context)
-@admin_required
-def agent_requests(request):
-    pending_count = AgentKYC.objects.filter(kyc_status='pending').count()
-    rollback_count = AgentKYC.objects.filter(kyc_status='rollback').count()
-    rejected_count = AgentKYC.objects.filter(kyc_status='rejected').count()
-    approved_count = AgentKYC.objects.filter(kyc_status='approved').count()
 
-    # 'user__sent_admin_chats' use kiya gaya hai kyunki user ki taraf se aayi chat messages sent_admin_chats mein hoti hain
-    requests = AgentKYC.objects.filter(user__isnull=False).select_related('user').annotate(
-        unread_messages_count=Count(
-            'user__sent_admin_chats',
-            filter=Q(user__sent_admin_chats__is_read=False) & ~Q(user__sent_admin_chats__sender=request.user)
+@login_required
+def agent_requests(request):
+    pending_count = AgentKYC.objects.filter(kyc_status="pending").count()
+    rollback_count = AgentKYC.objects.filter(kyc_status="rollback").count()
+    rejected_count = AgentKYC.objects.filter(kyc_status="rejected").count()
+    approved_count = AgentKYC.objects.filter(kyc_status="approved").count()
+
+    requests = (
+        AgentKYC.objects.filter(user__isnull=False)
+        .select_related("user")
+        .annotate(
+            unread_messages_count=Count(
+                "user__sent_admin_chats",
+                filter=Q(
+                    user__sent_admin_chats__sender=F("user"),
+                    user__sent_admin_chats__is_read=False,
+                ),
+                distinct=True,
+            )
         )
     )
 
     return render(
         request,
-        'adminpanel/agent_requests.html',
+        "adminpanel/agent_requests.html",
         {
-            'pending_count': pending_count,
-            'rollback_count': rollback_count,
-            'rejected_count': rejected_count,
-            'approved_count': approved_count,
-            'requests': requests,
-        }
+            "pending_count": pending_count,
+            "rollback_count": rollback_count,
+            "rejected_count": rejected_count,
+            "approved_count": approved_count,
+            "requests": requests,
+        },
     )
+
 @admin_required
 def review_agent(request, pk):
     profile = get_object_or_404(AgentKYC, pk=pk)
@@ -209,6 +218,15 @@ def review_agent(request, pk):
             if hasattr(profile.user, 'is_approved'):
                 profile.user.is_approved = True
                 profile.user.save()
+            
+            # NOTIFICATION ADDED: Approved Agent
+            Notification.objects.create(
+                recipient=profile.user,
+                sender=request.user,
+                title="KYC Application Approved",
+                message="your KYC verification is approved now you can add or publish packages.",
+                redirect_url="/agent/dashboard/"
+            )
             messages.success(request, "KYC approved successfully.")
         
         elif action == 'reject':
@@ -216,6 +234,15 @@ def review_agent(request, pk):
             if hasattr(profile.user, 'is_approved'):
                 profile.user.is_approved = False
                 profile.user.save()
+            
+            # NOTIFICATION ADDED: Rejected Agent
+            Notification.objects.create(
+                recipient=profile.user,
+                sender=request.user,
+                title="KYC Application Rejected",
+                message=f"your KYC verification is rejected. Reason: {comment}",
+                redirect_url="/agent/kyc/"
+            )
             messages.error(request, "KYC has been rejected.")
             
         elif action == 'rollback':
@@ -225,6 +252,15 @@ def review_agent(request, pk):
             if hasattr(profile.user, 'is_approved'):
                 profile.user.is_approved = False
                 profile.user.save()
+            
+            # NOTIFICATION ADDED: Rollback Request
+            Notification.objects.create(
+                recipient=profile.user,
+                sender=request.user,
+                title="KYC Correction Required",
+                message=f"KYC corrections required ({', '.join(selected_fields)}). plz upload again.",
+                redirect_url="/agent/kyc/"
+            )
             messages.warning(request, "KYC status set to rollback with selected fields.")
 
         profile.save()
@@ -272,7 +308,18 @@ def block_package(request, pkg_id):
     package.status = 'blocked'
     package.save()
 
-    agent = getattr(package, 'agent', None) or getattr(package, 'agency', None)
+    agent = getattr(package, 'agent', None) or getattr(package, 'agency', None) or getattr(package, 'user', None)
+    
+    # NOTIFICATION ADDED: Package Blocked
+    if agent:
+        Notification.objects.create(
+            recipient=agent,
+            sender=request.user,
+            title="Package Blocked",
+            message=f"your package '{package.title}' has been block by admin.",
+            redirect_url=f"/packages/detail/{package.id}/"
+        )
+
     if agent and 'send_package_status_email' in globals():
         send_package_status_email(agent, package, 'blocked')
 
@@ -287,7 +334,18 @@ def unblock_package(request, pkg_id):
     package.status = 'active'
     package.save()
 
-    agent = getattr(package, 'agent', None) or getattr(package, 'agency', None)
+    agent = getattr(package, 'agent', None) or getattr(package, 'agency', None) or getattr(package, 'user', None)
+    
+    # NOTIFICATION ADDED: Package Unblocked
+    if agent:
+        Notification.objects.create(
+            recipient=agent,
+            sender=request.user,
+            title="Package Unblocked",
+            message=f"your package '{package.title}' unblock.",
+            redirect_url=f"/packages/detail/{package.id}/"
+        )
+
     if agent and 'send_package_status_email' in globals():
         send_package_status_email(agent, package, 'active')
 
@@ -368,22 +426,37 @@ def update_booking_status(request, booking_id):
         valid_statuses = [choice[0] for choice in Bookings.STATUS_CHOICES]
         
         if new_status in valid_statuses:
-            booking.status = new_status
-            booking.save()
-            BookingStatusHistory.objects.create(
-                booking=booking,
-                old_status=old_status,
-                new_status=new_status,
-                changed_by=request.user,
-                remarks="Status updated via Admin Control Center."
-            )
+            # Atomic transaction taake status aur history hamesha sath save hon
+            with transaction.atomic():
+                booking.status = new_status
+                booking.save()
+                
+                BookingStatusHistory.objects.create(
+                    booking=booking,
+                    old_status=old_status,
+                    new_status=new_status,
+                    changed_by=request.user,
+                    remarks="Status updated via Admin Control Center."
+                )
 
-            # Customer & Agent Email Notifications
-            if booking.user:
-                send_booking_status_email(booking.user, booking, new_status)
-            if hasattr(booking.package, 'agent') and booking.package.agent:
-                send_booking_status_email(booking.package.agent, booking, new_status)
-            
+            # Customer & Agent Email Notifications with Error Safeguard
+            try:
+                if booking.user:
+                    send_booking_status_email(
+                        user=booking.user, 
+                        booking=booking, 
+                        new_status=new_status
+                    )
+                if hasattr(booking.package, 'agent') and booking.package.agent:
+                    send_booking_status_email(
+                        user=booking.package.agent, 
+                        booking=booking, 
+                        new_status=new_status
+                    )
+            except Exception as e:
+                # Email fail hone par bhi status successfully save rahega
+                pass
+
             messages.success(request, f"Booking #{booking.booking_id} status successfully set to '{booking.get_status_display()}'")
         else:
             messages.error(request, "Invalid status selected.")
@@ -834,34 +907,84 @@ def admin_release_payout(request, payment_id):
 
     return redirect('adminpanel:payment_list')
 
- 
 
-@login_required
+@admin_required
+@user_passes_test(is_admin_user, login_url="adminpanel:admin_login")
 def admin_agent_chat_room(request, agent_id):
     agent = get_object_or_404(User, id=agent_id)
-    admin = request.user
+    current_admin = request.user
 
-    if request.method == 'POST':
-        message_text = request.POST.get('message', '').strip()
-        
+    # -------------------------------------------------------------
+    # 1. READ MARK LOGIC (Yeh Dashboard aur Chat ka Badge Disappear karega)
+    # -------------------------------------------------------------
+    # Admin/Agent Chat Table mein Agent ke unread messages ko 'is_read=True' karein
+    AdminAgentChat.objects.filter(
+        agent=agent,
+        sender=agent,
+        is_read=False
+    ).update(is_read=True)
+
+    # Notification Table mein se Admin ke unread chat notifications mark as read karein
+    Notification.objects.filter(
+        recipient=current_admin,
+        sender=agent,
+        notification_type="new_chat_message",
+        is_read=False,
+    ).update(is_read=True, is_seen=True, read_at=now())
+
+    # -------------------------------------------------------------
+    # 2. POST REQUEST LOGIC (Message Bhejney par)
+    # -------------------------------------------------------------
+    if request.method == "POST":
+        message_text = request.POST.get("message", "").strip()
         if message_text:
-            # agent_id/agent pass karna zaroori hai taake null value IntegrityError na aaye
+            # Message Save
             AdminAgentChat.objects.create(
-                agent=agent,
-                admin=admin,
-                sender=request.user,
+                sender=current_admin,
                 receiver=agent,
+                agent=agent,
+                admin=current_admin,
                 message=message_text,
+                is_read=False,
             )
-            return redirect('adminpanel:admin_agent_chat_room', agent_id=agent.id)
 
-    chats = AdminAgentChat.objects.filter(
-        agent=agent, 
-        admin=admin
-    ).order_by('created_at') # ya timestamp field jo aapke model me ho
+            # Dynamic Redirect URL for Agent
+            agent_chat_url = reverse("stakeholder:admin_support_chat")
+
+            # Agent ko Notification Bhejein
+            Notification.objects.create(
+                recipient=agent,
+                sender=current_admin,
+                title="New Message from Admin",
+                message=(
+                    message_text[:80] + "..."
+                    if len(message_text) > 80
+                    else message_text
+                ),
+                notification_type="new_chat_message",
+                priority="high",
+                redirect_url=agent_chat_url,
+                icon="fa-solid fa-comments",
+            )
+
+            return redirect("adminpanel:admin_agent_chat_room", agent_id=agent.id)
+
+    # -------------------------------------------------------------
+    # 3. GET MESSAGES LIST FOR RENDERING
+    # -------------------------------------------------------------
+    chats = (
+        AdminAgentChat.objects.filter(
+            Q(sender=current_admin, receiver=agent)
+            | Q(sender=agent, receiver=current_admin)
+            | Q(agent=agent)
+        )
+        .distinct()
+        .order_by("created_at")
+    )
 
     context = {
-        'agent': agent,
-        'chats': chats,
+        "agent": agent,
+        "chats": chats,
     }
-    return render(request, 'adminpanel/admin_agent_chat_room.html', context)
+    return render(request, "adminpanel/admin_agent_chat_room.html", context)
+

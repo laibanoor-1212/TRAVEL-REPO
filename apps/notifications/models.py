@@ -168,7 +168,15 @@ class Notification(models.Model):
 
         super().save(*args, **kwargs)
 
-   
+    def save(self, *args, **kwargs):
+        if not self.slug:
+        # Unique slug generate karne ke liye UUID hex attach karein
+            base_slug = slugify(f"{self.notification_type}-{self.title}")[
+                :150
+            ]  # Safe length limit
+            self.slug = f"{base_slug}-{uuid.uuid4().hex[:10]}"
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.recipient} - {self.title}"

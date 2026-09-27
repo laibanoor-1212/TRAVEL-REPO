@@ -110,21 +110,37 @@ class GuidePage(models.Model):
         return f"{self.title} ({self.page_slug})"
 
 class AdminAgentChat(models.Model):
-    agent = models.ForeignKey(User, on_delete=models.CASCADE, related_name='admin_chats')
-    admin = models.ForeignKey(User, on_delete=models.CASCADE, related_name='agent_chats', null=True, blank=True)
-    message = models.TextField()
-    sender = models.ForeignKey(User, on_delete=models.CASCADE) 
-    is_read = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
+  
     sender = models.ForeignKey(
-        settings.AUTH_USER_MODEL, 
-        on_delete=models.CASCADE, 
-        related_name='sent_admin_chats'
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='sent_admin_chats',
     )
     receiver = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='received_admin_chats',
-        null=True,   
-        blank=True,  
+        null=True,
+        blank=True,
     )
+    agent = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='agent_chats',
+        null=True,
+        blank=True,
+    )
+    admin = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='admin_chats',
+        null=True,
+        blank=True,
+    )
+
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.sender.username} -> {self.receiver.username if self.receiver else "N/A"}: {self.message[:20]}'
